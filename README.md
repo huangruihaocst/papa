@@ -55,4 +55,9 @@ and nginx configuration file:
 
 ##Database schema
 I'm busy...
+
+##TODO
+1.  Database Schema
+1.  Unit Test
+1.  Authentication Control.  
     
