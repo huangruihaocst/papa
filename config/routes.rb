@@ -1,5 +1,22 @@
 Rails.application.routes.draw do
   devise_for :users
+
+  namespace :api do
+    namespace :courses do
+      root to: '/courses#api_index'
+      get 'index'   => '/courses#api_index'
+      get ':id'     => '/courses#api_show', constraints: { id: '[0-9]+' }
+      post '/'      => '/courses#api_add'
+    end
+
+    namespace :lessons do
+      root to: '/lessons#api_index'
+      get 'index' => '/lessons#api_index'
+      get ':id'   => '/lessons#api_show', constraints: { id: '[0-9]+' }
+      post '/'    => '/lessons#api_add'
+    end
+
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

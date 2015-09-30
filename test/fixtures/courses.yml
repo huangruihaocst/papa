@@ -1,0 +1,11 @@
+adv_physics:
+  name: Advanced Physics
+
+os:
+  name: Operation System
+
+compiler:
+  name: Modern Compiler Design and Practice
+
+cpp:
+  name: Programming C++
