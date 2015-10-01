@@ -16,8 +16,7 @@
 !/log/.keep
 /tmp
 # Ignore ide(rubymine) info
-/.idea/*
 /.idea
 
-*~
+/*~
 
