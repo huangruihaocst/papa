@@ -21,8 +21,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string   :current_sign_in_ip
       t.string   :last_sign_in_ip
 
-      ## student/assistant info
-      t.boolean   :is_student
+      t.boolean  :is_teacher
 
       t.timestamps null: false
     end

@@ -11,21 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151001122224) do
+ActiveRecord::Schema.define(version: 20150930115150) do
 
   create_table "courses", force: :cascade do |t|
     t.string "name"
     t.text   "description"
-  end
-
-  create_table "courses_assistants", force: :cascade do |t|
-    t.integer "course_id"
-    t.integer "user_id"
-  end
-
-  create_table "courses_students", force: :cascade do |t|
-    t.integer "course_id"
-    t.integer "user_id"
   end
 
   create_table "lessons", force: :cascade do |t|
@@ -37,18 +27,10 @@ ActiveRecord::Schema.define(version: 20151001122224) do
     t.integer  "course_id"
   end
 
-  create_table "students", force: :cascade do |t|
-    t.string "name"
-  end
-
-  create_table "teachers", force: :cascade do |t|
-    t.string "name",               null: false
-    t.string "encrypted_password"
-  end
-
-  create_table "teachers_courses", force: :cascade do |t|
-    t.integer "teacher_id"
+  create_table "participations", force: :cascade do |t|
     t.integer "course_id"
+    t.integer "user_id"
+    t.string  "role"
   end
 
   create_table "users", force: :cascade do |t|
@@ -64,7 +46,7 @@ ActiveRecord::Schema.define(version: 20151001122224) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.boolean  "is_student"
+    t.boolean  "is_teacher"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
   end
