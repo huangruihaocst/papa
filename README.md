@@ -56,6 +56,46 @@ and nginx configuration file:
 ##Database schema
 I'm busy...
 
+##APIs Usage
+Step1.  Token authentication
+    POST    xxx
+
+Step2.  Get data from these URLs
+
+    # for courses
+    GET /api/courses
+    GET /api/courses/1
+    GET /api/courses/name
+    POST /api/courses
+        
+    
+    # for lessons
+    GET /api/lessons
+    GET /api/lessons/1
+    GET /api/lessons/lesson_full_name
+    POST /api/lessons
+        parameters: name, description, start_time, end_time, position, course_id
+    
+    # for users(including students and assistants)
+    GET /api/users
+    GET /api/users/1
+    GET /api/users/name
+        
+or in rails way
+    
+    [Ruby code]
+    namespace :api do
+        resources :courses do 
+            resources :lessons
+        end
+        resources :lessons do
+            resources :students
+        end
+        resources :students do
+            resources :lessons
+        end
+    end
+
 ##TODO
 1.  Database Schema
 1.  Unit Test

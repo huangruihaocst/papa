@@ -18,5 +18,3 @@
 # Ignore ide(rubymine) info
 /.idea/*
 /.idea
-
-*~
