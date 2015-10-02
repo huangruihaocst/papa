@@ -1,0 +1,65 @@
+<head>
+	<style type="text/css">
+		#content
+		{
+			padding-left:20%;
+			padding-right:20%;
+			padding-up:3%:
+		}
+	</style>
+</head>
+<body>
+	<div id="content">	
+	</div>
+	<script>
+		var n,m,info,items,courseInfo;
+		
+		function loadInfo()
+		{
+			courseInfo="计算机组成原理实验1";
+			var i;
+			n=7;m=2;
+			items=new Array();
+			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="成绩";items[5]="评价";items[6]="图片";items[7]="视频";items[8]="打分助教";
+			info=new Array();
+			for (i=0;i<m;++i)
+			{
+				info[i]=new Array();
+				info[i][0]="201401130"+i;
+				info[i][1]="A"+i;
+				info[i][2]="计算机系";
+				info[i][3]="计xx";
+				info[i][4]=10;
+				info[i][5]="1";
+				info[i][6]="1";
+				info[i][7]="1";
+				info[i][8]="XX";
+			}
+		}
+		
+		function showInfo()
+		{
+			var i,j,text="";
+			text+='<table class="table table-bordered table-striped table-hover">';
+			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
+			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">实验情况</th></tr>';
+			text+='<tr>';
+			for (i=0;i<n;++i) text+='<th>'+items[i]+'</th>';
+			text+='</thread><tbody>';
+			for (i=0;i<m;++i)
+			{
+				text+='<tr>';
+				for (j=0;j<n;++j)
+				{
+					text+='<td>'+info[i][j]+'</td>';
+				}
+				text+='</tr>';
+			}
+			text+='</tbody></table>';
+			$("#content")[0].innerHTML=text;
+		}
+		
+		loadInfo();
+		showInfo();
+	</script>
+</body>
