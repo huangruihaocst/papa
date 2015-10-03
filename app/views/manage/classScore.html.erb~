@@ -18,7 +18,7 @@
 		{
 			courseInfo="计算机组成原理实验1";
 			var i;
-			n=7;m=2;
+			n=9;m=2;
 			items=new Array();
 			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="成绩";items[5]="评价";items[6]="图片";items[7]="视频";items[8]="打分助教";
 			info=new Array();

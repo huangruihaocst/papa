@@ -116,7 +116,7 @@
 						text+='</div>';
 						if (nowClass==k)
 						{
-							text+='<div class="retangleClassContent btn btn-default">';
+							text+='<div class="rectangleClassContent btn btn-default">';
 							text+='ddd';
 							text+='</div>';
 						}

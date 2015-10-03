@@ -4,29 +4,52 @@
 		{
 			padding-left:20%;
 			padding-right:20%;
-			padding-up:3%:
+			padding-top:3%:
 		}
 		.content
 		{
-			padding-left:3%;
-			padding-right:3%;
-			padding-top:3%;
 			width:50%;
+			height:400px;
+			font-size:40px;
 		}
+		#content3
+		{
+			font-size:30px;
+		}
+		.comment
+		{
+			font-size:25px;
+			margin-top:30px;
+		}
+		.author
+		{
+			font-size:15px;
+			margin-top:2px;
+		}
+		.chart
+		{
+			width:100%;
+			height:300px;
 	</style>
 </head>
 <body>
+	<script type="text/javascript" src="/chart.js"></script>
 	<div id="content">
 		<div id="content1" class="content">
+			到课情况</br>
+			<canvas id="chart1" class="chart"></canvas>
 		</div>
 		<div id="content2" class="content">
+			学生评分</br>
+			<canvas id="chart2" class="chart"></canvas>
 		</div>
 		<div id="content3">
 		</div>
 	</div>
 	<script>
 		var n,courseInfo,comments=new Array(),people=new Array(2),score=new Array(11);
-		
+		$("#chart1")[0].height=$("#chart1")[0].width;
+		$("#chart2")[0].height=$("#chart2")[0].width;
 		function loadInfo()
 		{
 			people[0]=100;people[1]=10;
@@ -34,34 +57,44 @@
 			courseInfo="计算机组成原理";
 			var i;
 			n=10;
-			for (i=0;i<m;++i)
+			for (i=0;i<n;++i)
 			{
 				comments[i]=new Object();
 				comments[i].author="A"+i;
-				comments[i].text="好课";
+				comments[i].text="aaa";
 			}
 		}
 		
 		function showInfo()
 		{
-			var i,j,text="";
-			text+='<table class="table table-bordered table-striped table-hover">';
-			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
-			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">成绩</th></tr>';
-			text+='<tr>';
-			for (i=0;i<n;++i) text+='<th>'+items[i]+'</th>';
-			text+='</thread><tbody>';
-			for (i=0;i<m;++i)
+			var data,data2,text="",i;
+			data={labels:["上课人数","缺勤人数"],datasets:[{
+					fillColor: "rgba(220,220,220,0.5)",
+                	strokeColor: "rgba(0,102,51,1)",
+                	pointColor: "rgba(220,220,220,1)",
+                	pointStrokeColor: "#339933",
+                	pointHighlightFill: "#339933",
+                	pointHighlightStroke: "rgba(220,220,220,1)",
+					data : [people[0],people[1]]}]};
+			data2={labels:["0分","1分","2分","3分","4分","5分","6分","7分","8分","9分","10分"],datasets:[{
+					fillColor: "rgba(220,220,220,0.5)",
+                	strokeColor: "rgba(0,102,51,1)",
+                	pointColor: "rgba(220,220,220,1)",
+                	pointStrokeColor: "#339933",
+                	pointHighlightFill: "#339933",
+                	pointHighlightStroke: "rgba(220,220,220,1)",
+					data : [score[0],score[1],score[2],score[3],score[4],score[5],score[6],score[7],score[8],score[9],score[10]]}]};
+			var mychart,ctx = $("#chart1")[0].getContext("2d");
+			mychart=new Chart(ctx).Bar(data);
+			ctx = $("#chart2")[0].getContext("2d");
+			mychart=new Chart(ctx).Bar(data2);
+			text+="课程评价</br>";
+			for (i=0;i<n;++i)
 			{
-				text+='<tr>';
-				for (j=0;j<n;++j)
-				{
-					text+='<td>'+info[i][j]+'</td>';
-				}
-				text+='</tr>';
+				text+='<div class="comment">'+comments[i].text+'</div>';
+				text+='<div class="author">'+comments[i].author+'</div>';
 			}
-			text+='</tbody></table>';
-			$("#content")[0].innerHTML=text;
+			$("#content3")[0].innerHTML=text;
 		}
 		
 		loadInfo();
