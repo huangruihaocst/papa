@@ -45,24 +45,54 @@
 		</div>
 		<div id="content3">
 		</div>
+		<div id="contentbutton">
+		</div>
 	</div>
 	<script>
 		var n,courseInfo,comments=new Array(),people=new Array(2),score=new Array(11);
 		$("#chart1")[0].height=$("#chart1")[0].width;
 		$("#chart2")[0].height=$("#chart2")[0].width;
+		var totalPages,nowPage,numberPerPage=15;
 		function loadInfo()
 		{
 			people[0]=100;people[1]=10;
 			for (i=0;i<11;++i) score[i]=10;
 			courseInfo="计算机组成原理";
 			var i;
-			n=10;
+			n=100;
 			for (i=0;i<n;++i)
 			{
 				comments[i]=new Object();
 				comments[i].author="A"+i;
 				comments[i].text="aaa";
 			}
+			totalPages=Math.floor((n-1)/numberPerPage+1);
+			nowPage=1;
+		}
+		
+		function changePage(x)
+		{
+			nowPage+=x;
+			if (nowPage<1) nowPage=1;
+			if (nowPage>totalPages) nowPage=totalPages;
+			showComments();
+		}
+		
+		function showComments()
+		{
+			var text="课程评价</br>",t1,t2;
+			t1=(nowPage-1)*numberPerPage;
+			t2=nowPage*numberPerPage;
+			if (t2>n) t2=n;
+			for (i=t1;i<t2;++i)
+			{
+				text+='<div class="comment">'+comments[i].text+'</div>';
+				text+='<div class="author">'+comments[i].author+'</div>';
+			}
+			$("#content3")[0].innerHTML=text;
+			text='<button class="btn btn-default" onclick="changePage(-1)">上一页</button>';
+			text+='第'+nowPage+'页 共'+totalPages+'页<button class="btn btn-default" onclick="changePage(1)">下一页</button>';
+			$("#contentbutton")[0].innerHTML=text;
 		}
 		
 		function showInfo()
@@ -80,13 +110,8 @@
 			mychart=new Chart(ctx).Bar(data);
 			ctx = $("#chart2")[0].getContext("2d");
 			mychart=new Chart(ctx).Bar(data2);
-			text+="课程评价</br>";
-			for (i=0;i<n;++i)
-			{
-				text+='<div class="comment">'+comments[i].text+'</div>';
-				text+='<div class="author">'+comments[i].author+'</div>';
-			}
-			$("#content3")[0].innerHTML=text;
+			showComments();
+			
 		}
 		
 		loadInfo();

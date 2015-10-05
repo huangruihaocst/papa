@@ -4,7 +4,7 @@
 		{
 			padding-left:20%;
 			padding-right:20%;
-			padding-up:3%:
+			padding-top:3%:
 		}
 	</style>
 </head>
@@ -12,7 +12,7 @@
 	<div id="content">	
 	</div>
 	<script>
-		var n,m,info,items,courseInfo;
+		var n,m,info,items,courseInfo,lastChoose=-1,p=0;
 		
 		function loadInfo()
 		{
@@ -35,15 +35,48 @@
 			}
 		}
 		
+		function compare(x,y,p)
+		{
+			if (p==0&&x<y||p==1&&x>y) return true;
+			else return false;
+		}
+		
+		function qsort(l,r,x,p)
+		{
+			var i=l,j=r,m=info[Math.floor((i+j)/2)][x],t;
+			while (i<=j)
+			{
+				while (i<=j&&compare(info[i][x],m,p)) ++i;
+				while (i<=j&&compare(m,info[j][x],p)) --j;
+				if (i<=j)
+				{
+					t=info[i];info[i]=info[j];info[j]=t;
+					++i;--j;
+				}
+			}
+			if (i<r) qsort(i,r,x,p);
+			if (l<j) qsort(l,j,x,p);
+		}
+		
+		function option(x)
+		{
+			if (x!=lastChoose) lastChoose=x,p=0;
+			else p=1-p;
+			console.log(x,p);
+			qsort(0,m-1,x,p);
+			showInfo();
+		}
+		
 		function showInfo()
 		{
 			var i,j,text="";
-			text+='<h3>到课情况</h3>';
+			text+='<h3>课程成绩</h3>';
 			text+='<table class="table table-bordered table-striped table-hover">';
 			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
 			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">成绩</th></tr>';
 			text+='<tr>';
-			for (i=0;i<n;++i) text+='<th>'+items[i]+'</th>';
+			for (i=0;i<n;++i)
+			text+='<th onclick="option('+i+')">'+items[i]+'</th>';
 			text+='</thread><tbody>';
 			for (i=0;i<m;++i)
 			{
