@@ -1,4 +1,6 @@
 <head>
+	<meta http-equiv="content-type" content="text/html; charset=gb2312">  
+  	<meta name="author" content="oscar999">  
 	<style type="text/css">
 		#content
 		{
@@ -6,10 +8,13 @@
 			padding-right:20%;
 			padding-top:3%:
 		}
-		.ownbutton
+		.custombutton
 		{
 			width:100%;
 			height:100%;
+		}
+		.custominput
+		{
 		}
 	</style>
 	<script>
@@ -20,11 +25,11 @@
 	<div id="content">	
 	</div>
 	<script>
-		var n,m,info,items,courseInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
+		var n,m,info,items,classInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
 		
 		function loadInfo()
 		{
-			courseInfo="计算机组成原理实验1";
+			classInfo="计算机组成原理实验1";
 			var i;
 			n=9;m=2;
 			items=new Array();
@@ -106,6 +111,30 @@
 		}
 		window.document.onkeydown=escPress;
 		
+		function clickDownload(aLink)
+		{
+			if (focusi!=-1&&focusj!=-1) return; 
+			var p=$("#table1")[0],i,j,n=p.rows.length,m=p.rows[2].cells.length,data="",text;
+			for (i=2;i<n;++i)
+			{
+				text=p.rows[i].cells[0].textContent;
+				if (!text) text=p.rows[i].cells[0].innerText;
+				data+=text;
+				for (j=0;j<m;++j)
+				{
+					text=p.rows[i].cells[j].textContent;
+					if (!text) text=p.rows[i].cells[j].innerText;
+					data+=','+text;
+				}
+				data+='\n';
+			}
+       //  	data =  encodeURIComponent(data);  
+			data = "\ufeff"+data;
+			var blob = new Blob([data], { type: 'text/csv,charset=UTF-8'});
+    		var csvUrl = URL.createObjectURL(blob);  
+    		$("#export")[0].href = csvUrl;
+		}
+		
 		function change(i,j)
 		{
 			var p,text;
@@ -117,7 +146,7 @@
 			}
 			focusi=i;focusj=j;
 			p=$("#table1")[0].rows[i].cells[j];text=p.innerHTML;
-			text='<input type="text" class="form-control" onkeydown="enterPress(event,'+i+','+j+')" placeholder="'+text+'">';
+			text='<input type="text" class="form-control custominput" onkeydown="enterPress(event,'+i+','+j+')" placeholder="'+text+'">';
 			p.innerHTML=text;
 		}
 		
@@ -126,7 +155,8 @@
 			var i,j,text="";
 			text+='<h3>实验成绩</h3>';
 			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
-			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
+			text+='<thread><tr><th colspan="'+(n-1)+'">'+classInfo+'</th>';
+			text+='<th><a id="export" onclick="clickDownload(this)" download="'+classInfo+'.csv" href="#">导出</a>'+'</th></tr>';
 			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">实验情况</th></tr>';
 			text+='<tr>';
 			for (i=0;i<n;++i) if (i!=5&&i!=6&&i!=7)

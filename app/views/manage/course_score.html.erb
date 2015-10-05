@@ -6,13 +6,19 @@
 			padding-right:20%;
 			padding-top:3%:
 		}
+		.custominput
+		{
+		}
 	</style>
+	<script>
+		var KEYCODE_ENTER=13,KEYCODE_ESC=27;
+	</script>
 </head>
 <body>
 	<div id="content">	
 	</div>
 	<script>
-		var n,m,info,items,courseInfo,lastChoose=-1,p=0;
+		var n,m,info,items,courseInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
 		
 		function loadInfo()
 		{
@@ -62,17 +68,85 @@
 		{
 			if (x!=lastChoose) lastChoose=x,p=0;
 			else p=1-p;
-			console.log(x,p);
 			qsort(0,m-1,x,p);
 			showInfo();
+		}
+		
+		function enterPress(evt,i,j)
+		{
+			evt=evt?evt:(window.event?window.event:null);
+			if (evt.keyCode==KEYCODE_ENTER)
+			{
+				var p=$("#table1")[0].rows[i].cells[j],text=$("input")[0].value;
+				if (!isNaN(text))
+				{
+					p.innerHTML=text;
+					focusi=focusj=-1;
+				}
+			}
+		}
+		
+		function escPress(event)
+		{
+			var evt=event?event:(window.event?window.event:null);
+			if (evt.keyCode==KEYCODE_ESC)
+			{
+				if (focusi!=-1&&focusj!=-1)
+				{
+					p=$("#table1")[0].rows[focusi].cells[focusj],text=$("input")[0].placeholder;
+					p.innerHTML=text;
+					focusi=focusj=-1;
+				}
+			}
+		}
+		window.document.onkeydown=escPress;
+		
+		function clickDownload(aLink)
+		{
+			if (focusi!=-1&&focusj!=-1) return; 
+			var p=$("#table1")[0],i,j,n=p.rows.length,m=p.rows[2].cells.length,data="",text;
+			for (i=2;i<n;++i)
+			{
+				text=p.rows[i].cells[0].textContent;
+				if (!text) text=p.rows[i].cells[0].innerText;
+				data+=text;
+				for (j=0;j<m;++j)
+				{
+					text=p.rows[i].cells[j].textContent;
+					if (!text) text=p.rows[i].cells[j].innerText;
+					data+=','+text;
+				}
+				data+='\n';
+			}
+       //  	data =  encodeURIComponent(data);  
+			data = "\ufeff"+data;
+			var blob = new Blob([data], { type: 'text/csv,charset=UTF-8'});
+    		var csvUrl = URL.createObjectURL(blob);  
+    		$("#export")[0].href = csvUrl;
+		}
+		
+		function change(i,j)
+		{
+			var p,text;
+			if (focusi==i&&focusj==j) return;
+			if (focusi!=-1&&focusj!=-1)
+			{
+				p=$("#table1")[0].rows[focusi].cells[focusj],text=$("input")[0].placeholder;
+				p.innerHTML=text;
+			}
+			focusi=i;focusj=j;
+			p=$("#table1")[0].rows[i].cells[j];text=p.innerHTML;
+			text='<input type="text" class="form-control custominput" onkeydown="enterPress(event,'+i+','+j+')" placeholder="'+text+'">';
+			p.innerHTML=text;
 		}
 		
 		function showInfo()
 		{
 			var i,j,text="";
 			text+='<h3>课程成绩</h3>';
-			text+='<table class="table table-bordered table-striped table-hover">';
-			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
+			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
+			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th>';
+			text+='<th><a id="export" onclick="clickDownload(this)" download="'+courseInfo+'.csv" href="#">导出</a>'+'</th></tr>';
 			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">成绩</th></tr>';
 			text+='<tr>';
 			for (i=0;i<n;++i)
@@ -81,9 +155,12 @@
 			for (i=0;i<m;++i)
 			{
 				text+='<tr>';
-				for (j=0;j<n;++j)
+				for (j=0;j<n;++j) if (j<4)
 				{
 					text+='<td>'+info[i][j]+'</td>';
+				}else
+				{
+					text+='<td ondblclick="change('+(i+3)+','+j+')">'+info[i][j]+'</td>';
 				}
 				text+='</tr>';
 			}
