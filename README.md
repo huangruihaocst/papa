@@ -56,45 +56,62 @@ and nginx configuration file:
 ##Database schema
 I'm busy...
 
-##APIs Usage
-Step1.  Token authentication
-    POST    xxx
+##Android端API使用方法
 
-Step2.  Get data from these URLs
+###基础
+Android客户端通过访问指定的URL获得一个JSON文件来访问数据库。
 
-    # for courses
-    GET /api/courses
-    GET /api/courses/1
-    GET /api/courses/name
-    POST /api/courses
+该JSON文件格式为：
+{ 
+    status: 'successful'/'failed' // 代表获取成功与否
+    reason: 'xxx'                 // 如果失败了， 这里显示失败原因
+    \*CONTENT\*                   // 其余部分每个URL不同，对于每个URL请在下一章节看对应的数据格式
+}
+
+###各个URL对应JSON文件格式, 以及各个URL功能简介
+
+    标记方法：
+    HTTP方法 URL              功能             JSON格式(GET)/URL参数(POST/UPDATE/DELETE)
         
     
-    # for lessons
-    GET /api/lessons
-    GET /api/lessons/1
-    GET /api/lessons/lesson_full_name
-    POST /api/lessons
-        parameters: name, description, start_time, end_time, position, course_id
-    
-    # for users(including students and assistants)
-    GET /api/users
-    GET /api/users/1
-    GET /api/users/name
-        
-or in rails way
-    
-    [Ruby code]
-    namespace :api do
-        resources :courses do 
-            resources :lessons
-        end
-        resources :lessons do
-            resources :students
-        end
-        resources :students do
-            resources :lessons
-        end
-    end
+    列表：
+    GET    /courses.json             获得所有课程         "courses": [{"id": 1, "name": "xxx"}, ...]
+    GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }
+    GET    /courses/1/students.json  获得id=1课的所有学生 "students": [{"id": 1, "name": "xx"}, ...]
+  
+    GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]
+
+    GET    /students.json            获得所有学生         "students": [{"id":1, "name": "xx"..]
+    GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]
+    GET    /students/1/courses.json  获得id=1学生所有的课程 "courses": [{"id": 1, "name": "xxx"}, ..]
+   
+举例：得到一个课程id=1的所有学生列表
+   
+```Java
+[Java code]
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+
+class Main {
+    void main(String args[]) {
+        HttpGet httpRequest = new HttpGet("http://localhost:3000/courses/1/students.json");
+        HttpResponse httpResponse = httpClient.execute(httpRequest);  
+        // if successful
+        if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            strResult = EntityUtils.toString(httpResponse.getEntity());
+            // here, strResult is
+            //  {
+            //      "status": "successful",
+            //      "students": [
+            //          { "id": 1, "name": "Alex Wang" },
+            //          { "id": 2, "name": "Fuck Shit" }
+            //      ]
+            //  }
+        }
+    }
+}
+
+```
 
 ##TODO
 1.  Database Schema

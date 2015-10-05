@@ -3,7 +3,7 @@ class Lesson < ActiveRecord::Base
   # description, nullable
   validates :start_time,  presence: true
   validates :end_time,    presence: true
-  validates :position,    presence: true
+  validates :location,    presence: true
 
-  belongs_to :courses
+  belongs_to :course
 end

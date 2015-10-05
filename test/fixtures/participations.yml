@@ -1,0 +1,11 @@
+alex_os:
+  user: alex
+  course: os
+
+betty_os:
+  user: betty
+  course: cpp
+
+alex_ds:
+  user: alex
+  course: cpp

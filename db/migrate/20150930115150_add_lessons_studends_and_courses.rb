@@ -11,7 +11,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
       t.text    :description
       t.datetime  :start_time
       t.datetime  :end_time
-      t.string  :position
+      t.string  :location
       t.integer :course_id
     end
 
