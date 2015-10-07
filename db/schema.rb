@@ -34,8 +34,8 @@ ActiveRecord::Schema.define(version: 20150930115150) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "name",                   default: "", null: false
-    t.string   "phone",                  default: "", null: false
+    t.string   "name",                   default: ""
+    t.string   "phone"
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"
@@ -52,7 +52,6 @@ ActiveRecord::Schema.define(version: 20150930115150) do
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["phone"], name: "index_users_on_phone", unique: true
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
 end
