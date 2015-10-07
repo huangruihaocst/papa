@@ -24,3 +24,4 @@
         android:text="邮箱" android:id="@+id/textView" />
 
 </LinearLayout>
+

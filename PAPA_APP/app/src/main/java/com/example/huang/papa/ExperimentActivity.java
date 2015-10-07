@@ -1,14 +1,9 @@
 package com.example.huang.papa;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,44 +18,24 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-
-public class SemesterActivity extends AppCompatActivity
+public class ExperimentActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String[] semester_list = null;
-
-    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            String msg = "";
-            switch (item.getItemId()){
-                case R.id.action_edit:
-                    msg += "Click Edit";
-                    break;
-                case R.id.action_share:
-                    msg += "Click Share";
-                    break;
-                case R.id.action_settings:
-                    msg += "Click Settings";
-                    break;
-            }
-            if(!msg.equals("")){
-                Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
-            }
-            return true;
-        }
-    };
+    String[] experiment_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_semester);
+        setContentView(R.layout.activity_experiment);
+
+        String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+        String course_name = data.getString(key_course_experiment_1);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(course_name);
         setSupportActionBar(toolbar);
-        toolbar.setOnMenuItemClickListener(onMenuItemClickListener);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -80,17 +55,17 @@ public class SemesterActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        getSemesters();
+        getExperiments(course_name);
 
-        ListView SemesterListView = (ListView)findViewById(R.id.semester_list);
-        SemesterListView.setAdapter(new MyAdapter());
-        SemesterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ListView ExperimentListView = (ListView)findViewById(R.id.experiment_list);
+        ExperimentListView.setAdapter(new MyAdapter());
+        ExperimentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(SemesterActivity.this,CourseActivity.class);
+                Intent intent = new Intent(ExperimentActivity.this,StudentActivity.class);
                 Bundle data = new Bundle();
-                String key_semester_course_1 = getString(R.string.key_semester_course_1);
-                data.putString(key_semester_course_1,semester_list[position]);
+                String key_experiment_student_1 = getString(R.string.key_experiment_student_1);
+                data.putString(key_experiment_student_1,experiment_list[position]);
                 intent.putExtras(data);
                 startActivity(intent);
             }
@@ -110,7 +85,7 @@ public class SemesterActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.semester, menu);
+        getMenuInflater().inflate(R.menu.experiment, menu);
         return true;
     }
 
@@ -157,7 +132,7 @@ public class SemesterActivity extends AppCompatActivity
     private class MyAdapter extends BaseAdapter {
         @Override
         public int getCount(){
-            return semester_list.length;
+            return experiment_list.length;
         }
         @Override
         public Object getItem(int arg0){
@@ -170,18 +145,17 @@ public class SemesterActivity extends AppCompatActivity
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
             TextView mTextView = new TextView(getApplicationContext());
-            mTextView.setText(semester_list[position]);
+            mTextView.setText(experiment_list[position]);
             mTextView.setTextSize(35);
             mTextView.setTextColor(getColor(R.color.colorPrimary));
             return mTextView;
         }
     }
 
-    public void getSemesters(){
-        semester_list = new String[10];
+    private void getExperiments(String course_name){
+        experiment_list = new String[10];
         for(int i = 0;i < 10;i ++){
-            semester_list[i] = "第" + i + "学期";
+            experiment_list[i] = "实验" + i;
         }
     }
 }
-

@@ -5,4 +5,8 @@
         android:title="@string/action_search"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item android:id="@+id/action_experiment_information"
+        android:title="@string/action_experiment_information"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 </menu>
