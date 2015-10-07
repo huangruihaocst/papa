@@ -3,14 +3,20 @@ class ManageController < ApplicationController
   #before_action :authenticate_user!
   def index
   end
-  def mainPage
+  def MainPage
   end
-  def courseScore
+  def CourseScore
   end
-  def classScore
+  def ClassScore
   end
-  def courseInfo
+  def CourseInfo
   end
-  def studentInfo
+  def StudentInfo
+  end
+  def ClassInfo
+  end
+  def ShowPhotos
+  end
+  def ShowVideos
   end
 end

@@ -1,0 +1,186 @@
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=gb2312">  
+  	<meta name="author" content="oscar999">  
+	<style type="text/css">
+		#content
+		{
+			padding-left:20%;
+			padding-right:20%;
+			padding-top:3%:
+		}
+		.custombutton
+		{
+			width:100%;
+			height:100%;
+		}
+		.custominput
+		{
+		}
+	</style>
+	<script>
+		var KEYCODE_ENTER=13,KEYCODE_ESC=27;
+	</script>
+</head>
+<body>
+	<div id="content">	
+	</div>
+	<script>
+		var n,m,info,items,classInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
+		
+		function loadInfo()
+		{
+			classInfo="计算机组成原理实验1";
+			var i;
+			n=9;m=2;
+			items=new Array();
+			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="成绩";items[5]="评价";items[6]="图片";items[7]="视频";items[8]="打分助教";
+			info=new Array();
+			for (i=0;i<m;++i)
+			{
+				info[i]=new Array();
+				info[i][0]="201401130"+i;
+				info[i][1]="A"+i;
+				info[i][2]="计算机系";
+				info[i][3]="计xx";
+				info[i][4]=10;
+				info[i][5]="1";
+				info[i][6]="1";
+				info[i][7]="1";
+				info[i][8]="XX";
+			}
+		}
+		
+		function compare(x,y,p)
+		{
+			if (p==0&&x<y||p==1&&x>y) return true;
+			else return false;
+		}
+		
+		function qsort(l,r,x,p)
+		{
+			var i=l,j=r,m=info[Math.floor((i+j)/2)][x],t;
+			while (i<=j)
+			{
+				while (i<=j&&compare(info[i][x],m,p)) ++i;
+				while (i<=j&&compare(m,info[j][x],p)) --j;
+				if (i<=j)
+				{
+					t=info[i];info[i]=info[j];info[j]=t;
+					++i;--j;
+				}
+			}
+			if (i<r) qsort(i,r,x,p);
+			if (l<j) qsort(l,j,x,p);
+		}
+		
+		function option(x)
+		{
+			if (x!=lastChoose) lastChoose=x,p=0;
+			else p=1-p;
+			console.log(x,p);
+			qsort(0,m-1,x,p);
+			showInfo();
+		}
+		
+		function enterPress(evt,i,j)
+		{
+			evt=evt?evt:(window.event?window.event:null);
+			if (evt.keyCode==KEYCODE_ENTER)
+			{
+				var p=$("#table1")[0].rows[i].cells[j],text=$("input")[0].value;
+				if (!isNaN(text))
+				{
+					p.innerHTML=text;
+					focusi=focusj=-1;
+				}
+			}
+		}
+		
+		function escPress(event)
+		{
+			var evt=event?event:(window.event?window.event:null);
+			if (evt.keyCode==KEYCODE_ESC)
+			{
+				if (focusi!=-1&&focusj!=-1)
+				{
+					p=$("#table1")[0].rows[focusi].cells[focusj],text=$("input")[0].placeholder;
+					p.innerHTML=text;
+					focusi=focusj=-1;
+				}
+			}
+		}
+		window.document.onkeydown=escPress;
+		
+		function clickDownload(aLink)
+		{
+			if (focusi!=-1&&focusj!=-1) return; 
+			var p=$("#table1")[0],i,j,n=p.rows.length,m=p.rows[2].cells.length,data="",text;
+			for (i=2;i<n;++i)
+			{
+				text=p.rows[i].cells[0].textContent;
+				if (!text) text=p.rows[i].cells[0].innerText;
+				data+=text;
+				for (j=0;j<m;++j)
+				{
+					text=p.rows[i].cells[j].textContent;
+					if (!text) text=p.rows[i].cells[j].innerText;
+					data+=','+text;
+				}
+				data+='\n';
+			}
+       //  	data =  encodeURIComponent(data);  
+			data = "\ufeff"+data;
+			var blob = new Blob([data], { type: 'text/csv,charset=UTF-8'});
+    		var csvUrl = URL.createObjectURL(blob);  
+    		$("#export")[0].href = csvUrl;
+		}
+		
+		function change(i,j)
+		{
+			var p,text;
+			if (focusi==i&&focusj==j) return;
+			if (focusi!=-1&&focusj!=-1)
+			{
+				p=$("#table1")[0].rows[focusi].cells[focusj],text=$("input")[0].placeholder;
+				p.innerHTML=text;
+			}
+			focusi=i;focusj=j;
+			p=$("#table1")[0].rows[i].cells[j];text=p.innerHTML;
+			text='<input type="text" class="form-control custominput" onkeydown="enterPress(event,'+i+','+j+')" placeholder="'+text+'">';
+			p.innerHTML=text;
+		}
+		
+		function showInfo()
+		{
+			var i,j,text="";
+			text+='<h3>实验成绩</h3>';
+			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
+			text+='<thread><tr><th colspan="'+(n-1)+'">'+classInfo+'</th>';
+			text+='<th><a id="export" onclick="clickDownload(this)" download="'+classInfo+'.csv" href="#">导出</a>'+'</th></tr>';
+			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">实验情况</th></tr>';
+			text+='<tr>';
+			for (i=0;i<n;++i) if (i!=5&&i!=6&&i!=7)
+			text+='<th onclick="option('+i+')">'+items[i]+'</th>';
+			else
+			text+='<th>'+items[i]+'</th>';
+			text+='</thread><tbody>';
+			for (i=0;i<m;++i)
+			{
+				text+='<tr>';
+				for (j=0;j<n;++j) if (j!=4)
+				{
+					text+='<td>'+info[i][j]+'</td>';
+				}else
+				{
+					text+='<td ondblclick="change('+(i+3)+','+j+')">'+info[i][j]+'</td>';
+				}
+				text+='</tr>';
+			}
+			text+='</tbody></table>';
+			$("#content")[0].innerHTML=text;
+		}
+		
+		loadInfo();
+		showInfo();
+	</script>
+</body>
