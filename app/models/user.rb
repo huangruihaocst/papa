@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
     @login = login
   end
   def login
+
     @login || self.phone || self.email
   end
   def self.find_for_database_authentication(warden_conditions)
