@@ -25,12 +25,16 @@ class ManageController < ApplicationController
   end
   def AddCourseToCurrentUser
     if(user_signed_in?)
-      uId=@current_user.id;
       c=Course.where("name = ?",params[:name]).first;
-      if(not c)
-        c=Course.create(name: params[:name],description : params[:description])
+      unless c
+        c=Course.create(name: params[:name],description: params[:description])
       end
-
+      unless User.find(@current_user.id).courses.where("course_id=?",c.id).first
+        Participation.create(user_id: @current_user.id, course_id: c.id, role: params[:role]);
+      end
+      render :text => "succeed"
+    else
+      render :text => "fail"
     end
   end
 end
