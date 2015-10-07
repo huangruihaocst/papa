@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   get 'manage/CourseInfo' => 'manage#course_info'
   get 'manage/ShowPhotos' => 'manage#show_photos'
   get 'manage/ShowVideos' => 'manage#show_videos'
+
+  get 'manage/getUserCoursesById/:id' => 'manage#GetUserCoursesById'
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 
