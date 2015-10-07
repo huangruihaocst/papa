@@ -1,0 +1,174 @@
+<head>
+	<style type="text/css">
+		#content
+		{
+			padding-left:20%;
+			padding-right:20%;
+			padding-top:3%:
+		}
+		.rectangleSemester
+		{
+			width:100%;
+			height:50px;
+			margin-top:15px;
+		}
+		.rectangleCourse
+		{
+			width:99%;
+			height:50px;
+			margin-left:1%;
+			margin-top:6px;
+		}
+		.rectangleClass
+		{
+			width:98%;
+			height:50px;
+			margin-left:2%;
+			margin-top:4px;
+		}
+		.rectangleCourseContent
+		{
+			width:98%;
+			margin-left:2%;
+			margin-top:6px;
+		}
+		.rectangleClassContent
+		{
+			width:97%;
+			margin-left:3%;
+			margin-top:4px;
+		}
+		.custombutton
+		{
+			float:right;
+			margin-left:3px;
+			margin-right:3px;
+		}
+		.names
+		{
+			float:left;
+		}
+	</style>
+</head>
+<body>
+	<div id="content">
+	</div> 
+	
+	<script type="text/javascript">
+	
+		var semesters=new Array(),courses=new Array(),classes=new Array();
+		
+		function loadInfo()  //从后台获取课程信息
+		{
+			var i,j,k;
+			for (i=0;i<=1;++i)
+			{
+				semesters[i]=new Object();
+				semesters[i].name="2015年"+i;
+				courses[i]=new Array();
+				classes[i]=new Array();
+				semesters[i].clicked=false;
+				for (j=0;j<=1;++j)
+				{
+					courses[i][j]=new Object();
+					courses[i][j].name="大学物理"+j;
+					classes[i][j]=new Array();
+					courses[i][j].clicked=false;
+					for (k=0;k<=1;++k)
+					{
+						classes[i][j][k]=new Object();
+						classes[i][j][k].name="实验"+k;
+						classes[i][j][k].clicked=false;
+					}
+				}
+			}
+		}
+		   
+		function change(i,j,k)  //i, j, k分别表示当前点击的学期，课程，实验
+		{
+			if (k!=-1)
+			classes[i][j][k].clicked=!classes[i][j][k].clicked;
+			else if (j!=-1)
+			courses[i][j].clicked=!courses[i][j].clicked;
+			else if (i!=-1)
+			semesters[i].clicked=!semesters[i].clicked;
+			showInfo();
+		}
+		
+		function addCourse(event,i)  //为第i学期添加课程
+		{
+			event.stopPropagation();
+		}
+		
+		function addClass(event,i,j) //为第i学期第j门课添加实验
+		{
+			event.stopPropagation();
+		}
+		 
+		function showCourseScore(event,i,j)  //显示第i学期第j门课的学生成绩
+		{
+			event.stopPropagation();
+		}
+		
+		function showCourseInfo(event,i,j)  //显示第i学期第j门课的课程信息
+		{
+			event.stopPropagation();
+		}
+		
+		function showClassScore(event,i,j,k)  //显示第i学期第j门课的第k个实验的学生成绩
+		{
+			event.stopPropagation();
+		}
+		
+		function showClassInfo(event,i,j,k)  //显示第i学期第j门课的第k个实验的课程信息
+		{
+			event.stopPropagation();
+		}
+		
+
+		function showInfo()  //显示课程信息
+		{
+			var i,j,k,text="";j=k=-1;
+			for (i=0;i<semesters.length;++i)
+			{
+				text+='<div class="rectangleSemester btn btn-default" onclick="change('+i+','+j+','+k+')">';
+				text+='<div class="names">'+semesters[i].name+'</div>';
+				text+='<div class="btn btn-info custombutton" onclick="addCourse(event,'+i+')">添加课程</div>';
+				text+='</div>';
+				k=-1;
+				if (semesters[i].clicked)
+				for (j=0;j<courses[i].length;++j)
+				{
+					text+='<div class="rectangleCourse btn btn-default" onclick="change('+i+','+j+','+k+')">';
+					text+='<div class="names">'+courses[i][j].name+'</div>';
+					text+='<div class="btn btn-info custombutton" onclick="addClass(event,'+i+','+j+')">添加实验</div>';
+					text+='<div class="btn btn-info custombutton" onclick="showCourseScore(event,'+i+','+j+')">查看成绩</div>';
+					text+='<div class="btn btn-info custombutton" onclick="showCourseInfo(event,'+i+','+j+')">课程情况</div>';
+					text+='</div>';
+					if (courses[i][j].clicked)
+					for (k=0;k<classes[i][j].length;++k)
+					{
+						text+='<div class="rectangleClass btn btn-default" onclick="change('+i+','+j+','+k+')">';
+						text+='<div class="names">'+classes[i][j][k].name+'</div>';
+						text+='<div class="btn btn-info custombutton" onclick="showClassScore(event,'+i+','+j+','+k+')">查看成绩</div>';
+						text+='<div class="btn btn-info custombutton" onclick="showClassInfo(event,'+i+','+j+','+k+')">实验情况</div>';
+						text+='</div>';
+						if (classes[i][j][k].clicked)
+						{
+							text+='<div class="rectangleClassContent btn btn-default">';
+							text+='ddd';
+							text+='</div>';
+						}
+					}
+					k=-1;
+				}
+				j=-1;
+			}
+			$("#content")[0].innerHTML=text;
+		}
+		
+		loadInfo();
+		showInfo();
+
+	</script>
+</body>

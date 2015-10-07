@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Papdb</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<%= render :partial => "navigationbar" %>
+<div id="MainContent" style="text-align: center">
+<%= yield %>
+</div>
+<%= render :partial => "footbar"%>
+</body>
+<script>
+    (function (){
+        <% if user_signed_in?%>
+        $("#user_name").html("<%= current_user.email %>");
+        <%else%>
+        $("#MainContent").load("/users/sign_in");
+        <%end%>
+    })();
+</script>
+</html>
