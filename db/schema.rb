@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20150930115150) do
     t.text     "description"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.string   "position"
+    t.string   "location"
     t.integer  "course_id"
   end
 

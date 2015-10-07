@@ -3,28 +3,30 @@ require 'test_helper'
 class CoursesControllerTest < ActionController::TestCase
 
   test 'api should get all courses' do
-    get :api_index
+    get :index, format: :json
     json = JSON.parse(@response.body)
-    assert_equal json['status'], 'success'
-    assert json['ids'].count > 0
+    assert_equal json['status'], STATUS_SUCCESS
+    assert json['courses'].count > 0
   end
 
   test 'api should get course by id' do
-    get :api_show, { id: Course.first.id }
+    get :show, format: :json, id: Course.first.id
     json = JSON.parse(@response.body)
-    assert_equal json['status'], 'success'
-    assert_not_nil json['result']['name']
+    assert_equal json['status'], STATUS_SUCCESS
+    assert_not_nil json['course']['name']
   end
 
-  test 'api should add course' do
+  test 'api should create course' do
     assert_difference 'Course.count' do
-      post :api_add, course: { name: 'test course' }
+      post :create, course: { name: 'test course' }
     end
   end
 
-  test 'api should not add bad course' do
+  test 'api should not create bad course' do
     assert_no_difference 'Course.count' do
-      post :api_add, course: { name1: 'bad name' }
+      post :create, format: :json, course: { name1: 'bad name' }
     end
+    json = JSON.parse(@response.body)
+    assert_equal json['status'], STATUS_FAIL
   end
 end

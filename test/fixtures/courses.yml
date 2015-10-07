@@ -9,3 +9,6 @@ compiler:
 
 cpp:
   name: Programming C++
+
+ds:
+  name: Data Structures

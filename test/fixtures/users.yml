@@ -1,0 +1,9 @@
+alex:
+  name: 'alex'
+  phone: '123'
+  email: 'a@b.c'
+
+betty:
+  name: 'betty'
+  phone: '122'
+  email: 'c@d.c'

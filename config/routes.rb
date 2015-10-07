@@ -1,21 +1,9 @@
 Rails.application.routes.draw do
+
   devise_for :users
 
-  namespace :api do
-    namespace :courses do
-      root to: '/courses#api_index'
-      get 'index'   => '/courses#api_index'
-      get ':id'     => '/courses#api_show', constraints: { id: '[0-9]+' }
-      post '/'      => '/courses#api_add'
-    end
-
-    namespace :lessons do
-      root to: '/lessons#api_index'
-      get 'index' => '/lessons#api_index'
-      get ':id'   => '/lessons#api_show', constraints: { id: '[0-9]+' }
-      post '/'    => '/lessons#api_add'
-    end
-
+  resources :courses do
+    resources :students
   end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -65,17 +53,6 @@ Rails.application.routes.draw do
   #     end
   #   end
 
-  # Example resource route with concerns:
-  #   concern :toggleable do
-  #     post 'toggle'
-  #   end
-  #   resources :posts, concerns: :toggleable
-  #   resources :photos, concerns: :toggleable
+  resources :lessons
 
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
 end

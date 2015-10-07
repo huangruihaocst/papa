@@ -4,7 +4,7 @@ class Participation < ActiveRecord::Base
   validates_associated :users
   validates_associated :courses
 
-  belongs_to :users
-  belongs_to :courses
+  belongs_to :user
+  belongs_to :course
 
 end

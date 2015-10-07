@@ -1,44 +1,48 @@
 
 class LessonsController < ApplicationController
 
-  def api_index
-    ids = []
-    Lesson.all.each do |lesson|
-      ids.push(lesson.id)
-    end
-    render json: {
-               status: 'success',
-               ids: ids
-           }
+  before_action :set_lesson, only: [:show]
+
+  # GET /lessons
+  # GET /lessons.json
+  def index
+    @lessons = Lesson.all
   end
 
-  def api_show
+  # GET /lessons/1
+  # GET /lessons/1.json
+  def show
+    unless @lesson
+      respond_to do |format|
+        format.html { html_failed('not found') }
+        format.json { json_failed('not found') }
+      end
+    end
+  end
+
+  # POST /lessons
+  def create
+    @lesson =  Lesson.create(
+        params.require(:lesson).
+            permit(:name, :description, :start_time, :end_time, :location, :course_id))
+
+    respond_to do |format|
+      if @lesson.valid?
+        format.html { redirect_to @lesson }
+        format.json { json_successful }
+      else
+        format.html { html_failed }
+        format.json { json_failed }
+      end
+    end
+  end
+
+  private
+  def set_lesson
     begin
-      lesson = Lesson.find(params[:id])
-      render json: {
-                 status: 'success',
-                 result: {
-                     id:          lesson.id,
-                     name:        lesson.name,
-                     start_time:  lesson.start_time,
-                     end_time:    lesson.end_time,
-                     position:    lesson.position
-                 }
-             }
+      @lesson = Lesson.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      render json: {
-                 status: 'not-found'
-             }
-    end
-  end
-
-  def api_add
-    lesson =  Lesson.create(params.require(:lesson).permit(:name, :description, :start_time, :end_time, :position, :course_id))
-    puts lesson.name
-    if lesson.valid?
-      render json: { status: 'success' }
-    else
-      render json: { status: 'fail' }
+      @lesson = nil
     end
   end
 
