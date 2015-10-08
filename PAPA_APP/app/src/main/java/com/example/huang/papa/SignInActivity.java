@@ -12,6 +12,7 @@ public class SignInActivity extends AppCompatActivity {
 
     String username;
     String password;
+    int check_message = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,26 +29,27 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
-    public Boolean check(){
+    public void check(){//1 for right, 0 for wrong password, and 2 for not registered
         EditText edit_username = (EditText)findViewById(R.id.username);
         EditText edit_password = (EditText)findViewById(R.id.password);
         username = edit_username.getText().toString();
         password = edit_password.getText().toString();
-        return true;
+        check_message = 1;//just change the value of check_message
     }
 
     public void signIn(){
-        if(check()){
-            Intent intent = new Intent(SignInActivity.this,SemesterActivity.class);
+        check();
+        if(check_message == 1){
+            Intent intent = new Intent(SignInActivity.this,CourseActivity.class);
             Bundle data = new Bundle();
             String key_sign_in_course_1 = getString(R.string.key_sign_in_course_1);
-            String key_sign_in_course_2 = getString(R.string.key_sign_in_course_2);
             data.putString(key_sign_in_course_1,username);
-            data.putString(key_sign_in_course_2,password);
             intent.putExtras(data);
             startActivity(intent);
-        }else{
-            Toast.makeText(getApplicationContext(),getString(R.string.wrong_password),Toast.LENGTH_LONG).show();//or not registered
+        }else if(check_message == 0){
+            Toast.makeText(getApplicationContext(),getString(R.string.wrong_password),Toast.LENGTH_LONG).show();
+        }else if(check_message == 2){
+            Toast.makeText(getApplicationContext(),getString(R.string.not_signed_up),Toast.LENGTH_LONG).show();
         }
     }
 }

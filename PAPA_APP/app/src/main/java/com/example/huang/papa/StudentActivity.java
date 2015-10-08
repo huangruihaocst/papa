@@ -24,16 +24,22 @@ public class StudentActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     String[] student_list;
+    String username;
+    String identity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
 
-        String key_experiment_student_1 = getString(R.string.key_experiment_student_1);
+        final String key_experiment_student_1 = getString(R.string.key_experiment_student_1);
+        String key_experiment_student_2 = getString(R.string.key_experiment_student_2);
+        String key_experiment_student_3 = getString(R.string.key_experiment_student_3);
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String experiment_name = data.getString(key_experiment_student_1);
+        username = data.getString(key_experiment_student_1);
+        final String experiment_name = data.getString(key_experiment_student_2);
+        identity = data.getString(key_experiment_student_3);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(experiment_name);
         setSupportActionBar(toolbar);
@@ -64,6 +70,14 @@ public class StudentActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(StudentActivity.this,DetailActivity.class);
+                String key_to_details_1 = getString(R.string.key_to_detail_1);
+                String key_to_details_2 = getString(R.string.key_to_detail_2);
+                String key_to_details_3 = getString(R.string.key_to_detail_3);
+                Bundle data = new Bundle();
+                data.putString(key_to_details_1,username);
+                data.putString(key_to_details_2,experiment_name);
+                data.putString(key_to_details_3,identity);
+                intent.putExtras(data);
                 startActivity(intent);
             }
         });

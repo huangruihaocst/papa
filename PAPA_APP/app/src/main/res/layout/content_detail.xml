@@ -26,6 +26,7 @@
         android:layout_alignParentEnd="true"
         android:background="@color/colorPrimary"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:id="@+id/edit_grades"/>
 
 </RelativeLayout>

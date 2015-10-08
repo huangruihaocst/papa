@@ -24,16 +24,23 @@ public class ExperimentActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     String[] experiment_list;
+    String username;
+    String course_name;
+    String identity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_experiment);
 
-        String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
+        final String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
+        String key_course_experiment_2 = getString(R.string.key_course_experiment_2);
+        String key_course_experiment_3 = getString(R.string.key_course_experiment_3);
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String course_name = data.getString(key_course_experiment_1);
+        username = data.getString(key_course_experiment_1);
+        course_name = data.getString(key_course_experiment_2);
+        identity = data.getString(key_course_experiment_3);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(course_name);
         setSupportActionBar(toolbar);
@@ -63,10 +70,25 @@ public class ExperimentActivity extends AppCompatActivity
         ExperimentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ExperimentActivity.this,StudentActivity.class);
+                Intent intent = new Intent();
                 Bundle data = new Bundle();
-                String key_experiment_student_1 = getString(R.string.key_experiment_student_1);
-                data.putString(key_experiment_student_1,experiment_list[position]);
+                if(identity.equals("teacher_assistant")){
+                    String key_experiment_student_1 = getString(R.string.key_experiment_student_1);
+                    String key_experiment_student_2 = getString(R.string.key_experiment_student_2);
+                    String key_experiment_student_3 = getString(R.string.key_experiment_student_3);
+                    data.putString(key_experiment_student_1,username);
+                    data.putString(key_experiment_student_2,experiment_list[position]);
+                    data.putString(key_experiment_student_3,identity);
+                    intent = new Intent(ExperimentActivity.this,StudentActivity.class);
+                }else if(identity.equals("student")){
+                    String key_to_detail_1 = getString(R.string.key_to_detail_1);
+                    String key_to_detail_2 = getString(R.string.key_to_detail_2);
+                    String key_to_detail_3 = getString(R.string.key_to_detail_3);
+                    data.putString(key_to_detail_1,username);
+                    data.putString(key_to_detail_2,experiment_list[position]);
+                    data.putString(key_to_detail_3,identity);
+                    intent = new Intent(ExperimentActivity.this,DetailActivity.class);
+                }
                 intent.putExtras(data);
                 startActivity(intent);
             }

@@ -11,11 +11,12 @@
     <string name="hint_sign_in_1">登录</string>
     <string name="hint_sign_in_2">您可以使用学号或者手机号登录</string>
     <string name="hint_select_course">请选择课程</string>
-    <string name="next_step">下一步</string>
     <string name="not_signed_up">用户不存在</string>
     <string name="wrong_password">密码错误</string>
     <string name="portrait">头像</string>
     <string name="comment_area">请在此输入您的评论</string>
+    <string name="teacher_assistant">助教</string>
+    <string name="student">学生</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -31,10 +32,17 @@
     <string name="title_semester">学期</string>
 
     <string name="key_sign_in_course_1">key_sign_in_course_1</string>
-    <string name="key_sign_in_course_2">key_sign_in_course_2</string>
     <string name="key_semester_course_1">key_semester_course_1</string>
     <string name="key_course_experiment_1">key_course_experiment_1</string>
+    <string name="key_course_experiment_2">key_course_experiment_2</string>
+    <string name="key_course_experiment_3">key_course_experiment_3</string>
     <string name="key_experiment_student_1">key_experiment_student_1</string>
+    <string name="key_experiment_student_2">key_experiment_student_2</string>
+    <string name="key_experiment_student_3">key_experiment_student_3</string>
+    <string name="key_to_detail_1">key_to_detail_1</string>
+    <string name="key_to_detail_2">key_to_detail_2</string>
+    <string name="key_to_detail_3">key_to_detail_3</string>
+
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
 

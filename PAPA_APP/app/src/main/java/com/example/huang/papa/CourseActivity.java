@@ -24,10 +24,9 @@ import android.widget.TextView;
 public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String[] course_list;
-    int course_number;
+    private String[] course_teacher_assistant_list;
+    private String[] course_student_list;
     String username;
-    String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +36,7 @@ public class CourseActivity extends AppCompatActivity
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         String key_sign_in_course_1 = getString(R.string.key_sign_in_course_1);
-        String key_sign_in_course_2 = getString(R.string.key_sign_in_course_2);
         username = data.getString(key_sign_in_course_1);
-        password = data.getString(key_sign_in_course_2);
 //        String key_semester_course_1 = getString(R.string.key_semester_course_1);
 //        String semester_name = data.getString(key_semester_course_1);
 
@@ -67,35 +64,24 @@ public class CourseActivity extends AppCompatActivity
 
         getCourses();
 
-        ListView CourseListView = (ListView)findViewById(R.id.course_list);
-        CourseListView.setAdapter(new MyAdapter());
-        CourseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ListView CourseTeacherAssistantListView = (ListView)findViewById(R.id.course_teacher_assistant_list);
+        CourseTeacherAssistantListView.setAdapter(new MyTeacherAssistantAdapter());
+        CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(CourseActivity.this,ExperimentActivity.class);
-//                Bundle data = new Bundle();
-//                String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
-//                data.putString(key_course_experiment_1,course_list[position]);
-//                intent.putExtras(data);
-//                startActivity(intent);
-                course_number = position;
+                startExperimentActivity(course_teacher_assistant_list,position);
             }
         });
 
-        Button button = (Button)findViewById(R.id.sign_in);
-        button.setOnClickListener(new View.OnClickListener() {
+        ListView CourseStudentListView = (ListView)findViewById(R.id.course_student_list);
+        CourseStudentListView.setAdapter(new MyStudentAdapter());
+        CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                if(check()){
-                Intent intent = new Intent(CourseActivity.this,ExperimentActivity.class);
-                Bundle data = new Bundle();
-                String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
-                data.putString(key_course_experiment_1,course_list[course_number]);
-                intent.putExtras(data);
-                startActivity(intent);
-                }
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startExperimentActivity(course_student_list,position);
             }
         });
+
     }
 
     @Override
@@ -156,16 +142,20 @@ public class CourseActivity extends AppCompatActivity
     }
 
     private void getCourses(){
-        course_list = new String[10];
-        for(int i = 0;i < 10;i ++){
-            course_list[i] = "课程" + i;
+        course_teacher_assistant_list = new String[3];
+        for(int i = 0;i < 3;i ++){
+            course_teacher_assistant_list[i] = "课程" + i;
+        }
+        course_student_list = new String[3];
+        for(int i = 0;i < 3;i ++){
+            course_student_list[i] = "课程" + i;
         }
     }
 
-    private class MyAdapter extends BaseAdapter {
+    private class MyTeacherAssistantAdapter extends BaseAdapter {
         @Override
         public int getCount(){
-            return course_list.length;
+            return course_teacher_assistant_list.length;
         }
         @Override
         public Object getItem(int arg0){
@@ -178,7 +168,7 @@ public class CourseActivity extends AppCompatActivity
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
             TextView mTextView = new TextView(getApplicationContext());
-            mTextView.setText(course_list[position]);
+            mTextView.setText(course_teacher_assistant_list[position]);
             mTextView.setTextSize(35);
 //            mTextView.setTextColor(getColor(R.color.colorPrimary));
             mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
@@ -186,7 +176,45 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
-    private Boolean check(){
-        return true;
+    private class MyStudentAdapter extends BaseAdapter {
+        @Override
+        public int getCount(){
+            return course_student_list.length;
+        }
+        @Override
+        public Object getItem(int arg0){
+            return arg0;
+        }
+        @Override
+        public long getItemId(int position){
+            return position;
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent){
+            TextView mTextView = new TextView(getApplicationContext());
+            mTextView.setText(course_student_list[position]);
+            mTextView.setTextSize(35);
+//            mTextView.setTextColor(getColor(R.color.colorPrimary));
+            mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
+            return mTextView;
+        }
     }
+
+    public String getIdentity(String username,String course_name){
+        return "teacher_assistant";
+    }
+
+    private void startExperimentActivity(String[] course_list,int position){
+        Intent intent = new Intent(CourseActivity.this, ExperimentActivity.class);
+        Bundle data = new Bundle();
+        String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
+        String key_course_experiment_2 = getString(R.string.key_course_experiment_2);
+        String key_course_experiment_3 = getString(R.string.key_course_experiment_3);
+        data.putString(key_course_experiment_1, username);
+        data.putString(key_course_experiment_2, course_list[position]);
+        data.putString(key_course_experiment_3, getIdentity(username, course_list[position]));
+        intent.putExtras(data);
+        startActivity(intent);
+    }
+
 }
