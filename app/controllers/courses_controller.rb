@@ -5,15 +5,20 @@ class CoursesController < ApplicationController
   # GET /courses
   # GET /courses.json
   def index
+    # list courses of a student
     if params[:student_id]
-      @courses = Course.none
-      User.find(params[:student_id]).participations.each do |participation|
-        @courses <<= participation.course
+      result = Token.check_token(params, params[:student_id])
+      if result == STATUS_SUCCESS
+          @courses = Course.none
+          User.find(params[:student_id]).participations.each do |participation|
+            @courses <<= participation.course
+          end
+      else
+        json_failed(result)
       end
     else
       @courses = Course.all
     end
-
   end
 
   # GET /courses/1

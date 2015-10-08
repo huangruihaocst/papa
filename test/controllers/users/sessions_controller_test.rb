@@ -19,9 +19,13 @@ class Users::SessionsControllerTest < ActionController::TestCase
     assert_equal assigns[:user].email, 'alex@b.c'
   end
 
-  test 'should sign out and returns json' do
-    sign_in User.first
-    delete :destroy, { format: :json }
+  test 'should sign in and sign out with token' do
+    post :create, { format: :json, user: { login: 'alex@b.c', password: '123' } }
+    json = JSON.parse(@response.body)
+    assert_equal json['status'], STATUS_SUCCESS
+    assert_not_nil json['token']
+
+    post :destroy, { format: :json, token: json['token'] }
     json = JSON.parse(@response.body)
     assert_equal json['status'], STATUS_SUCCESS
   end

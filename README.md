@@ -65,28 +65,38 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
 
 该JSON文件格式为：
 { 
-    status: 'successful'/'failed' // 代表获取成功与否
-    reason: 'xxx'                 // 如果失败了， 这里显示失败原因
-    \*CONTENT\*                   // 其余部分每个URL不同，对于每个URL请在下一章节看对应的数据格式
+    status: 'successful'/'failed', // 代表获取成功与否
+    reason: 'xxx',                 // 如果失败了， 这里显示失败原因
+    \*CONTENT\*                    // 其余部分每个URL不同，对于每个URL请在下一章节看对应的数据格式
 }
+
+###登陆
+POST /users/sign_in     login=phone&encrpyted_password=xxx
+返回json
+{ 
+    status: 'successful'/'faild',
+    reason: 'invalid_password...', // 具体含义在后面介绍
+    token: '123456777777777'
+}
+得到token字符串, 在以下url中会用到
 
 ###各个URL对应JSON文件格式, 以及各个URL功能简介
 
     标记方法：
-    HTTP方法 URL                      功能                JSON格式(GET)/URL参数(POST/UPDATE/DELETE)
+    HTTP方法 URL                      功能                JSON格式(GET)/URL参数(POST/UPDATE/DELETE)     Token
         
     
     列表：
-    GET    /courses.json             获得所有课程         "courses": [{"id": 1, "name": "xxx"}, ...]
-    GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }
-    GET    /courses/1/students.json  获得id=1课的所有学生 "students": [{"id": 1, "name": "xx"}, ...]
+    GET    /courses.json             获得所有课程         "courses": [{"id": 1, "name": "xxx"}, ...]    No
+    GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          No
+    GET    /courses/1/students.json  获得id=1课的所有学生 "students": [{"id": 1, "name": "xx"}, ...]    No
   
-    GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]
+    GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            No
 
-    GET    /students.json            获得所有学生         "students": [{"id":1, "name": "xx"..]
-    GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]
-    GET    /students/1/courses.json  获得id=1学生所有的课程 "courses": [{"id": 1, "name": "xxx"}, ..]
-   
+    GET    /students.json            获得所有学生         "students": [{"id":1, "name": "xx"..]         No
+    GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]       Student Token
+    GET    /students/1/courses.json  获得id=1学生所有的课程 "courses": [{"id": 1, "name": "xxx"}, ..]   Student Token
+
 举例：得到一个课程id=1的所有学生列表
    
 ```Java
@@ -114,6 +124,10 @@ class Main {
 }
 
 ```
+
+###reason的可能值和含义
+REASON_TOKEN_INVALID = 'token_invalid'      // token没有指定或者无效，应该检查url参数
+REASON_TOKEN_TIMEOUT = 'token_timeout'      // token过时了，应该重新登陆
 
 ##TODO
 1.  Database Schema

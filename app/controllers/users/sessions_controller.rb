@@ -13,19 +13,20 @@ class Users::SessionsController < Devise::SessionsController
       format.json do
         self.resource = warden.authenticate!(auth_options)
         sign_in(resource_name, resource)
-        render json: { status: STATUS_SUCCESS }
+        token = resource.create_token
+        render json: { status: STATUS_SUCCESS, token: token.token }
       end
     end
-
   end
 
-  # #DELETE /resource/sign_out
+  # DELETE /resource/sign_out
   def destroy
     respond_to do |format|
       format.html { super }
       format.json do
         begin
-          Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
+          token = Token.find_by_token(params[:token])
+          token.destroy
           render json: { status: STATUS_SUCCESS }
         rescue
           render json: { status: STATUS_FAIL }
@@ -34,11 +35,10 @@ class Users::SessionsController < Devise::SessionsController
     end
   end
 
-
   protected
 
   #If you have extra params to permit, append them to the sanitizer.
   def configure_sign_in_params
-    devise_parameter_sanitizer.for(:sign_in) << :login
+    devise_parameter_sanitizer.for(:sign_in) << :login << :token
   end
 end

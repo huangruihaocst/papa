@@ -12,11 +12,15 @@ class StudentsController < ApplicationController
   end
 
   def show
+    # invalid student id
     unless @student
       respond_to do |format|
         format.json { json_failed('not found') }
       end
     end
+
+    result = Token.check_token(params, @student.id)
+    json_failed(result) unless result == STATUS_SUCCESS
   end
 
   private

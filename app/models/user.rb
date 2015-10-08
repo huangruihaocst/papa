@@ -1,12 +1,12 @@
 class User < ActiveRecord::Base
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-  # phone, name, email
 
+  # phone, name, email
   has_many :participations
   has_many :courses, through: :participations
+  has_many :tokens
 
   # the following 4 methods allow us to login with phone or email
   def login=(login)
@@ -26,6 +26,11 @@ class User < ActiveRecord::Base
   end
   def email_required?
     false
+  end
+
+  # for token authentication
+  def create_token
+    Token.create(user_id: id, token: Token.safe_token, valid_until: Time.now + TOKEN_VALID_TIME_SEC)
   end
 
 end
