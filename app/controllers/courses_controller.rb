@@ -5,7 +5,15 @@ class CoursesController < ApplicationController
   # GET /courses
   # GET /courses.json
   def index
-    @courses = Course.all
+    if params[:student_id]
+      @courses = Course.none
+      User.find(params[:student_id]).participations.each do |participation|
+        @courses <<= participation.course
+      end
+    else
+      @courses = Course.all
+    end
+
   end
 
   # GET /courses/1
@@ -41,5 +49,7 @@ class CoursesController < ApplicationController
       @course = nil
     end
   end
+
+
 
 end

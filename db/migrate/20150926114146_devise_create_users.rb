@@ -21,7 +21,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string   :current_sign_in_ip
       t.string   :last_sign_in_ip
 
-      t.boolean  :is_teacher
+      t.boolean  :is_teacher, default: true
 
       t.timestamps null: false
     end

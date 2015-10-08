@@ -26,6 +26,7 @@ or visit [rvm.io](http://rvm.io)
     
 #### 3. Configure project and database.
     #!/bin/sh
+    gem install bundler
     bundle install
     rake db:migrate
     rake db:seed
@@ -33,6 +34,7 @@ or visit [rvm.io](http://rvm.io)
 For production, use:
 
     #!/bin/sh
+    gem install bundler
     bundle install
     rake db:migrate RAILS_ENV=production
     rake db:seed RAILS_ENV=production
@@ -71,7 +73,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
 ###各个URL对应JSON文件格式, 以及各个URL功能简介
 
     标记方法：
-    HTTP方法 URL              功能             JSON格式(GET)/URL参数(POST/UPDATE/DELETE)
+    HTTP方法 URL                      功能                JSON格式(GET)/URL参数(POST/UPDATE/DELETE)
         
     
     列表：

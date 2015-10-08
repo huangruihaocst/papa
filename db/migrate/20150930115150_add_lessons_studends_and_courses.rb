@@ -18,7 +18,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
     create_table :participations do |t|
       t.integer :course_id
       t.integer :user_id
-      t.string  :role # student/assitant
+      t.string  :role, default: ROLE_STUDENT # student/assitant
     end
 
   end
