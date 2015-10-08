@@ -1,6 +1,7 @@
 package com.example.huang.papa;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -154,7 +155,8 @@ public class CourseActivity extends AppCompatActivity
             TextView mTextView = new TextView(getApplicationContext());
             mTextView.setText(course_list[position]);
             mTextView.setTextSize(35);
-            mTextView.setTextColor(getColor(R.color.colorPrimary));
+//            mTextView.setTextColor(getColor(R.color.colorPrimary));
+            mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
             return mTextView;
         }
     }

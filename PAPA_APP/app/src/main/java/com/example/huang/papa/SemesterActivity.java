@@ -172,7 +172,8 @@ public class SemesterActivity extends AppCompatActivity
             TextView mTextView = new TextView(getApplicationContext());
             mTextView.setText(semester_list[position]);
             mTextView.setTextSize(35);
-            mTextView.setTextColor(getColor(R.color.colorPrimary));
+//            mTextView.setTextColor(getColor(R.color.colorPrimary));
+            mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
             return mTextView;
         }
     }

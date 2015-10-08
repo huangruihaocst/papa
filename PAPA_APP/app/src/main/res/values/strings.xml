@@ -34,4 +34,7 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
 
+    <string name="color_primary">#3F51B5</string>
+    <string name="color_primary_dark">#303F9F</string>
+
 </resources>
