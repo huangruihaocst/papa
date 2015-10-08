@@ -32,5 +32,4 @@ class User < ActiveRecord::Base
   def create_token
     Token.create(user_id: id, token: Token.safe_token, valid_until: Time.now + TOKEN_VALID_TIME_SEC)
   end
-
 end

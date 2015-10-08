@@ -28,7 +28,7 @@ gem 'bootstrap-sass', '~> 3.3.5'
 
 # Use Devise for authentication
 gem 'devise'
-
+gem 'devise-encryptable'
 # Use for Chinese support
 gem 'rails-i18n'
 

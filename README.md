@@ -71,7 +71,10 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
 }
 
 ###登陆
-POST /users/sign_in     login=phone&encrpyted_password=xxx
+POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[remember_me]=0
+                                                ^                  ^
+                                  此处可以是电话或者email    密码为明文，用https保证安全性 注意要 URL-Encode
+                                  上面对号的utf-8编码值为0xE2 0x9C 0x93
 返回json
 { 
     status: 'successful'/'faild',
