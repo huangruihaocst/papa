@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,6 +25,10 @@ public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private String[] course_list;
+    int course_number;
+    String username;
+    String password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,11 +36,15 @@ public class CourseActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String key_semester_course_1 = getString(R.string.key_semester_course_1);
-        String semester_name = data.getString(key_semester_course_1);
+        String key_sign_in_course_1 = getString(R.string.key_sign_in_course_1);
+        String key_sign_in_course_2 = getString(R.string.key_sign_in_course_2);
+        username = data.getString(key_sign_in_course_1);
+        password = data.getString(key_sign_in_course_2);
+//        String key_semester_course_1 = getString(R.string.key_semester_course_1);
+//        String semester_name = data.getString(key_semester_course_1);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(semester_name);
+        toolbar.setTitle(getString(R.string.hint_select_course));
         setSupportActionBar(toolbar);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -56,19 +65,35 @@ public class CourseActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        getCourses(semester_name);
+        getCourses();
 
         ListView CourseListView = (ListView)findViewById(R.id.course_list);
         CourseListView.setAdapter(new MyAdapter());
         CourseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(CourseActivity.this,ExperimentActivity.class);
+//                Bundle data = new Bundle();
+//                String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
+//                data.putString(key_course_experiment_1,course_list[position]);
+//                intent.putExtras(data);
+//                startActivity(intent);
+                course_number = position;
+            }
+        });
+
+        Button button = (Button)findViewById(R.id.sign_in);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(check()){
                 Intent intent = new Intent(CourseActivity.this,ExperimentActivity.class);
                 Bundle data = new Bundle();
                 String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
-                data.putString(key_course_experiment_1,course_list[position]);
+                data.putString(key_course_experiment_1,course_list[course_number]);
                 intent.putExtras(data);
                 startActivity(intent);
+                }
             }
         });
     }
@@ -130,7 +155,7 @@ public class CourseActivity extends AppCompatActivity
         return true;
     }
 
-    private void getCourses(String semester_name){
+    private void getCourses(){
         course_list = new String[10];
         for(int i = 0;i < 10;i ++){
             course_list[i] = "课程" + i;
@@ -159,5 +184,9 @@ public class CourseActivity extends AppCompatActivity
             mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
             return mTextView;
         }
+    }
+
+    private Boolean check(){
+        return true;
     }
 }

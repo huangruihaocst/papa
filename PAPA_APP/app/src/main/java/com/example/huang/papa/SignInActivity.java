@@ -10,6 +10,9 @@ import android.widget.Toast;
 
 public class SignInActivity extends AppCompatActivity {
 
+    String username;
+    String password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,14 +31,20 @@ public class SignInActivity extends AppCompatActivity {
     public Boolean check(){
         EditText edit_username = (EditText)findViewById(R.id.username);
         EditText edit_password = (EditText)findViewById(R.id.password);
-        String username = edit_username.getText().toString();
-        String password = edit_username.getText().toString();
+        username = edit_username.getText().toString();
+        password = edit_password.getText().toString();
         return true;
     }
 
     public void signIn(){
         if(check()){
             Intent intent = new Intent(SignInActivity.this,SemesterActivity.class);
+            Bundle data = new Bundle();
+            String key_sign_in_course_1 = getString(R.string.key_sign_in_course_1);
+            String key_sign_in_course_2 = getString(R.string.key_sign_in_course_2);
+            data.putString(key_sign_in_course_1,username);
+            data.putString(key_sign_in_course_2,password);
+            intent.putExtras(data);
             startActivity(intent);
         }else{
             Toast.makeText(getApplicationContext(),getString(R.string.wrong_password),Toast.LENGTH_LONG).show();//or not registered
