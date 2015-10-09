@@ -158,9 +158,12 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     
     # 消息推送
     GET    /students/1/messages.json  查询学生的所有消息     "messages": [message_id, ...]               Student
-    POST   /courses/1/messages.json   发送消息到某门课的所有学生 "message": message                       Assistant
+    POST   /courses/1/messages.json   发送消息到某门课的所有学生 "message": message                      Assistant
     
-    # 
+    # App更新
+    GET    /android/current_version.json 得到当前最新版本号  {"version": "xx", "apk_path": "xx"}         Student
+    POST   /android/current_version.json 上传apk            version=xx apk                              Admin
+    
     
 Http Parameters/JSON对象格式
     
