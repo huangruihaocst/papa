@@ -1,2 +1,7 @@
 
-<input class="btn-info" type="button" value="test"/>
+<script>
+    (function (){
+    $.post('/manage/AddCourseToCurrentUser',{name: "ttt",description:"just  ttt"},
+    function(data){alert(data)});}
+    )();
+</script>
