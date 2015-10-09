@@ -69,7 +69,7 @@ public class CourseActivity extends AppCompatActivity
         CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(course_teacher_assistant_list,position);
+                startExperimentActivity(course_teacher_assistant_list,position,"teacher_assistant");
             }
         });
 
@@ -78,7 +78,7 @@ public class CourseActivity extends AppCompatActivity
         CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(course_student_list,position);
+                startExperimentActivity(course_student_list,position,"student");
             }
         });
 
@@ -200,11 +200,7 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
-    public String getIdentity(String username,String course_name){
-        return "teacher_assistant";
-    }
-
-    private void startExperimentActivity(String[] course_list,int position){
+    private void startExperimentActivity(String[] course_list,int position,String identity){
         Intent intent = new Intent(CourseActivity.this, ExperimentActivity.class);
         Bundle data = new Bundle();
         String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
@@ -212,7 +208,7 @@ public class CourseActivity extends AppCompatActivity
         String key_course_experiment_3 = getString(R.string.key_course_experiment_3);
         data.putString(key_course_experiment_1, username);
         data.putString(key_course_experiment_2, course_list[position]);
-        data.putString(key_course_experiment_3, getIdentity(username, course_list[position]));
+        data.putString(key_course_experiment_3, identity);
         intent.putExtras(data);
         startActivity(intent);
     }
