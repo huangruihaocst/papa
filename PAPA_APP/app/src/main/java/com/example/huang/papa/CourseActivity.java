@@ -21,6 +21,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.PapaDataBaseManager.papa.PapaDataBaseManager;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -141,14 +146,22 @@ public class CourseActivity extends AppCompatActivity
         return true;
     }
 
-    private void getCourses(){
-        course_teacher_assistant_list = new String[3];
-        for(int i = 0;i < 3;i ++){
-            course_teacher_assistant_list[i] = "课程" + i;
+    private void getCourses()
+    {
+        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
+
+        List<String> studentList = new ArrayList<String>();
+        List<String> assistList = new ArrayList<String>();
+
+        try {
+            papaDataBaseManager.getCourses(studentList, assistList);
+            course_student_list = studentList.toArray(new String[studentList.size()]);
+            course_teacher_assistant_list = assistList.toArray(new String[assistList.size()]);
         }
-        course_student_list = new String[3];
-        for(int i = 0;i < 3;i ++){
-            course_student_list[i] = "课程" + i;
+        catch (Exception e)
+        {
+            // TODO: What if courses cannot be received?
+
         }
     }
 

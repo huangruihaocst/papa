@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -26,7 +27,6 @@ public class SignInActivity extends AppCompatActivity {
                 signIn();
             }
         });
-
     }
 
     public void check(){//1 for right, 0 for wrong password, and 2 for not registered
@@ -34,7 +34,17 @@ public class SignInActivity extends AppCompatActivity {
         EditText edit_password = (EditText)findViewById(R.id.password);
         username = edit_username.getText().toString();
         password = edit_password.getText().toString();
-        check_message = 1;//just change the value of check_message
+
+        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
+        if(papaDataBaseManager.signIn(username, password))
+        {
+            check_message = 1;
+        }
+        else
+        {
+            // ToDo: 区分到底是错误密码还是未注册
+            check_message = 0;
+        }
     }
 
     public void signIn(){
