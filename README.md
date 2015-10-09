@@ -63,6 +63,7 @@ I'm busy...
 ###基础
 Android客户端通过访问指定的URL获得一个JSON文件来访问数据库。
 
+
 该JSON文件格式为：
 { 
     status: 'successful'/'failed', // 代表获取成功与否
