@@ -4,9 +4,11 @@ class CoursesController < ApplicationController
   before_action only: [:index] do
     if params[:student_id]
       @id_key = :student_id
+      @role = ROLE_STUDENT
       check_token(params[:token], params[@id_key])
     elsif params[:assistant_id]
       @id_key = :assistant_id
+      @role = ROLE_ASSISTANT
       check_token(params[:token], params[@id_key])
     end
   end
@@ -17,7 +19,7 @@ class CoursesController < ApplicationController
     if @id_key
       @courses = Course.none
       User.find(params[@id_key]).participations.each do |participation|
-        @courses <<= participation.course
+        @courses <<= participation.course if @role == participation.role
       end
     else
       @courses = Course.all
