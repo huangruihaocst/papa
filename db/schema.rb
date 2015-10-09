@@ -57,20 +57,9 @@ ActiveRecord::Schema.define(version: 20151009065201) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-<<<<<<< HEAD
     t.boolean  "is_teacher",             default: true
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
-=======
-<<<<<<< HEAD
-    t.boolean  "is_teacher",             default: true
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-=======
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
->>>>>>> 200cc5b9842e3e842d80527b51baacd5485bf9eb
->>>>>>> feature/webViews
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
