@@ -24,6 +24,7 @@ class Users::SessionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_equal json['status'], STATUS_SUCCESS
     assert_not_nil json['token']
+    assert_not_nil json['id']
 
     post :destroy, { format: :json, token: json['token'] }
     json = JSON.parse(@response.body)

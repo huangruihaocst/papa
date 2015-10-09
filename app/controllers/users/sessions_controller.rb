@@ -14,7 +14,7 @@ class Users::SessionsController < Devise::SessionsController
         self.resource = warden.authenticate!(auth_options)
         sign_in(resource_name, resource)
         token = resource.create_token
-        render json: { status: STATUS_SUCCESS, token: token.token }
+        render json: { status: STATUS_SUCCESS, token: token.token, id: resource.id }
       end
     end
   end
