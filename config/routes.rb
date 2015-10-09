@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
   get 'test' => 'test#index'
-  get 'manage' => 'manage#index'
+  get 'manage' => 'manage#main_page'
   get 'manage/MainPage' => 'manage#main_page'
   get 'manage/CourseScore/:id' => 'manage#course_score'
   get 'manage/ClassScore/:id' => 'manage#class_score'
