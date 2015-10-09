@@ -65,7 +65,7 @@ public class PapaDataBaseManager {
     }
 
     // 执行 post 方法
-    private static String excuteRequest(HttpRequestBase post)
+    private static String executeRequest(HttpRequestBase post)
     {
         HttpClient httpClient = new DefaultHttpClient();
         try {
@@ -149,7 +149,7 @@ public class PapaDataBaseManager {
 
                 // 执行 POST
                 String reply;
-                Log.i(tag, "ret = " + (reply = excuteRequest(post)));
+                Log.i(tag, "ret = " + (reply = executeRequest(post)));
 
                 if(reply == null)
                 {
@@ -235,7 +235,7 @@ public class PapaDataBaseManager {
 
             // 执行请求
             String reply;
-            Log.i(tag, "ret = " + (reply = excuteRequest(get)));
+            Log.i(tag, "ret = " + (reply = executeRequest(get)));
 
             if (reply == null) {
                 throw new Exception("nothing return");
