@@ -148,17 +148,13 @@ public class CourseActivity extends AppCompatActivity
         PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
 
         try {
-            papaDataBaseManager.getCourses();
 
-            course_teacher_assistant_list = new String[3];
-            for (int i = 0; i < 3; i++) {
-                course_teacher_assistant_list[i] = "课程" + i;
+            course_teacher_assistant_list = new String[1];
+            for (int i = 0; i < 1; i++) {
+                course_teacher_assistant_list[i] = "助教课程";
             }
 
-            course_student_list = new String[3];
-            for (int i = 0; i < 10; i++) {
-                course_student_list[i] = "课程" + i;
-            }
+            course_student_list = papaDataBaseManager.getCourses();
         }
         catch (Exception e)
         {

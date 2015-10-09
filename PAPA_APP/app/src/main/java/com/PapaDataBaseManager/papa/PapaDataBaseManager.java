@@ -8,21 +8,14 @@
 package com.PapaDataBaseManager.papa;
 
 
-import org.json.JSONException;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.DataOutputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
@@ -70,7 +63,7 @@ public class PapaDataBaseManager {
     }
 
     // 执行 post 方法
-    private static String excutePost(HttpPost post)
+    private static String excuteRequest(HttpRequestBase post)
     {
         HttpClient httpClient = new DefaultHttpClient();
         try {
@@ -149,7 +142,7 @@ public class PapaDataBaseManager {
 
                 // 执行 POST
                 String reply;
-                Log.i(tag, "ret = " + (reply = excutePost(post)));
+                Log.i(tag, "ret = " + (reply = excuteRequest(post)));
 
                 if(reply == null)
                 {
@@ -209,6 +202,12 @@ public class PapaDataBaseManager {
     {
         private boolean success;
         private String token;
+        private String[] courses;
+
+        public String[] getCourses()
+        {
+            return courses;
+        }
 
         public boolean getSuccess()
         {
@@ -224,19 +223,17 @@ public class PapaDataBaseManager {
         public void run()
         {
             try {
-                /*
-                String url = "http://" + host + ":" + port + "/students/1.json";
+                String url = "http://" + host + ":" + port + "/students/1/courses.json?";
+                url += "token=" + token;
+
                 HttpGet get = new HttpGet(url);
 
-                ArrayList params = new ArrayList();
-                params.add(new BasicNameValuePair("token", token));
-                post.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 
-                Log.i(tag, "post = " + post.getURI().toString() + "  postData ");
+                Log.i(tag, "url = " + get.getURI().toString());
 
-                // 执行 POST
+                // 执行请求
                 String reply;
-                Log.i(tag, "ret = " + (reply = excutePost(post)));
+                Log.i(tag, "ret = " + (reply = excuteRequest(get)));
 
                 if(reply == null)
                 {
@@ -251,11 +248,18 @@ public class PapaDataBaseManager {
                     throw new Exception("not successful, ret \"" + replyObj.getString("status") + "\"");
                 }
 
-                // ok
-                token = replyObj.getString("token");
+                JSONArray courseArray = replyObj.getJSONArray("courses");
+                Log.i(tag, "ret = " + courseArray + " len = " + courseArray.length());
+
+                courses = new String[courseArray.length()];
+                for(int i = 0; i < courses.length; i++)
+                {
+                    courses[i] = courseArray.getJSONObject(i).getString("name");
+                    Log.i(tag, "courses[i] = " + courses[i]);
+                }
+
                 success = true;
-                Log.i(tag, "login success in thread");
-                */
+                Log.i(tag, "get course success in thread");
             }
             catch (Exception e)
             {
@@ -267,9 +271,26 @@ public class PapaDataBaseManager {
         }
     };
 
-    public void getCourses()
+    public String[] getCourses()
     {
+        GetCourseThread thread = new GetCourseThread(token);
 
+        thread.start();
+        try
+        {
+            thread.join();
+        }
+        catch (Exception e)
+        {
+            Log.e(tag, "e.getMessage() = " + e.getMessage());
+        }
+        if(thread.getSuccess())
+        {
+            Log.i(tag, "get course success");
+            return thread.getCourses();
+        }
+
+        return null;
     }
 
 }
