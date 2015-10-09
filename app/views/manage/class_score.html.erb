@@ -1,13 +1,8 @@
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=gb2312">  
-  	<meta name="author" content="oscar999">  
+	<meta http-equiv="content-type" content="text/html; charset=gb2312">
+  	<meta name="author" content="oscar999">
+  	<link href="/common.css" rel=stylesheet type="text/css">
 	<style type="text/css">
-		#content
-		{
-			padding-left:20%;
-			padding-right:20%;
-			padding-top:3%:
-		}
 		.custombutton
 		{
 			width:100%;
@@ -75,6 +70,7 @@
 		
 		function option(x)
 		{
+			if (focusi!=-1&&focusj!=-1) return;
 			if (x!=lastChoose) lastChoose=x,p=0;
 			else p=1-p;
 			console.log(x,p);

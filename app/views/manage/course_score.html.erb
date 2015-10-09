@@ -1,11 +1,6 @@
 <head>
+	<link href="/common.css" rel=stylesheet type="text/css">
 	<style type="text/css">
-		#content
-		{
-			padding-left:20%;
-			padding-right:20%;
-			padding-top:3%:
-		}
 		.custominput
 		{
 		}
@@ -66,6 +61,7 @@
 		
 		function option(x)
 		{
+			if (focusi!=-1&&focusj!=-1) return;
 			if (x!=lastChoose) lastChoose=x,p=0;
 			else p=1-p;
 			qsort(0,m-1,x,p);
