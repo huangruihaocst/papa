@@ -39,7 +39,7 @@ import android.util.Log;
 
 
 public class PapaDataBaseManager {
-    private static final String host = "192.168.1.115";
+    private static final String host = "101.5.211.49";
     private static final String port = "80";
     private static final String tag = "PapaDataBaseManager";
 
