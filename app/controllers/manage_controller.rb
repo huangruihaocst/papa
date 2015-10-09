@@ -3,20 +3,39 @@ class ManageController < ApplicationController
   #before_action :authenticate_user!
   def index
   end
-  def MainPage
+  def main_page
   end
-  def CourseScore
+  def course_score
+    @id= params[:id]
   end
-  def ClassScore
+  def class_score
+    @id= params[:id]
   end
-  def CourseInfo
+  def course_info
+    @id= params[:id]
   end
-  def StudentInfo
+  def class_info
+    @id= params[:id]
   end
-  def ClassInfo
+  def show_photos
+    @id= params[:id]
   end
-  def ShowPhotos
+  def show_videos
+    @id= params[:id]
   end
-  def ShowVideos
+  def AddCourseToCurrentUser
+    if(user_signed_in?)
+      c=Course.where("name = ?",params[:name]).first;
+      unless c
+        c=Course.create(name: params[:name],description: params[:description])
+      end
+      unless User.find(@current_user.id).courses.where("course_id=?",c.id).first
+        Participation.create(user_id: @current_user.id, course_id: c.id, role: params[:role]);
+      end
+      render :text => "succeed"
+    else
+      render :text => "fail"
+    end
   end
+
 end
