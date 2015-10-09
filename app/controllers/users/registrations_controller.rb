@@ -1,6 +1,6 @@
 module Users
   class RegistrationsController < Devise::RegistrationsController
-  # before_filter :configure_sign_up_params, only: [:create]
+  before_filter :configure_sign_up_params, only: [:create]
   # before_filter :configure_account_update_params, only: [:update]
 
     # GET /resource/sign_up
@@ -9,9 +9,9 @@ module Users
     # end
 
     # # POST /resource
-    # def create
-    #    super
-    # end
+    def create
+        super
+    end
 
     # GET /resource/edit
     # def edit
@@ -41,7 +41,7 @@ module Users
 
     #If you have extra params to permit, append them to the sanitizer.
     def configure_sign_up_params
-      devise_parameter_sanitizer.for(:sign_up) << :phone << :email
+      devise_parameter_sanitizer.for(:sign_up) << :phone << :email << :name
     end
 
     # If you have extra params to permit, append them to the sanitizer.
