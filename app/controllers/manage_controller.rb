@@ -3,25 +3,25 @@ class ManageController < ApplicationController
   #before_action :authenticate_user!
   def index
   end
-  def MainPage
+  def main_page
   end
-  def CourseScore
+  def course_score
+    @id= params[:id]
   end
-  def ClassScore
+  def class_score
+    @id= params[:id]
   end
-  def CourseInfo
+  def course_info
+    @id= params[:id]
   end
-  def StudentInfo
+  def class_info
+    @id= params[:id]
   end
-  def ClassInfo
+  def show_photos
+    @id= params[:id]
   end
-  def ShowPhotos
-  end
-  def ShowVideos
-  end
-  def GetUserCoursesById
-    reqId=params[:id]
-    render :json => User.find(reqId).courses.to_json
+  def show_videos
+    @id= params[:id]
   end
   def AddCourseToCurrentUser
     if(user_signed_in?)
@@ -37,10 +37,5 @@ class ManageController < ApplicationController
       render :text => "fail"
     end
   end
-  def GetCourseLessonsById
-    render :json => Course.find(params[:id]).lessons.to_json
-  end
-  def AddLessonToCourseById
-    #---need to modify routes.rb
-  end
+
 end
