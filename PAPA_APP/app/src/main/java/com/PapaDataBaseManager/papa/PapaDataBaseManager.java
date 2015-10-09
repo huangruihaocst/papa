@@ -17,6 +17,7 @@ import org.json.JSONTokener;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 import org.apache.http.client.ClientProtocolException;
@@ -42,6 +43,7 @@ public class PapaDataBaseManager {
     private static final String port = "80";
     private static final String tag = "PapaDataBaseManager";
 
+    private int personID;
     private String token;
 
     // 单件
@@ -103,6 +105,7 @@ public class PapaDataBaseManager {
         private String pwd;
         private boolean success;
         private String token;
+        private int personId;
 
         public boolean getSuccess()
         {
@@ -112,6 +115,10 @@ public class PapaDataBaseManager {
         public String getToken()
         {
             return token;
+        }
+        public int getPersonId()
+        {
+            return personId;
         }
 
         public LoginThread(String name, String pwd)
@@ -159,6 +166,7 @@ public class PapaDataBaseManager {
 
                 // ok
                 token = replyObj.getString("token");
+                personId = replyObj.getInt("id");
                 success = true;
                 Log.i(tag, "login success in thread");
             }
@@ -190,7 +198,8 @@ public class PapaDataBaseManager {
         if(thread.getSuccess())
         {
             token = thread.getToken();
-            Log.i(tag, "login success");
+            personID = thread.getPersonId();
+            Log.i(tag, "login success" + " " + token + " " + personID);
             return true;
         }
 
@@ -202,61 +211,58 @@ public class PapaDataBaseManager {
     {
         private boolean success;
         private String token;
-        private String[] courses;
-
-        public String[] getCourses()
-        {
-            return courses;
-        }
+        private List<String> studentCourses;
+        private List<String> assistCourses;
 
         public boolean getSuccess()
         {
             return success;
         }
 
-        public GetCourseThread(String token)
+        public GetCourseThread(List<String> studentCourses, List<String> assistCourses, String token)
         {
             this.token = token;
+            this.studentCourses = studentCourses;
+            this.assistCourses = assistCourses;
             this.success = false;
+        }
+
+        private void iGetCourses(String url, List<String> lst) throws Exception
+        {
+            HttpGet get = new HttpGet(url);
+
+            Log.i(tag, "url = " + get.getURI().toString());
+
+            // 执行请求
+            String reply;
+            Log.i(tag, "ret = " + (reply = excuteRequest(get)));
+
+            if (reply == null) {
+                throw new Exception("nothing return");
+            }
+
+            // parse json
+            JSONTokener jsonParser = new JSONTokener(reply);
+            JSONObject replyObj = (JSONObject) jsonParser.nextValue();
+            if (!replyObj.getString("status").equals("successful")) {
+                throw new Exception("not successful, ret \"" + replyObj.getString("status") + "\"");
+            }
+
+            JSONArray courseArray = replyObj.getJSONArray("courses");
+            Log.i(tag, "ret = " + courseArray + " len = " + courseArray.length());
+
+            for (int i = 0; i < courseArray.length(); i++)
+            {
+                lst.add(courseArray.getJSONObject(i).getString("name"));
+                Log.i(tag, "JSONObject ins " + lst.get(lst.size() - 1));
+            }
         }
 
         public void run()
         {
             try {
-                String url = "http://" + host + ":" + port + "/students/1/courses.json?";
-                url += "token=" + token;
-
-                HttpGet get = new HttpGet(url);
-
-
-                Log.i(tag, "url = " + get.getURI().toString());
-
-                // 执行请求
-                String reply;
-                Log.i(tag, "ret = " + (reply = excuteRequest(get)));
-
-                if(reply == null)
-                {
-                    throw new Exception("nothing return");
-                }
-
-                // parse json
-                JSONTokener jsonParser = new JSONTokener(reply);
-                JSONObject replyObj = (JSONObject) jsonParser.nextValue();
-                if(!replyObj.getString("status").equals("successful"))
-                {
-                    throw new Exception("not successful, ret \"" + replyObj.getString("status") + "\"");
-                }
-
-                JSONArray courseArray = replyObj.getJSONArray("courses");
-                Log.i(tag, "ret = " + courseArray + " len = " + courseArray.length());
-
-                courses = new String[courseArray.length()];
-                for(int i = 0; i < courses.length; i++)
-                {
-                    courses[i] = courseArray.getJSONObject(i).getString("name");
-                    Log.i(tag, "courses[i] = " + courses[i]);
-                }
+                iGetCourses("http://" + host + ":" + port + "/students/" + personID + "/courses.json?" + "token=" + token, studentCourses);
+                iGetCourses("http://" + host + ":" + port + "/assistants/" + personID + "/courses.json?" + "token=" + token, assistCourses);
 
                 success = true;
                 Log.i(tag, "get course success in thread");
@@ -265,15 +271,17 @@ public class PapaDataBaseManager {
             {
                 Log.d(tag, "e.getCause()= " + e.getCause());
                 Log.d(tag, "e.getMessage()= " + e.getMessage());
-                // e.printStackTrace();
                 Log.i(tag, "post fail");
             }
         }
     };
 
-    public String[] getCourses()
+    public void getCourses(List<String> studentCourses, List<String> assistCourses)
     {
-        GetCourseThread thread = new GetCourseThread(token);
+        studentCourses.clear();
+        assistCourses.clear();
+
+        GetCourseThread thread = new GetCourseThread(studentCourses, assistCourses, token);
 
         thread.start();
         try
@@ -287,10 +295,7 @@ public class PapaDataBaseManager {
         if(thread.getSuccess())
         {
             Log.i(tag, "get course success");
-            return thread.getCourses();
         }
-
-        return null;
     }
 
 }

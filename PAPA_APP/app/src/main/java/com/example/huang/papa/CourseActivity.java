@@ -23,6 +23,9 @@ import android.widget.TextView;
 
 import com.PapaDataBaseManager.papa.PapaDataBaseManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -147,14 +150,13 @@ public class CourseActivity extends AppCompatActivity
     {
         PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
 
+        List<String> studentList = new ArrayList<String>();
+        List<String> assistList = new ArrayList<String>();
+
         try {
-
-            course_teacher_assistant_list = new String[1];
-            for (int i = 0; i < 1; i++) {
-                course_teacher_assistant_list[i] = "助教课程";
-            }
-
-            course_student_list = papaDataBaseManager.getCourses();
+            papaDataBaseManager.getCourses(studentList, assistList);
+            course_student_list = studentList.toArray(new String[studentList.size()]);
+            course_teacher_assistant_list = assistList.toArray(new String[assistList.size()]);
         }
         catch (Exception e)
         {
