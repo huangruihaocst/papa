@@ -37,4 +37,10 @@ class ManageController < ApplicationController
       render :text => "fail"
     end
   end
+  def GetCourseLessonsById
+    render :json => Course.find(params[:id]).lessons.to_json
+  end
+  def AddLessonToCourseById
+    #---need to modify routes.rb
+  end
 end

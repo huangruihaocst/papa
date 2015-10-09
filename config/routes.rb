@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
   get 'test' => 'test#index'
-  get 'manage' => 'manage#index'
+  get 'manage' => 'manage#main_page'
   get 'manage/MainPage' => 'manage#main_page'
   get 'manage/CourseScore' => 'manage#course_score'
   get 'manage/ClassScore' => 'manage#class_score'
@@ -22,8 +22,9 @@ Rails.application.routes.draw do
   get 'manage/ShowPhotos' => 'manage#show_photos'
   get 'manage/ShowVideos' => 'manage#show_videos'
 
-  get 'manage/getUserCoursesById/:id' => 'manage#GetUserCoursesById'
+  get 'manage/GetUserCoursesById/:id' => 'manage#GetUserCoursesById'
   post 'manage/AddCourseToCurrentUser' => 'manage#AddCourseToCurrentUser'
+  get 'manage/GetCourseLessonsById/:id' => 'manage#GetCourseLessonsById'
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 
