@@ -1,24 +1,39 @@
 class ApplicationController < ActionController::Base
+  class TokenException < Exception
+    def initialize(msg)
+      @msg = msg
+    end
+    def message
+      @msg
+    end
+  end
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   #protect_from_forgery with: :exception
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-  def json_failed(reason = nil)
-    if reason
-      render json: { status: 'failed', reason: reason }
+  # the following class macro and two methods are token authentication helpers
+  rescue_from TokenException, with: :invalid_token
+  def invalid_token(except)
+    json_failed(except.message)
+  end
+  # raise TokenException if authentication failure occurs
+  def check_token(token_str, user_id)
+    raise TokenException.new(REASON_TOKEN_INVALID) unless token_str && user_id
+
+    token = Token.find_by_token(token_str)
+    if token && token.user_id == user_id.to_i
+      if Time.now > token.valid_until
+        raise TokenException.new(REASON_TOKEN_TIMEOUT)
+      end
     else
-      render json: { status: 'failed' }
+      raise TokenException.new(REASON_TOKEN_INVALID)
     end
   end
-  def json_successful
-    render json: { status: 'successful' }
-  end
 
-  def html_failed(reason = nil)
-    redirect_to '/404.html'
-  end
+  include ApplicationHelper::StatusRenderingHelpers
 
   protected
 

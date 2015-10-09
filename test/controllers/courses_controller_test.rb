@@ -9,6 +9,16 @@ class CoursesControllerTest < ActionController::TestCase
     assert json['courses'].count > 0
   end
 
+  test 'api should get courses by assistant with token' do
+    u = User.find_by_name('betty')
+    token_str = u.create_token.token
+
+    get :index, format: :json, assistant_id: u.id, token: token_str
+    json = JSON.parse(@response.body)
+    assert_equal json['status'], STATUS_SUCCESS
+    assert_not_nil json['courses']
+  end
+
   test 'api should get courses by student with token' do
     u = User.first
     token_str = u.create_token.token
@@ -44,6 +54,12 @@ class CoursesControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_equal json['status'], STATUS_SUCCESS
     assert_not_nil json['course']['name']
+  end
+
+  test 'api should not get course by invalid id' do
+    get :show, format: :json, id: -1
+    json = JSON.parse(@response.body)
+    assert_equal json['status'], STATUS_FAIL
   end
 
   test 'api should create course' do

@@ -79,7 +79,8 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
 { 
     status: 'successful'/'faild',
     reason: 'invalid_password...', // 具体含义在后面介绍
-    token: '123456777777777'
+    token: '123456777777777',
+    id: 123
 }
 得到token字符串, 在以下url中会用到
 
@@ -88,17 +89,21 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     标记方法：
     HTTP方法 URL                      功能                JSON格式(GET)/URL参数(POST/UPDATE/DELETE)     Token
         
-    
     列表：
     GET    /courses.json             获得所有课程         "courses": [{"id": 1, "name": "xxx"}, ...]    No
     GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          No
     GET    /courses/1/students.json  获得id=1课的所有学生 "students": [{"id": 1, "name": "xx"}, ...]    No
+    GET    /courses/1/assistants.json 类似上一个
   
     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            No
 
-    GET    /students.json            获得所有学生         "students": [{"id":1, "name": "xx"..]         No
+    GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..]         No
     GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]       Student Token
     GET    /students/1/courses.json  获得id=1学生所有的课程 "courses": [{"id": 1, "name": "xxx"}, ..]   Student Token
+    
+    GET    /assistants.json          类似students
+    GET    /assistants/1.json        类似students
+    GET    /assistants/1/courses.json 类似students
 
 举例：得到一个课程id=1的所有学生列表
    
@@ -131,6 +136,7 @@ class Main {
 ###reason的可能值和含义
 REASON_TOKEN_INVALID = 'token_invalid'      // token没有指定或者无效，应该检查url参数
 REASON_TOKEN_TIMEOUT = 'token_timeout'      // token过时了，应该重新登陆
+REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存在
 
 ##TODO
 1.  Database Schema

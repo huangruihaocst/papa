@@ -1,20 +1,23 @@
 class CoursesController < ApplicationController
 
   before_action :set_course, only: [:show]
+  before_action only: [:index] do
+    if params[:student_id]
+      @id_key = :student_id
+      check_token(params[:token], params[@id_key])
+    elsif params[:assistant_id]
+      @id_key = :assistant_id
+      check_token(params[:token], params[@id_key])
+    end
+  end
 
   # GET /courses
   # GET /courses.json
   def index
-    # list courses of a student
-    if params[:student_id]
-      result = Token.check_token(params, params[:student_id])
-      if result == STATUS_SUCCESS
-          @courses = Course.none
-          User.find(params[:student_id]).participations.each do |participation|
-            @courses <<= participation.course
-          end
-      else
-        json_failed(result)
+    if @id_key
+      @courses = Course.none
+      User.find(params[@id_key]).participations.each do |participation|
+        @courses <<= participation.course
       end
     else
       @courses = Course.all
@@ -34,7 +37,7 @@ class CoursesController < ApplicationController
 
   # POST /courses
   def create
-    @course =  Course.create(params.require(:course).permit(:name))
+    @course = Course.create(params.require(:course).permit(:name))
     respond_to do |format|
       if @course.valid?
         format.html { redirect_to @course }
@@ -54,7 +57,5 @@ class CoursesController < ApplicationController
       @course = nil
     end
   end
-
-
 
 end

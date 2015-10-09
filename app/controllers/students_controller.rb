@@ -1,6 +1,11 @@
 class StudentsController < ApplicationController
 
-  before_action :set_student, only: [:show]
+  before_action only: [:show] do
+    set_student
+
+    raise TokenException.new(REASON_TOKEN_INVALID) unless @student
+    check_token(params[:token], @student.id)
+  end
 
   def index
     course = Course.find(params[:course_id] || 1)
@@ -12,15 +17,6 @@ class StudentsController < ApplicationController
   end
 
   def show
-    # invalid student id
-    unless @student
-      respond_to do |format|
-        format.json { json_failed('not found') }
-      end
-    end
-
-    result = Token.check_token(params, @student.id)
-    json_failed(result) unless result == STATUS_SUCCESS
   end
 
   private

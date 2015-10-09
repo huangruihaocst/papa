@@ -1,11 +1,14 @@
 alex_os:
   user: alex
   course: os
+  role: <%= ROLE_STUDENT %>
 
 betty_os:
   user: betty
   course: cpp
+  role: <%= ROLE_ASSISTANT %>
 
 alex_ds:
   user: alex
   course: cpp
+  role: <%= ROLE_STUDENT %>
