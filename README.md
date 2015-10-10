@@ -241,8 +241,8 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             ,
             belongs_to semester,
             has_many lessons,
-            
-            has_many users, through: participation,
+            has_many participations,
+            has_many students, through: participation, as: :user
             has_many messages
      
     participation id=int,
@@ -258,8 +258,10 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             end_time=datetime,
             location=string,
             ,
-            belongs_to file
             belongs_to course
+            has_many attached_files, as: :files
+            has_many lesson_remarks,
+            has_many student_remarks
             
     user    id=int,
             name=string,
@@ -292,18 +294,18 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             belongs_to user
             belongs_to lesson
 
-    lesson_remark id=int,        // 学生对课程的评价
+    lesson_remark id=int,        // 学生对实验课的评价
             content=string,
             score=int
             ,
             belongs_to creator, as: :user,
-            belongs_to lesson,
-            has_many teachers, as: :user
+            belongs_to lesson
 
-    student_remark id=int,      // 助教对学生的评价
+    student_remark id=int,       // 助教对学生的评价
             content=string,
             score=int(0-10)
             ,
+            belongs_to lesson
             belongs_to creator, as: :user,
             belongs_to student, as: :user,
             belongs_to lesson
@@ -322,7 +324,7 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             name=string,
             path=string
             ,
-            belongs_to creator as: :user
+            belongs_to creator, as: :user
     
     android id=int
             version=string
