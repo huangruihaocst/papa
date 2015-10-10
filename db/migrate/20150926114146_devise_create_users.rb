@@ -21,12 +21,17 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string   :current_sign_in_ip
       t.string   :last_sign_in_ip
 
+      ## Additional
       t.boolean  :is_teacher, default: true
+      t.integer  :avator_id
+      t.string   :class_name
+      t.string   :department
+      t.integer  :student_number
 
       t.timestamps null: false
     end
 
-    #add_index :users, :phone,                unique: true
+    add_index :users, :phone,                unique: true
     add_index :users, :email,                unique: true
     add_index :users, :reset_password_token, unique: true
     # add_index :users, :confirmation_token,   unique: true

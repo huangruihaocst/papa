@@ -11,11 +11,55 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151009065201) do
+ActiveRecord::Schema.define(version: 20151008120334) do
+
+  create_table "android_apps", force: :cascade do |t|
+    t.string   "version"
+    t.integer  "file_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "assisting_courses", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "course_id"
+  end
 
   create_table "courses", force: :cascade do |t|
-    t.string "name"
-    t.text   "description"
+    t.string  "name",        null: false
+    t.text    "description"
+    t.integer "semester_id"
+  end
+
+  create_table "files", force: :cascade do |t|
+    t.string   "type"
+    t.string   "name"
+    t.string   "path"
+    t.integer  "creator_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "learning_courses", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "course_id"
+  end
+
+  create_table "lesson_remarks", force: :cascade do |t|
+    t.text     "content"
+    t.integer  "score"
+    t.integer  "creator_id"
+    t.integer  "lesson_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "lesson_statuses", force: :cascade do |t|
+    t.string   "score"
+    t.integer  "user_id"
+    t.integer  "lesson_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "lessons", force: :cascade do |t|
@@ -24,7 +68,18 @@ ActiveRecord::Schema.define(version: 20151009065201) do
     t.datetime "start_time"
     t.datetime "end_time"
     t.string   "location"
+    t.integer  "course_id",   null: false
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.string   "type"
+    t.string   "title"
+    t.datetime "deadline"
+    t.text     "content"
+    t.integer  "creator_id"
     t.integer  "course_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "participations", force: :cascade do |t|
@@ -33,15 +88,25 @@ ActiveRecord::Schema.define(version: 20151009065201) do
     t.string  "role",      default: "student"
   end
 
+  create_table "student_remarks", force: :cascade do |t|
+    t.text     "content"
+    t.integer  "score"
+    t.integer  "creator_id"
+    t.integer  "lesson_id"
+    t.integer  "student_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "teaching_courses", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "course_id"
+  end
+
   create_table "tokens", force: :cascade do |t|
     t.string   "token",       null: false
     t.integer  "user_id",     null: false
     t.datetime "valid_until", null: false
-  end
-
-  create_table "upload_files", force: :cascade do |t|
-    t.string  "path"
-    t.integer "user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -58,11 +123,16 @@ ActiveRecord::Schema.define(version: 20151009065201) do
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.boolean  "is_teacher",             default: true
+    t.integer  "avator_id"
+    t.string   "class_name"
+    t.string   "department"
+    t.integer  "student_number"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
+  add_index "users", ["phone"], name: "index_users_on_phone", unique: true
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
 end

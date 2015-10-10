@@ -231,12 +231,12 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
 
 1. Database Schema
 
-    semester number=int,
+    semester id=int 
+            name=string,
             has_many courses
     
     course  id=int,
             name=string,
-            semester=int,
             description=string
             ,
             belongs_to semester,
@@ -287,16 +287,19 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
     assisting_course id=int
             belongs_to user
             belongs_to course
-    leaning_course id=int
+    learning_course id=int
             belongs_to user
             belongs_to course
     lesson_status id=int
+            score=string
             belongs_to user
             belongs_to lesson
+            timestamps
 
     lesson_remark id=int,        // 学生对实验课的评价
             content=string,
             score=int
+            timestamps
             ,
             belongs_to creator, as: :user,
             belongs_to lesson
@@ -304,29 +307,35 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
     student_remark id=int,       // 助教对学生的评价
             content=string,
             score=int(0-10)
+            timestamps
             ,
             belongs_to lesson
             belongs_to creator, as: :user,
             belongs_to student, as: :user,
-            belongs_to lesson
             
     message id=int,
             type=string(homework|notification),
             title=string,
             deadline=datetime,
             content=string
+            timestamps
             ,
             belongs_to creator, as: :user
             belongs_to course
+           
             
     file    id=int,
             type=string,
             name=string,
-            path=string
+            path=string,
+            timestamps
             ,
             belongs_to creator, as: :user
+            
     
-    android id=int
-            version=string
+    android_app id=int,
+            version=string,
+            timestamps
             ,
             belongs_to file
+            
