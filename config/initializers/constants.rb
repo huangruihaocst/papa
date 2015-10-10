@@ -11,3 +11,5 @@ REASON_PERMISSION_DENIED = 'permission_denied'
 REASON_TOKEN_INVALID = 'token_invalid'
 REASON_TOKEN_TIMEOUT = 'token_timeout'
 REASON_TOKEN_NOT_MATCH = 'token_not_match'
+
+ALLOWED_FILE_SUFFIXES = [ 'jpg', 'gif', 'png', 'mp4', 'mpg', 'avi' ]

@@ -38,6 +38,7 @@ class CoursesController < ApplicationController
   end
 
   # POST /courses
+  # POST /courses.json
   def create
     @course = Course.create(params.require(:course).permit(:name))
     respond_to do |format|
