@@ -94,14 +94,14 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     标记方法：
     HTTP方法 URL                      功能                JSON格式(GET)/URL参数(POST/UPDATE/DELETE)     Token
     
-    列表：
+    列表
     # namespace semesters
-    GET    /semesters.json               获得所有学年     "semesters": [semester, ...]              Student
-    POST   /semesters.json               添加一个学年     semester parameters                       Teacher
-    PUT    /semesters/1.json             修改学年信息     semester parameters                       Teacher
-    DELETE /semesters/1.json             删除某个学年     id                                        Teacher
-    GET    /semesters/courses.json       获得某个学年的所有课程 "courses": [course, ...]                Student
-    GET    /semesters/default.json       获得默认学期     "semester": semester                      Student   
+    GET    /semesters.json               获得所有学年     "semesters": [semester, ...]                  Student
+    POST   /semesters.json               添加一个学年     semester parameters                           Admin
+    PUT    /semesters/1.json             修改学年信息     semester parameters                           Admin
+    DELETE /semesters/1.json             删除某个学年     id                                            Admin
+    GET    /semesters/courses.json       获得某个学年的所有课程 "courses": [course, ...]                 Student
+    GET    /semesters/default.json       获得默认学期     "semester": semester                          Student   
     
     # namespace courses
     # 课程相关
@@ -110,12 +110,12 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     PUT    /courses/1.json           修改课程             course parameters                             Teacher
     DELETE /courses/1.json           删除课程             id                                            Teacher
     GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          Student
-    GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                       Student
+    GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                        Student
     POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
     PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
     DELETE /courses/1/teachers/1.json 删除老师            id                                            Teacher
     
-    # 与课程有关系的表
+    # 与课程有关系的资源
     GET    /courses/1/students.json  获得id=1课的所有学生 "students": [student, ...]                    Assistant
     GET    /courses/1/assistants.json 类似上一个          "assistants": [assistant, ...]                Student
     POST   /courses/1/assistants.json 添加助教            id                                            Teacher
@@ -128,7 +128,7 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     GET    /lessons/1/students/1/comments.json 查看助教对学生的评价 "student_comments": [student_comment,...] Student
     POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant
     GET    /lessons/1/students.json  某门实验课的到课学生列表 students id                               Teacher
-    POST   /lessons/1/students/1.json 学生签到                                                         Student
+    POST   /lessons/1/students/1.json 学生签到                                                          Student
     
     # namespace students
     # 学生相关
@@ -167,7 +167,6 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     
 Http Parameters/JSON对象格式
     
-    1. Http Parameters
     semester number=2009
     
     course  id=int,
@@ -213,13 +212,119 @@ Http Parameters/JSON对象格式
             content=string,
             user_id=int
             
+    file    id=int
+            type=string
+            name=string
+            path=string
+            
 ###reason的可能值和含义
 REASON_TOKEN_INVALID = 'token_invalid'      // token没有指定或者无效，应该检查url参数
 REASON_TOKEN_TIMEOUT = 'token_timeout'      // token过时了，应该重新登陆
 REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存在
 
 ##TODO
-1.  Database Schema
 1.  Unit Test
 1.  Authentication Control.  
     
+    
+##Design
+
+1. Database Schema
+
+    semester number=int,
+            has_many courses
+    
+    course  id=int,
+            name=string,
+            semester=int,
+            description=string
+            ,
+            belongs_to semester,
+            has_many lessons,
+            
+            has_many users, through: participation,
+            has_many messages
+     
+    participation id=int,
+            role=string
+            ,
+            belongs_to course,
+            belongs_to user
+            
+    lesson  id=int, 
+            name=string,   
+            description=string,
+            start_time=datetime,
+            end_time=datetime,
+            location=string,
+            ,
+            belongs_to file
+            belongs_to course
+            
+    user    id=int,
+            name=string,
+            student_number=int,
+            phone=string,
+            email=string,
+            class=string,
+            department=string
+            ,
+            has_many lesson_comments
+            belongs_to avator, as: :file
+            has_many teaching_courses
+            has_many assisting_courses
+            has_many learning_courses
+            has_many lesson_statuses
+            has_many assistant_to_student_remarks, as: student_remarks, foreign_key: :creator_id
+            has_many from_assistant_remarks, as: student_remarks, foreign_key: :student_id
+            has_many posted_messages, as: :message, foreign_key: :creator_id
+            
+    teaching_course id=int
+            belongs_to user
+            belongs_to course
+    assisting_course id=int
+            belongs_to user
+            belongs_to course
+    leaning_course id=int
+            belongs_to user
+            belongs_to course
+    lesson_status id=int
+            belongs_to user
+            belongs_to lesson
+
+    lesson_remark id=int,        // 学生对课程的评价
+            content=string,
+            score=int
+            ,
+            belongs_to creator, as: :user,
+            belongs_to lesson,
+            has_many teachers, as: :user
+
+    student_remark id=int,      // 助教对学生的评价
+            content=string,
+            score=int(0-10)
+            ,
+            belongs_to creator, as: :user,
+            belongs_to student, as: :user,
+            belongs_to lesson
+            
+    message id=int,
+            type=string(homework|notification),
+            title=string,
+            deadline=datetime,
+            content=string
+            ,
+            belongs_to creator, as: :user
+            belongs_to course
+            
+    file    id=int,
+            type=string,
+            name=string,
+            path=string
+            ,
+            belongs_to creator as: :user
+    
+    android id=int
+            version=string
+            ,
+            belongs_to file
