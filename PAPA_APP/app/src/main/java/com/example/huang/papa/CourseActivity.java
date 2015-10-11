@@ -20,8 +20,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.example.huang.papa.BundleHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,7 @@ public class CourseActivity extends AppCompatActivity
 
     private String[] course_teacher_assistant_list;
     private String[] course_student_list;
-    String username;
+    BundleHelper bundleHelper = new BundleHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +42,8 @@ public class CourseActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String key_sign_in_course_1 = getString(R.string.key_sign_in_course_1);
-        username = data.getString(key_sign_in_course_1);
+        String key_sign_in_course = getString(R.string.key_sign_in_course);
+        bundleHelper = data.getParcelable(key_sign_in_course);
 //        String key_semester_course_1 = getString(R.string.key_semester_course_1);
 //        String semester_name = data.getString(key_semester_course_1);
 
@@ -163,6 +165,15 @@ public class CourseActivity extends AppCompatActivity
             // TODO: What if courses cannot be received?
 
         }
+//        Please do not delete the code below when debugging:
+//        course_student_list = new String[3];
+//        for(int i = 0;i < 3;i ++){
+//            course_student_list[i] = "课程" + i;
+//        }
+//        course_teacher_assistant_list = new String[3];
+//        for(int i = 0;i < 3;i ++){
+//            course_teacher_assistant_list[i] = "课程" + i;
+//        }
     }
 
     private class MyTeacherAssistantAdapter extends BaseAdapter {
@@ -216,12 +227,10 @@ public class CourseActivity extends AppCompatActivity
     private void startExperimentActivity(String[] course_list,int position,String identity){
         Intent intent = new Intent(CourseActivity.this, ExperimentActivity.class);
         Bundle data = new Bundle();
-        String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
-        String key_course_experiment_2 = getString(R.string.key_course_experiment_2);
-        String key_course_experiment_3 = getString(R.string.key_course_experiment_3);
-        data.putString(key_course_experiment_1, username);
-        data.putString(key_course_experiment_2, course_list[position]);
-        data.putString(key_course_experiment_3, identity);
+        String key_course_experiment = getString(R.string.key_course_experiment);
+        bundleHelper.setCourseName(course_list[position]);
+        bundleHelper.setIdentity(identity);
+        data.putParcelable(key_course_experiment,bundleHelper);
         intent.putExtras(data);
         startActivity(intent);
     }

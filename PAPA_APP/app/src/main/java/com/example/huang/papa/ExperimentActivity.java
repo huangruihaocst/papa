@@ -24,23 +24,21 @@ public class ExperimentActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     String[] experiment_list;
-    String username;
     String course_name;
     String identity;
+    BundleHelper bundleHelper = new BundleHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_experiment);
 
-        final String key_course_experiment_1 = getString(R.string.key_course_experiment_1);
-        String key_course_experiment_2 = getString(R.string.key_course_experiment_2);
-        String key_course_experiment_3 = getString(R.string.key_course_experiment_3);
+        final String key_course_experiment = getString(R.string.key_course_experiment);
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        username = data.getString(key_course_experiment_1);
-        course_name = data.getString(key_course_experiment_2);
-        identity = data.getString(key_course_experiment_3);
+        bundleHelper = data.getParcelable(key_course_experiment);
+        course_name = bundleHelper.getCourseName();
+        identity = bundleHelper.getIdentity();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(course_name);
         setSupportActionBar(toolbar);
@@ -72,21 +70,14 @@ public class ExperimentActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
                 Bundle data = new Bundle();
+                bundleHelper.setExperimentName(experiment_list[position]);
                 if(identity.equals("teacher_assistant")){
-                    String key_experiment_student_1 = getString(R.string.key_experiment_student_1);
-                    String key_experiment_student_2 = getString(R.string.key_experiment_student_2);
-                    String key_experiment_student_3 = getString(R.string.key_experiment_student_3);
-                    data.putString(key_experiment_student_1,username);
-                    data.putString(key_experiment_student_2,experiment_list[position]);
-                    data.putString(key_experiment_student_3,identity);
+                    String key_experiment_student = getString(R.string.key_experiment_student);
+                    data.putParcelable(key_experiment_student,bundleHelper);
                     intent = new Intent(ExperimentActivity.this,StudentActivity.class);
                 }else if(identity.equals("student")){
-                    String key_to_detail_1 = getString(R.string.key_to_detail_1);
-                    String key_to_detail_2 = getString(R.string.key_to_detail_2);
-                    String key_to_detail_3 = getString(R.string.key_to_detail_3);
-                    data.putString(key_to_detail_1,username);
-                    data.putString(key_to_detail_2,experiment_list[position]);
-                    data.putString(key_to_detail_3,identity);
+                    String key_to_detail = getString(R.string.key_to_detail);
+                    data.putParcelable(key_to_detail,bundleHelper);
                     intent = new Intent(ExperimentActivity.this,DetailActivity.class);
                 }
                 intent.putExtras(data);

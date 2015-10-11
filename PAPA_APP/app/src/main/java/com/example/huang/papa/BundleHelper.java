@@ -6,9 +6,9 @@ import android.os.Parcelable;
 /**
  * Created by huang on 15-10-10.
  */
-public class BundleHelper {
+public class BundleHelper implements Parcelable{
     private String username;
-    private String password;
+    private String password;//not used
     private String course_name;
     private int course_id;
     private String experiment_name;
@@ -86,6 +86,44 @@ public class BundleHelper {
     }
     public void setIdentity(String identity){
         this.identity = identity;
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(username);
+        out.writeString(password);
+        out.writeString(course_name);
+        out.writeInt(course_id);
+        out.writeString(experiment_name);
+        out.writeInt(experiment_id);
+        out.writeString(student_name);
+        out.writeInt(student_id);
+        out.writeString(identity);
+    }
+
+    public static final Parcelable.Creator<BundleHelper> CREATOR = new Parcelable.Creator<BundleHelper>() {
+        public BundleHelper createFromParcel(Parcel in) {
+            return new BundleHelper(in);
+        }
+
+        public BundleHelper[] newArray(int size) {
+            return new BundleHelper[size];
+        }
+    };
+
+    private BundleHelper(Parcel in){
+        username = in.readString();
+        password = in.readString();
+        course_name = in.readString();
+        course_id = in.readInt();
+        experiment_name = in.readString();
+        experiment_id = in.readInt();
+        student_name = in.readString();
+        student_id = in.readInt();
+        identity = in.readString();
     }
 }
 

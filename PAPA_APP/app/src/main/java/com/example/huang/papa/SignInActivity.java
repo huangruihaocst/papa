@@ -54,8 +54,7 @@ public class SignInActivity extends AppCompatActivity {
             String key_sign_in_course = getString(R.string.key_sign_in_course);
             BundleHelper bundleHelper = new BundleHelper();
             bundleHelper.setUsername(username);
-            //TODO: use BundleHelper to send messages
-//            data.putParcelable(key_sign_in_course,bundleHelper);
+            data.putParcelable(key_sign_in_course,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
         }else if(check_message == 0){
