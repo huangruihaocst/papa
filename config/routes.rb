@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     resources :messages, only: [:create]
   end
 
-  resources :lessons, only: [:show, :create, :index] do
+  resources :lessons, only: [:show] do
     # students' comments to the lesson
     resources :comments, controller: 'lesson_comments', only: [:index, :create]
 

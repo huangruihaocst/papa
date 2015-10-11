@@ -24,7 +24,7 @@ class LessonsController < ApplicationController
   def create
     @lesson =  Lesson.create(
         params.require(:lesson).
-            permit(:name, :description, :start_time, :end_time, :location, :course_id))
+            permit(:name, :description, :start_time, :end_time, :location).merge({ course_id: params[:course_id] }))
 
     respond_to do |format|
       if @lesson.valid?

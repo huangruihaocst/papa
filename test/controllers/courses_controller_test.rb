@@ -75,4 +75,5 @@ class CoursesControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_equal json['status'], STATUS_FAIL
   end
+
 end

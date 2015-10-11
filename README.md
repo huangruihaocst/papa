@@ -178,7 +178,10 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     
 Http Parameters/JSON对象格式
     
-    semester number=2009
+    注意：奕semester举例,在URL中格式均为
+    semester[name]=2009
+    
+    semester name=string
     
     course  id=int,
             name=string,
