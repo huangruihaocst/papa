@@ -1,6 +1,8 @@
-c1 = Course.create(name: 'os', description: '123')
-c2 = Course.create(name: 'ds', description: '中文')
-c3 = Course.create(name: '语文', description: 'fuck')
+s = Semester.create(name: '2015')
+
+c1 = Course.create(name: 'os', description: '123', semester_id: s.id)
+c2 = Course.create(name: 'ds', description: '中文', semester_id: s.id)
+c3 = Course.create(name: '语文', description: 'fuck', semester_id: s.id)
 
 u1 = User.create(name:'alex', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123')
 u2 = User.create(name:'betty', phone:'222', email:'b@c.d', password:'123', password_confirmation:'123')

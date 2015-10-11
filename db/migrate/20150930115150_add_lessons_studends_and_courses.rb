@@ -1,11 +1,15 @@
 class AddLessonsStudendsAndCourses < ActiveRecord::Migration
   def change
 
+    create_table :semesters do |t|
+      t.string :name
+    end
+
     create_table :courses do |t|
       t.string  :name,        null: false
       t.text    :description
-
       t.integer :semester_id
+      t.timestamps
     end
 
     create_table :lessons do |t|
@@ -15,6 +19,12 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
       t.datetime  :end_time
       t.string  :location
       t.integer :course_id,   null: false
+      t.timestamps
+    end
+
+    create_table :lesson_files do |t|
+      t.integer :lesson_id
+      t.integer :file_resource_id
     end
 
     create_table :participations do |t|
@@ -47,7 +57,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
 
     create_table :lesson_remarks do |t|
       t.text :content
-      t.integer :score
+      t.string :score
       t.integer :creator_id
       t.integer :lesson_id
       t.timestamps
@@ -55,7 +65,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
 
     create_table :student_remarks do |t|
       t.text :content
-      t.integer :score
+      t.string :score
       t.integer :creator_id
       t.integer :lesson_id
       t.integer :student_id
@@ -72,7 +82,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :files do |t|
+    create_table :file_resources do |t|
       t.string :type
       t.string :name
       t.string :path
@@ -82,7 +92,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
 
     create_table :android_apps do |t|
       t.string :version
-      t.integer :file_id
+      t.integer :file_resource_id
       t.timestamps
     end
 

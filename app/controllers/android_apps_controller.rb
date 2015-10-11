@@ -1,0 +1,2 @@
+class AndroidAppsController < ApplicationController
+end

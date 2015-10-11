@@ -5,27 +5,55 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
-  resources :courses do
-    resources :students
-    resources :assistants
-    resources :lessons
+  resources :semesters, only: [:index, :create, :update, :delete] do
+    resources :courses, only: [:index]
+    get 'default' => 'semesters#default'
   end
-  resources :students do
-    resources :courses
+
+  resources :courses, only: [:index, :show, :create, :update, :delete] do
+    resources :students, only: [:index, :create, :delete]
+    resources :assistants, only: [:index, :create, :delete]
+    resources :lessons, only: [:index, :create, :delete]
+    resources :teachers, only: [:index, :create, :delete, :update]
+    resources :messages, only: [:create]
   end
+
+  resources :lessons, only: [:show, :create, :index] do
+    # students' comments to the lesson
+    resources :comments, controller: 'lesson_comments', only: [:index, :create]
+
+    # for comment and score
+    resources :students, only: [:show] do
+      # assistants' comments to the student
+      resources :comments, controller: 'student_comments', only: [:index, :create]
+    end
+
+    # for attendence
+    resources :students, only: [:index, :create]
+  end
+
+  resources :students, only: [:index, :show, :create, :update, :delete] do
+    resources :courses, only: [:index, :update]
+    resources :files, only: [:index, :create, :delete]
+    resources :lessons, only: [:show, :update] do
+      resources :files, only: [:show, :create, :delete]
+    end
+    resources :messages, only: [:index]
+  end
+
   resources :assistants do
     resources :courses
+    resources :files
   end
 
-  resources :lessons
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
+  resources :files, only: [:show, :create]
 
-  # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  namespace :android do
+    get 'current_version.json' => 'android_apps#current_version'
+    post 'current_version.json' => 'android_apps#current_version'
+  end
 
-  # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
+
   get 'test' => 'test#index'
   get 'manage' => 'manage#main_page'
   get 'manage/MainPage' => 'manage#main_page'
@@ -35,35 +63,4 @@ Rails.application.routes.draw do
   get 'manage/ShowPhotos/:id' => 'manage#show_photos'
   get 'manage/ShowVideos/:id' => 'manage#show_videos'
   post 'manage/AddCourseToCurrentUser' => 'manage#AddCourseToCurrentUser'
-  # Example of named route that can be invoked with purchase_url(id: product.id)
-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
-
-  # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
-
-  # Example resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Example resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Example resource route with more complex sub-resources:
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', on: :collection
-  #     end
-  #   end
 end

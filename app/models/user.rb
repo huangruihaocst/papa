@@ -8,6 +8,14 @@ class User < ActiveRecord::Base
   has_many :courses, through: :participations
   has_many :tokens
 
+  has_many :teaching_courses
+  has_many :assisting_courses
+  has_many :learning_courses
+  has_many :lesson_statuses
+  has_many :assistant_to_student_remarks, class_name: 'StudentRemark', foreign_key: :creator_id
+  has_many :from_assistant_remarks, class_name: 'StudentRemark', foreign_key: :student_id
+  has_many :posted_message, class_name: 'Message', foreign_key: :creator_id
+
   # the following 4 methods allow us to login with phone or email
   def login=(login)
     @login = login

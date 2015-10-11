@@ -110,16 +110,22 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     PUT    /courses/1.json           修改课程             course parameters                             Teacher
     DELETE /courses/1.json           删除课程             id                                            Teacher
     GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          Student
+    
+    # 与课程有关系的资源
     GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                        Student
     POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
     PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
     DELETE /courses/1/teachers/1.json 删除老师            id                                            Teacher
     
-    # 与课程有关系的资源
     GET    /courses/1/students.json  获得id=1课的所有学生 "students": [student, ...]                    Assistant
+    POST   /courses/1/students.json  添加学生
+    DELETE /courses/1/students/1.json 删除学生
     GET    /courses/1/assistants.json 类似上一个          "assistants": [assistant, ...]                Student
     POST   /courses/1/assistants.json 添加助教            id                                            Teacher
+    DELETE /courses/1/assistants/1.json 删除助教
     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            Student
+    POST   /courses/1/lessons.json   向课程中添加实验课
+    DELETE /courses/1/lessons/1.json 从课程中删除实验课
     
     # namespace lessons
     GET    /lessons/1.json           获得某门实验课的信息  "lesson": lesson                             Student
@@ -147,9 +153,10 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     GET    /students/1/courses.json  获得所有课程           "courses": [course...]                       Student
     PUT    /students/1/courses.json  修改学生课程列表                                                    Teacher
     GET    /students/1/lessons/1.json       获得学生课程的信息，包括成绩     "course": course_score       Student
-    POST   /students/1/lessons/1.json       修改学生课程信息                                             Assistant  
+    PUT    /students/1/lessons/1.json       修改学生课程信息                                             Assistant  
     GET    /students/1/lessons/1/files.json 获得某门实验课某个学生的所有文件 "files": [file, ...]         Student
-    POST   /students/1/lessons/files.json 在某门实验课上添加视频图片                                      Student
+    POST   /students/1/lessons/1/files.json 在某门实验课上添加视频图片                                      Student
+    DELETE /students/1/lessons/1/files/1.json 在某门实验课上删除视频照片
     
     GET    /assistants.json           获得所有助教信息      "assistant": [assistant, ...]                Student
     GET    /assistants/1.json         获得某个助教信息      "assistant": assistant                       Assistant
@@ -163,6 +170,10 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     # App更新
     GET    /android/current_version.json 得到当前最新版本号  {"version": "xx", "apk_path": "xx"}         Student
     POST   /android/current_version.json 上传apk            version=xx apk                              Admin
+    
+    # 文件相关
+    GET    /files/1.json             得到该文件的信息        "file": file
+    POST   /files.json               上传文件                file parameters
     
     
 Http Parameters/JSON对象格式
@@ -180,7 +191,7 @@ Http Parameters/JSON对象格式
             start_time=datetime
             end_time=datetime
             location=string
-            attached_file_path=string
+            attached_file_id=string
     
     student id=int,
             name=string,
@@ -215,7 +226,7 @@ Http Parameters/JSON对象格式
     file    id=int
             type=string
             name=string
-            path=string
+            path=string(not required)
             
 ###reason的可能值和含义
 REASON_TOKEN_INVALID = 'token_invalid'      // token没有指定或者无效，应该检查url参数
@@ -243,6 +254,7 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             has_many lessons,
             has_many participations,
             has_many students, through: participation, as: :user
+            has_many teachers, through: teaching_course
             has_many messages
      
     participation id=int,
@@ -262,6 +274,9 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             has_many attached_files, as: :files
             has_many lesson_remarks,
             has_many student_remarks
+    lesson_files id=int
+            belongs_to lesson
+            belongs_to file_resource
             
     user    id=int,
             name=string,
@@ -280,7 +295,7 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             has_many assistant_to_student_remarks, as: student_remarks, foreign_key: :creator_id
             has_many from_assistant_remarks, as: student_remarks, foreign_key: :student_id
             has_many posted_messages, as: :message, foreign_key: :creator_id
-            
+     
     teaching_course id=int
             belongs_to user
             belongs_to course

@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20151008120334) do
 
   create_table "android_apps", force: :cascade do |t|
     t.string   "version"
-    t.integer  "file_id"
+    t.integer  "file_resource_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -26,12 +26,14 @@ ActiveRecord::Schema.define(version: 20151008120334) do
   end
 
   create_table "courses", force: :cascade do |t|
-    t.string  "name",        null: false
-    t.text    "description"
-    t.integer "semester_id"
+    t.string   "name",        null: false
+    t.text     "description"
+    t.integer  "semester_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  create_table "files", force: :cascade do |t|
+  create_table "file_resources", force: :cascade do |t|
     t.string   "type"
     t.string   "name"
     t.string   "path"
@@ -45,9 +47,14 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.integer "course_id"
   end
 
+  create_table "lesson_files", force: :cascade do |t|
+    t.integer "lesson_id"
+    t.integer "file_resource_id"
+  end
+
   create_table "lesson_remarks", force: :cascade do |t|
     t.text     "content"
-    t.integer  "score"
+    t.string   "score"
     t.integer  "creator_id"
     t.integer  "lesson_id"
     t.datetime "created_at"
@@ -69,6 +76,8 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.datetime "end_time"
     t.string   "location"
     t.integer  "course_id",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -88,9 +97,13 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.string  "role",      default: "student"
   end
 
+  create_table "semesters", force: :cascade do |t|
+    t.string "name"
+  end
+
   create_table "student_remarks", force: :cascade do |t|
     t.text     "content"
-    t.integer  "score"
+    t.string   "score"
     t.integer  "creator_id"
     t.integer  "lesson_id"
     t.integer  "student_id"
