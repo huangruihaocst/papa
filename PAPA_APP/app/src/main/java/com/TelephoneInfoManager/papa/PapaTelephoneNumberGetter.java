@@ -30,6 +30,10 @@ public class PapaTelephoneNumberGetter
 
         TelephonyManager tMgr = (TelephonyManager)mAppContext.getSystemService(Context.TELEPHONY_SERVICE);
         String mPhoneNumber = tMgr.getLine1Number();
+
+        // zh-CN: 有可能返回空串
+        if(mPhoneNumber.equals("")) mPhoneNumber = null;
+
         return mPhoneNumber;
     }
 }
