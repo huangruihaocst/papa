@@ -182,10 +182,13 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     GET    /files/1.json             得到该文件的信息        "file": file
     POST   /files.json               上传文件                file parameters
     
+    # 用户相关
+    GET    /users/current.json       获取当前用户id          "id": "123"                                 Current User
+    
     
 Http Parameters/JSON对象格式
     
-    注意：奕semester举例,在URL中格式均为
+    注意：以semester举例,在URL中格式均为
     semester[name]=2009
     
     semester id=int

@@ -21,6 +21,9 @@ class CoursesController < ApplicationController
     case
       when params[:semester_id]
         @courses = Semester.find(params[:semester_id]).courses
+      when params[:teacher_id]
+        check_token(params[:token], params[:teacher_id], true)
+        @courses = User.find(params[:teacher_id]).teaching_courses
       when params[:student_id]
         check_token(params[:token], params[:student_id])
         @courses = Course.none
@@ -33,9 +36,6 @@ class CoursesController < ApplicationController
         User.find(params[@id_key]).participations.each do |participation|
           @courses <<= participation.course if ROLE_ASSISTANT == participation.role
         end
-      when params[:teacher_id]
-        check_token(params[:token], params[:teacher_id], true)
-        @courses = User.find(params[:teacher_id]).teaching_courses
       else
         json_failed
     end
@@ -51,30 +51,47 @@ class CoursesController < ApplicationController
     end
   end
 
-  # POST /semesters/courses.json
-  # POST /teachers/courses.json
-  # POST /assistants/courses.json
-  # POST /students/courses.json
+  # POST /semesters/1/courses.json
+  # POST /teachers/1/courses.json
+  # POST /assistants/1/courses/1.json
+  # POST /students/1/courses/1.json
   def create
-    course_create_params = params.require(:course).permit(:name, :description)
+    course_create_params = params.require(:course).permit(:name, :description, :semester_id)
 
-    case
-      when params[:semester_id]
-        Semester.find(params[:semester_id]).courses.create(course_create_params)
-      when params[:teacher_id]
-        check_token(params[:token], params[:teacher_id], true)
-
-      else
-        json_failed
-        return
-    end
-
-    respond_to do |format|
-      if @course.valid?
-        format.json { json_successful }
-      else
-        format.json { json_failed('invalid params') }
+    begin
+      case
+        when params[:teacher_id]
+          check_token(params[:token], params[:teacher_id], true)
+          if User.find(params[:teacher_id]).courses.create(course_create_params)
+            json_successful
+          else
+            json_failed
+          end
+        when params[:assistant_id] && params[:course_id]
+          check_token(params[:token], params[:assistant_id])
+          assistant = User.find(params[:assistant_id])
+          course = Course.find(params[:course_id])
+          assistant.courses << course
+          if assistant.save
+            json_successful
+          else
+            json_failed
+          end
+        when params[:student_id] && params[:course_id]
+          check_token(params[:token], params[:student_id])
+          student = User.find(params[:student_id])
+          course = Course.find(params[:course_id])
+          student.courses << course
+          if student.save
+            json_successful
+          else
+            json_failed
+          end
+        else
+          json_failed
       end
+    rescue
+      json_failed
     end
   end
 
