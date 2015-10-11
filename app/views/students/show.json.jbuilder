@@ -1,4 +1,3 @@
-
 json.status STATUS_SUCCESS
 json.student do
   json.id     @student.id

@@ -5,11 +5,17 @@ class SemestersController < ApplicationController
   end
 
   def default
-    Semester.all.order(:name).last
+    @semester = Semester.all.order(:name).last
   end
 
   def create
-    Semester.create()
+    respond_to do |format|
+      if Semester.create(params.require(:semester).permit(:name))
+        format.json { json_successful }
+      else
+        format.json { json_failed }
+      end
+    end
   end
 
   def update

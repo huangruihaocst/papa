@@ -20,12 +20,13 @@ class ApplicationController < ActionController::Base
     json_failed(except.message)
   end
   # raise TokenException if authentication failure occurs
-  def check_token(token_str, user_id)
+  def check_token(token_str, user_id, is_teacher = false)
     raise TokenException.new(REASON_TOKEN_INVALID) unless user_id
 
     if token_str
       token = Token.find_by_token(token_str)
-      if token && token.user_id == user_id.to_i
+      # deny when is_teacher is required but the token is not a teacher
+      if token && token.user_id == user_id.to_i && (!token.user.is_teacher && is_teacher)
         if Time.now > token.valid_until
           raise TokenException.new(REASON_TOKEN_TIMEOUT)
         end
@@ -39,7 +40,9 @@ class ApplicationController < ActionController::Base
     else
       raise TokenException.new(REASON_TOKEN_INVALID)
     end
+  end
 
+  def check_token_type(token_str, type)
 
   end
 

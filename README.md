@@ -100,7 +100,7 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     POST   /semesters.json               添加一个学年     semester parameters                           Admin
     PUT    /semesters/1.json             修改学年信息     semester parameters                           Admin
     DELETE /semesters/1.json             删除某个学年     id                                            Admin
-    GET    /semesters/courses.json       获得某个学年的所有课程 "courses": [course, ...]                 Student
+    GET    /semesters/1/courses.json     获得某个学年的所有课程 "courses": [course, ...]                 Student
     GET    /semesters/default.json       获得默认学期     "semester": semester                          Student   
     
     # namespace courses
@@ -163,6 +163,13 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     GET    /assistants/1/courses.json 获得某个助教的所有课程 "courses": [course, ...]                    Assistant
     GET    /assistants/files.json     助教上传的所有文件    "files": [file, ...]                         Assistant
     
+    GET    /teachers/1.json           获得某个老师的信息    "teacher": teacher                           Student
+    POST   /teachers.json             添加老师              teacher parameters                           Admin
+    DELETE /teachers/1.json           删除老师              id                                           Admin
+    UPDATE /teachers/1.json           修改老师信息          teacher parameters                           The Teacher
+    GET    /teachers/1/courses.json   获得老师的所有课程    "courses": [course, ...]                     Student
+    POST   /teachers/1/courses.json   给老师添加课程        course parameters                            Teacher
+    
     # 消息推送
     GET    /students/1/messages.json  查询学生的所有消息     "messages": [message_id, ...]               Student
     POST   /courses/1/messages.json   发送消息到某门课的所有学生 "message": message                      Assistant
@@ -181,7 +188,8 @@ Http Parameters/JSON对象格式
     注意：奕semester举例,在URL中格式均为
     semester[name]=2009
     
-    semester name=string
+    semester id=int
+            name=string
     
     course  id=int,
             name=string,

@@ -1,4 +1,3 @@
-
 json.status STATUS_SUCCESS
 json.students do
   json.array!(@students) do |student|

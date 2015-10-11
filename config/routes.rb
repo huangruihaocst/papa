@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     get 'default' => 'semesters#default'
   end
 
-  resources :courses, only: [:index, :show, :create, :update, :delete] do
+  resources :courses, only: [:show, :update, :delete] do
     resources :students, only: [:index, :create, :delete]
     resources :assistants, only: [:index, :create, :delete]
     resources :lessons, only: [:index, :create, :delete]
@@ -42,8 +42,12 @@ Rails.application.routes.draw do
   end
 
   resources :assistants do
-    resources :courses
-    resources :files
+    resources :courses, only: [:index, :create]
+    resources :files, only: [:index, :create]
+  end
+
+  resources :teachers do
+    resources :courses, only: [:index]
   end
 
   resources :files, only: [:show, :create]
