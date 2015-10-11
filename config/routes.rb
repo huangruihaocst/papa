@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
+  get 'users/current_user.json' => 'users#current'
+
   resources :semesters, only: [:index, :create, :update, :delete] do
     resources :courses, only: [:index]
     get 'default' => 'semesters#default'
@@ -56,7 +58,6 @@ Rails.application.routes.draw do
     get 'current_version.json' => 'android_apps#current_version'
     post 'current_version.json' => 'android_apps#current_version'
   end
-
 
   get 'test' => 'test#index'
   get 'manage' => 'manage#main_page'
