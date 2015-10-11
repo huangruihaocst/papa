@@ -1,17 +1,6 @@
 class CoursesController < ApplicationController
 
   before_action :set_course, only: [:show]
-  before_action only: [:index] do
-    if params[:student_id]
-      @id_key = :student_id
-      @role = ROLE_STUDENT
-      check_token(params[:token], params[@id_key])
-    elsif params[:assistant_id]
-      @id_key = :assistant_id
-      @role = ROLE_ASSISTANT
-      check_token(params[:token], params[@id_key])
-    end
-  end
 
   # GET /semesters/1/courses.json
   # GET /students/1/courses.json
@@ -23,23 +12,22 @@ class CoursesController < ApplicationController
         @courses = Semester.find(params[:semester_id]).courses
       when params[:teacher_id]
         check_token(params[:token], params[:teacher_id], true)
-        @courses = User.find(params[:teacher_id]).teaching_courses
+        @courses = User.find(params[:teacher_id]).real_teaching_courses
       when params[:student_id]
         check_token(params[:token], params[:student_id])
         @courses = Course.none
-        User.find(params[@id_key]).participations.each do |participation|
+        User.find(params[:student_id]).participations.each do |participation|
           @courses <<= participation.course if ROLE_STUDENT == participation.role
         end
       when params[:assistant_id]
-        check_token(params[:token], params[:student_id])
+        check_token(params[:token], params[:assistant_id])
         @courses = Course.none
-        User.find(params[@id_key]).participations.each do |participation|
+        User.find(params[:assistant_id]).participations.each do |participation|
           @courses <<= participation.course if ROLE_ASSISTANT == participation.role
         end
       else
         json_failed
     end
-
   end
 
   # GET /courses/1.json
@@ -51,18 +39,18 @@ class CoursesController < ApplicationController
     end
   end
 
-  # POST /semesters/1/courses.json
   # POST /teachers/1/courses.json
   # POST /assistants/1/courses/1.json
   # POST /students/1/courses/1.json
   def create
     course_create_params = params.require(:course).permit(:name, :description, :semester_id)
-
     begin
       case
         when params[:teacher_id]
           check_token(params[:token], params[:teacher_id], true)
-          if User.find(params[:teacher_id]).courses.create(course_create_params)
+          teacher = User.find(params[:teacher_id])
+          course = Course.create(course_create_params)
+          if teacher.teaching_courses.create(course_id: course.id)
             json_successful
           else
             json_failed

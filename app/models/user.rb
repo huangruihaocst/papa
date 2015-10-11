@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   has_many :tokens
 
   has_many :teaching_courses
+  has_many :real_teaching_courses, through: :teaching_courses, source: :course
   has_many :assisting_courses
   has_many :learning_courses
   has_many :lesson_statuses

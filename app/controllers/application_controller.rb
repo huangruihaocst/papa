@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
     if token_str
       token = Token.find_by_token(token_str)
       # deny when is_teacher is required but the token is not a teacher
-      if token && token.user_id == user_id.to_i && (!token.user.is_teacher && is_teacher)
+      if token && token.user_id == user_id.to_i && (!is_teacher || token.user.is_teacher)
         if Time.now > token.valid_until
           raise TokenException.new(REASON_TOKEN_TIMEOUT)
         end

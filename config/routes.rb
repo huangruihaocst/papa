@@ -49,7 +49,7 @@ Rails.application.routes.draw do
   end
 
   resources :teachers do
-    resources :courses, only: [:index]
+    resources :courses, only: [:index, :create]
   end
 
   resources :files, only: [:show, :create]

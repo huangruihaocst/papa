@@ -4,7 +4,11 @@ c1 = Course.create(name: 'os', description: '123', semester_id: s.id)
 c2 = Course.create(name: 'ds', description: '中文', semester_id: s.id)
 c3 = Course.create(name: '语文', description: 'fuck', semester_id: s.id)
 
-u1 = User.create(name:'alex', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123')
+u1 = User.create(name:'alex', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123', is_teacher: true)
+u1.save
+
+TeachingCourse.create(user_id: u1.id, course_id: c1.id)
+
 u2 = User.create(name:'betty', phone:'222', email:'b@c.d', password:'123', password_confirmation:'123')
 u3 = User.create(name:'ciara', phone:'333', email:'c@d.e', password:'123', password_confirmation:'123')
 
