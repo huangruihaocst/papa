@@ -89,8 +89,8 @@ public class SemesterActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(SemesterActivity.this,CourseActivity.class);
                 Bundle data = new Bundle();
-                String key_semester_course_1 = getString(R.string.key_semester_course_1);
-                data.putString(key_semester_course_1,semester_list[position]);
+//                String key_semester_course = getString(R.string.key_semester_course);
+//                data.putString(key_semester_course_1,semester_list[position]);
                 intent.putExtras(data);
                 startActivity(intent);
             }

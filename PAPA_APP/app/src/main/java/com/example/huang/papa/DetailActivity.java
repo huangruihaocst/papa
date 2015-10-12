@@ -18,9 +18,9 @@ import android.widget.Button;
 public class DetailActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    String username;
     String experiment_name;
     String identity;
+    BundleHelper bundleHelper = new BundleHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +29,10 @@ public class DetailActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String key_to_detail_1 = getString(R.string.key_to_detail_1);
-        String key_to_detail_2 = getString(R.string.key_to_detail_2);
-        String key_to_detail_3 = getString(R.string.key_to_detail_3);
-        username = data.getString(key_to_detail_1);
-        experiment_name = data.getString(key_to_detail_2);
-        identity = data.getString(key_to_detail_3);
+        String key_to_detail = getString(R.string.key_to_detail);
+        bundleHelper = data.getParcelable(key_to_detail);
+        experiment_name = bundleHelper.getExperimentName();
+        identity = bundleHelper.getIdentity();
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -31,17 +31,11 @@
 
     <string name="title_semester">学期</string>
 
-    <string name="key_sign_in_course_1">key_sign_in_course_1</string>
-    <string name="key_semester_course_1">key_semester_course_1</string>
-    <string name="key_course_experiment_1">key_course_experiment_1</string>
-    <string name="key_course_experiment_2">key_course_experiment_2</string>
-    <string name="key_course_experiment_3">key_course_experiment_3</string>
-    <string name="key_experiment_student_1">key_experiment_student_1</string>
-    <string name="key_experiment_student_2">key_experiment_student_2</string>
-    <string name="key_experiment_student_3">key_experiment_student_3</string>
-    <string name="key_to_detail_1">key_to_detail_1</string>
-    <string name="key_to_detail_2">key_to_detail_2</string>
-    <string name="key_to_detail_3">key_to_detail_3</string>
+    <string name="key_sign_in_course">key_sign_in_course</string>
+    <!--<string name="key_semester_course">key_semester_course</string>-->
+    <string name="key_course_experiment">key_course_experiment</string>
+    <string name="key_experiment_student">key_experiment_student</string>
+    <string name="key_to_detail">key_to_detail</string>
 
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
