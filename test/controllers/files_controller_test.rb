@@ -1,7 +1,65 @@
 require 'test_helper'
 
 class FilesControllerTest < ActionController::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+
+  # GET /students/1/lessons/1/files.json
+  test 'should get student files on lesson' do
+    student = User.find_by_name('betty')
+    lesson = Lesson.find_by_name('exp1')
+
+    get :index, format: :json, student_id: student.id, lesson_id: lesson.id
+    json = JSON.parse(response.body)
+
+    assert_equal STATUS_SUCCESS, json['status']
+    assert_not_nil json['files']
+    assert json['files'].count > 0
+  end
+
+  # GET /assistants/1/lessons/1/files.json
+  test 'should get assistant files on lesson' do
+    assistant = User.find_by_name('alex')
+    lesson = Lesson.find_by_name('exp1')
+
+    get :index, format: :json, assistant_id: assistant.id, lesson_id: lesson.id
+    json = JSON.parse(response.body)
+
+    assert_equal STATUS_SUCCESS, json['status']
+    assert_not_nil json['files']
+    assert json['files'].count > 0
+  end
+
+  # GET /lessons/1/files.json
+  test 'should get lesson files' do
+    lesson = Lesson.find_by_name('exp1')
+
+    get :index, format: :json, lesson_id: lesson.id
+    json = JSON.parse(response.body)
+
+    assert_equal STATUS_SUCCESS, json['status']
+    assert_not_nil json['files']
+    assert json['files'].count > 0
+  end
+
+  # GET /courses/1/files.json
+  test 'should get course files' do
+    course = Course.find_by_name('Operation System')
+
+    get :index, format: :json, course_id: course.id
+    json = JSON.parse(response.body)
+
+    assert_equal STATUS_SUCCESS, json['status']
+    assert_not_nil json['files']
+    assert json['files'].count > 0
+  end
+
+  # GET /files/1.json
+  test 'should get file by id' do
+    file = FileResource.first
+    get :show, format: :json, id: file.id
+    json = JSON.parse(response.body)
+
+    assert_equal STATUS_SUCCESS, json['status']
+    assert_not_nil json['file']
+  end
+
 end

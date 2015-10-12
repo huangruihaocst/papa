@@ -1,4 +1,4 @@
-exp1_file1:
-  lesson: exp1
+os_file:
+  course: os
   file_resource: pdf_file
   creator: alex

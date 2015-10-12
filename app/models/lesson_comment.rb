@@ -1,4 +1,4 @@
-class LessonRemark < ActiveRecord::Base
+class LessonComment < ActiveRecord::Base
   belongs_to :creator, class_name: 'User'
   belongs_to :lesson
 

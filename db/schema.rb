@@ -20,9 +20,21 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.datetime "updated_at"
   end
 
+  create_table "assistant_files", force: :cascade do |t|
+    t.integer "assistant_id"
+    t.integer "lesson_id"
+    t.integer "file_resource_id"
+  end
+
   create_table "assisting_courses", force: :cascade do |t|
     t.integer "user_id"
     t.integer "course_id"
+  end
+
+  create_table "course_files", force: :cascade do |t|
+    t.integer "course_id"
+    t.integer "creator_id"
+    t.integer "file_resource_id"
   end
 
   create_table "courses", force: :cascade do |t|
@@ -47,18 +59,19 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.integer "course_id"
   end
 
-  create_table "lesson_files", force: :cascade do |t|
-    t.integer "lesson_id"
-    t.integer "file_resource_id"
-  end
-
-  create_table "lesson_remarks", force: :cascade do |t|
+  create_table "lesson_comments", force: :cascade do |t|
     t.text     "content"
     t.string   "score"
     t.integer  "creator_id"
     t.integer  "lesson_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "lesson_files", force: :cascade do |t|
+    t.integer "lesson_id"
+    t.integer "creator_id"
+    t.integer "file_resource_id"
   end
 
   create_table "lesson_statuses", force: :cascade do |t|
@@ -81,7 +94,7 @@ ActiveRecord::Schema.define(version: 20151008120334) do
   end
 
   create_table "messages", force: :cascade do |t|
-    t.string   "type"
+    t.string   "message_type"
     t.string   "title"
     t.datetime "deadline"
     t.text     "content"
@@ -101,7 +114,7 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.string "name"
   end
 
-  create_table "student_remarks", force: :cascade do |t|
+  create_table "student_comments", force: :cascade do |t|
     t.text     "content"
     t.string   "score"
     t.integer  "creator_id"
@@ -109,6 +122,12 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.integer  "student_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "student_files", force: :cascade do |t|
+    t.integer "student_id"
+    t.integer "lesson_id"
+    t.integer "file_resource_id"
   end
 
   create_table "teaching_courses", force: :cascade do |t|

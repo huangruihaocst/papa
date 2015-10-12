@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     resources :lessons, only: [:index, :create, :destroy]
     resources :teachers, only: [:index, :create, :destroy, :update]
     resources :messages, only: [:create]
+    resources :files, only: [:index, :create, :delete]
   end
 
   resources :lessons, only: [:show, :destroy] do
@@ -32,6 +33,8 @@ Rails.application.routes.draw do
 
     # for attendence
     resources :students, only: [:index, :create]
+
+    resources :files, only: [:index, :create, :delete]
   end
 
   resources :students, only: [:index, :show, :create, :update, :destroy] do
@@ -56,7 +59,7 @@ Rails.application.routes.draw do
 
   namespace :android do
     get 'current_version.json' => 'android_apps#current_version'
-    post 'current_version.json' => 'android_apps#current_version'
+    post 'current_version.json' => 'android_apps#create'
   end
 
   get 'test' => 'test#index'

@@ -90,6 +90,7 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     1. xxx parameter代表http参数，在后边会说明
     2. xxx 代表xxx类对象的json，在后面说明
     3. \[xxx, ...\] 代表xxx类对象数组的json，在后面说明
+    4. 注意: #!表示已经弃用的api, ?代表新增加的api
     
     标记方法：
     HTTP方法 URL                      功能                JSON格式(GET)/URL参数(POST/UPDATE/DELETE)     Token
@@ -114,17 +115,18 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     # 与课程有关系的资源
     GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                        Student
     #!POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
+    ?POST   /courses/1/teachers/1.json 把老师添加到课程
     #!PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
     DELETE /courses/1/teachers/1.json 删除老师            id                                            Teacher
     
     GET    /courses/1/students.json  获得id=1课的所有学生 "students": [student, ...]                    Assistant
     #!POST   /courses/1/students.json  添加学生              
     DELETE /courses/1/students/1.json 删除学生
-    ?POST   /courses/1/students/1.json 添加学生
+    ?POST   /courses/1/students/1.json 添加学生到指定课程
     GET    /courses/1/assistants.json 类似上一个          "assistants": [assistant, ...]                Student
     #!POST   /courses/1/assistants.json 添加助教            id                                            Teacher
     #!DELETE /courses/1/assistants/1.json 删除助教
-    ?POST   /courses/1/assistants/1.json 添加助教            id                                            Teacher
+    ?POST   /courses/1/assistants/1.json 添加助教到指定课程                                              Teacher
     
     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            Student
     POST   /courses/1/lessons.json   向课程中添加实验课
@@ -135,20 +137,21 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     GET    /lessons/1.json           获得某门实验课的信息  "lesson": lesson                             Student
     #!GET    /lessons/1/comments.json  获得某门课程的评价    "comments": [comment, ...]                   Teacher
     ?GET    /lessons/1/comments.json  获得某门课程的评价    "lesson_comments": [lesson_comment, ...]                   Teacher
-
-    POST   /lessons/1/comments.json  添加学生对课程的评价  lesson comment parameters                    Student
+    POST   /lessons/1/comments.json  添加学生对课程的评价(当前登陆用户)  lesson comment parameters                    Student
     GET    /lessons/1/students/1/comments.json 查看助教对学生的评价 "student_comments": [student_comment,...] Student
     POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant
     GET    /lessons/1/students.json  某门实验课的到课学生列表 students id                               Teacher
     POST   /lessons/1/students/1.json 学生签到                                                          Student
+    GET    /lessons/1/files.json     获得该门实验课的简介文件
+    POST   /lessons/1/files.json     向课程中添加文件
     
     # namespace students
     # 学生相关
     GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..] 
     GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]       Student
-    POST   /students.json            添加一个学生         student parameters                            Teacher
-    PUT    /students/1.json          修改学生             student parameters                            Student
-    DELETE /students/1.json          删除学生             id                                            Teacher
+    #!POST   /students.json            添加一个学生         student parameters                            Teacher
+    #!PUT    /students/1.json          修改学生             student parameters                            Student
+    #!DELETE /students/1.json          删除学生             id                                            Teacher
     
     # 文件相关
     GET    /students/1/files.json    获得学生所有文件列表   "files": [{"id":1, "type": "jpg", "path": "xx"}...]  Student 
@@ -177,20 +180,20 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     POST   /teachers/1/courses.json   给老师添加课程        course parameters                            Teacher
     
     # 消息推送
-    GET    /students/1/messages.json  查询学生的所有消息     "messages": [message_id, ...]               Student
+    GET    /students/1/messages.json  查询学生的所有消息     "messages": [message ...]               Student
     POST   /courses/1/messages.json   发送消息到某门课的所有学生 "message": message                      Assistant
-    
-    # App更新
-    GET    /android/current_version.json 得到当前最新版本号  {"version": "xx", "apk_path": "xx"}         Student
-    POST   /android/current_version.json 上传apk            version=xx apk                              Admin
     
     # 文件相关
     GET    /files/1.json             得到该文件的信息        "file": file
-    POST   /files.json               上传文件                file parameters
+    POST   /files.json               上传文件                file parameters 
+    DELETE /files/1.json             删除自己上传的文件                                                  Creator           
     
     # 用户相关
     GET    /users/current.json       获取当前用户id          "id": "123"                                 Current User
     
+    # App更新
+    GET    /android/current_version.json 得到当前最新版本号  {"version": "xx", "apk_path": "xx"}         Student
+    POST   /android/current_version.json 上传apk            version=xx apk                              Admin
     
 Http Parameters/JSON对象格式
     
@@ -221,20 +224,20 @@ Http Parameters/JSON对象格式
             class=string,
             department=string,
             avator_path=string
-            
+             
     assistant id=int,
             name=string,
             phone,
             email=string,
             avator_path=string
             
-    lesson_remark id=int        // 学生对课程的评价
+    lesson_comment id=int        // 学生对课程的评价
             content=string
-            score=int
+            score=string
             
-    student_remark id=int      // 助教对学生的评价
+    student_comment id=int      // 助教对学生的评价
             content=string
-            score=int(0-10)
+            score=string(0-10)
             
     message id=int
             type=string(homework|notification),
@@ -292,11 +295,19 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             ,
             belongs_to course
             has_many attached_files, as: :files
-            has_many lesson_remarks,
-            has_many student_remarks
+            has_many lesson_comments,
+            has_many student_comments
     lesson_files id=int
             belongs_to lesson
             belongs_to file_resource
+    student_files id=int
+            belongs_to student
+            belongs_to file_resource
+            belongs_to lesson
+    assistant_files id=int
+            belongs_to assistant
+            belongs_to file_resource
+            belongs_to lesson
             
     user    id=int,
             name=string,
@@ -312,8 +323,8 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             has_many assisting_courses
             has_many learning_courses
             has_many lesson_statuses
-            has_many assistant_to_student_remarks, as: student_remarks, foreign_key: :creator_id
-            has_many from_assistant_remarks, as: student_remarks, foreign_key: :student_id
+            has_many assistant_to_student_comments, as: student_comments, foreign_key: :creator_id
+            has_many from_assistant_comments, as: student_comments, foreign_key: :student_id
             has_many posted_messages, as: :message, foreign_key: :creator_id
      
     teaching_course id=int
@@ -331,7 +342,7 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             belongs_to lesson
             timestamps
 
-    lesson_remark id=int,        // 学生对实验课的评价
+    lesson_comment id=int,        // 学生对实验课的评价
             content=string,
             score=int
             timestamps
@@ -339,7 +350,7 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             belongs_to creator, as: :user,
             belongs_to lesson
 
-    student_remark id=int,       // 助教对学生的评价
+    student_comment id=int,       // 助教对学生的评价
             content=string,
             score=int(0-10)
             timestamps
@@ -358,7 +369,6 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             belongs_to creator, as: :user
             belongs_to course
            
-            
     file    id=int,
             type=string,
             name=string,
@@ -367,7 +377,6 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             ,
             belongs_to creator, as: :user
             
-    
     android_app id=int,
             version=string,
             timestamps

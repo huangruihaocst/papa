@@ -13,4 +13,6 @@ class Course < ActiveRecord::Base
 
   has_many :messages
 
+  has_many :course_files
+  has_many :attached_files, through: :course_files, source: :file_resource
 end

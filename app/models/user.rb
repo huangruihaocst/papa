@@ -13,8 +13,8 @@ class User < ActiveRecord::Base
   has_many :assisting_courses
   has_many :learning_courses
   has_many :lesson_statuses
-  has_many :assistant_to_student_remarks, class_name: 'StudentRemark', foreign_key: :creator_id
-  has_many :from_assistant_remarks, class_name: 'StudentRemark', foreign_key: :student_id
+  has_many :assistant_to_student_comments, class_name: 'StudentComment', foreign_key: :creator_id
+  has_many :from_assistant_comments, class_name: 'StudentComment', foreign_key: :student_id
   has_many :posted_message, class_name: 'Message', foreign_key: :creator_id
 
   # the following 4 methods allow us to login with phone or email
@@ -27,8 +27,9 @@ class User < ActiveRecord::Base
   end
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
-    if login = conditions.delete(:login)
-      where(conditions.to_hash).where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+    login = conditions.delete(:login)
+    if login
+      where(conditions.to_hash).where(['lower(phone) = :value OR lower(email) = :value', { :value => login.downcase }]).first
     else
       where(conditions.to_hash).first
     end

@@ -22,7 +22,26 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
       t.timestamps
     end
 
+    create_table :course_files do |t|
+      t.integer :course_id
+      t.integer :creator_id
+      t.integer :file_resource_id
+    end
+
     create_table :lesson_files do |t|
+      t.integer :lesson_id
+      t.integer :creator_id
+      t.integer :file_resource_id
+    end
+
+    create_table :student_files do |t|
+      t.integer :student_id
+      t.integer :lesson_id
+      t.integer :file_resource_id
+    end
+
+    create_table :assistant_files do |t|
+      t.integer :assistant_id
       t.integer :lesson_id
       t.integer :file_resource_id
     end
@@ -55,7 +74,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :lesson_remarks do |t|
+    create_table :lesson_comments do |t|
       t.text :content
       t.string :score
       t.integer :creator_id
@@ -63,7 +82,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :student_remarks do |t|
+    create_table :student_comments do |t|
       t.text :content
       t.string :score
       t.integer :creator_id
@@ -73,7 +92,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
     end
 
     create_table :messages do |t|
-      t.string :type
+      t.string :message_type
       t.string :title
       t.datetime :deadline
       t.text :content
