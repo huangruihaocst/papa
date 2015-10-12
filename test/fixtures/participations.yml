@@ -5,7 +5,12 @@ alex_os:
 
 betty_os:
   user: betty
-  course: cpp
+  course: os
+  role: <%= ROLE_ASSISTANT %>
+
+betty_os:
+  user: betty
+  course: os
   role: <%= ROLE_ASSISTANT %>
 
 alex_ds:

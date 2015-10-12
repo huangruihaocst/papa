@@ -57,16 +57,6 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
       t.integer :course_id
     end
 
-    create_table :assisting_courses do |t|
-      t.integer :user_id
-      t.integer :course_id
-    end
-
-    create_table :learning_courses do |t|
-      t.integer :user_id
-      t.integer :course_id
-    end
-
     create_table :lesson_statuses do |t|
       t.string :score
       t.integer :user_id

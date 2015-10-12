@@ -160,7 +160,9 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     
     # 课程实验课相关
     GET    /students/1/courses.json  获得所有课程           "courses": [course...]                       Student
-    PUT    /students/1/courses.json  修改学生课程列表                                                    Teacher
+    #!PUT    /students/1/courses.json  修改学生课程列表                                                    Teacher
+    POST   /students/1/courses/1.json       给学生添加课程
+    DELETE /students/1/courses/1.json       给学生删除课程
     GET    /students/1/lessons/1.json       获得学生课程的信息，包括成绩     "course": course_score       Student
     PUT    /students/1/lessons/1.json       修改学生课程信息                                             Assistant  
     GET    /students/1/lessons/1/files.json 获得某门实验课某个学生的所有文件 "files": [file, ...]         Student
@@ -328,12 +330,6 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
             has_many posted_messages, as: :message, foreign_key: :creator_id
      
     teaching_course id=int
-            belongs_to user
-            belongs_to course
-    assisting_course id=int
-            belongs_to user
-            belongs_to course
-    learning_course id=int
             belongs_to user
             belongs_to course
     lesson_status id=int

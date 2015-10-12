@@ -10,8 +10,6 @@ class User < ActiveRecord::Base
 
   has_many :teaching_courses
   has_many :real_teaching_courses, through: :teaching_courses, source: :course
-  has_many :assisting_courses
-  has_many :learning_courses
   has_many :lesson_statuses
   has_many :assistant_to_student_comments, class_name: 'StudentComment', foreign_key: :creator_id
   has_many :from_assistant_comments, class_name: 'StudentComment', foreign_key: :student_id

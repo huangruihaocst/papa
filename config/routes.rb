@@ -13,7 +13,9 @@ Rails.application.routes.draw do
   get 'semesters/default' => 'semesters#default'
 
   resources :courses, only: [:show, :update, :destroy] do
-    resources :students, only: [:index, :create, :destroy]
+    resources :students, only: [:index, :destroy]
+    post 'students/:id' => 'students#create', as: :create_student
+
     resources :assistants, only: [:index, :create, :destroy]
     resources :lessons, only: [:index, :create, :destroy]
     resources :teachers, only: [:index, :create, :destroy, :update]
@@ -39,6 +41,8 @@ Rails.application.routes.draw do
 
   resources :students, only: [:index, :show, :create, :update, :destroy] do
     resources :courses, only: [:index, :update]
+    post 'courses/:id' => 'courses#create', as: :create_course
+
     resources :files, only: [:index, :create, :destroy]
     resources :lessons, only: [:show, :update] do
       resources :files, only: [:show, :create, :destroy]

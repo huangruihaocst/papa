@@ -38,8 +38,12 @@ class StudentsController < ApplicationController
 
   # DELETE /courses/1/students/1.json
   def destroy
-    if params[:course_id] && params[:student_id]
-
+    if params[:course_id] && params[:id]
+      if Participation.where(user_id: params[:id]).where(course_id: params[:course_id]).first.destroy
+        json_successful
+      else
+        json_failed
+      end
     else
       json_failed
     end

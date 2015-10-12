@@ -12,6 +12,13 @@ class CoursesControllerTest < ActionController::TestCase
     assert json['courses'].count > 0
   end
 
+  # GET /semester/1/courses.json
+  test 'should not get courses by bad semester' do
+    get :index, format: :json, semester_id: -1
+    json = JSON.parse(response.body)
+    assert_equal STATUS_FAIL, json['status']
+  end
+
   # GET /teachers/1/courses.json
   test 'api should get courses by teacher' do
     u = User.find_by_name('alex')
@@ -95,8 +102,50 @@ class CoursesControllerTest < ActionController::TestCase
     assert_equal STATUS_SUCCESS, json['status']
   end
 
+  # POST /teachers/1/courses.json
+  test 'api should create course by teacher' do
+    u = User.find_by_name('alex')
+    token_str = u.create_token.token
+
+    assert_difference 'TeachingCourse.count' do
+      post :create, teacher_id: u.id, token: token_str, course: { name: 'test course', description: 'new' }
+    end
+    json = JSON.parse(response.body)
+    assert_equal STATUS_SUCCESS, json['status']
+  end
+
+  # POST /assistants/1/courses/1.json
+  test 'api should relate course to assitant' do
+    u = User.find_by_name('ciara')
+    token_str = u.create_token.token
+    course = Course.first
+
+    assert_difference 'Participation.count' do
+      post :create, assistant_id: u.id, id: course.id, token: token_str
+    end
+    json = JSON.parse(response.body)
+    assert_equal STATUS_SUCCESS, json['status']
+  end
+
+  # POST /students/1/courses/1.json
+  test 'api should relate course to student' do
+    u = User.find_by_name('betty')
+    token_str = u.create_token.token
+    course = Course.first
+
+    assert_difference 'Participation.count' do
+      post :create, student_id: u.id, id: course.id, token: token_str
+    end
+    json = JSON.parse(response.body)
+    assert_equal STATUS_SUCCESS, json['status']
+  end
+
+
   # DELETE /courses/1.json
   test 'api should delete course by id with teacher token' do
+    u = User.find_by_name('alex')
+    token_str = u.create_token.token
+
     course = Course.find_by_name('Operation System')
     teacher = course.teachers.first
     token_str = teacher.create_token.token
@@ -107,13 +156,34 @@ class CoursesControllerTest < ActionController::TestCase
     assert_equal STATUS_SUCCESS, json['status']
   end
 
-  # POST /teachers/1/courses.json
-  test 'api should create course by teacher' do
+  # DELETE /students/1/courses/1.json
+  test 'should unrelate course with student' do
     u = User.find_by_name('alex')
     token_str = u.create_token.token
 
-    assert_difference 'TeachingCourse.count' do
-      post :create, teacher_id: u.id, token: token_str, course: { name: 'test course', description: 'new' }
+    user = User.find_by_name('alex')
+    course = Course.find_by_name('Operation System')
+
+    assert_difference 'Participation.count', -1 do
+      delete :destroy, foramt: :json, student_id: user.id, id: course.id, token: token_str
     end
+    json = JSON.parse(response.body)
+    assert_equal STATUS_SUCCESS, json['status']
+  end
+
+  # DELETE /assistants/1/courses/1.json
+  test 'should unrelate course with assistant' do
+    u = User.find_by_name('alex')
+    token_str = u.create_token.token
+
+    p = Participation.where(role: ROLE_ASSISTANT).first
+    user = p.user
+    course = p.course
+
+    assert_difference 'Participation.count', -1 do
+      delete :destroy, foramt: :json, assistant_id: user.id, id: course.id, token: token_str
+    end
+    json = JSON.parse(response.body)
+    assert_equal STATUS_SUCCESS, json['status']
   end
 end

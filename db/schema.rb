@@ -26,11 +26,6 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.integer "file_resource_id"
   end
 
-  create_table "assisting_courses", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "course_id"
-  end
-
   create_table "course_files", force: :cascade do |t|
     t.integer "course_id"
     t.integer "creator_id"
@@ -52,11 +47,6 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.integer  "creator_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "learning_courses", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "course_id"
   end
 
   create_table "lesson_comments", force: :cascade do |t|
