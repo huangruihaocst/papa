@@ -105,31 +105,37 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     
     # namespace courses
     # 课程相关
-    GET    /courses.json             获得所有课程(包含所有学年的) "courses": [course, ...]               Student
-    POST   /courses.json             添加课程             course parameters                             Teacher
+    #!GET    /courses.json             获得所有课程(包含所有学年的) "courses": [course, ...]               Student
+    #!POST   /courses.json             添加课程             course parameters                             Teacher
     PUT    /courses/1.json           修改课程             course parameters                             Teacher
     DELETE /courses/1.json           删除课程             id                                            Teacher
     GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          Student
     
     # 与课程有关系的资源
     GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                        Student
-    POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
-    PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
+    #!POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
+    #!PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
     DELETE /courses/1/teachers/1.json 删除老师            id                                            Teacher
     
     GET    /courses/1/students.json  获得id=1课的所有学生 "students": [student, ...]                    Assistant
-    POST   /courses/1/students.json  添加学生
+    #!POST   /courses/1/students.json  添加学生              
     DELETE /courses/1/students/1.json 删除学生
+    ?POST   /courses/1/students/1.json 添加学生
     GET    /courses/1/assistants.json 类似上一个          "assistants": [assistant, ...]                Student
-    POST   /courses/1/assistants.json 添加助教            id                                            Teacher
-    DELETE /courses/1/assistants/1.json 删除助教
+    #!POST   /courses/1/assistants.json 添加助教            id                                            Teacher
+    #!DELETE /courses/1/assistants/1.json 删除助教
+    ?POST   /courses/1/assistants/1.json 添加助教            id                                            Teacher
+    
     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            Student
     POST   /courses/1/lessons.json   向课程中添加实验课
-    DELETE /courses/1/lessons/1.json 从课程中删除实验课
+    #!DELETE /courses/1/lessons/1.json 从课程中删除实验课
+    ?DELETE /lessons/1.json          删掉实验课
     
     # namespace lessons
     GET    /lessons/1.json           获得某门实验课的信息  "lesson": lesson                             Student
-    GET    /lessons/1/comments.json  获得某门课程的评价    "comments": [comment, ...]                   Teacher
+    #!GET    /lessons/1/comments.json  获得某门课程的评价    "comments": [comment, ...]                   Teacher
+    ?GET    /lessons/1/comments.json  获得某门课程的评价    "lesson_comments": [lesson_comment, ...]                   Teacher
+
     POST   /lessons/1/comments.json  添加学生对课程的评价  lesson comment parameters                    Student
     GET    /lessons/1/students/1/comments.json 查看助教对学生的评价 "student_comments": [student_comment,...] Student
     POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant

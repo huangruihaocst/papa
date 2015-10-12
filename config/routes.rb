@@ -7,20 +7,20 @@ Rails.application.routes.draw do
 
   get 'users/current_user.json' => 'users#current'
 
-  resources :semesters, only: [:index, :create, :update, :delete] do
+  resources :semesters, only: [:index, :create, :update, :destroy] do
     resources :courses, only: [:index]
-    get 'default' => 'semesters#default'
   end
+  get 'semesters/default' => 'semesters#default'
 
-  resources :courses, only: [:show, :update, :delete] do
-    resources :students, only: [:index, :create, :delete]
-    resources :assistants, only: [:index, :create, :delete]
-    resources :lessons, only: [:index, :create, :delete]
-    resources :teachers, only: [:index, :create, :delete, :update]
+  resources :courses, only: [:show, :update, :destroy] do
+    resources :students, only: [:index, :create, :destroy]
+    resources :assistants, only: [:index, :create, :destroy]
+    resources :lessons, only: [:index, :create, :destroy]
+    resources :teachers, only: [:index, :create, :destroy, :update]
     resources :messages, only: [:create]
   end
 
-  resources :lessons, only: [:show] do
+  resources :lessons, only: [:show, :destroy] do
     # students' comments to the lesson
     resources :comments, controller: 'lesson_comments', only: [:index, :create]
 
@@ -34,11 +34,11 @@ Rails.application.routes.draw do
     resources :students, only: [:index, :create]
   end
 
-  resources :students, only: [:index, :show, :create, :update, :delete] do
+  resources :students, only: [:index, :show, :create, :update, :destroy] do
     resources :courses, only: [:index, :update]
-    resources :files, only: [:index, :create, :delete]
+    resources :files, only: [:index, :create, :destroy]
     resources :lessons, only: [:show, :update] do
-      resources :files, only: [:show, :create, :delete]
+      resources :files, only: [:show, :create, :destroy]
     end
     resources :messages, only: [:index]
   end

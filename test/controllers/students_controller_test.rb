@@ -7,4 +7,13 @@ class StudentsControllerTest < ActionController::TestCase
     assert_equal json['status'], STATUS_SUCCESS
     assert json['students'].is_a? Array
   end
+
+  test 'api should add student by course' do
+
+  end
+
+  test 'api should remove student from course' do
+
+  end
+
 end

@@ -2,6 +2,17 @@ require 'test_helper'
 
 class CoursesControllerTest < ActionController::TestCase
 
+  # GET /semesters/1/courses.json
+  test 'api should get courses by semester' do
+    semester = Semester.first
+
+    get :index, format: :json, semester_id: semester.id
+    json = JSON.parse(@response.body)
+    assert_equal STATUS_SUCCESS, json['status']
+    assert json['courses'].count > 0
+  end
+
+  # GET /teachers/1/courses.json
   test 'api should get courses by teacher' do
     u = User.find_by_name('alex')
     token_str = u.create_token.token
@@ -12,6 +23,7 @@ class CoursesControllerTest < ActionController::TestCase
     assert json['courses'].count > 0
   end
 
+  # GET /assistants/1/courses.json
   test 'api should get courses by assistant with token' do
     u = User.find_by_name('betty')
     token_str = u.create_token.token
@@ -22,6 +34,7 @@ class CoursesControllerTest < ActionController::TestCase
     assert_not_nil json['courses']
   end
 
+  # GET /students/1/courses.json
   test 'api should get courses by student with token' do
     u = User.first
     token_str = u.create_token.token
@@ -32,6 +45,7 @@ class CoursesControllerTest < ActionController::TestCase
     assert_not_nil json['courses']
   end
 
+  # GET /student/1/courses.json
   test 'api should not get courses by student with invalid token' do
     u = User.first
 
@@ -41,6 +55,7 @@ class CoursesControllerTest < ActionController::TestCase
     assert_equal json['reason'], REASON_TOKEN_INVALID
   end
 
+  # GET /student/1/courses.json
   test 'api should not get courses by student if time out' do
     u = User.first
     # create an invalid token
@@ -52,6 +67,7 @@ class CoursesControllerTest < ActionController::TestCase
     assert_equal json['reason'], REASON_TOKEN_TIMEOUT
   end
 
+  # GET /courses/1.json
   test 'api should get course by id' do
     get :show, format: :json, id: Course.first.id
     json = JSON.parse(@response.body)
@@ -59,12 +75,39 @@ class CoursesControllerTest < ActionController::TestCase
     assert_not_nil json['course']['name']
   end
 
+  # GET /courses/-1.json
   test 'api should not get course by invalid id' do
     get :show, format: :json, id: -1
     json = JSON.parse(@response.body)
     assert_equal json['status'], STATUS_FAIL
   end
 
+  # PUT /courses/1.json
+  test 'api should update course by id with teacher token' do
+    course = Course.find_by_name('Operation System')
+    course_id = course.id
+    teacher = course.teachers.first
+    token_str = teacher.create_token.token
+
+    put :update, format: :json, id: course.id, token: token_str, course: { name: 'fuck' }
+    assert_equal 'fuck', Course.find(course_id).name
+    json = JSON.parse(response.body)
+    assert_equal STATUS_SUCCESS, json['status']
+  end
+
+  # DELETE /courses/1.json
+  test 'api should delete course by id with teacher token' do
+    course = Course.find_by_name('Operation System')
+    teacher = course.teachers.first
+    token_str = teacher.create_token.token
+    assert_difference 'Course.count', -1 do
+      delete :destroy, format: :json, id: course.id, token: token_str
+    end
+    json = JSON.parse(response.body)
+    assert_equal STATUS_SUCCESS, json['status']
+  end
+
+  # POST /teachers/1/courses.json
   test 'api should create course by teacher' do
     u = User.find_by_name('alex')
     token_str = u.create_token.token

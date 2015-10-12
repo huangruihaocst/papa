@@ -83,6 +83,23 @@ class CoursesController < ApplicationController
     end
   end
 
+  # PUT /courses/1.json
+  def update
+    if Course.find(params[:id]).update(params.require(:course).permit(:name, :description, :semester_id))
+      json_successful
+    else
+      json_failed
+    end
+  end
+
+  def destroy
+    if Course.find(params[:id]).destroy
+      json_successful
+    else
+      json_failed
+    end
+  end
+
   private
   def set_course
     begin

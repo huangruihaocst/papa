@@ -6,10 +6,10 @@ class Course < ActiveRecord::Base
   has_many :lessons
 
   has_many :participations
-  has_many :students, through: :participations, foreign_key: :user, class_name: 'User'
+  has_many :students, through: :participations, source: :user
 
   has_many :teaching_courses
-  has_many :teachers, through: :teaching_courses, foreign_key: :user, class_name: 'User'
+  has_many :teachers, through: :teaching_courses, source: :user
 
   has_many :messages
 

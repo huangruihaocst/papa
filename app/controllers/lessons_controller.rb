@@ -1,15 +1,17 @@
 
 class LessonsController < ApplicationController
 
-  before_action :set_lesson, only: [:show]
+  before_action :set_lesson, only: [:show, :destroy]
 
-  # GET /lessons
-  # GET /lessons.json
+  # GET /courses/1/lessons.json
   def index
-    @lessons = Lesson.all
+    if params[:course_id]
+      @lessons = Course.find(params[:course_id]).lessons
+    else
+      json_failed
+    end
   end
 
-  # GET /lessons/1
   # GET /lessons/1.json
   def show
     unless @lesson
@@ -20,11 +22,12 @@ class LessonsController < ApplicationController
     end
   end
 
-  # POST /lessons
+  # POST /courses/1/lessons.json
   def create
-    @lesson =  Lesson.create(
+    @lesson = Course.find(params[:course_id]).lessons.create(
         params.require(:lesson).
-            permit(:name, :description, :start_time, :end_time, :location).merge({ course_id: params[:course_id] }))
+        permit(:name, :description, :start_time, :end_time, :location).
+            merge({ course_id: params[:course_id] }))
 
     respond_to do |format|
       if @lesson.valid?
@@ -34,6 +37,15 @@ class LessonsController < ApplicationController
         format.html { html_failed }
         format.json { json_failed }
       end
+    end
+  end
+
+  # DELETE /lessons/1.json
+  def destroy
+    if @lesson && @lesson.destroy
+      json_successful
+    else
+      json_failed
     end
   end
 

@@ -1,14 +1,19 @@
 adv_physics:
   name: Advanced Physics
+  semester: y2015s1
 
 os:
   name: Operation System
+  semester: y2015s1
 
 compiler:
   name: Modern Compiler Design and Practice
+  semester: y2015s1
 
 cpp:
   name: Programming C++
+  semester: y2015s2
 
 ds:
   name: Data Structures
+  semester: y2015s3

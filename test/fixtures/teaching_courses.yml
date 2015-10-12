@@ -8,3 +8,11 @@
 alex_teaches_os:
   user: alex
   course: os
+
+alex_teaches_ds:
+  user: alex
+  course: ds
+
+ciara_teaches_cpp:
+  user: ciara
+  course: cpp
