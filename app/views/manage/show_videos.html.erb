@@ -13,14 +13,34 @@
     <div class="col-md-8">
             <!-- Begin VideoJS -->
             <div class="video-js-box " style="margin: 20px;border-right: groove 1px #000000">
-              <video id="example_video_3" class="video-js vjs-big-play-centered"
+              <video id="video-screen" class="video-js vjs-big-play-centered"
                      width="500" height="264" style="margin: auto" controls
                      preload="auto" data-setup="{}">
-                <source src="/test.mp4" type='video/mp4;' />
+                <source id="video-src" src="/test.mp4" type='video/mp4;' />
               </video>
               </div>
     </div>
-      <div class="col-md-4"></div>
+      <div class="col-md-4 label-list" id="video-list" 
+           style="padding: 20px;text-align: left;"></div>
     </div>
   </div>
 <!-- End VideoJS -->
+  <script>
+      data=[{id:'1',path:"/test.mp4"},{id:'2',path:"/xxx.mp4"}];
+      (function(){
+          str="";
+          for(var i in data)
+          {
+              str+="<span class='label label-default' style='margin-right: 10px;font-size: 16px'>"+data[i].path+"</span>";
+              str+="<button class='btn btn-sm btn-primary' onclick=changeVideo("+i.toString()+
+              ")><span class='glyphicon glyphicon-play'></span>Play</button><hr>";
+          }
+          //console.log(str);
+          $("#video-list").html(str);
+      })();
+      function changeVideo(x)
+      {
+          $("video").attr("src",data[x].path);
+          $("video")[0].load();
+      }
+  </script>
