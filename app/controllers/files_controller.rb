@@ -23,8 +23,19 @@ class FilesController < ApplicationController
     @file = FileResource.find(params[:id])
   end
 
+  # POST /files.json
   def create
-    json_failed(REASON_NOT_IMPLEMENTED)
+    temp = params['file']
+    loc = Rails.root.join('public', 'uploads', temp.original_filename)
+    File.open(loc, 'wb') do |file|
+      file.write(temp.read)
+    end
+
+    if FileResource.create(file_type: params[:type], name: temp.original_filename, path: loc)
+      json_successful
+    else
+      json_failed
+    end
   end
 
   def destroy

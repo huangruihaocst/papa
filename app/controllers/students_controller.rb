@@ -7,15 +7,20 @@ class StudentsController < ApplicationController
     check_token(params[:token], @student.id)
   end
 
-  # GET /lessons/1/students.json
-  # GET /courses/1/students.json
+  # GET /lessons/1/students.json (sign in the lesson)
+  # GET /courses/1/students.json (student list of the course)
   def index
-    course = Course.find(params[:course_id] || 1)
-    participations = course.participations.where(role: ROLE_STUDENT)
-    @students = User.none
-    participations.each do |p|
-      @students <<= p.user
+    if params[:course_id]
+      course = Course.find(params[:course_id])
+      participations = course.participations.where(role: ROLE_STUDENT)
+      @students = User.none
+      participations.each do |p|
+        @students <<= p.user
+      end
+    else
+
     end
+
   end
 
   # GET /students/1.json

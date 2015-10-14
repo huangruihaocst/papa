@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 20151008120334) do
   end
 
   create_table "file_resources", force: :cascade do |t|
-    t.string   "type"
+    t.string   "file_type"
     t.string   "name"
     t.string   "path"
     t.integer  "creator_id"

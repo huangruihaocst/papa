@@ -6,6 +6,7 @@ class LessonsControllerTest < ActionController::TestCase
     @course = Course.find_by_name('Operation System')
   end
 
+  # GET /course/1/lessons.json
   test 'api should get all lessons by course' do
     get :index, format: :json, course_id: @course.id
     json = JSON.parse(@response.body)
@@ -13,6 +14,7 @@ class LessonsControllerTest < ActionController::TestCase
     assert json['lessons'].count > 0
   end
 
+  # GET /lessons/1.json
   test 'api should get lesson by id' do
     get :show, format: :json, id: Lesson.first.id
     json = JSON.parse(@response.body)
@@ -20,7 +22,8 @@ class LessonsControllerTest < ActionController::TestCase
     assert_not_nil json['lesson']['name']
   end
 
-  test 'api should add lesson' do
+  # POSt /course/1/lessons.json
+  test 'api should add lesson to course' do
     assert_difference('Lesson.count') do
       post :create, format: :json, course_id: @course.id, lesson: {
                       name: 'test lesson',
@@ -32,6 +35,7 @@ class LessonsControllerTest < ActionController::TestCase
     assert_equal JSON.parse(@response.body)['status'], STATUS_SUCCESS
   end
 
+  # POST /courses/1/lessons.json
   test 'api should not add bad lesson' do
     assert_no_difference('Lesson.count') do
       post :create, format: :json, course_id: @course.id, lesson: { bad_name: 'bad name' }
@@ -39,6 +43,7 @@ class LessonsControllerTest < ActionController::TestCase
     assert_equal JSON.parse(@response.body)['status'], STATUS_FAIL
   end
 
+  # DELETE /lessons/1.json
   test 'should delete lesson by id' do
     assert_difference 'Lesson.count', -1 do
       delete :destroy, format: :json, id: Lesson.first.id

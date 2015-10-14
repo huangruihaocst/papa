@@ -1,6 +1,6 @@
 class CoursesController < ApplicationController
 
-  before_action :set_course, only: [:show, :destroy]
+  before_action :set_course, only: [:show, :update, :destroy]
 
   # GET /semesters/1/courses.json
   # GET /students/1/courses.json
@@ -85,7 +85,8 @@ class CoursesController < ApplicationController
 
   # PUT /courses/1.json
   def update
-    if Course.find(params[:id]).update(params.require(:course).permit(:name, :description, :semester_id))
+    must_by_a_teacher_of(@course)
+    if @course.update(params.require(:course).permit(:name, :description, :semester_id))
       json_successful
     else
       json_failed
@@ -96,7 +97,7 @@ class CoursesController < ApplicationController
   # DELETE /students/1/courses/1.json
   # DELETE /assistants/1/courses/1.json
   def destroy
-    must_by_teacher_of(@course)
+    must_by_a_teacher_of(@course)
     case
       when params[:student_id]
         if Participation.where(user_id: params[:student_id], course_id: @course.id, role: ROLE_STUDENT).first.destroy
@@ -130,7 +131,7 @@ class CoursesController < ApplicationController
     end
   end
 
-  def must_by_teacher_of(course)
+  def must_by_a_teacher_of(course)
     raise TokenException.new(REASON_TOKEN_INVALID) unless course && course.is_a?(Course)
 
     if params[:token]

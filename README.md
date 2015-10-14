@@ -147,7 +147,7 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     
     # namespace students
     # 学生相关
-    GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..] 
+    #GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..] 
     GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]       Student
     #!POST   /students.json            添加一个学生         student parameters                            Teacher
     #!PUT    /students/1.json          修改学生             student parameters                            Student

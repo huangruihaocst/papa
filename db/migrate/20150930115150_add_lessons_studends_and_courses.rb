@@ -92,7 +92,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
     end
 
     create_table :file_resources do |t|
-      t.string :type
+      t.string :file_type
       t.string :name
       t.string :path
       t.integer :creator_id
