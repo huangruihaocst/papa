@@ -31,19 +31,20 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void check(){//1 for right, 0 for wrong password, and 2 for not registered
-        EditText edit_username = (EditText)findViewById(R.id.username);
-        EditText edit_password = (EditText)findViewById(R.id.password);
-        username = edit_username.getText().toString();
-        password = edit_password.getText().toString();
-
-        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
-        if(papaDataBaseManager.signIn(username, password)){
-            check_message = 1;
-        }
-        else{
-            // ToDo: 区分到底是错误密码还是未注册
-            check_message = 0;
-        }
+//        EditText edit_username = (EditText)findViewById(R.id.username);
+//        EditText edit_password = (EditText)findViewById(R.id.password);
+//        username = edit_username.getText().toString();
+//        password = edit_password.getText().toString();
+//
+//        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
+//        if(papaDataBaseManager.signIn(username, password)){
+//            check_message = 1;
+//        }
+//        else{
+//            // ToDo: 区分到底是错误密码还是未注册
+//            check_message = 0;
+//        }
+        check_message = 1;
     }
 
     public void signIn(){

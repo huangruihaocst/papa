@@ -17,6 +17,7 @@
     <string name="comment_area">请在此输入您的评论</string>
     <string name="teacher_assistant">助教课程</string>
     <string name="student">学生课程</string>
+    <string name="help">帮助</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -36,11 +37,16 @@
     <string name="key_course_experiment">key_course_experiment</string>
     <string name="key_experiment_student">key_experiment_student</string>
     <string name="key_to_detail">key_to_detail</string>
+    <string name="key_course_help">key_course_help</string>
+    <string name="key_detail_help">key_detail_help</string>
+    <string name="key_experiment_help">key_experiment_help</string>
+    <string name="key_student_help">key_student_help</string>
 
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
 
     <string name="color_primary">#3F51B5</string>
     <string name="color_primary_dark">#303F9F</string>
+    <string name="title_activity_help_activity">HelpActivity</string>
 
 </resources>

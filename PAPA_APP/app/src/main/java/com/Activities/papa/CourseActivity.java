@@ -137,8 +137,13 @@ public class CourseActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
-
+        } else if (id == R.id.nav_help) {
+            Intent intent = new Intent(CourseActivity.this,HelpActivity.class);
+            Bundle data = new Bundle();
+            String key_course_help = getString(R.string.key_course_help);
+            data.putParcelable(key_course_help,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
         } else if (id == R.id.nav_send) {
 
         }
@@ -150,30 +155,30 @@ public class CourseActivity extends AppCompatActivity
 
     private void getCourses()
     {
-        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
-
-        List<String> studentList = new ArrayList<String>();
-        List<String> assistList = new ArrayList<String>();
-
-        try {
-            papaDataBaseManager.getCourses(studentList, assistList);
-            course_student_list = studentList.toArray(new String[studentList.size()]);
-            course_teacher_assistant_list = assistList.toArray(new String[assistList.size()]);
-        }
-        catch (Exception e)
-        {
-            // TODO: What if courses cannot be received?
-
-        }
+//        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
+//
+//        List<String> studentList = new ArrayList<String>();
+//        List<String> assistList = new ArrayList<String>();
+//
+//        try {
+//            papaDataBaseManager.getCourses(studentList, assistList);
+//            course_student_list = studentList.toArray(new String[studentList.size()]);
+//            course_teacher_assistant_list = assistList.toArray(new String[assistList.size()]);
+//        }
+//        catch (Exception e)
+//        {
+//            // TODO: What if courses cannot be received?
+//
+//        }
 //        Please do not delete the code below when debugging:
-//        course_student_list = new String[3];
-//        for(int i = 0;i < 3;i ++){
-//            course_student_list[i] = "课程" + i;
-//        }
-//        course_teacher_assistant_list = new String[3];
-//        for(int i = 0;i < 3;i ++){
-//            course_teacher_assistant_list[i] = "课程" + i;
-//        }
+        course_student_list = new String[3];
+        for(int i = 0;i < 3;i ++){
+            course_student_list[i] = "课程" + i;
+        }
+        course_teacher_assistant_list = new String[3];
+        for(int i = 0;i < 3;i ++){
+            course_teacher_assistant_list[i] = "课程" + i;
+        }
     }
 
     private class MyTeacherAssistantAdapter extends BaseAdapter {

@@ -111,8 +111,13 @@ public class DetailActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
-
+        } else if (id == R.id.nav_help) {
+            Intent intent = new Intent(DetailActivity.this,HelpActivity.class);
+            Bundle data = new Bundle();
+            String key_course_help = getString(R.string.key_course_help);
+            data.putParcelable(key_course_help,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
         } else if (id == R.id.nav_send) {
 
         }
