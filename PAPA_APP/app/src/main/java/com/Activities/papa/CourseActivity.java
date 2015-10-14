@@ -1,4 +1,4 @@
-package com.example.huang.papa;
+package com.Activities.papa;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.example.huang.papa.BundleHelper;
+import com.Activities.papa.BundleHelper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.huang.papa;
+package com.Activities.papa;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.example.huang.papa.BundleHelper;
+import com.Activities.papa.BundleHelper;
 
 public class SignInActivity extends AppCompatActivity {
 

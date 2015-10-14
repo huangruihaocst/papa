@@ -1,4 +1,4 @@
-package com.example.huang.papa;
+package com.Activities.papa;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,24 +20,27 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class StudentActivity extends AppCompatActivity
+public class ExperimentActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    String[] student_list;
+    String[] experiment_list;
+    String course_name;
+    String identity;
     BundleHelper bundleHelper = new BundleHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student);
+        setContentView(R.layout.activity_experiment);
 
-        final String key_experiment_student = getString(R.string.key_experiment_student);
+        final String key_course_experiment = getString(R.string.key_course_experiment);
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        bundleHelper = data.getParcelable(key_experiment_student);
-        final String experiment_name = bundleHelper.getExperimentName();
+        bundleHelper = data.getParcelable(key_course_experiment);
+        course_name = bundleHelper.getCourseName();
+        identity = bundleHelper.getIdentity();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(experiment_name);
+        toolbar.setTitle(course_name);
         setSupportActionBar(toolbar);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -58,17 +61,25 @@ public class StudentActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        getStudents(experiment_name);
+        getExperiments(course_name);
 
-        final ListView StudentListView = (ListView)findViewById(R.id.student_list);
-        StudentListView.setAdapter(new MyAdapter());
-        StudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ListView ExperimentListView = (ListView)findViewById(R.id.experiment_list);
+        ExperimentListView.setAdapter(new MyAdapter());
+        ExperimentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(StudentActivity.this,DetailActivity.class);
-                String key_to_detail = getString(R.string.key_to_detail);
+                Intent intent = new Intent();
                 Bundle data = new Bundle();
-                data.putParcelable(key_to_detail,bundleHelper);
+                bundleHelper.setExperimentName(experiment_list[position]);
+                if(identity.equals("teacher_assistant")){
+                    String key_experiment_student = getString(R.string.key_experiment_student);
+                    data.putParcelable(key_experiment_student,bundleHelper);
+                    intent = new Intent(ExperimentActivity.this,StudentActivity.class);
+                }else if(identity.equals("student")){
+                    String key_to_detail = getString(R.string.key_to_detail);
+                    data.putParcelable(key_to_detail,bundleHelper);
+                    intent = new Intent(ExperimentActivity.this,DetailActivity.class);
+                }
                 intent.putExtras(data);
                 startActivity(intent);
             }
@@ -88,7 +99,7 @@ public class StudentActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.student, menu);
+        getMenuInflater().inflate(R.menu.experiment, menu);
         return true;
     }
 
@@ -101,8 +112,6 @@ public class StudentActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
-            return true;
-        }else if (id == R.id.action_experiment_information) {
             return true;
         }
 
@@ -137,7 +146,7 @@ public class StudentActivity extends AppCompatActivity
     private class MyAdapter extends BaseAdapter {
         @Override
         public int getCount(){
-            return student_list.length;
+            return experiment_list.length;
         }
         @Override
         public Object getItem(int arg0){
@@ -150,7 +159,7 @@ public class StudentActivity extends AppCompatActivity
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
             TextView mTextView = new TextView(getApplicationContext());
-            mTextView.setText(student_list[position]);
+            mTextView.setText(experiment_list[position]);
             mTextView.setTextSize(35);
 //            mTextView.setTextColor(getColor(R.color.colorPrimary));
             mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
@@ -158,10 +167,10 @@ public class StudentActivity extends AppCompatActivity
         }
     }
 
-    private void getStudents(String experiment_name){
-        student_list = new String[10];
+    private void getExperiments(String course_name){
+        experiment_list = new String[10];
         for(int i = 0;i < 10;i ++){
-            student_list[i] = "学生" + i;
+            experiment_list[i] = "实验" + i;
         }
     }
 }

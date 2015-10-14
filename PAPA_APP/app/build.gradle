@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.example.huang.papa"
+        applicationId "com.Activities.papa"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1

@@ -1,4 +1,4 @@
-package com.example.huang.papa;
+package com.Activities.papa;
 
 import android.content.Intent;
 import android.graphics.Color;
