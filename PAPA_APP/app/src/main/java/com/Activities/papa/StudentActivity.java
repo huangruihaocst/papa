@@ -3,8 +3,6 @@ package com.Activities.papa;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -126,12 +124,17 @@ public class StudentActivity extends AppCompatActivity
         } else if (id == R.id.nav_help) {
             Intent intent = new Intent(StudentActivity.this,HelpActivity.class);
             Bundle data = new Bundle();
-            String key_course_help = getString(R.string.key_course_help);
-            data.putParcelable(key_course_help,bundleHelper);
+            String key_to_help = getString(R.string.key_to_help);
+            data.putParcelable(key_to_help,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(StudentActivity.this,SettingsActivity.class);
+            Bundle data = new Bundle();
+            String key_to_settings = getString(R.string.key_to_settings);
+            data.putParcelable(key_to_settings,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
