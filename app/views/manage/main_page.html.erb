@@ -123,6 +123,12 @@
 					<input id="input-add-class-1" type="text" class="form-control"></input>
 					<h4>实验内容</h4>
 					<textarea id="input-add-class-2" type="text" class="form-control"></textarea>
+					<h4>开始时间</h4>
+					<input id="input-add-class-3" type="text" class="form-control" placeholder="2000-01-01 20:00"></input>    <!--#modify-->
+					<h4>结束时间</h4>
+					<input id="input-add-class-4" type="text" class="form-control" placeholder="2000-01-01 20:00"></input>    <!--#modify-->
+					<h4>实验地点</h4>
+					<input id="input-add-class-5" type="text" class="form-control"></input>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-primary" onclick="confirmClass()" data-dismiss="modal">添加</button>
@@ -144,9 +150,32 @@
 					<input id="input-modify-class-1" type="text" class="form-control"></input>
 					<h4>实验内容</h4>
 					<textarea id="input-modify-class-2" type="text" class="form-control"></textarea>
+					<h4>开始时间</h4>
+					<input id="input-add-class-3" type="text" class="form-control" placeholder="2000-01-01 20:00"></input>    <!--#modify-->
+					<h4>结束时间</h4>
+					<input id="input-add-class-4" type="text" class="form-control" placeholder="2000-01-01 20:00"></input>    <!--#modify-->
+					<h4>实验地点</h4>
+					<input id="input-add-class-5" type="text" class="form-control"></input>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-primary" onclick="modifyClass()" data-dismiss="modal">修改</button>
+					<button class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" type="button" data-dismiss="modal">×</button>
+					<h3>确认删除？</h3>
+				</div>
+				<div class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" onclick="deleteItem()" data-dismiss="modal">确认</button>
 					<button class="btn btn-default" data-dismiss="modal">取消</button>
 				</div>
 			</div>
@@ -161,7 +190,7 @@
 		{
 			var text1,i;
 			text1=$("#input-semester-1")[0].value;
-			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: ""},
+			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: ""},   //#modify
     		function(data)
     		{
     			if (data=="fail")
@@ -189,10 +218,13 @@
 		
 		function confirmCourse()  //新课程的信息
 		{
-			var text1,text2,i;
+			var text1,text2,i,p;
 			text1=$("#input-add-course-1")[0].value;
 			text2=$("#input-add-course-2")[0].value;
-			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},
+			p=new Object();
+			p.name=text1;
+			p.description=text2;
+			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},  //#modify
     		function(data)
     		{
     			if (data=="fail")
@@ -206,9 +238,7 @@
     				{
     					info.semesters[choosei].courses[i]=info.semesters[choosei].courses[i-1];
     				}
-    				info.semesters[choosei].courses[0]=new Object();
-    				info.semesters[choosei].courses[0].name=text1;
-    				info.semesters[choosei].courses[0].description=text2;
+    				info.semesters[choosei].courses[0]=p;
     				info.semesters[choosei].courses[0].tot=0;
     				info.semesters[choosei].courses[0].classes=new Array();
     				showInfo();
@@ -221,10 +251,13 @@
     	
     	function modifyCourse()    //修改课程信息
     	{
-    		var text1,text2,i;
+    		var text1,text2,i,p;
     		text1=$("#input-modify-course-1")[0].value;
 			text2=$("#input-modify-course-2")[0].value;
-			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},
+			p=new Object();
+			p.name=text1;
+			p.description=text2;
+			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},  //#modify
     		function(data)
     		{
     			if (data=="fail")
@@ -234,8 +267,7 @@
     			}
     			if (data=="succeed")
     			{
-    				info.semesters[choosei].courses[choosej].name=text1;
-    				info.semesters[choosei].courses[choosej].description=text2;
+    				info.semesters[choosei].courses[choosej]=p;
     				showInfo();
     				return;
     			}
@@ -246,10 +278,19 @@
 		
 		function confirmClass()  //新实验的信息
 		{
-			var text1,text2,i;
+			var text1,text2,text3,text4,text5,i,p;
 			text1=$("#input-add-class-1")[0].value;
 			text2=$("#input-add-class-2")[0].value;
-			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},
+			text3=$("#input-add-class-3")[0].value;
+			text4=$("#input-add-class-4")[0].value;
+			text5=$("#input-add-class-5")[0].value;
+			p=new Object();
+			p.name=text1;
+			p.description=text2;
+			p.start_time=text3;
+			p.end_time=text4;
+			p.location=text5;
+			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},  //#modify
     		function(data)
     		{
     			if (data=="fail")
@@ -263,9 +304,7 @@
     				{
     					info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i-1];
     				}
-    				info.semesters[choosei].courses[choosej].classes[0]=new Object();
-    				info.semesters[choosei].courses[choosej].classes[0].name=text1;
-    				info.semesters[choosei].courses[choosej].classes[0].description=text2;
+    				info.semesters[choosei].courses[choosej].classes[0]=p;
     				showInfo();
     				return;
     			}
@@ -276,10 +315,19 @@
 		
 		function modifyClass()  //修改实验信息
 		{
-			var text1,text2,i;
+			var text1,text2,text3,text4,text5,i,p;
 			text1=$("#input-modify-class-1")[0].value;
 			text2=$("#input-modify-class-2")[0].value;
-			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},
+			text3=$("#input-modify-class-3")[0].value;
+			text4=$("#input-modify-class-4")[0].value;
+			text5=$("#input-modify-class-5")[0].value;
+			p=new Object();
+			p.name=text1;
+			p.description=text2;
+			p.start_time=text3;
+			p.end_time=text4;
+			p.location=text5;
+			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},  //#modify
     		function(data)
     		{
     			if (data=="fail")
@@ -289,8 +337,7 @@
     			}
     			if (data=="succeed")
     			{
-    				info.semesters[choosei].courses[choosej].classes[choosek].name=text1;
-    				info.semesters[choosei].courses[choosej].classes[choosek].description=text2;
+    				info.semesters[choosei].courses[choosej].classes[choosek]=p;
     				showInfo();
     				return;
     			}
@@ -298,6 +345,63 @@
     		}
     		);
 		}
+		
+		function deleteItem()
+		{
+			var id=-1,i;
+			if (choosek==-1)    //删除课程
+			{
+				id=info.semesters[choosei].courses[choosej].id;
+				$.delete('/courses/'+id+'.json',{},
+				function(data)
+				{
+					if (data=="fail")
+    				{
+    					alert("删除失败");
+    					return;
+    				}
+    				if (data=="succeed")
+    				{
+    					for (i=choosej;i<info.semesters[choosei].tot-1;++i)
+    					{
+  							info.semesters[choosei].courses[i]=info.semesters[choosei].courses[i+1];
+  						}
+  						--info.semesters[choosei].tot;
+    					info.semesters[choosei].courses[choosej].classes[choosek]=p;
+    					showInfo();
+    					return;
+    				}
+    				alert("unexpected:"+data);
+    				}
+    			);
+    		}else   //删除实验
+    		{
+    			id=info.semesters[choosei].courses[choosej].classes[choosek].id;
+				$.delete('/lessons/'+id+'.json',{},
+				function(data)
+				{
+					if (data=="fail")
+    				{
+    					alert("删除失败");
+    					return;
+    				}
+    				if (data=="succeed")
+    				{
+    					for (i=choosek;i<info.semesters[choosei].courses[choosej].tot-1;++i)
+    					{
+  							info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i+1];
+  						}
+  						--info.semesters[choosei].courses[choosej].tot;
+    					info.semesters[choosei].courses[choosej].classes[choosek]=p;
+    					showInfo();
+    					return;
+    				}
+    				alert("unexpected:"+data);
+    				}
+    			);
+    		}
+		}
+					
 		
 		function loadInfo()  //从后台获取课程信息
 		{
@@ -319,12 +423,14 @@
 					info.semesters[i].courses[j].name="大学物理"+j;
 					info.semesters[i].courses[j].description="a";
 					info.semesters[i].courses[j].classes=new Array();
+					info.semesters[i].courses[j].id=0;
 					info.semesters[i].courses[j].clicked=false;
 					for (k=0;k<=info.semesters[i].courses[j].tot;++k)
 					{
 						info.semesters[i].courses[j].classes[k]=new Object();
 						info.semesters[i].courses[j].classes[k].name="实验"+k;
 						info.semesters[i].courses[j].classes[k].description="a";
+						info.semesters[i].courses[j].classes[k].id=0;
 						info.semesters[i].courses[j].classes[k].clicked=false;
 					}
 				}
@@ -403,6 +509,9 @@
 			console.log(i,j,k);
 			$("#input-modify-class-1")[0].value=info.semesters[i].courses[j].classes[k].name;
 			$("#input-modify-class-2")[0].value=info.semesters[i].courses[j].classes[k].description;
+			$("#input-modify-class-3")[0].value=info.semesters[choosei].courses[choosej].classes[choosek].start_time;
+			$("#input-modify-class-4")[0].value=info.semesters[choosei].courses[choosej].classes[choosek].end_time;
+			$("#input-modify-class-5")[0].value=info.semesters[choosei].courses[choosej].classes[choosek].location;
 			choosei=i;choosej=j;choosek=k;
 			$('#modal-modify-class').modal('show');
 			event.stopPropagation();
@@ -427,27 +536,46 @@
 		{
 			choosei=i;choosej=j;
 			$("#input-add-class-1")[0].value=$("#input-add-class-2")[0].value="";
+			$("#input-add-class-3")[0].value=$("#input-add-class-4")[0].value=$("#input-add-class-5")[0].value="";
 			$('#modal-add-class').modal('show');
 			event.stopPropagation();
 		}
 		
 		function showCourseScore(event,i,j)  //显示第i学期第j门课的学生成绩
 		{
+			window.open("/manage/CourseScore/"+info.semesters[i].courses[j].id);
 			event.stopPropagation();
 		}
 		
 		function showCourseInfo(event,i,j)  //显示第i学期第j门课的课程信息
 		{
+			window.open("/manage/CourseInfo/"+info.semesters[i].courses[j].id);
 			event.stopPropagation();
 		}
 		
 		function showClassScore(event,i,j,k)  //显示第i学期第j门课的第k个实验的学生成绩
 		{
+			window.open("/manage/ClassScore/"+info.semesters[i].courses[j].id+"&"+info.semesters[i].courses[j].classes[k].id);
 			event.stopPropagation();
 		}
 		
 		function showClassInfo(event,i,j,k)  //显示第i学期第j门课的第k个实验的课程信息
 		{
+			window.open("/manage/ClassInfo/"+info.semesters[i].courses[j].id+"&"+info.semesters[i].courses[j].classes[k].id);
+			event.stopPropagation();
+		}
+		
+		function deleteCourse(event,i,j)  //删除第i学期第j门课
+		{
+			choosei=i;choosej=j;choosek=-1;
+			$('#modal-delete').modal('show');
+			event.stopPropagation();
+		}
+		
+		function deleteClass(event,i,j,k)  //删除第i学期第j门课的第k个实验
+		{
+			choosei=i;choosej=j;choosek=k;
+			$('#modal-delete').modal('show');
 			event.stopPropagation();
 		}
 		
@@ -476,6 +604,7 @@
 				{
 					text+='<div class="rectangleCourse btn btn-default" onclick="change('+i+','+j+','+k+')">';
 					text+='<div class="names">'+info.semesters[i].courses[j].name+'</div>';
+					text+='<div class="custombutton" onclick="deleteCourse(event,'+i+','+j+')">×</div>';
 					text+='<div class="btn btn-info custombutton" onclick="changeCourseInfo(event,'+i+','+j+')">查看|修改信息</div>';
 					text+='<div class="btn btn-info custombutton" onclick="addClass(event,'+i+','+j+')">添加实验</div>';
 					text+='<div class="btn btn-info custombutton" onclick="showCourseScore(event,'+i+','+j+')">查看成绩</div>';
@@ -487,6 +616,7 @@
 						{
 							text+='<div class="rectangleClass btn btn-default" onclick="change('+i+','+j+','+k+')">';
 							text+='<div class="names">'+info.semesters[i].courses[j].classes[k].name+'</div>';
+							text+='<div class="custombutton" onclick="deleteClass(event,'+i+','+j+','+k+')">×</div>';
 							text+='<div class="btn btn-info custombutton" onclick="changeClassInfo(event,'+i+','+j+','+k+')">查看|修改信息</div>';
 							text+='<div class="btn btn-info custombutton" onclick="showClassScore(event,'+i+','+j+','+k+')">查看成绩</div>';
 							text+='<div class="btn btn-info custombutton" onclick="showClassInfo(event,'+i+','+j+','+k+')">实验情况</div>';

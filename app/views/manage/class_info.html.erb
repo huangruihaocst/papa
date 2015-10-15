@@ -45,13 +45,25 @@
 		</div>
 	</div>
 	<script>
-		var n,courseInfo,comments=new Array(),people=new Array(2),score=new Array(11);
+		var courseId,classId;
+		
+		function getId()
+		{
+			var p=window.location.href.split("/");
+			p=p[p.length-1];
+			courseId=p.split("&")[0];
+			classId=p.split("&")[1];
+		}
+		
+		var n,courseInfo,comments=new Array(),people=new Object(),score=new Array(11);
+		
 		$("#chart1")[0].height=$("#chart1")[0].width;
 		$("#chart2")[0].height=$("#chart2")[0].width;
 		var totalPages,nowPage,numberPerPage=15;
+		
 		function loadInfo()
 		{
-			people[0]=100;people[1]=10;
+			people[0].attend=100;people.absense=10;
 			for (i=0;i<11;++i) score[i]=10;
 			courseInfo="计算机组成原理";
 			var i;
@@ -64,6 +76,26 @@
 			}
 			totalPages=Math.floor((n-1)/numberPerPage+1);
 			nowPage=1;
+			$.get("/courses/"+courseId+"/students.json",{},
+			function(data)
+			{
+				people.tot=data.size();
+			});
+			$.get("/lessons/"+classId+"/students.json",{},
+			function(data)
+			{
+				people.attend=data.size();
+				people.absense=people.tot-people.attend;
+				var i;
+				for (i=0;i<data.length;++i)
+				{
+					$.get("/students/"+data[i].id+"/lessons/"+classId+".json",{},
+					function(data)
+					{
+						++score[data];
+					});
+				}
+			});
 		}
 		
 		function changePage(x)
@@ -97,7 +129,7 @@
 			data={labels:["上课人数","缺勤人数"],datasets:[{
 					fillColor : "rgba(151,187,205,0.5)",
 					strokeColor : "rgba(151,187,205,1)",
-					data : [people[0],people[1]]}]};
+					data : [people.attend,people.absense]}]};
 			data2={labels:["0分","1分","2分","3分","4分","5分","6分","7分","8分","9分","10分"],datasets:[{
 					fillColor : "rgba(151,187,205,0.5)",
 					strokeColor : "rgba(151,187,205,1)",
