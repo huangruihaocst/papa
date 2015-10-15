@@ -65,6 +65,11 @@
 		{
 			people.attend=100;people.absense=10;
 			for (i=0;i<11;++i) score[i]=10;
+			$.get("/lessons/"+classId+".json",{},
+			function(data)
+			{
+				courseInfo=data.name;
+			});
 			courseInfo="计算机组成原理";
 			var i;
 			n=100;
