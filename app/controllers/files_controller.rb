@@ -25,13 +25,13 @@ class FilesController < ApplicationController
 
   # POST /files.json
   def create
-    temp = params['file']
+    temp = params[:file][:file]
     loc = Rails.root.join('public', 'uploads', temp.original_filename)
     File.open(loc, 'wb') do |file|
       file.write(temp.read)
     end
 
-    if FileResource.create(file_type: params[:type], name: temp.original_filename, path: loc)
+    if @file = FileResource.create(file_type: params[:file][:type], name: temp.original_filename, path: loc)
       json_successful
     else
       json_failed

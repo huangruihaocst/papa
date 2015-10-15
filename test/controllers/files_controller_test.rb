@@ -62,4 +62,16 @@ class FilesControllerTest < ActionController::TestCase
     assert_not_nil json['file']
   end
 
+  # POST /files.json
+  test 'should add file' do
+    fixture_file = fixture_file_upload('files/2.jpg', 'image/jpeg')
+
+    assert_difference 'FileResource.count' do
+      post :create, format: :json, file: {file: fixture_file, type: 'picture'}
+    end
+    json = JSON.parse(response.body)
+    assert_equal STATUS_SUCCESS, json['status']
+    assert_not_nil assigns(:file).path
+  end
+
 end
