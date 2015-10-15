@@ -63,7 +63,7 @@
 		
 		function loadInfo()
 		{
-			people[0].attend=100;people.absense=10;
+			people.attend=100;people.absense=10;
 			for (i=0;i<11;++i) score[i]=10;
 			courseInfo="计算机组成原理";
 			var i;
@@ -95,6 +95,11 @@
 						++score[data];
 					});
 				}
+			});
+			$.get("/lessons/"+classId+"/comments.json",{},
+			function(data)
+			{
+				comments[n++]=data;
 			});
 		}
 		
