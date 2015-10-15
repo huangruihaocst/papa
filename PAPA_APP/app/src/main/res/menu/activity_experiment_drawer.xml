@@ -8,11 +8,11 @@
             android:title="@string/experiment_history" />
         <item android:id="@+id/nav_upload_history" android:icon="@drawable/ic_file_upload_black_24dp"
             android:title="@string/upload_history" />
-        <item android:id="@+id/nav_manage" android:icon="@android:drawable/ic_menu_manage"
-            android:title="项目4" />
+        <item android:id="@+id/nav_edit_profile" android:icon="@android:drawable/ic_menu_edit"
+            android:title="@string/edit_profile" />
     </group>
 
-    <item android:title="其他">
+    <item android:title="@string/more">
         <menu>
             <item android:id="@+id/nav_help" android:icon="@android:drawable/ic_menu_help"
                 android:title="@string/help" />

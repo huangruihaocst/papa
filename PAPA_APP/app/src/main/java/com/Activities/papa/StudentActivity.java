@@ -134,8 +134,13 @@ public class StudentActivity extends AppCompatActivity
             data.putParcelable(key_to_upload_history,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
-        } else if (id == R.id.nav_manage) {
-
+        } else if (id == R.id.nav_edit_profile) {
+            Intent intent = new Intent(StudentActivity.this,EditProfileActivity.class);
+            Bundle data = new Bundle();
+            String key_to_edit_profile = getString(R.string.key_to_edit_profile);
+            data.putParcelable(key_to_edit_profile,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
         } else if (id == R.id.nav_help) {
             Intent intent = new Intent(StudentActivity.this,HelpActivity.class);
             Bundle data = new Bundle();

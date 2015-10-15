@@ -83,7 +83,7 @@ public class CommentActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_upload_history) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_edit_profile) {
 
         } else if (id == R.id.nav_help) {
 

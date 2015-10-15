@@ -22,6 +22,8 @@
     <string name="favorite">喜欢的实验</string>
     <string name="experiment_history">做过的实验</string>
     <string name="upload_history">我的上传</string>
+    <string name="edit_profile">编辑个人信息</string>
+    <string name="more">更多</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -46,6 +48,7 @@
     <string name="key_to_favorite">key_to_favorite</string>
     <string name="key_to_experiment_history">key_to_experiment_history</string>
     <string name="key_to_upload_history">key_to_upload_history</string>
+    <string name="key_to_edit_profile">key_to_edit_profile</string>
 
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
@@ -113,8 +116,8 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_favorite">FavoriteActivity</string>
-    <string name="title_activity_histoty">HistotyActivity</string>
     <string name="title_activity_history">HistoryActivity</string>
     <string name="title_activity_upload_history">UploadHistoryActivity</string>
+    <string name="title_activity_edit_profile">EditProfileActivity</string>
 
 </resources>
