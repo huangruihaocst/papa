@@ -55,6 +55,11 @@ public class StudentActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if(bundleHelper.getIdentity().equals("teacher_assistant")){
+            Menu menu = navigationView.getMenu();
+            MenuItem item = menu.findItem(R.id.nav_upload_history);
+            item.setVisible(false);
+        }
 
         getStudents(experiment_name);
 

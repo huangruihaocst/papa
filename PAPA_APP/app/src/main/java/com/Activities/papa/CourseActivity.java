@@ -58,6 +58,11 @@ public class CourseActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if(bundleHelper.getIdentity().equals("teacher_assistant")){
+            Menu menu = navigationView.getMenu();
+            MenuItem item = menu.findItem(R.id.nav_upload_history);
+            item.setVisible(false);
+        }
 
         getCourses();
 
@@ -66,7 +71,7 @@ public class CourseActivity extends AppCompatActivity
         CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(course_teacher_assistant_list,position,"teacher_assistant");
+                startExperimentActivity(course_teacher_assistant_list, position, "teacher_assistant");
             }
         });
 
