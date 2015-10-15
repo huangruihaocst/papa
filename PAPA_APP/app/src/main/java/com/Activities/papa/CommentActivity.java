@@ -83,7 +83,7 @@ public class CommentActivity extends AppCompatActivity
 
         if (id == R.id.nav_favorite) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_history) {
 
         } else if (id == R.id.nav_slideshow) {
 

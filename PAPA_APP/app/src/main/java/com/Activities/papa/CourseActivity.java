@@ -126,8 +126,13 @@ public class CourseActivity extends AppCompatActivity
             data.putParcelable(key_to_favorite,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
-        } else if (id == R.id.nav_gallery) {
-
+        } else if (id == R.id.nav_history) {
+            Intent intent = new Intent(CourseActivity.this,HistoryActivity.class);
+            Bundle data = new Bundle();
+            String key_to_history = getString(R.string.key_to_history);
+            data.putParcelable(key_to_history,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
