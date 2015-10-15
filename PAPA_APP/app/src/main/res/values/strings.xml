@@ -19,6 +19,7 @@
     <string name="student">学生课程</string>
     <string name="help">帮助</string>
     <string name="settings">设置</string>
+    <string name="favorite">喜欢的实验</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -40,6 +41,7 @@
     <string name="key_to_detail">key_to_detail</string>
     <string name="key_to_help">key_to_help</string>
     <string name="key_to_settings">key_to_settings</string>
+    <string name="key_to_favorite">key_to_favorite</string>
 
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
@@ -106,5 +108,6 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="title_activity_favorite">FavoriteActivity</string>
 
 </resources>

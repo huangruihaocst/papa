@@ -101,8 +101,13 @@ public class DetailActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
+        if (id == R.id.nav_favorite) {
+            Intent intent = new Intent(DetailActivity.this,FavoriteActivity.class);
+            Bundle data = new Bundle();
+            String key_to_favorite = getString(R.string.key_to_favorite);
+            data.putParcelable(key_to_favorite,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
