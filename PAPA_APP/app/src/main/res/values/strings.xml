@@ -20,7 +20,8 @@
     <string name="help">帮助</string>
     <string name="settings">设置</string>
     <string name="favorite">喜欢的实验</string>
-    <string name="history">做过的实验</string>
+    <string name="experiment_history">做过的实验</string>
+    <string name="upload_history">我的上传</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -43,7 +44,8 @@
     <string name="key_to_help">key_to_help</string>
     <string name="key_to_settings">key_to_settings</string>
     <string name="key_to_favorite">key_to_favorite</string>
-    <string name="key_to_history">key_to_history</string>
+    <string name="key_to_experiment_history">key_to_experiment_history</string>
+    <string name="key_to_upload_history">key_to_upload_history</string>
 
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
@@ -113,5 +115,6 @@
     <string name="title_activity_favorite">FavoriteActivity</string>
     <string name="title_activity_histoty">HistotyActivity</string>
     <string name="title_activity_history">HistoryActivity</string>
+    <string name="title_activity_upload_history">UploadHistoryActivity</string>
 
 </resources>

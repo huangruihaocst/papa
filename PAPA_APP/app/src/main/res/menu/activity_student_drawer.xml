@@ -4,10 +4,10 @@
     <group>
         <item android:id="@+id/nav_favorite" android:icon="@drawable/ic_favorite_outline_black_24dp"
             android:title="@string/favorite" />
-        <item android:id="@+id/nav_history" android:icon="@drawable/ic_history_black_24dp"
-            android:title="@string/history" />
-        <item android:id="@+id/nav_slideshow" android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="项目3" />
+        <item android:id="@+id/nav_experiment_history" android:icon="@drawable/ic_history_black_24dp"
+            android:title="@string/experiment_history" />
+        <item android:id="@+id/nav_upload_history" android:icon="@drawable/ic_file_upload_black_24dp"
+            android:title="@string/upload_history" />
         <item android:id="@+id/nav_manage" android:icon="@android:drawable/ic_menu_manage"
             android:title="项目4" />
     </group>

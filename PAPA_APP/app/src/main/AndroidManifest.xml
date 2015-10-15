@@ -62,8 +62,13 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".HistoryActivity"
+            android:name=".ExperimentHistoryActivity"
             android:label="@string/title_activity_history"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".UploadHistoryActivity"
+            android:label="@string/title_activity_upload_history"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
