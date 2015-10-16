@@ -5,10 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
-import com.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Activities.papa.BundleHelper;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -30,7 +27,7 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    public void check(){//1 for right, 0 for wrong password, and 2 for not registered
+    public void check(){// 1 for right, 0 for wrong password, and 2 for not registered
 //        EditText edit_username = (EditText)findViewById(R.id.username);
 //        EditText edit_password = (EditText)findViewById(R.id.password);
 //        username = edit_username.getText().toString();
