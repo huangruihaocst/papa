@@ -6,8 +6,9 @@
     <string name="title_activity_student">StudentActivity</string>
 
     <string name="app_name">PAPA</string>
-    <string name="username">用户名</string>
+    <string name="username">用户名(手机号, 邮箱)</string>
     <string name="password">密码</string>
+    <string name="cannot_get_telephone_num">获取不了手机号瞄 QAQ</string>
     <string name="hint_sign_in_1">登录</string>
     <string name="hint_sign_in_2">您可以使用学号或者手机号登录</string>
     <string name="hint_select_course">请选择课程</string>

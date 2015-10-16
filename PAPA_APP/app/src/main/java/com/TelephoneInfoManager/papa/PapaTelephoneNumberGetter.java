@@ -10,30 +10,20 @@ package com.TelephoneInfoManager.papa;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 
-
 public class PapaTelephoneNumberGetter
 {
-    ///
-    /// zh-CN:
-    /// 获取电话号码
-    /// 输入 mAppContext APP 的 Context
-    ///
-    /// 输出 如果成功, 返回电话号码
-    ///     如果失败, 返回 null
-    ///
-    static public String getTelephoneNumber(Context mAppContext)
+    // 获取不了手机号的异常
+    public class cannotGetTelephoneNumberException extends Exception
     {
+        public cannotGetTelephoneNumberException()
+        {
 
-        // en-US: see
-        // http://stackoverflow.com/questions/2480288/programmatically-obtain-the-phone-number-of-the-android-phone
-        // for more details.
+        }
+    }
 
-        TelephonyManager tMgr = (TelephonyManager)mAppContext.getSystemService(Context.TELEPHONY_SERVICE);
-        String mPhoneNumber = tMgr.getLine1Number();
 
-        // zh-CN: 有可能返回空串
-        if(mPhoneNumber.equals("")) mPhoneNumber = null;
-
-        return mPhoneNumber;
+    public String getTelephoneNumber(Context mAppContext) throws cannotGetTelephoneNumberException
+    {
+        throw new cannotGetTelephoneNumberException();
     }
 }

@@ -5,7 +5,8 @@
  * Papa DataBase Manager
  *
  */
-package com.PapaDataBaseManager.papa;
+package com.Back.papa;
+
 
 
 import org.apache.http.client.methods.HttpRequestBase;

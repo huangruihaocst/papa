@@ -7,14 +7,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Activities.papa.BundleHelper;
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
+
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 
 public class SignInActivity extends AppCompatActivity {
 
     String username;
     String password;
     int check_message = -1;
+
+    // 采用何种方式获取电话
+    PapaTelephoneNumberGetter telephoneNumberGetter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +40,31 @@ public class SignInActivity extends AppCompatActivity {
         button_get_telephone_number.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String telephone_number = getTelephoneNumber();
-                edit_username.setText(telephone_number);
+                try
+                {
+                    String telephone_number = getTelephoneNumber();
+                    edit_username.setText(telephone_number);
+                }
+                catch (PapaTelephoneNumberGetter.cannotGetTelephoneNumberException e)
+                {
+                    Toast.makeText(getApplicationContext(),getString(R.string.cannot_get_telephone_num),Toast.LENGTH_LONG).show();
+                }
             }
         });
+
+        // 默认的方法获取电话
+        this.telephoneNumberGetter = new PapaTelephoneNumberGetter();
     }
 
-    public void check(){//1 for right, 0 for wrong password, and 2 for not registered
+    // 更改获取电话的方法
+    public void changeTelephoneNumberGetter(PapaTelephoneNumberGetter p)
+    {
+        this.telephoneNumberGetter = p;
+    }
+
+    public void check(){// 1 for right, 0 for wrong password, and 2 for not registered
+//        EditText edit_username = (EditText)findViewById(R.id.username);
+//        EditText edit_password = (EditText)findViewById(R.id.password);
 //        username = edit_username.getText().toString();
 //        password = edit_password.getText().toString();
 //
@@ -75,7 +97,14 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+<<<<<<< HEAD
     public String getTelephoneNumber(){
         return "0800092000";
+=======
+    public String getTelephoneNumber()
+            throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException
+    {
+        return this.telephoneNumberGetter.getTelephoneNumber(getBaseContext());
+>>>>>>> 4999d7642f7a297cb3237bf8d4dadf401e6cd3f2
     }
 }
