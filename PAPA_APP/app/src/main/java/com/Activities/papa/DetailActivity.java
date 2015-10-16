@@ -54,6 +54,11 @@ public class DetailActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if(bundleHelper.getIdentity().equals("teacher_assistant")){
+            Menu menu = navigationView.getMenu();
+            MenuItem item = menu.findItem(R.id.nav_upload_history);
+            item.setVisible(false);
+        }
 
         Button button_edit_grades = (Button)findViewById(R.id.edit_grades);
         if(identity.equals("student")){

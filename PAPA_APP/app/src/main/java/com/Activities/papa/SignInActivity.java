@@ -18,11 +18,23 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        final EditText edit_username = (EditText)findViewById(R.id.username);
+        final EditText edit_password = (EditText)findViewById(R.id.password);
+
         Button button_sign_in = (Button)findViewById(R.id.sign_in);
         button_sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signIn();
+            }
+        });
+
+        Button button_get_telephone_number = (Button)findViewById(R.id.get_telephone_number);
+        button_get_telephone_number.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String telephone_number = getTelephoneNumber();
+                edit_username.setText(telephone_number);
             }
         });
     }
@@ -60,5 +72,9 @@ public class SignInActivity extends AppCompatActivity {
         }else if(check_message == 2){
             Toast.makeText(getApplicationContext(),getString(R.string.not_signed_up),Toast.LENGTH_LONG).show();
         }
+    }
+
+    public String getTelephoneNumber(){
+        return "123456";
     }
 }

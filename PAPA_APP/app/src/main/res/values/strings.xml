@@ -24,6 +24,7 @@
     <string name="upload_history">我的上传</string>
     <string name="edit_profile">编辑个人信息</string>
     <string name="more">更多</string>
+    <string name="get_telephone_number">获取手机号</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
