@@ -6,8 +6,8 @@ class MessagesControllerTest < ActionController::TestCase
   test 'should get message by students' do
     student = User.find_by_name('alex')
     get :index, format: :json, student_id: student.id
-    json = JSON.parse(response.body)
-    assert_equal STATUS_SUCCESS, json['status']
+
+    assert_json_success
     assert_not_nil json['messages']
     assert json['messages'].count > 0
   end
@@ -26,8 +26,7 @@ class MessagesControllerTest < ActionController::TestCase
                   }
     end
 
-    json = JSON.parse(response.body)
-    assert_equal STATUS_SUCCESS, json['status']
+    assert_json_success
   end
 
 end

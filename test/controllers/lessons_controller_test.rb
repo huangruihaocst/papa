@@ -9,7 +9,7 @@ class LessonsControllerTest < ActionController::TestCase
   # GET /course/1/lessons.json
   test 'api should get all lessons by course' do
     get :index, format: :json, course_id: @course.id
-    json = JSON.parse(@response.body)
+
     assert_equal json['status'], STATUS_SUCCESS
     assert json['lessons'].count > 0
   end
@@ -17,7 +17,7 @@ class LessonsControllerTest < ActionController::TestCase
   # GET /lessons/1.json
   test 'api should get lesson by id' do
     get :show, format: :json, id: Lesson.first.id
-    json = JSON.parse(@response.body)
+
     assert_equal json['status'], STATUS_SUCCESS
     assert_not_nil json['lesson']['name']
   end
@@ -32,7 +32,7 @@ class LessonsControllerTest < ActionController::TestCase
                       location: '"name": "here"'
                   }
     end
-    assert_equal JSON.parse(@response.body)['status'], STATUS_SUCCESS
+    assert_json_success
   end
 
   # POST /courses/1/lessons.json
@@ -48,8 +48,8 @@ class LessonsControllerTest < ActionController::TestCase
     assert_difference 'Lesson.count', -1 do
       delete :destroy, format: :json, id: Lesson.first.id
     end
-    json = JSON.parse(response.body)
-    assert_equal STATUS_SUCCESS, json['status']
+
+    assert_json_success
   end
 
 end

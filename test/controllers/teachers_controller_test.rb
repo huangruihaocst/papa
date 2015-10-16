@@ -3,8 +3,8 @@ require 'test_helper'
 class TeachersControllerTest < ActionController::TestCase
   test 'should get teachers by course' do
     get :index, format: :json, course_id: Course.find_by_name('Operation System').id
-    json = JSON.parse(response.body)
-    assert_equal STATUS_SUCCESS, json['status']
+
+    assert_json_success
     assert_not_nil json['teachers']
     assert json['teachers'].count > 0
   end
@@ -18,8 +18,8 @@ class TeachersControllerTest < ActionController::TestCase
     assert_difference 'course.teachers.count' do
       post :create, id: teacher.id, course_id: course.id, token: token_str
     end
-    json = JSON.parse(response.body)
-    assert_equal STATUS_SUCCESS, json['status']
+
+    assert_json_success
   end
 
   test 'should remove teacher from course' do
@@ -28,8 +28,8 @@ class TeachersControllerTest < ActionController::TestCase
     assert_difference 'course.teachers.count', -1 do
       delete :destroy, format: :json, id: teacher.id, course_id: course.id
     end
-    json = JSON.parse(response.body)
-    assert_equal STATUS_SUCCESS, json['status']
+
+    assert_json_success
   end
 
 end

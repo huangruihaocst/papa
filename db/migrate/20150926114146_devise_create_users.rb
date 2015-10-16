@@ -24,9 +24,9 @@ class DeviseCreateUsers < ActiveRecord::Migration
       ## Additional
       t.boolean  :is_teacher, default: true
       t.integer  :avator_id
+      t.string   :student_number
       t.string   :class_name
       t.string   :department
-      t.integer  :student_number
 
       t.timestamps null: false
     end
