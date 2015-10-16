@@ -40,8 +40,7 @@ import android.util.Log;
 
 
 public class PapaDataBaseManager {
-    private static final String host = "101.5.211.49";
-    private static final String port = "80";
+
     private static final String tag = "PapaDataBaseManager";
 
     private int personID;
@@ -65,6 +64,7 @@ public class PapaDataBaseManager {
         return instance;
     }
 
+    /*
     // 执行 post 方法
     private static String executeRequest(HttpRequestBase post)
     {
@@ -298,5 +298,6 @@ public class PapaDataBaseManager {
             Log.i(tag, "get course success");
         }
     }
+    */
 
 }
