@@ -49,18 +49,62 @@
 		</div>
 	</div>
 	<script>
+		var courseId,classId;
+		
+		function getId()
+		{
+			var p=window.location.href.split("/");
+			p=p[p.length-1];
+			courseId=p;
+		}
+		
 		var n=3,m=5,courseInfo,people=new Array(),score=new Array();
 		
 		function loadInfo()
 		{
 			var i,j;
-			people[0]=100;people[1]=10;people[2]=99;
+			people[0]=new Object();people[1]=new Object();people[2]=new Object();
+			people[0].attend=100;people[1].attend=10;people[2].attend=99;
 			for (i=0;i<n;++i)
 			{
 				score[i]=new Array();
 				for (j=0;j<m;++j) score[i][j]=(i+1)*(j+1);
 			}
+			$.get("/courses/"+courseId+".json",{},
+			function(data)
+			{
+				courseInfo=data.name;
+			});
 			courseInfo="计算机组成原理";
+			$.get("/courses/"+courseId+"/lessons.json",{},
+			function(data)
+			{
+				var i;
+				for (i=0;i<data.length;++i)
+				{
+					people[i]=new Object();
+					classId=data[i].id;
+					$.get("/lessons/"+classId+".json",{},
+					function(data2)
+					{
+						people[i].name=data2.name;
+					});
+					$.get("/lessons/"+classId+"/students.json",{},
+					function(data2)
+					{
+						people[i].attend=data2.length;
+						var j;
+						for (j=0;j<data2.length;++j)
+						{
+							$.get("/students/"+data2[j].id+"/lessons/"+classId+".json",{},
+							function(data3)
+							{
+								++score[i][data3];
+							});
+						}
+					});
+				}
+			});
 		}
 		
 		function showInfo()
@@ -69,7 +113,7 @@
 			data={labels:["实验1","实验2","实验3"],datasets:[{
 					fillColor : "rgba(151,187,205,0.5)",
 					strokeColor : "rgba(151,187,205,1)",
-					data : [people[0],people[1],people[2]]}]};
+					data : [people[0].attend,people[1].attend,people[2].attend]}]};
 			data2={labels:["0~5分","6~7分","8分","9分","10分"],datasets:[{
 					fillColor : "rgba(151,187,205,0.5)",
 					strokeColor : "rgba(151,187,205,1)",
