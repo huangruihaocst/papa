@@ -5,7 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -33,8 +36,15 @@ public class SignInActivity extends AppCompatActivity {
         button_get_telephone_number.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String telephone_number = getTelephoneNumber();
-                edit_username.setText(telephone_number);
+                try
+                {
+                    String telephone_number = getTelephoneNumber();
+                    edit_username.setText(telephone_number);
+                }
+                catch (PapaTelephoneNumberGetter.cannotGetTelephoneNumberException e)
+                {
+                    Toast.makeText(getApplicationContext(),getString(R.string.cannot_get_telephone_num),Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -74,7 +84,9 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    public String getTelephoneNumber(){
-        return "123456";
+    public String getTelephoneNumber()
+            throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException
+    {
+        return PapaTelephoneNumberGetter.getTelephoneNumber(getBaseContext());
     }
 }
