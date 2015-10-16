@@ -97,14 +97,11 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-<<<<<<< HEAD
-    public String getTelephoneNumber(){
-        return "0800092000";
-=======
     public String getTelephoneNumber()
-            throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException
-    {
+            throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException {
         return this.telephoneNumberGetter.getTelephoneNumber(getBaseContext());
->>>>>>> 4999d7642f7a297cb3237bf8d4dadf401e6cd3f2
+    }
+
+    public void fuck(){
     }
 }
