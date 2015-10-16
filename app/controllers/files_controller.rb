@@ -33,7 +33,7 @@ class FilesController < ApplicationController
       file.write(temp.read)
     end
 
-    @file = FileResource.create(file_type: params[:file][:type], name: temp.original_filename, path: rel_loc)
+    @file = FileResource.create(file_type: params[:file][:type], name: temp.original_filename, path: File.join('', rel_loc))
     if @file
       json_successful
     else

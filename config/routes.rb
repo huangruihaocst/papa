@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
 
+  # error handling
+  get "/404" => "errors#not_found"
+
   devise_for :users, controllers: {
     sessions: 'users/sessions',
     registrations: 'users/registrations'

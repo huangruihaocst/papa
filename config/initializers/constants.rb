@@ -12,5 +12,6 @@ REASON_TOKEN_INVALID = 'token_invalid'
 REASON_TOKEN_TIMEOUT = 'token_timeout'
 REASON_TOKEN_NOT_MATCH = 'token_not_match'
 REASON_NOT_IMPLEMENTED = 'not_implemented'
+REASON_INVALID_OPERATION = 'invalid_operation'
 
 ALLOWED_FILE_SUFFIXES = [ 'jpg', 'gif', 'png', 'mp4', 'mpg', 'avi' ]
