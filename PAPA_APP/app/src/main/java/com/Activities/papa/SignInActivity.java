@@ -97,8 +97,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public String getTelephoneNumber()
-            throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException
-    {
+            throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException {
         return this.telephoneNumberGetter.getTelephoneNumber(getBaseContext());
     }
+    
 }
