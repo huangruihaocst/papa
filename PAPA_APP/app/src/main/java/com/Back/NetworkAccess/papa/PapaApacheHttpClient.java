@@ -95,6 +95,8 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient {
 
         }
 
+        Log.i(tag, reply.toString());
+
         return reply;
     }
 
@@ -129,9 +131,10 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient {
         }
         catch(Exception e)
         {
-            Log.e(tag, e.getMessage().toString());
+            Log.e(tag, "e = " + e.getMessage().toString());
         }
 
+        Log.i(tag, reply.toString());
         return reply;
     }
 }

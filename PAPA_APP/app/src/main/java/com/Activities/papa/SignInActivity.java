@@ -7,8 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterKongBaKongKong;
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -52,7 +55,7 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         // 默认的方法获取电话
-        this.telephoneNumberGetter = new PapaTelephoneNumberGetterKongBaKongKong();
+        this.telephoneNumberGetter = new PapaTelephoneNumberGetterReal();
     }
 
     // 更改获取电话的方法
@@ -62,19 +65,27 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void check(){// 1 for right, 0 for wrong password, and 2 for not registered
-//        EditText edit_username = (EditText)findViewById(R.id.username);
-//        EditText edit_password = (EditText)findViewById(R.id.password);
-//        username = edit_username.getText().toString();
-//        password = edit_password.getText().toString();
-//
-//        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
-//        if(papaDataBaseManager.signIn(username, password)){
-//            check_message = 1;
-//        }
-//        else{
-//            // ToDo: 区分到底是错误密码还是未注册
-//            check_message = 0;
-//        }
+        EditText edit_username = (EditText)findViewById(R.id.username);
+        EditText edit_password = (EditText)findViewById(R.id.password);
+        username = edit_username.getText().toString();
+        password = edit_password.getText().toString();
+
+        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
+
+
+        try {
+            if (papaDataBaseManager.signIn(username, password)) {
+                check_message = 1;
+            } else {
+                // TODO: 区分到底是错误密码还是未注册
+                check_message = 0;
+            }
+        }
+        catch(Exception e) {
+            check_message = 0;
+        }
+
+
         check_message = 1;
     }
 

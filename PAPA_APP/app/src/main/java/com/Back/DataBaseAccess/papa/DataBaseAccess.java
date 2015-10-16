@@ -1,5 +1,7 @@
 package com.Back.DataBaseAccess.papa;
 
+import android.util.Log;
+
 import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
 import com.Back.NetworkAccess.papa.PapaApacheHttpClient;
 import com.Back.NetworkAccess.papa.UnknownMethodException;
@@ -51,6 +53,8 @@ public class DataBaseAccess
         {
             throw new PapaDataBaseNotSuccessError();
         }
+
+        Log.i(tag, replyObj.toString());
         return replyObj;
     }
 
