@@ -13,13 +13,36 @@
 	<div id="content">
 	</div>
 	<script>
-		var n,m,info,items,courseInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
+		var courseId,classId=new Array();
+		
+		function getId()
+		{
+			var p=window.location.href.split("/");
+			p=p[p.length-1];
+			courseId=p;
+		}
+		
+		var n,m,tot,info,items,courseInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
 		
 		function loadInfo()
 		{
+			$.get("/courses/"+courseId+".json",{},
+			function(data)
+			{
+				courseInfo=data.name;
+			});
+			$.get("/courses/"+courseId+"/lessons.json",{},
+			function(data)
+			{
+				var i;tot=data.length;
+				for (i=0;i<data.length;++i)
+				{
+					classId[i]=data[i].id;
+				}
+			});
 			courseInfo="计算机组成原理";
 			var i;
-			n=7;m=2;
+			n=7;m=2;tot=3;
 			items=new Array();
 			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="1";items[5]="2";items[6]="3";
 			info=new Array();
@@ -34,6 +57,32 @@
 				info[i][5]=i;
 				info[i][6]=i;
 			}
+			$.get("/courses/"+courseId+"/students.json",{},
+			function(data)
+			{
+				var i,j;
+				for (i=0;i<data.length;++i)
+				{
+					info[i]=new Array();
+					$.get("/students/"+data[i].id+".json",{},
+					function(data2)
+					{
+						info[i][0]=data2.student_number;
+						info[i][1]=data2.name;
+						info[i][2]=data2.department;
+						info[i][3]=data2.class;  //#modify
+						info[i][n]=data2.id;
+					});
+					for (j=0;j<tot;++j)
+					{
+						$.get("/students/"+data[i].id+"/lessons/"+classId[j]+".json",{},
+						function(data2)
+						{
+							info[i][j+4]=data2.score;
+						});
+					}
+				}
+			});
 		}
 		
 		function compare(x,y,p)
