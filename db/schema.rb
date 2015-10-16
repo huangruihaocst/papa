@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.string   "student_number"
     t.string   "class_name"
     t.string   "department"
+    t.text     "description"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
   end

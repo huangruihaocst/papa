@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
       token = Token.find_by_token(token_str)
       # deny when teacher_required is required but the token is not a teacher
       if token && token.user_id == user_id.to_i && (!teacher_required || token.user.is_teacher)
-        if Time.now > token.valid_until
+        unless token.token_valid?
           raise TokenException.new(REASON_TOKEN_TIMEOUT)
         end
       else
@@ -43,6 +43,18 @@ class ApplicationController < ActionController::Base
       end
     else
       raise TokenException.new(REASON_TOKEN_INVALID)
+    end
+  end
+
+  def check_login
+    if params[:token]
+      token = Token.find_by_token(params[:token])
+
+      unless token.user.is_a?(User) && token && token.token_valid?
+        raise TokenException.new(REASON_TOKEN_INVALID)
+      end
+    else
+      raise TokenException.new(REASON_TOKEN_INVALID) unless current_user
     end
   end
 

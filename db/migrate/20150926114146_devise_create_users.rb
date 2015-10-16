@@ -27,6 +27,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string   :student_number
       t.string   :class_name
       t.string   :department
+      t.text     :description
 
       t.timestamps null: false
     end

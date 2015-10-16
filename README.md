@@ -140,6 +140,7 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     POST   /lessons/1/comments.json  添加学生对课程的评价(当前登陆用户)  lesson comment parameters                    Student
     GET    /lessons/1/students/1/comments.json 查看助教对学生的评价 "student_comments": [student_comment,...] Student
     POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant
+    GET    /students/1/lessons/1/comments.json 查看学生对课程的所有评价 "lesson_comments": [student_comment,...] Teacher
     GET    /lessons/1/students.json  某门实验课的到课学生列表 students id                               Teacher
     POST   /lessons/1/students/1.json 学生签到                                                          Student
     GET    /lessons/1/files.json     获得该门实验课的简介文件
@@ -235,6 +236,13 @@ Http Parameters/JSON对象格式
             email=string,
             #!avator_path=string
             ?avator_id=int
+    
+    teacher id=int
+            name=string
+            email=string
+            phone=string
+            avator_id=int
+            description=string
             
     lesson_comment id=int        // 学生对课程的评价
             content=string

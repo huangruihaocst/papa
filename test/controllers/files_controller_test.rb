@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class FilesControllerTest < ActionController::TestCase
+  include Devise::TestHelpers
 
   # GET /students/1/lessons/1/files.json
   test 'should get student files on lesson' do
@@ -59,6 +60,8 @@ class FilesControllerTest < ActionController::TestCase
 
   # POST /files.json
   test 'should add file' do
+    sign_in User.first
+
     fixture_file = fixture_file_upload('files/2.jpg', 'image/jpeg')
 
     assert_difference 'FileResource.count' do
@@ -67,6 +70,60 @@ class FilesControllerTest < ActionController::TestCase
 
     assert_json_success
     assert_not_nil assigns(:file).path
+  end
+
+  # POST /files.json
+  test 'should not add file if type and file not set' do
+    sign_in User.first
+
+    assert_no_difference 'FileResource.count' do
+      post :create, format: :json, file: {}
+    end
+
+    assert_equal STATUS_FAIL, json['status']
+    assert_not_nil REASON_INVALID_FIELD, json['reason']
+    assert json[INVALID_FIELDS_NAME].include? 'type'
+    assert json[INVALID_FIELDS_NAME].include? 'file'
+    assert_not json[INVALID_FIELDS_NAME].include? 'path'
+    assert_not json[INVALID_FIELDS_NAME].include? 'name'
+  end
+
+  # POST /files.json
+  test 'should not add file if not signed in' do
+    assert_no_difference 'FileResource.count' do
+      post :create, format: :json, file: {}
+    end
+    assert_equal STATUS_FAIL, json['status']
+    assert_not_nil REASON_TOKEN_INVALID, json['reason']
+  end
+
+  # POST /files.json
+  test 'should not add file if the file is too big' do
+    sign_in User.first
+
+    file_name = '__test_big_file'
+    file_path = File.join(Rails.root, 'test', 'fixtures', 'files', file_name)
+    big_file = File.new(file_path, 'wb+')
+
+    # 160M
+    x = '012345678901234567890'
+    23.times do
+      x += x
+    end
+
+    big_file.puts x
+    big_file.close
+
+    fixture_file = fixture_file_upload("files/#{file_name}", 'image/jpeg')
+
+    assert_no_difference 'FileResource.count' do
+      post :create, format: :json, file: {file: fixture_file, type: 'picture'}
+    end
+
+    assert_equal STATUS_FAIL, json['status']
+    assert_not_nil REASON_FILE_TOO_BIG, json['reason']
+
+    File.delete(file_path)
   end
 
 end

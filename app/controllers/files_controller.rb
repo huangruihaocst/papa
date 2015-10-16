@@ -26,23 +26,39 @@ class FilesController < ApplicationController
 
   # POST /files.json
   def create
-    temp = params[:file][:file]
-    rel_loc = File.join('uploads', temp.original_filename)
-    loc = Rails.root.join('public', rel_loc)
-    File.open(loc, 'wb') do |file|
-      file.write(temp.read)
+    check_login
+
+    p = params[:file]
+    puts p.class
+    unless p && p.is_a?(ActionController::Parameters) && p[:file] && p[:type]
+      json_failed_invalid_fields([:file, :type])
+      return
     end
 
-    @file = FileResource.create(file_type: params[:file][:type], name: temp.original_filename, path: File.join('', rel_loc))
-    if @file
-      json_successful
+    temp_file = p[:file]
+    if temp_file.size > FILE_MAX_SIZE
+      json_failed(REASON_FILE_TOO_BIG)
+      return
+    end
+
+    rel_loc = File.join('uploads', temp_file.original_filename)
+    loc = Rails.root.join('public', rel_loc)
+    File.open(loc, 'wb') do |file|
+      file.write(temp_file.read)
+    end
+
+    @file = FileResource.create(file_type: p[:type], name: temp_file.original_filename, path: File.join('', rel_loc))
+    if @file.valid?
+        json_successful
     else
-      json_failed
+      json_failed_invalid_fields(@file.errors.keys,
+                                  file_type: :type, path: '', name: '')
     end
   end
 
   # DELETE /files/1.json
   def destroy
+    authenticate_user!
     json_failed(REASON_NOT_IMPLEMENTED)
   end
 
