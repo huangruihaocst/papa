@@ -7,7 +7,7 @@ class CoursesControllerTest < ActionController::TestCase
     semester = Semester.first
 
     get :index, format: :json, semester_id: semester.id
-    json = JSON.parse(@response.body)
+
     assert_equal STATUS_SUCCESS, json['status']
     assert json['courses'].count > 0
   end
@@ -15,7 +15,7 @@ class CoursesControllerTest < ActionController::TestCase
   # GET /semester/1/courses.json
   test 'should not get courses by bad semester' do
     get :index, format: :json, semester_id: -1
-    json = JSON.parse(response.body)
+
     assert_equal STATUS_FAIL, json['status']
   end
 
@@ -25,7 +25,7 @@ class CoursesControllerTest < ActionController::TestCase
     token_str = u.create_token.token
 
     get :index, format: :json, teacher_id: u.id, token: token_str
-    json = JSON.parse(@response.body)
+
     assert_equal STATUS_SUCCESS, json['status']
     assert json['courses'].count > 0
   end
@@ -36,7 +36,7 @@ class CoursesControllerTest < ActionController::TestCase
     token_str = u.create_token.token
 
     get :index, format: :json, assistant_id: u.id, token: token_str
-    json = JSON.parse(@response.body)
+
     assert_equal json['status'], STATUS_SUCCESS
     assert_not_nil json['courses']
   end
@@ -47,7 +47,7 @@ class CoursesControllerTest < ActionController::TestCase
     token_str = u.create_token.token
 
     get :index, format: :json, student_id: u.id, token: token_str
-    json = JSON.parse(@response.body)
+
     assert_equal json['status'], STATUS_SUCCESS
     assert_not_nil json['courses']
   end
@@ -57,7 +57,7 @@ class CoursesControllerTest < ActionController::TestCase
     u = User.first
 
     get :index, format: :json, student_id: u.id, token: 'invalid token'
-    json = JSON.parse(@response.body)
+
     assert_equal STATUS_FAIL, json['status']
     assert_equal json['reason'], REASON_TOKEN_INVALID
   end
@@ -69,7 +69,7 @@ class CoursesControllerTest < ActionController::TestCase
     token = Token.create(user_id: u.id, token: rand(TOKEN_MAX_RAND).to_s, valid_until: Time.now - 200)
 
     get :index, format: :json, student_id: u.id, token: token.token
-    json = JSON.parse(@response.body)
+
     assert_equal json['status'], STATUS_FAIL
     assert_equal json['reason'], REASON_TOKEN_TIMEOUT
   end
@@ -77,7 +77,7 @@ class CoursesControllerTest < ActionController::TestCase
   # GET /courses/1.json
   test 'api should get course by id' do
     get :show, format: :json, id: Course.first.id
-    json = JSON.parse(@response.body)
+
     assert_equal json['status'], STATUS_SUCCESS
     assert_not_nil json['course']['name']
   end
@@ -85,7 +85,7 @@ class CoursesControllerTest < ActionController::TestCase
   # GET /courses/-1.json
   test 'api should not get course by invalid id' do
     get :show, format: :json, id: -1
-    json = JSON.parse(@response.body)
+
     assert_equal json['status'], STATUS_FAIL
   end
 
@@ -98,7 +98,7 @@ class CoursesControllerTest < ActionController::TestCase
 
     put :update, format: :json, id: course.id, token: token_str, course: { name: 'fuck' }
     assert_equal 'fuck', Course.find(course_id).name
-    json = JSON.parse(response.body)
+
     assert_equal STATUS_SUCCESS, json['status']
   end
 
@@ -110,7 +110,7 @@ class CoursesControllerTest < ActionController::TestCase
     assert_difference 'TeachingCourse.count' do
       post :create, teacher_id: u.id, token: token_str, course: { name: 'test course', description: 'new' }
     end
-    json = JSON.parse(response.body)
+
     assert_equal STATUS_SUCCESS, json['status']
   end
 
@@ -123,7 +123,7 @@ class CoursesControllerTest < ActionController::TestCase
     assert_difference 'Participation.count' do
       post :create, assistant_id: u.id, id: course.id, token: token_str
     end
-    json = JSON.parse(response.body)
+
     assert_equal STATUS_SUCCESS, json['status']
   end
 
@@ -136,7 +136,7 @@ class CoursesControllerTest < ActionController::TestCase
     assert_difference 'Participation.count' do
       post :create, student_id: u.id, id: course.id, token: token_str
     end
-    json = JSON.parse(response.body)
+
     assert_equal STATUS_SUCCESS, json['status']
   end
 
@@ -152,7 +152,7 @@ class CoursesControllerTest < ActionController::TestCase
     assert_difference 'Course.count', -1 do
       delete :destroy, format: :json, id: course.id, token: token_str
     end
-    json = JSON.parse(response.body)
+
     assert_equal STATUS_SUCCESS, json['status']
   end
 
@@ -167,8 +167,8 @@ class CoursesControllerTest < ActionController::TestCase
     assert_difference 'Participation.count', -1 do
       delete :destroy, foramt: :json, student_id: user.id, id: course.id, token: token_str
     end
-    json = JSON.parse(response.body)
-    assert_equal STATUS_SUCCESS, json['status']
+
+    assert_json_success
   end
 
   # DELETE /assistants/1/courses/1.json
@@ -183,7 +183,7 @@ class CoursesControllerTest < ActionController::TestCase
     assert_difference 'Participation.count', -1 do
       delete :destroy, foramt: :json, assistant_id: user.id, id: course.id, token: token_str
     end
-    json = JSON.parse(response.body)
-    assert_equal STATUS_SUCCESS, json['status']
+
+    assert_json_success
   end
 end

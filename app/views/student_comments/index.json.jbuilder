@@ -4,6 +4,7 @@ json.student_comments do
     json.extract! student_comment, :id
     json.extract! student_comment, :content
     json.extract! student_comment, :score
+    json.extract! student_comment, :creator_id
   end
 end
 

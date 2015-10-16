@@ -146,9 +146,9 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.string   "last_sign_in_ip"
     t.boolean  "is_teacher",             default: true
     t.integer  "avator_id"
+    t.string   "student_number"
     t.string   "class_name"
     t.string   "department"
-    t.integer  "student_number"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
   end

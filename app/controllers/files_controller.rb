@@ -1,4 +1,5 @@
 class FilesController < ApplicationController
+
   # GET /students/1/lessons/1/files.json
   # GET /assistants/1/lessons/1/files.json
   # GET /lessons/1/files.json
@@ -26,18 +27,21 @@ class FilesController < ApplicationController
   # POST /files.json
   def create
     temp = params[:file][:file]
-    loc = Rails.root.join('public', 'uploads', temp.original_filename)
+    rel_loc = File.join('uploads', temp.original_filename)
+    loc = Rails.root.join('public', rel_loc)
     File.open(loc, 'wb') do |file|
       file.write(temp.read)
     end
 
-    if @file = FileResource.create(file_type: params[:file][:type], name: temp.original_filename, path: loc)
+    @file = FileResource.create(file_type: params[:file][:type], name: temp.original_filename, path: File.join('', rel_loc))
+    if @file
       json_successful
     else
       json_failed
     end
   end
 
+  # DELETE /files/1.json
   def destroy
     json_failed(REASON_NOT_IMPLEMENTED)
   end
