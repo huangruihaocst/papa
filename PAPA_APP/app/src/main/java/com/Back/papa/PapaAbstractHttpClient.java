@@ -1,30 +1,35 @@
 package com.Back.papa;
 
-import java.util.Dictionary;
-
-/**
- * Created by shyo on 15-10-15.
- */
+import java.util.HashMap;
 
 public abstract class PapaAbstractHttpClient {
-    abstract String getHttpReplyByGet(String url, Dictionary<String, String> parameter);
-    abstract String getHttpReplyByPost(String url, Dictionary<String, String> parameter);
+    public abstract String getHttpReplyByGet(String url, HashMap<String, String> parameter);
+    public abstract String getHttpReplyByPost(String url, HashMap<String, String> parameter);
 
     public enum HttpMethod {
         get, post
     }
 
-    public class UnknownMethodException extends Exception
-    {
-    }
 
-    String getHttpReply(HttpMethod method, String url, Dictionary<String, String> parameter)
+
+    public String getHttpReply(HttpMethod method, String url, HashMap<String, String> parameter)
             throws UnknownMethodException
     {
         if(method == HttpMethod.get)
             return getHttpReplyByGet(url, parameter);
         else if(method == HttpMethod.post)
             return getHttpReplyByPost(url, parameter);
+        else
+            throw new UnknownMethodException();
+    }
+
+    public String getHttpReply(HttpMethod method, String url)
+            throws UnknownMethodException
+    {
+        if(method == HttpMethod.get)
+            return getHttpReplyByGet(url, new HashMap<String, String>());
+        else if(method == HttpMethod.post)
+            return getHttpReplyByPost(url, new HashMap<String, String>());
         else
             throw new UnknownMethodException();
     }

@@ -12,6 +12,8 @@ import com.Activities.papa.R;
 import com.Activities.papa.SignInActivity;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterKongBaKongKong;
+
 
 /**
  * Created by shyo on 15-10-16.
@@ -37,14 +39,6 @@ public class SignInTest extends ActivityUnitTestCase<SignInActivity>
         mSignInIntent = new Intent(getInstrumentation().getTargetContext(), SignInActivity.class);
         context = new ContextThemeWrapper(getInstrumentation().getTargetContext(), R.style.AppTheme);
     }
-
-    private class PapaTelephoneNumberGetterKongBaKongKong extends PapaTelephoneNumberGetter
-    {
-        @Override
-        public String getTelephoneNumber(Context mAppContext) throws cannotGetTelephoneNumberException {
-            return "0800092000";
-        }
-    };
 
     @MediumTest
     public void testGetTelephone()

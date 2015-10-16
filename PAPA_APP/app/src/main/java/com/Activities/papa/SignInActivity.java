@@ -8,8 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
-
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterKongBaKongKong;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -47,13 +46,13 @@ public class SignInActivity extends AppCompatActivity {
                 }
                 catch (PapaTelephoneNumberGetter.cannotGetTelephoneNumberException e)
                 {
-                    Toast.makeText(getApplicationContext(),getString(R.string.cannot_get_telephone_num),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.cannot_get_telephone_num),Toast.LENGTH_LONG).show();
                 }
             }
         });
 
         // 默认的方法获取电话
-        this.telephoneNumberGetter = new PapaTelephoneNumberGetter();
+        this.telephoneNumberGetter = new PapaTelephoneNumberGetterKongBaKongKong();
     }
 
     // 更改获取电话的方法

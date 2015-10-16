@@ -21,7 +21,6 @@ public class PapaTelephoneNumberGetter
         }
     }
 
-
     public String getTelephoneNumber(Context mAppContext) throws cannotGetTelephoneNumberException
     {
         throw new cannotGetTelephoneNumberException();
