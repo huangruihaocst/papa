@@ -101,7 +101,5 @@ public class SignInActivity extends AppCompatActivity {
             throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException {
         return this.telephoneNumberGetter.getTelephoneNumber(getBaseContext());
     }
-
-    public void fuck(){
-    }
+    
 }
