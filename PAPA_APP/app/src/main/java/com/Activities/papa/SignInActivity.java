@@ -16,6 +16,7 @@ public class SignInActivity extends AppCompatActivity {
     String username;
     String password;
     int check_message = -1;
+    BundleHelper bundleHelper = new BundleHelper();
 
     // 采用何种方式获取电话
     PapaTelephoneNumberGetter telephoneNumberGetter;
@@ -24,6 +25,11 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        String key_enter_sign_in = getString(R.string.key_enter_sign_in);
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+        bundleHelper = data.getParcelable(key_enter_sign_in);
 
         final EditText edit_username = (EditText)findViewById(R.id.username);
         final EditText edit_password = (EditText)findViewById(R.id.password);
@@ -40,13 +46,11 @@ public class SignInActivity extends AppCompatActivity {
         button_get_telephone_number.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try
-                {
+                try {
                     String telephone_number = getTelephoneNumber();
                     edit_username.setText(telephone_number);
                 }
-                catch (PapaTelephoneNumberGetter.cannotGetTelephoneNumberException e)
-                {
+                catch (PapaTelephoneNumberGetter.cannotGetTelephoneNumberException e) {
                     Toast.makeText(getApplicationContext(),getString(R.string.cannot_get_telephone_num),Toast.LENGTH_LONG).show();
                 }
             }
@@ -85,8 +89,8 @@ public class SignInActivity extends AppCompatActivity {
             Intent intent = new Intent(SignInActivity.this,CourseActivity.class);
             Bundle data = new Bundle();
             String key_sign_in_course = getString(R.string.key_sign_in_course);
-            BundleHelper bundleHelper = new BundleHelper();
             bundleHelper.setUsername(username);
+            bundleHelper.setPassword(password);
             data.putParcelable(key_sign_in_course,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
@@ -101,5 +105,5 @@ public class SignInActivity extends AppCompatActivity {
             throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException {
         return this.telephoneNumberGetter.getTelephoneNumber(getBaseContext());
     }
-    
+
 }

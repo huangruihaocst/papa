@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,8 +35,6 @@ public class CourseActivity extends AppCompatActivity
         Bundle data = intent.getExtras();
         String key_sign_in_course = getString(R.string.key_sign_in_course);
         bundleHelper = data.getParcelable(key_sign_in_course);
-//        String key_semester_course_1 = getString(R.string.key_semester_course_1);
-//        String semester_name = data.getString(key_semester_course_1);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.hint_select_course));
