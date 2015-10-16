@@ -1,11 +1,9 @@
-package com.Back.test;
+package com.Back.NetworkAccess.test;
 
-import android.content.Context;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
-import com.Back.papa.PapaApacheHttpClient;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
+import com.Back.NetworkAccess.papa.PapaApacheHttpClient;
 
 /**
  * Created by shyo on 15-10-16.

@@ -1,11 +1,7 @@
-package com.Back.papa;
+package com.Back.NetworkAccess.papa;
 
 import android.util.Log;
 
-import com.Back.papa.PapaAbstractHttpClient;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,7 +9,6 @@ import java.util.Iterator;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
