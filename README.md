@@ -223,23 +223,29 @@ Http Parameters/JSON对象格式
             student_number=int,
             phone=string,
             email=string,
-            class=string,
+            #!class=string,
+            ?class_name=string,
             department=string,
-            avator_path=string
+            #!avator_path=string
+            ?avator_id=int
              
     assistant id=int,
             name=string,
-            phone,
+            phone=string,
             email=string,
-            avator_path=string
+            #!avator_path=string
+            ?avator_id=int
             
     lesson_comment id=int        // 学生对课程的评价
             content=string
             score=string
+            ?creator_name=string
+            ?created_at=datetime
             
     student_comment id=int      // 助教对学生的评价
             content=string
             score=string(0-10)
+            ?creator_name=string
             
     message id=int
             type=string(homework|notification),
@@ -257,11 +263,10 @@ Http Parameters/JSON对象格式
 REASON_TOKEN_INVALID = 'token_invalid'      // token没有指定或者无效，应该检查url参数
 REASON_TOKEN_TIMEOUT = 'token_timeout'      // token过时了，应该重新登陆
 REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存在
+REASON_INVALID_OPERATION = 'invalid_operation' // 访问了不存在的url
 
 ##TODO
-1.  Unit Test
 1.  Authentication Control.  
-    
     
 ##Design
 

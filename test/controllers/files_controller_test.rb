@@ -8,9 +8,8 @@ class FilesControllerTest < ActionController::TestCase
     lesson = Lesson.find_by_name('exp1')
 
     get :index, format: :json, student_id: student.id, lesson_id: lesson.id
-    json = JSON.parse(response.body)
 
-    assert_equal STATUS_SUCCESS, json['status']
+    assert_json_success
     assert_not_nil json['files']
     assert json['files'].count > 0
   end
@@ -21,9 +20,8 @@ class FilesControllerTest < ActionController::TestCase
     lesson = Lesson.find_by_name('exp1')
 
     get :index, format: :json, assistant_id: assistant.id, lesson_id: lesson.id
-    json = JSON.parse(response.body)
 
-    assert_equal STATUS_SUCCESS, json['status']
+    assert_json_success
     assert_not_nil json['files']
     assert json['files'].count > 0
   end
@@ -33,9 +31,8 @@ class FilesControllerTest < ActionController::TestCase
     lesson = Lesson.find_by_name('exp1')
 
     get :index, format: :json, lesson_id: lesson.id
-    json = JSON.parse(response.body)
 
-    assert_equal STATUS_SUCCESS, json['status']
+    assert_json_success
     assert_not_nil json['files']
     assert json['files'].count > 0
   end
@@ -45,9 +42,8 @@ class FilesControllerTest < ActionController::TestCase
     course = Course.find_by_name('Operation System')
 
     get :index, format: :json, course_id: course.id
-    json = JSON.parse(response.body)
 
-    assert_equal STATUS_SUCCESS, json['status']
+    assert_json_success
     assert_not_nil json['files']
     assert json['files'].count > 0
   end
@@ -56,10 +52,21 @@ class FilesControllerTest < ActionController::TestCase
   test 'should get file by id' do
     file = FileResource.first
     get :show, format: :json, id: file.id
-    json = JSON.parse(response.body)
 
-    assert_equal STATUS_SUCCESS, json['status']
+    assert_json_success
     assert_not_nil json['file']
+  end
+
+  # POST /files.json
+  test 'should add file' do
+    fixture_file = fixture_file_upload('files/2.jpg', 'image/jpeg')
+
+    assert_difference 'FileResource.count' do
+      post :create, format: :json, file: {file: fixture_file, type: 'picture'}
+    end
+
+    assert_json_success
+    assert_not_nil assigns(:file).path
   end
 
 end

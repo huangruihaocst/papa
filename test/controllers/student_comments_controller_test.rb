@@ -9,8 +9,8 @@ class StudentCommentsControllerTest < ActionController::TestCase
     lesson = Lesson.find_by_name('exp1')
 
     get :index, format: :json, student_id: student.id, lesson_id: lesson.id
-    json = JSON.parse(response.body)
-    assert_equal STATUS_SUCCESS, json['status']
+
+    assert_json_success
     assert_not_nil json['student_comments']
     assert json['student_comments'].count
   end
@@ -28,8 +28,7 @@ class StudentCommentsControllerTest < ActionController::TestCase
                   }
     end
 
-    json = JSON.parse(response.body)
-    assert_equal STATUS_SUCCESS, json['status']
+    assert_json_success
   end
 
 end
