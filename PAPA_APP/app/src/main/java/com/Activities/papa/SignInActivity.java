@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 
@@ -15,6 +16,9 @@ public class SignInActivity extends AppCompatActivity {
     String username;
     String password;
     int check_message = -1;
+
+    // 采用何种方式获取电话
+    PapaTelephoneNumberGetter telephoneNumberGetter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,15 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // 默认的方法获取电话
+        this.telephoneNumberGetter = new PapaTelephoneNumberGetter();
+    }
+
+    // 更改获取电话的方法
+    public void changeTelephoneNumberGetter(PapaTelephoneNumberGetter p)
+    {
+        this.telephoneNumberGetter = p;
     }
 
     public void check(){// 1 for right, 0 for wrong password, and 2 for not registered
@@ -87,6 +100,6 @@ public class SignInActivity extends AppCompatActivity {
     public String getTelephoneNumber()
             throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException
     {
-        return PapaTelephoneNumberGetter.getTelephoneNumber(getBaseContext());
+        return this.telephoneNumberGetter.getTelephoneNumber(getBaseContext());
     }
 }

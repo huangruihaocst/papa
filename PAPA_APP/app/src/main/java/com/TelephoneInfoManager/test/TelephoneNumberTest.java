@@ -3,6 +3,7 @@ package com.TelephoneInfoManager.test;
 import android.content.Context;
 import android.test.InstrumentationTestCase;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
 import android.util.Log;
 import android.widget.Toast;
@@ -17,7 +18,7 @@ import android.widget.Toast;
 public class TelephoneNumberTest extends InstrumentationTestCase {
     public void test() throws Exception {
         Context context = getInstrumentation().getContext();
-        String s = PapaTelephoneNumberGetter.getTelephoneNumber(context);
+        String s = new PapaTelephoneNumberGetterReal().getTelephoneNumber(context);
 
         if(s == null)
         {
