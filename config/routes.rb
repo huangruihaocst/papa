@@ -74,6 +74,6 @@ Rails.application.routes.draw do
   get 'manage/CourseInfo/:id' => 'manage#course_info'
   get 'manage/ClassInfo/:id' => 'manage#class_info'
   get 'manage/ShowPhotos/:id' => 'manage#show_photos'
-  get 'manage/ShowVideos/:id' => 'manage#show_videos'
+  get 'manage/student/:id/lesson/:lessonId' => 'manage#show_videos'
   post 'manage/AddCourseToCurrentUser' => 'manage#AddCourseToCurrentUser'
 end
