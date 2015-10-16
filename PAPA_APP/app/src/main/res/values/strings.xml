@@ -1,14 +1,20 @@
 <resources>
 
+    <string name="main_title">啪啪打卡</string>
+
     <string name="title_activity_semester">SemesterActivity</string>
     <string name="title_activity_course">CourseActivity</string>
     <string name="title_activity_experiment">ExperimentActivity</string>
     <string name="title_activity_student">StudentActivity</string>
+    <string name="title_activity_favorite">FavoriteActivity</string>
+    <string name="title_activity_history">HistoryActivity</string>
+    <string name="title_activity_upload_history">UploadHistoryActivity</string>
+    <string name="title_activity_edit_profile">EditProfileActivity</string>
 
     <string name="app_name">PAPA</string>
     <string name="username">用户名(手机号, 邮箱)</string>
     <string name="password">密码</string>
-    <string name="cannot_get_telephone_num">获取不了手机号瞄 QAQ</string>
+    <string name="cannot_get_telephone_num">获取不了手机号喵 QAQ</string>
     <string name="hint_sign_in_1">登录</string>
     <string name="hint_sign_in_2">您可以使用学号或者手机号登录</string>
     <string name="hint_select_course">请选择课程</string>
@@ -51,6 +57,7 @@
     <string name="key_to_experiment_history">key_to_experiment_history</string>
     <string name="key_to_upload_history">key_to_upload_history</string>
     <string name="key_to_edit_profile">key_to_edit_profile</string>
+    <string name="key_enter_sign_in">key_enter_sign_in</string>
 
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
@@ -117,9 +124,5 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
-    <string name="title_activity_favorite">FavoriteActivity</string>
-    <string name="title_activity_history">HistoryActivity</string>
-    <string name="title_activity_upload_history">UploadHistoryActivity</string>
-    <string name="title_activity_edit_profile">EditProfileActivity</string>
 
 </resources>

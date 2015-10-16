@@ -2,6 +2,13 @@ package com.Activities.papa;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by huang on 15-10-10.
@@ -16,7 +23,8 @@ public class BundleHelper implements Parcelable{
     private String student_name;
     private int student_id;
     private String identity;
-
+    private JSONObject jsonObject;
+    private String getter_string;
 
     public BundleHelper(){
         username = "";
@@ -28,6 +36,8 @@ public class BundleHelper implements Parcelable{
         student_name = "";
         student_id = -1;
         identity = "";
+        jsonObject = new JSONObject();
+        getter_string = jsonObject.toString();
     }
 
 
@@ -58,6 +68,20 @@ public class BundleHelper implements Parcelable{
     public String getIdentity(){
         return identity;
     }
+    public PapaTelephoneNumberGetter getPapaTelephoneNumberGetter(){
+        try{
+            jsonObject = new JSONObject(getter_string);
+        }catch (JSONException e){
+            Log.e("parse", e.getMessage());
+        }
+        PapaTelephoneNumberGetter papaTelephoneNumberGetter = new PapaTelephoneNumberGetter();
+        try{
+            papaTelephoneNumberGetter = (PapaTelephoneNumberGetter)jsonObject.get("getter");
+        }catch (JSONException e){
+            Log.e("parse", e.getMessage());
+        }
+        return papaTelephoneNumberGetter;
+    }
 
 
     public void setUsername(String username){
@@ -87,6 +111,14 @@ public class BundleHelper implements Parcelable{
     public void setIdentity(String identity){
         this.identity = identity;
     }
+    public void setPapaTelephoneNumberGetter(PapaTelephoneNumberGetter papaTelephoneNumberGetter){
+        try{
+            jsonObject.putOpt("getter",papaTelephoneNumberGetter);
+        }catch (JSONException e){
+            Log.e("serialize", e.getMessage());
+        }
+        getter_string = jsonObject.toString();
+    }
 
     public int describeContents() {
         return 0;
@@ -102,6 +134,7 @@ public class BundleHelper implements Parcelable{
         out.writeString(student_name);
         out.writeInt(student_id);
         out.writeString(identity);
+        out.writeString(getter_string);
     }
 
     public static final Parcelable.Creator<BundleHelper> CREATOR = new Parcelable.Creator<BundleHelper>() {
@@ -124,41 +157,7 @@ public class BundleHelper implements Parcelable{
         student_name = in.readString();
         student_id = in.readInt();
         identity = in.readString();
+        getter_string = in.readString();
     }
 }
-
-//public class MyParcelable implements Parcelable{
-//    private int mData;
-//    private int jb;
-//
-//    /* everything below here is for implementing Parcelable */
-//
-//    // 99.9% of the time you can just ignore this
-//    public int describeContents() {
-//        return 0;
-//    }
-//
-//    // write your object's data to the passed-in Parcel
-//    public void writeToParcel(Parcel out, int flags) {
-//        out.writeInt(mData);
-//        out.writeInt(jb);
-//    }
-//
-//    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
-//    public static final Parcelable.Creator<MyParcelable> CREATOR = new Parcelable.Creator<MyParcelable>() {
-//        public MyParcelable createFromParcel(Parcel in) {
-//            return new MyParcelable(in);
-//        }
-//
-//        public MyParcelable[] newArray(int size) {
-//            return new MyParcelable[size];
-//        }
-//    };
-//
-//    // example constructor that takes a Parcel and gives you an object populated with it's values
-//    private MyParcelable(Parcel in) {
-//        mData = in.readInt();
-//        jb = in.readInt();
-//    }
-//}
 
