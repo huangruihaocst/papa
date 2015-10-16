@@ -10,6 +10,38 @@
 
   <div class="container-fluid">
     <div class="row">
+      <div class="col-md-3">
+        <div style="margin: 20px">
+        <h2><%= @student.name%></h2>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="panel panel-default" style="margin-top: 20px;">
+          <div class="panel-heading"><%= @lesson.name%></div>
+          <div class="panel-body" style="text-align: left">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">实验评分</span>
+                    <input type="text" class="form-control" value="hah" readonly="true">
+                </div>
+                <br>
+                <div class="panel panel-success">
+                  <div class="panel-heading">实验评论：</div>
+                  <div class="panel-body" id="lesson-comment">实验做得不错</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-addon">学生得分</span>
+                <input type="text" class="form-control" value="hah">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
     <div class="col-md-8">
             <!-- Begin VideoJS -->
             <div class="video-js-box " style="margin: 20px;border-right: groove 1px #000000">
@@ -31,7 +63,6 @@
       </div>
       <div class="col-md-4 label-list" id="photo-list"
            style="padding: 20px;text-align: left;"></div>
-    </div>
     </div>
   </div>
 <!-- End VideoJS -->
