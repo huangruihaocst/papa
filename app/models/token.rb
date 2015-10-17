@@ -10,7 +10,7 @@ class Token < ActiveRecord::Base
   end
 
   def token_valid?
-    valid_until < Time.now
+    valid_until > Time.now
   end
 
   def self.check_token(params, user_id)

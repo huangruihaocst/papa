@@ -115,9 +115,9 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     # 与课程有关系的资源
     GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                        Student
     #!POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
-    ?POST   /courses/1/teachers/1.json 把老师添加到课程
+    ?POST   /courses/1/teachers/1.json 把老师添加到课程                                                 Admin
     #!PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
-    DELETE /courses/1/teachers/1.json 删除老师            id                                            Teacher
+    DELETE /courses/1/teachers/1.json 从课程中删除老师       id                                           Admin
     
     GET    /courses/1/students.json  获得id=1课的所有学生 "students": [student, ...]                    Assistant
     #!POST   /courses/1/students.json  添加学生              
@@ -140,6 +140,7 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     POST   /lessons/1/comments.json  添加学生对课程的评价(当前登陆用户)  lesson comment parameters                    Student
     GET    /lessons/1/students/1/comments.json 查看助教对学生的评价 "student_comments": [student_comment,...] Student
     POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant
+    GET    /students/1/lessons/1/comments.json 查看学生对课程的所有评价 "lesson_comments": [student_comment,...] Teacher
     GET    /lessons/1/students.json  某门实验课的到课学生列表 students id                               Teacher
     POST   /lessons/1/students/1.json 学生签到                                                          Student
     GET    /lessons/1/files.json     获得该门实验课的简介文件
@@ -147,7 +148,7 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     
     # namespace students
     # 学生相关
-    #GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..] 
+    #!GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..] 
     GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]       Student
     #!POST   /students.json            添加一个学生         student parameters                            Teacher
     #!PUT    /students/1.json          修改学生             student parameters                            Student
@@ -235,6 +236,13 @@ Http Parameters/JSON对象格式
             email=string,
             #!avator_path=string
             ?avator_id=int
+    
+    teacher id=int
+            name=string
+            email=string
+            phone=string
+            avator_id=int
+            description=string
             
     lesson_comment id=int        // 学生对课程的评价
             content=string

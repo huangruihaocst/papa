@@ -18,9 +18,8 @@ class StudentsController < ApplicationController
         @students <<= p.user
       end
     else
-
+      json_failed
     end
-
   end
 
   # GET /students/1.json
