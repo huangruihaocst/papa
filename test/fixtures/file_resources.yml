@@ -1,4 +1,5 @@
 pdf_file:
   name: pdf
+  file_type: pdf
   path: file.pdf
   creator: alex

@@ -1,0 +1,49 @@
+#!/bin/bash
+
+function wc_controllers {
+  wc $(find . | grep '.*\.rb' | grep 'app/controllers\|json\.jbuilder')
+}
+
+function wc_tests {
+  wc $(find . | grep '.*\.rb\|yml' | grep '.*test/.*')
+}
+function wc_views {
+  wc $(find . | grep '\.\(html\|css\|js\|coffee\|sass\|erb\)$' | grep 'views/\|public/' | grep -v '\(chart.js\)\|\([0-9]\+\.html\)' | grep -v 'video.*\.js\|css$')
+}
+
+function wc_total {
+  wc $(find . -type f | grep -v 'chart\.js\|.git\|\.idea\|bootstrap\|config/\|db/\|tmp/\|log/\|bin/' | grep -v 'video.*\.js\|css$')
+}
+
+if [ $# -eq 0 ]
+then
+  echo -e "lines\twords\tbytes"
+  echo 'controllers:'
+  wc_controllers | tail -n 1
+  echo 'tests:'
+  wc_tests | tail -n 1
+  echo 'views:'
+  wc_views | tail -n 1
+  echo 'total:'
+  wc_total | tail -n 1
+fi
+
+case $1 in
+con)
+  wc_controllers
+  ;;
+test)
+  wc_tests
+  ;;
+view)
+  wc_views
+  ;;
+total)
+  wc_total
+  ;;
+help)
+  echo "PapaDatabase word counter:"
+  echo "command line:"
+  echo "wc ACTION"
+  echo "  where ACTION=[con|test|view|total|help]"
+esac

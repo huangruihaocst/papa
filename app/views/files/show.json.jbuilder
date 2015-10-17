@@ -4,4 +4,5 @@ json.file do
   json.name @file.name
   json.type @file.file_type
   json.path @file.path
+  json.created_at @file.created_at
 end

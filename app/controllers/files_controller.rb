@@ -7,8 +7,10 @@ class FilesController < ApplicationController
   def index
     case
       when params[:student_id] && params[:lesson_id]
+        check_token(params[:student_id], params[:token])
         @files = StudentFile.where(student_id: params[:student_id]).where(lesson_id: params[:lesson_id])
       when params[:assistant_id] && params[:lesson_id]
+        check_token(params[:assistant_id], params[:token])
         @files = AssistantFile.where(assistant_id: params[:assistant_id]).where(lesson_id: params[:lesson_id])
       when params[:lesson_id]
         @files = Lesson.find(params[:lesson_id]).attached_files
@@ -26,10 +28,9 @@ class FilesController < ApplicationController
 
   # POST /files.json
   def create
-    check_login
+    user = check_login
 
     p = params[:file]
-    puts p.class
     unless p && p.is_a?(ActionController::Parameters) && p[:file] && p[:type]
       json_failed_invalid_fields([:file, :type])
       return
@@ -47,19 +48,34 @@ class FilesController < ApplicationController
       file.write(temp_file.read)
     end
 
-    @file = FileResource.create(file_type: p[:type], name: temp_file.original_filename, path: File.join('', rel_loc))
+    @file = FileResource.create(file_type: p[:type], name: temp_file.original_filename, path: File.join('', rel_loc), creator_id: user.id)
     if @file.valid?
-        json_successful
+        json_successful do |json|
+          json['id'] = @file.id
+        end
     else
-      json_failed_invalid_fields(@file.errors.keys,
-                                  file_type: :type, path: '', name: '')
+      json_failed_invalid_fields(@file.errors.keys, file_type: :type, path: '', name: '')
     end
   end
 
   # DELETE /files/1.json
   def destroy
-    authenticate_user!
-    json_failed(REASON_NOT_IMPLEMENTED)
+    user = check_login
+
+    begin
+      @file = FileResource.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      json_failed(REASON_TOKEN_NOT_MATCH)
+      return
+    end
+
+    unless @file.creator == user
+      json_failed(REASON_TOKEN_NOT_MATCH)
+      return
+    end
+
+    @file.destroy
+    json_successful
   end
 
 end

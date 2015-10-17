@@ -115,9 +115,9 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     # 与课程有关系的资源
     GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                        Student
     #!POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
-    ?POST   /courses/1/teachers/1.json 把老师添加到课程
+    ?POST   /courses/1/teachers/1.json 把老师添加到课程                                                 Admin
     #!PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
-    DELETE /courses/1/teachers/1.json 删除老师            id                                            Teacher
+    DELETE /courses/1/teachers/1.json 从课程中删除老师       id                                           Admin
     
     GET    /courses/1/students.json  获得id=1课的所有学生 "students": [student, ...]                    Assistant
     #!POST   /courses/1/students.json  添加学生              
@@ -148,7 +148,7 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     
     # namespace students
     # 学生相关
-    #GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..] 
+    #!GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..] 
     GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]       Student
     #!POST   /students.json            添加一个学生         student parameters                            Teacher
     #!PUT    /students/1.json          修改学生             student parameters                            Student

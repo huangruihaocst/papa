@@ -8,6 +8,7 @@ class FilesControllerTest < ActionController::TestCase
     student = User.find_by_name('betty')
     lesson = Lesson.find_by_name('exp1')
 
+    sign_in student
     get :index, format: :json, student_id: student.id, lesson_id: lesson.id
 
     assert_json_success
@@ -20,6 +21,7 @@ class FilesControllerTest < ActionController::TestCase
     assistant = User.find_by_name('alex')
     lesson = Lesson.find_by_name('exp1')
 
+    sign_in assistant
     get :index, format: :json, assistant_id: assistant.id, lesson_id: lesson.id
 
     assert_json_success
@@ -56,6 +58,11 @@ class FilesControllerTest < ActionController::TestCase
 
     assert_json_success
     assert_not_nil json['file']
+    assert_not_nil json['file']['id']
+    assert_not_nil json['file']['name']
+    assert_not_nil json['file']['path']
+    assert_not_nil json['file']['created_at']
+    assert_not_nil json['file']['type']
   end
 
   # POST /files.json
@@ -70,6 +77,7 @@ class FilesControllerTest < ActionController::TestCase
 
     assert_json_success
     assert_not_nil assigns(:file).path
+    assert json['id']
   end
 
   # POST /files.json
@@ -124,6 +132,20 @@ class FilesControllerTest < ActionController::TestCase
     assert_not_nil REASON_FILE_TOO_BIG, json['reason']
 
     File.delete(file_path)
+  end
+
+  # DELETE /files/1.json
+  test 'should delete file if he is the creator' do
+    sign_in User.first
+    fixture_file = fixture_file_upload('files/2.jpg', 'image/jpeg')
+    post :create, format: :json, file: {file: fixture_file, type: 'picture'}
+    id = json['id']
+
+    assert_difference 'FileResource.count', -1 do
+      delete :destroy, format: :json, id: id.to_i
+    end
+
+    assert_json_success
   end
 
 end

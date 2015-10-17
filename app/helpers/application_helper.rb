@@ -6,13 +6,12 @@ module ApplicationHelper
 
   module StatusRenderingHelpers
 
-    class InvalidFieldException < Exception
-    end
+    InvalidFieldException = Class.new(Exception)
 
     def json_failed(reason = nil)
       addition = {}
       if block_given?
-        yield(addition)
+        yield addition
       end
 
       if reason
@@ -35,7 +34,12 @@ module ApplicationHelper
     end
 
     def json_successful
-      render json: { status: 'successful' }
+      addition = {}
+      if block_given?
+        yield addition
+      end
+
+      render json: { status: 'successful' }.merge(addition)
     end
 
     def html_failed(reason = nil)

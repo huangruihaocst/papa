@@ -22,7 +22,8 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string   :last_sign_in_ip
 
       ## Additional
-      t.boolean  :is_teacher, default: true
+      t.boolean  :is_teacher, default: false
+      t.boolean  :is_admin,   default: false
       t.integer  :avator_id
       t.string   :student_number
       t.string   :class_name

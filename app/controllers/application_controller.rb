@@ -49,12 +49,34 @@ class ApplicationController < ActionController::Base
   def check_login
     if params[:token]
       token = Token.find_by_token(params[:token])
-
-      unless token.user.is_a?(User) && token && token.token_valid?
+      if token && token.user.is_a?(User) && token.token_valid?
+        token.user
+      else
         raise TokenException.new(REASON_TOKEN_INVALID)
       end
     else
-      raise TokenException.new(REASON_TOKEN_INVALID) unless current_user
+      if current_user
+        current_user
+      else
+        raise TokenException.new(REASON_TOKEN_INVALID)
+      end
+    end
+  end
+
+  def check_admin
+    if params[:token]
+      token = Token.find_by_token(params[:token])
+      if token && token.user.is_a?(User) && token.token_valid? && token.user.is_admin?
+        token.user
+      else
+        raise TokenException.new(REASON_TOKEN_INVALID)
+      end
+    else
+      if current_user && current_user.is_admin?
+        current_user
+      else
+        raise TokenException.new(REASON_TOKEN_INVALID)
+      end
     end
   end
 

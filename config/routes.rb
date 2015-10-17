@@ -62,11 +62,11 @@ Rails.application.routes.draw do
     resources :courses, only: [:index, :create]
   end
 
-  resources :files, only: [:show, :create]
+  resources :files, only: [:show, :create, :destroy]
 
   namespace :android do
-    get 'current_version.json' => 'android_apps#current_version'
-    post 'current_version.json' => 'android_apps#create'
+    get 'current_version' => 'android_apps#current_version'
+    post 'current_version' => 'android_apps#create'
   end
 
   get 'test' => 'test#index'

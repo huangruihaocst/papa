@@ -9,14 +9,18 @@ class TeachersController < ApplicationController
   # POST /teachers.json
   def create
     if params[:id]
-      course = Course.find(params[:course_id])
-      teacher = User.find(params[:id])
-
-      course.teachers << teacher
-      if course.save
-        json_successful
-      else
-        json_failed
+      begin
+        check_admin
+        course = Course.find(params[:course_id])
+        teacher = User.find(params[:id])
+        course.teachers << teacher
+        if course.save
+          json_successful
+        else
+          json_failed
+        end
+      rescue ActiveRecord::RecordNotFound
+        json_failed_invalid_fields([:course_id, :id])
       end
     else
       json_failed(REASON_NOT_IMPLEMENTED)
@@ -27,12 +31,17 @@ class TeachersController < ApplicationController
   # DELETE /teachers/1.json
   def destroy
     if params[:course_id]
-      course = Course.find(params[:course_id])
-      teacher = User.find(params[:id])
-      if teacher.teaching_courses.where(course_id: course.id).first.destroy
-        json_successful
-      else
-        json_failed
+      begin
+        check_admin
+        course = Course.find(params[:course_id])
+        teacher = User.find(params[:id])
+        if teacher.teaching_courses.where(course_id: course.id).first.destroy
+          json_successful
+        else
+          json_failed
+        end
+      rescue ActiveRecord::RecordNotFound
+        json_failed_invalid_fields([:course_id, :id])
       end
     else
       json_failed(REASON_NOT_IMPLEMENTED)
