@@ -4,6 +4,6 @@ class TeachingCourse < ActiveRecord::Base
   # the course you teach
   belongs_to :course
 
-  validates_associated :user
-  validates_associated :course
+  validates :user, presence: true
+  validates :course, presence: true
 end

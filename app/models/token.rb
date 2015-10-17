@@ -1,9 +1,9 @@
 class Token < ActiveRecord::Base
-  validates_associated :user
+  belongs_to :user
+
+  validates :user, presence: true
   validates :valid_until, presence: true
   validates :token, presence: true
-
-  belongs_to :user
 
   def self.safe_token
     rand(TOKEN_MAX_RAND).to_s

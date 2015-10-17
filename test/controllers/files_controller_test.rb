@@ -129,7 +129,7 @@ class FilesControllerTest < ActionController::TestCase
     end
 
     assert_equal STATUS_FAIL, json['status']
-    assert_not_nil REASON_FILE_TOO_BIG, json['reason']
+    assert_equal REASON_FILE_TOO_BIG, json['reason']
 
     File.delete(file_path)
   end

@@ -164,8 +164,8 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     #!PUT    /students/1/courses.json  修改学生课程列表                                                    Teacher
     POST   /students/1/courses/1.json       给学生添加课程
     DELETE /students/1/courses/1.json       给学生删除课程
-    GET    /students/1/lessons/1.json       获得学生课程的信息，包括成绩     "course": course_score       Student
-    PUT    /students/1/lessons/1.json       修改学生课程信息                                             Assistant  
+    #!GET    /students/1/lessons/1.json       获得学生课程的信息，包括成绩     "course": course_score       Student
+    #!PUT    /students/1/lessons/1.json       修改学生课程信息                                             Assistant  
     GET    /students/1/lessons/1/files.json 获得某门实验课某个学生的所有文件 "files": [file, ...]         Student
     POST   /students/1/lessons/1/files.json 在某门实验课上添加视频图片                                      Student
     DELETE /students/1/lessons/1/files/1.json 在某门实验课上删除视频照片
@@ -183,7 +183,7 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     POST   /teachers/1/courses.json   给老师添加课程        course parameters                            Teacher
     
     # 消息推送
-    GET    /students/1/messages.json  查询学生的所有消息     "messages": [message ...]               Student
+    GET    /students/1/messages.json  查询学生的所有消息     "messages": [message ...]                   Student
     POST   /courses/1/messages.json   发送消息到某门课的所有学生 "message": message                      Assistant
     
     # 文件相关
