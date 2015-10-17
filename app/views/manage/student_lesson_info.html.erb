@@ -34,7 +34,7 @@
             <form method="post" name="student_comment" target="" id="teacher-form"
                   action="/lessons/<%=@lesson.id %>/students/<%=@student.id %>/comments.json"
                   onsubmit="return submit_form()">
-              <!--<input name="_method" type="hidden" value="put" />-->
+              <input name="_method" type="hidden" value="put" />
               <div class="col-md-6">
                   <div class="input-group">
                     <span class="input-group-addon">学生得分</span>
@@ -85,12 +85,18 @@
 
       $.get("/lessons/<%=@lesson.id %>/students/<%=@student.id %>/comments.json",{},function(data)
       {
-          console.log(data);
+          $("#teacher-score").val(data.student_comments[0].score);
+          $("#teacher-comment").val(data.student_comments[0].content);
       });
-      $.get("/lessons/<%=@lesson.id %>/comments.json",{},function(data){console.log(data.lesson_comments)});
+      $.get("/students/<%=@student.id %>/lessons/<%=@lesson.id %>/comments.json",{},function(data)
+      {
+          console.log(data.lesson_comments)
+      });
       // test case 
-      data=[{id:'1',path:"/test.mp4"},{id:'2',path:"/xxx.mp4"}];
-      (function(){
+      $.get("/students/<%=@student.id %>/files.json",{},
+      function(d){
+          console.log(d);
+          data= d.files;
           str="";
           for(var i in data)
           {
@@ -100,7 +106,7 @@
           }
           //console.log(str);
           $("#video-list").html(str);
-      })();
+      });
       function changeVideo(x)
       {
           $("video").attr("src",data[x].path);
