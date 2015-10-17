@@ -443,98 +443,103 @@
 				}
 			}
 			showInfo();
-			$.ajax({url:"/semesters.json",data:{},type:"GET",success:function(data)
+			var data1,data2;
+			
+			function deal()
 			{
-				if (data.status=="failed")
+				if (data1.status=="failed"||data2.status=="failed")
 				{
-					alert("获取学期失败");
+					alert("获取信息失败");
 					return;
 				}
-				if (data.status=="successful")
+				if (data1.status=="successful"&&data2.status=="successful")
 				{
-					data=data.semesters;
+					var data,i,j,k,p1,p2;
+					data=data1.semesters;
 					for (i=0;i<data.length;++i)
 					{
 						j=info.tot++;
 						info.semesters[j]=new Object();
 						info.semesters[j].name=data[i].name;
 						info.semesters[j].id=data[i].id;
-						info.semesters[i].courses=new Array();
-						info.semesters[i].clicked=false;
+						info.semesters[j].courses=new Array();
+						info.semesters[j].clicked=false;
 					}
-					$.ajax({url:"/users/current.json",data:{},type:"GET",success:function(data)    //#modify
+					usersId=data2.id;
+					$.ajax({url:"/teachers/"+usersId+"/course.json",data:{},async:false,type:"GET",success:function(data)    //#modify
 					{
 						if (data.status=="failed")
 						{
-							alert("获取当前用户失败");
+							alert("获取信息失败");
 							return;
 						}
 						if (data.status=="successful")
 						{
-							usersId=data.id;
-							$.ajax({url:"/teachers/"+usersId+"/course.json",data:{},type:"GET",success:function(data)    //#modify
+							data=data.courses;
+							for (p1=0;p1<data.length();++p1)
 							{
-								if (data.status=="failed")
+								i=-1;
+								for (j=0;j<info.tot;++j)
+								if (info.semesters[j].id==data[p1].semester)
 								{
-									alert("获取课程失败");
-									return;
+									i=j;break;
 								}
-								if (data.status=="successful")
+								if (i==-1)
 								{
-									data=data.courses;
-									var p1,p2;
-									for (p1=0;p1<data.length();++p1)
+									alert("No such semester.");continue;
+								}
+								j=info.semesters[j].tot++;
+								info.semesters[i].courses[j]=data[p1];
+								info.semesters[i].courses[j].tot=0;
+								info.semesters[i].courses[j].classes=new Array();
+								info.semesters[i].courses[j].clicked=false;
+								$.ajax({url:"/courses/"+data[p1].id+"/lessons.json",data:{},async:false,type:"GET",success:function(data)   //#modify
+								{
+									if (data.status=="failed")
 									{
-										i=-1;
-										for (j=0;j<info.tot;++j)
-										if (info.semesters[j].id==data[p1].semester)
-										{
-											i=j;break;
-										}
-										if (i==-1)
-										{
-											alert("No such semester.");continue;
-										}
-										j=info.semesters[j].tot++;
-										info.semesters[i].courses[j]=data[p1];
-										info.semesters[i].courses[j].tot=0;
-										info.semesters[i].courses[j].classes=new Array();
-										info.semesters[i].courses[j].clicked=false;
-										$.ajax({url:"/courses/"+data[p1].id+"/lessons.json",data:{},async:true,type:"GET",success:function(data2)   //#modify
-										{
-											if (data2.status=="failed")
-											{
-												alert("无法获取课程的实验");
-												return;
-											}
-											if (data2.status=="successful")
-											{
-												for (p2=0;p2<data2.length;++p2)
-												{
-													k=info.semesters[i].courses[j].tot++;
-													info.semesters[i].courses[j].classes[k]=data2[p2];
-													info.semesters[i].courses[j].classes[k].clicked=false;
-												}
-												return;
-											}
-											alert("unexpected: /courses/id/lessons.json");
-										}});
+										alert("无法获取课程的实验");
+										return;
 									}
-									showInfo();
-									return;
-								}
-								alert("unexpected: /teachers/id/courses.json");
-							}});
-							return;
+									if (data.status=="successful")
+									{
+										for (p2=0;p2<data.length;++p2)
+										{
+											k=info.semesters[i].courses[j].tot++;
+											info.semesters[i].courses[j].classes[k]=data[p2];
+											info.semesters[i].courses[j].classes[k].clicked=false;
+										}
+										return;
+									}
+									alert("unexpected: /courses/id/lessons.json");
+								}});
+							}
+							showInfo();
+						}else
+						{
+							alert("unexpected error");
 						}
-						alert("unexpected: /users/current.json");
 					}});
-					return;
+				}else
+				{
+					alert("unexpected error");
 				}
-				alert("unexpected: /semesters.json");
+			}
+				
+			$.ajax({url:"/semesters.json",data:{},type:"GET",success:function(data)
+			{
+				data1=data;
+				console.log(1,data);
+				if (data1&&data2) deal();
 			}});
+			$.ajax({url:"/users/current.json",data:{},type:"GET",success:function(data)    //#modify
+			{
+				data2=data;
+				console.log(2,data);
+				if (data1&&data2) deal();
+			}});
+			
 		}
-		   
+		
 		function change(i,j,k)  //i, j, k分别表示当前点击的学期，课程，实验
 		{
 			if (k!=-1)

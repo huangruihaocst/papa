@@ -102,6 +102,7 @@
 				if (data.status=="successful")
 				{
 					people.tot=data.students.size();
+					return;
 				}
 				alert("unexpected: /courses/id/students.json");
 			});
