@@ -68,7 +68,17 @@
 			$.get("/lessons/"+classId+".json",{},
 			function(data)
 			{
-				courseInfo=data.name;
+				if (data.status=="failed")
+				{
+					alert("获取实验信息失败");
+					return;
+				}
+				if (data.status=="successful")
+				{
+					courseInfo=data.name;
+					return;
+				}
+				alert("unexpected: /lessons/id.json");
 			});
 			courseInfo="计算机组成原理";
 			var i;
@@ -84,22 +94,49 @@
 			$.get("/courses/"+courseId+"/students.json",{},
 			function(data)
 			{
-				people.tot=data.size();
+				if (data.status=="failed")
+				{
+					alert("获取课程人数失败");
+					return;
+				}
+				if (data.status=="successful")
+				{
+					people.tot=data.students.size();
+				}
+				alert("unexpected: /courses/id/students.json");
 			});
 			$.get("/lessons/"+classId+"/students.json",{},
 			function(data)
 			{
-				people.attend=data.size();
-				people.absense=people.tot-people.attend;
-				var i;
-				for (i=0;i<data.length;++i)
+				if (data.status=="failed")
 				{
-					$.get("/students/"+data[i].id+"/lessons/"+classId+".json",{},
-					function(data)
-					{
-						++score[data];
-					});
+					alert("获取到课人数失败");
+					return;
 				}
+				if (data.status=="successful")
+				{
+					people.attend=data.size();
+					people.absense=people.tot-people.attend;
+					var i;
+					for (i=0;i<data.id.length;++i)
+					{
+						$.get("/lessons/"+classId+"/students/"+data.id[i]+"/comments.json",{},
+						function(data2)
+						{
+							if (data2.status=="failed")
+							{
+								alert("获取实验信息失败");
+								return;
+							}
+							if (data2.status=="successful")
+							{
+								++score[data2.score];
+							}
+							alert("unexpected: /lessons/id/students/id/comments.json");
+						});
+					}
+				}
+				alert("unexpected: /lessons/id/students.json");
 			});
 			$.get("/lessons/"+classId+"/comments.json",{},
 			function(data)
