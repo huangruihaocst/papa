@@ -134,6 +134,8 @@ class FilesControllerTest < ActionController::TestCase
     File.delete(file_path)
   end
 
+  # POST /courses/1/files.json
+
   # DELETE /files/1.json
   test 'should delete file if he is the creator' do
     sign_in User.first

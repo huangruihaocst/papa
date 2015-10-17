@@ -345,6 +345,13 @@ REASON_INVALID_OPERATION = 'invalid_operation' // 访问了不存在的url
     teaching_course id=int
             belongs_to user
             belongs_to course
+    learning_course id=int
+            belongs_to user
+            belongs_to course
+    assisting_course id=int
+            belongs_to user
+            belongs_to course
+            
     lesson_status id=int
             score=string
             belongs_to user

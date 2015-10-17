@@ -6,7 +6,7 @@ class Course < ActiveRecord::Base
   has_many :lessons
 
   has_many :participations
-  has_many :students, through: :participations, source: :user
+  has_many :participants, through: :participations, source: :user
 
   has_many :teaching_courses
   has_many :teachers, through: :teaching_courses, source: :user
@@ -15,4 +15,20 @@ class Course < ActiveRecord::Base
 
   has_many :course_files
   has_many :attached_files, through: :course_files, source: :file_resource
+
+  def students
+    users = User.none
+    participants.each do |p|
+      users <<= p if p.role == ROLE_STUDENT
+    end
+    users
+  end
+  def assistants
+    users = User.none
+    participants.each do |p|
+      users <<= p if p.role == ROLE_ASSISTANT
+    end
+    users
+  end
+
 end
