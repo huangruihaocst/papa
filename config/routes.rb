@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     resources :students, only: [:show] do
       # assistants' comments to the student
       resources :comments, controller: 'student_comments', only: [:index, :create]
+      get 'comment' => 'student_comments#default'
     end
 
     # for attendence

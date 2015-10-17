@@ -138,7 +138,8 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
     #!GET    /lessons/1/comments.json  获得某门课程的评价    "comments": [comment, ...]                   Teacher
     ?GET    /lessons/1/comments.json  获得某门课程的评价    "lesson_comments": [lesson_comment, ...]                   Teacher
     POST   /lessons/1/comments.json  添加学生对课程的评价(当前登陆用户)  lesson comment parameters                    Student
-    GET    /lessons/1/students/1/comments.json 查看助教对学生的评价 "student_comments": [student_comment,...] Student
+    #!GET    /lessons/1/students/1/comments.json 查看助教对学生的评价 "student_comments": [student_comment,...] Student
+    ?GET   /lessons/1/students/1/comment.json  助教对学生的评价 "student_comment": student_comment
     POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant
     GET    /students/1/lessons/1/comments.json 查看学生对课程的所有评价 "lesson_comments": [student_comment,...] Teacher
     GET    /lessons/1/students.json  某门实验课的到课学生列表 students id                               Teacher
@@ -345,13 +346,7 @@ REASON_INVALID_OPERATION = 'invalid_operation' // 访问了不存在的url
     teaching_course id=int
             belongs_to user
             belongs_to course
-    learning_course id=int
-            belongs_to user
-            belongs_to course
-    assisting_course id=int
-            belongs_to user
-            belongs_to course
-            
+
     lesson_status id=int
             score=string
             belongs_to user

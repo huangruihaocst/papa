@@ -21,4 +21,12 @@ class StudentCommentsController < ApplicationController
     end
   end
 
+  def default
+    if params[:lesson_id] && params[:student_id]
+      @student_comment = StudentComment.where(lesson_id: params[:lesson_id]).where(student_id: params[:student_id]).last
+    else
+      json_failed
+    end
+  end
+
 end
