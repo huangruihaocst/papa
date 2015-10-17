@@ -21,4 +21,4 @@
 *~
 # ignore mp4
 /public/*.mp4
-
+/public/uploads/
