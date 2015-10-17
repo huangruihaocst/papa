@@ -1,7 +1,7 @@
-
-<script>
-    (function (){
-    $.post('/manage/AddCourseToCurrentUser',{name: "ttt",description:"just  ttt", role: 'student'},
-    function(data){alert(data)});}
-    )();
-</script>
+<form action="/files.json" method="post" enctype="multipart/form-data">
+  <input type="file" name="file[file]">
+  <label>name
+  <input type="text" name="name">
+  </label>
+  <button type="submit" >submit</button>
+</form>

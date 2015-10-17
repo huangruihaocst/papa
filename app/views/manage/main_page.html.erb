@@ -151,11 +151,11 @@
 					<h4>实验内容</h4>
 					<textarea id="input-modify-class-2" type="text" class="form-control"></textarea>
 					<h4>开始时间</h4>
-					<input id="input-add-class-3" type="text" class="form-control" placeholder="2000-01-01 20:00"></input>    <!--#modify-->
+					<input id="input-modify-class-3" type="text" class="form-control" placeholder="2000-01-01 20:00"></input>    <!--#modify-->
 					<h4>结束时间</h4>
-					<input id="input-add-class-4" type="text" class="form-control" placeholder="2000-01-01 20:00"></input>    <!--#modify-->
+					<input id="input-modify-class-4" type="text" class="form-control" placeholder="2000-01-01 20:00"></input>    <!--#modify-->
 					<h4>实验地点</h4>
-					<input id="input-add-class-5" type="text" class="form-control"></input>
+					<input id="input-modify-class-5" type="text" class="form-control"></input>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-primary" onclick="modifyClass()" data-dismiss="modal">修改</button>
@@ -219,32 +219,34 @@
 		function confirmCourse()  //新课程的信息
 		{
 			var text1,text2,i,p;
+			p=new Object();
 			text1=$("#input-add-course-1")[0].value;
 			text2=$("#input-add-course-2")[0].value;
-			p=new Object();
 			p.name=text1;
 			p.description=text2;
-			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},  //#modify
+			$.post('/semesters/'+info.semesters[choosei].id+'/courses.json',p,  //#modify
     		function(data)
     		{
-    			if (data=="fail")
+    			console.log(data);
+    			if (data.status=="failed")
     			{
     				alert("添加失败");
     				return;
     			}
-    			if (data=="succeed")
+    			if (data.status=="successful")
     			{
     				for (i=++info.semesters[choosei].tot;i>0;--i)
     				{
     					info.semesters[choosei].courses[i]=info.semesters[choosei].courses[i-1];
     				}
+    				p.id=data.id;
     				info.semesters[choosei].courses[0]=p;
     				info.semesters[choosei].courses[0].tot=0;
     				info.semesters[choosei].courses[0].classes=new Array();
     				showInfo();
     				return;
     			}
-    			alert("unexpected:"+data);
+    			alert("unexpected: confirmCourse");
     		}
     		);
     	}
@@ -252,26 +254,27 @@
     	function modifyCourse()    //修改课程信息
     	{
     		var text1,text2,i,p;
+    		p=info.semesters[choosei].courses[choosej];
     		text1=$("#input-modify-course-1")[0].value;
 			text2=$("#input-modify-course-2")[0].value;
 			p=new Object();
 			p.name=text1;
 			p.description=text2;
-			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},  //#modify
+			$.post('/courses/'+p.id+'.json',p,  //#modify
     		function(data)
     		{
-    			if (data=="fail")
+    			if (data.status=="failed")
     			{
     				alert("修改失败");
     				return;
     			}
-    			if (data=="succeed")
+    			if (data.status=="successful")
     			{
     				info.semesters[choosei].courses[choosej]=p;
     				showInfo();
     				return;
     			}
-    			alert("unexpected:"+data);
+    			alert("unexpected: modifyCourse");
     		}
     		);
     	}
@@ -279,27 +282,30 @@
 		function confirmClass()  //新实验的信息
 		{
 			var text1,text2,text3,text4,text5,i,p;
+			p=new Object();
 			text1=$("#input-add-class-1")[0].value;
 			text2=$("#input-add-class-2")[0].value;
 			text3=$("#input-add-class-3")[0].value;
 			text4=$("#input-add-class-4")[0].value;
 			text5=$("#input-add-class-5")[0].value;
-			p=new Object();
 			p.name=text1;
 			p.description=text2;
 			p.start_time=text3;
 			p.end_time=text4;
 			p.location=text5;
-			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},  //#modify
+			console.log(p);
+			$.post('/courses/'+info.semesters[choosei].courses[choosej].id+'/lessons.json',p,  //#modify
     		function(data)
     		{
-    			if (data=="fail")
+    			console.log(data);
+    			if (data.status=="failed")
     			{
     				alert("添加失败");
     				return;
     			}
-    			if (data=="succeed")
+    			if (data.status=="successful")
     			{
+    				p.id=data.id;
     				for (i=++info.semesters[choosei].courses[choosej].tot;i>0;--i)
     				{
     					info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i-1];
@@ -308,7 +314,7 @@
     				showInfo();
     				return;
     			}
-    			alert("unexpected:"+data);
+    			alert("unexpected: confirmClass");
     		}
     		);
 		}
@@ -316,6 +322,7 @@
 		function modifyClass()  //修改实验信息
 		{
 			var text1,text2,text3,text4,text5,i,p;
+			p=info.semesters[choosei].courses[choosej].classes[choosek];
 			text1=$("#input-modify-class-1")[0].value;
 			text2=$("#input-modify-class-2")[0].value;
 			text3=$("#input-modify-class-3")[0].value;
@@ -327,21 +334,23 @@
 			p.start_time=text3;
 			p.end_time=text4;
 			p.location=text5;
-			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},  //#modify
+			console.log(p);
+			$.post('/lessons/'+p.id+'.json',p,  //#modify
     		function(data)
     		{
-    			if (data=="fail")
+    			console.log(data);
+    			if (data.status=="failed")
     			{
     				alert("修改失败");
     				return;
     			}
-    			if (data=="succeed")
+    			if (data.status=="successful")
     			{
     				info.semesters[choosei].courses[choosej].classes[choosek]=p;
     				showInfo();
     				return;
     			}
-    			alert("unexpected:"+data);
+    			alert("unexpected: modifyClass");
     		}
     		);
 		}
@@ -352,15 +361,14 @@
 			if (choosek==-1)    //删除课程
 			{
 				id=info.semesters[choosei].courses[choosej].id;
-				$.delete('/courses/'+id+'.json',{},
-				function(data)
+				$.ajax({url:'/courses/'+id+'.json',data:{},async:false,type:"DELETE",success:function(data)
 				{
-					if (data=="fail")
+					console.log(data);
+					if (data.status=="failed")
     				{
-    					alert("删除失败");
-    					return;
+    					alert("删除失败");return;
     				}
-    				if (data=="succeed")
+    				if (data.status=="successful")
     				{
     					for (i=choosej;i<info.semesters[choosei].tot-1;++i)
     					{
@@ -371,21 +379,18 @@
     					showInfo();
     					return;
     				}
-    				alert("unexpected:"+data);
-    				}
-    			);
+    				alert("unexpected: deleteItem");
+    			}});
     		}else   //删除实验
     		{
     			id=info.semesters[choosei].courses[choosej].classes[choosek].id;
-				$.delete('/lessons/'+id+'.json',{},
-				function(data)
+    			$.ajax({url:'/lessons/'+id+'.json',data:{},async:false,type:"DELETE",success:function(data)
 				{
-					if (data=="fail")
-    				{
-    					alert("删除失败");
-    					return;
-    				}
-    				if (data=="succeed")
+					if (data.status=="failed")
+					{
+						alert("删除失败");return;
+					}
+    				if (data.status=="successful")
     				{
     					for (i=choosek;i<info.semesters[choosei].courses[choosej].tot-1;++i)
     					{
@@ -396,9 +401,8 @@
     					showInfo();
     					return;
     				}
-    				alert("unexpected:"+data);
-    				}
-    			);
+    				alert("unexpected: deleteItem");
+    			}});
     		}
 		}
 					
@@ -431,13 +435,26 @@
 						info.semesters[i].courses[j].classes[k].name="实验"+k;
 						info.semesters[i].courses[j].classes[k].description="a";
 						info.semesters[i].courses[j].classes[k].id=0;
+						info.semesters[i].courses[j].classes[k].start_time="0";
+						info.semesters[i].courses[j].classes[k].end_time="0";
+						info.semesters[i].courses[j].classes[k].location="0";
 						info.semesters[i].courses[j].classes[k].clicked=false;
 					}
 				}
 			}
 			$.get("/semesters.json",{},function(data)
 			{
-				for (i=0;i<data.length();++i)
+				if (data.status=="failed")
+				{
+					alert("获取学期失败");
+					return;
+				}
+				if (!data.semesters)
+				{
+					return;
+				}
+				data=data.semesters;
+				for (i=0;i<data.length;++i)
 				{
 					j=info.tot++;
 					info.semesters[j]=new Object();
@@ -447,40 +464,70 @@
 					info.semesters[i].clicked=false;
 				}
 			});
-			$.get("/users/current.json",{},function(data)
+			$.get("/users/current.json",{},function(data)    //#modify
 			{
-				usersId=data.id;
-			});
-			$.get("/teachers/"+usersId+"/course.json",{},function(data)
-			{
-				var p1,p2;
-				for (p1=0;p1<data.length();++p1)
+				if (data.status=="failed")
 				{
-					i=-1;
-					for (j=0;j<info.tot;++j)
-					if (info.semesters[j].id==data[p1].semester)
-					{
-						i=j;break;
-					}
-					if (i==-1)
-					{
-						alert("No such semester.");continue;
-					}
-					j=info.semesters[j].tot++;
-					info.semesters[i].courses[j]=data[p1];
-					info.semesters[i].courses[j].tot=0;
-					info.semesters[i].courses[j].classes=new Array();
-					info.semesters[i].courses[j].clicked=false;
-					$.get("/courses/"+data[p1].id+"/lessons.json",{},function(data2)
-					{
-						for (p2=0;p2<data2.length;++p2)
-						{
-							k=info.semesters[i].courses[j].tot++;
-							info.semesters[i].courses[j].classes[k]=data2[p2];
-							info.semesters[i].courses[j].classes[k].clicked=false;
-						}
-					});
+					alert("获取当前用户失败");
+					return;
 				}
+				if (data.status=="successful")
+				{
+					usersId=data.id;
+					return;
+				}
+				alert("unexpected: /users/current.json");
+			});
+			$.get("/teachers/"+usersId+"/course.json",{},function(data)    //#modify
+			{
+				if (data.status=="failed")
+				{
+					alert("获取课程失败");
+					return;
+				}
+				if (data.status=="successful")
+				{
+					data=data.courses;
+					var p1,p2;
+					for (p1=0;p1<data.length();++p1)
+					{
+						i=-1;
+						for (j=0;j<info.tot;++j)
+						if (info.semesters[j].id==data[p1].semester)
+						{
+							i=j;break;
+						}
+						if (i==-1)
+						{
+							alert("No such semester.");continue;
+							}
+						j=info.semesters[j].tot++;
+						info.semesters[i].courses[j]=data[p1];
+						info.semesters[i].courses[j].tot=0;
+						info.semesters[i].courses[j].classes=new Array();
+						info.semesters[i].courses[j].clicked=false;
+						$.get("/courses/"+data[p1].id+"/lessons.json",{},function(data2)    //#modify
+						{
+							if (data2.status=="failed")
+							{
+								alert("无法获取课程的实验");
+								return;
+							}
+							if (data2.status=="successful")
+							{
+								for (p2=0;p2<data2.length;++p2)
+								{
+									k=info.semesters[i].courses[j].tot++;
+									info.semesters[i].courses[j].classes[k]=data2[p2];
+									info.semesters[i].courses[j].classes[k].clicked=false;
+								}
+								return;
+							}
+							alert("unexpected: courses/id/lessons.json");
+						});
+					}
+				}
+				alert("unexpected: /teachers/id/courses.json");
 			});
 		}
 		   
@@ -509,9 +556,9 @@
 			console.log(i,j,k);
 			$("#input-modify-class-1")[0].value=info.semesters[i].courses[j].classes[k].name;
 			$("#input-modify-class-2")[0].value=info.semesters[i].courses[j].classes[k].description;
-			$("#input-modify-class-3")[0].value=info.semesters[choosei].courses[choosej].classes[choosek].start_time;
-			$("#input-modify-class-4")[0].value=info.semesters[choosei].courses[choosej].classes[choosek].end_time;
-			$("#input-modify-class-5")[0].value=info.semesters[choosei].courses[choosej].classes[choosek].location;
+			$("#input-modify-class-3")[0].value=info.semesters[i].courses[j].classes[k].start_time;
+			$("#input-modify-class-4")[0].value=info.semesters[i].courses[j].classes[k].end_time;
+			$("#input-modify-class-5")[0].value=info.semesters[i].courses[j].classes[k].location;
 			choosei=i;choosej=j;choosek=k;
 			$('#modal-modify-class').modal('show');
 			event.stopPropagation();
@@ -527,7 +574,7 @@
 		function addCourse(event,i)  //为第i学期添加课程
 		{
 			choosei=i;
-			$("#input-add-course-1")[0].value=$("#input-add-course-1")[0].value="";
+			$("#input-add-course-1")[0].value=$("#input-add-course-2")[0].value="";
 			$('#modal-add-course').modal('show');
 			event.stopPropagation();
 		}

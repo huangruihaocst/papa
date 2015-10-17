@@ -20,8 +20,9 @@ class ManageController < ApplicationController
   def show_photos
     @id= params[:id]
   end
-  def show_videos
-    @id= params[:id]
+  def student_lesson_info
+    @student = User.find(params[:id])
+    @lesson = Lesson.find(params[:lessonId])
   end
   def AddCourseToCurrentUser
     if(user_signed_in?)
