@@ -68,10 +68,14 @@ class FilesController < ApplicationController
                   creator_id:       user.id
               )
             else
+              @file.destroy
               json_failed(REASON_PERMISSION_DENIED)
+              return
             end
           else
+            @file.destroy
             json_failed(REASON_PERMISSION_DENIED)
+            return
           end
         elsif params[:course_id]
           user = check_teacher
@@ -79,6 +83,7 @@ class FilesController < ApplicationController
           if course.teachers.include? user
             CourseFile.create(file_resource_id: @file.id, course_id: course.id)
           else
+            @file.destroy
             json_failed
             return
           end
@@ -88,9 +93,11 @@ class FilesController < ApplicationController
           json['id'] = @file.id
         end
       rescue ActiveRecord::RecordNotFound
+        @file.destroy
         json_failed
       end
     else
+      @file.destroy
       json_failed_invalid_fields(@file.errors.keys, file_type: :type, path: '', name: '')
     end
   end

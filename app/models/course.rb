@@ -6,7 +6,6 @@ class Course < ActiveRecord::Base
   has_many :lessons
 
   has_many :participations
-  has_many :participants, through: :participations, source: :user
 
   has_many :teaching_courses
   has_many :teachers, through: :teaching_courses, source: :user
@@ -18,15 +17,15 @@ class Course < ActiveRecord::Base
 
   def students
     users = User.none
-    participants.each do |p|
-      users <<= p if p.role == ROLE_STUDENT
+    participations.each do |p|
+      users <<= p.user if p.role == ROLE_STUDENT
     end
     users
   end
   def assistants
     users = User.none
-    participants.each do |p|
-      users <<= p if p.role == ROLE_ASSISTANT
+    participations.each do |p|
+      users <<= p.user if p.role == ROLE_ASSISTANT
     end
     users
   end
