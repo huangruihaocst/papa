@@ -30,11 +30,17 @@
 		{
 			width:80%;
 		}
+		#title
+		{
+			font-size:40px;
+		}
 	</style>
 </head>
 <body>
 	<script type="text/javascript" src="/chart.js"></script>
 	<div id="content">
+		<div id="title">
+		</div>
 		<div id="content1" class="content">
 			到课情况</br>
 			<canvas id="chart1" class="chart"></canvas>
@@ -58,62 +64,142 @@
 			courseId=p;
 		}
 		
-		var n=3,m=5,courseInfo,people=new Array(),score=new Array();
+		var n=3,m=5,courseInfo,lessons=new Array(),score=new Array();
 		
 		function loadInfo()
 		{
 			var i,j;
-			people[0]=new Object();people[1]=new Object();people[2]=new Object();
-			people[0].attend=100;people[1].attend=10;people[2].attend=99;
+			lessons[0]=new Object();lessons[1]=new Object();lessons[2]=new Object();
+			lessons[0].attend=100;lessons[1].attend=10;lessons[2].attend=99;
 			for (i=0;i<n;++i)
 			{
 				score[i]=new Array();
 				for (j=0;j<m;++j) score[i][j]=(i+1)*(j+1);
 			}
+			courseInfo="计算机组成原理";
+			showInfo();
+			var p1=false,p2=false;
+			function deal()
+			{
+				showInfo();
+			}
 			$.get("/courses/"+courseId+".json",{},
 			function(data)
 			{
-				courseInfo=data.name;
+				console.log(data);
+				if (data.status=="failed")
+				{
+					alert("获取课程信息失败");
+					return;
+				}
+				if (data.status=="successful")
+				{
+					courseInfo=data.name;
+					p1=true;
+					if (p1&&p2) deal();
+					return;
+				}
+				alert("unexpected: /courses/id.json");
 			});
-			courseInfo="计算机组成原理";
 			$.get("/courses/"+courseId+"/lessons.json",{},
 			function(data)
 			{
-				var i;
-				for (i=0;i<data.length;++i)
+				console.log(data);
+				if (data.status=="failed")
 				{
-					people[i]=new Object();
-					classId=data[i].id;
-					$.get("/lessons/"+classId+".json",{},
-					function(data2)
-					{
-						people[i].name=data2.name;
-					});
-					$.get("/lessons/"+classId+"/students.json",{},
-					function(data2)
-					{
-						people[i].attend=data2.length;
-						var j;
-						for (j=0;j<data2.length;++j)
-						{
-							$.get("/students/"+data2[j].id+"/lessons/"+classId+".json",{},
-							function(data3)
-							{
-								++score[i][data3];
-							});
-						}
-					});
+					alert("获取实验名字信息失败");
+					return;
 				}
+				if (data.status=="successful")
+				{
+					var i;
+					for (i=0;i<data.length;++i)
+					{
+						people[i]=new Object();
+						classId=data[i].id;
+						$.ajax({url:"/lessons/"+classId+".json",data:{},type:"GET",async:false,success:function(data)
+						{
+							if (data.status=="failed")
+							{
+								alert("获取实验信息失败");
+								return;
+							}
+							if (data.status=="successful")
+							{
+								lessons[i].name=data.name;
+								return;
+							}
+							alert("unexpected: /lessons/id.json");
+						}});
+						$.ajax({url:"/lessons/"+classId+"/students.json",data:{},type:"GET",async:false,success:function(data)
+						{
+							if (data.status=="failed")
+							{
+								alert("获取到课人数失败");
+								return;
+							}
+							if (data.status=="successful")
+							{
+								lessons[i].attend=data.students.length;
+								return;
+							}
+							alert("unexpected: /lessons/id/students.json");
+						}});
+						$.ajax({url:"/lessons/"+classId+"/comments.json",data:{},type:"GET",async:false,success:function(data)
+						{
+							if (data.status=="failed")
+							{
+								alert("获取分数分布失败");
+							}
+							if (data.status=="successful")
+							{
+								var i,j;
+								data=data.lesson_comments;
+								for (i=0;i<data.length;++j)
+								{
+									j=data[i].score;
+									if (0<=j&&j<=5)
+									{
+										++score[i][0];
+									}
+									if (j==6||j==7)
+									{
+										++score[i][1];
+									}
+									if (j==8)
+									{
+										++score[i][2];
+									}
+									if (i==9)
+									{
+										++score[i][3];
+									}
+									if (i==10)
+									{
+										++score[i][4];
+									}
+								};
+								return;
+							}
+							alert("unexpected: /lessons/id/comments.json");
+						}});
+					}
+					p2=true;
+					if (p1&&p2) deal();
+					return;
+				}
+				alert("unexpected: /courses/id/lessons.json");
 			});
 		}
 		
 		function showInfo()
 		{
 			var data,data2,text="",i;
+			$("#title")[0].innerHTML=courseInfo;
 			data={labels:["实验1","实验2","实验3"],datasets:[{
 					fillColor : "rgba(151,187,205,0.5)",
 					strokeColor : "rgba(151,187,205,1)",
-					data : [people[0].attend,people[1].attend,people[2].attend]}]};
+					data : [lessons[0].attend,lessons[1].attend,lessons[2].attend]}]};
 			data2={labels:["0~5分","6~7分","8分","9分","10分"],datasets:[{
 					fillColor : "rgba(151,187,205,0.5)",
 					strokeColor : "rgba(151,187,205,1)",
@@ -134,6 +220,5 @@
 		}
 		
 		loadInfo();
-		showInfo();
 	</script>
 </body>

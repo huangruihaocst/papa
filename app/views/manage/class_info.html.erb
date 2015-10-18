@@ -79,8 +79,8 @@
 			for (i=0;i<n;++i)
 			{
 				comments[i]=new Object();
-				comments[i].author="A"+i;
-				comments[i].text="aaa";
+				comments[i].creator_name="A"+i;
+				comments[i].content="aaa";
 			}
 			totalPages=Math.floor((n-1)/numberPerPage+1);
 			nowPage=1;
@@ -138,7 +138,7 @@
 				}
 				if (data.status=="successful")
 				{
-					data.students.length;
+					people.attend=data.students.length;
 					p3=true;
 					if (p1&&p2&&p3&&p4) deal();
 					return;
@@ -160,7 +160,7 @@
 					data=data.lesson_comments;
 					for (i=0;i<data.length;++i)
 					{
-						comments[n++]=data[i];
+						if (data[i].content) comments[n++]=data[i];
 						score[data[i].score]++;
 					}
 					p4=true;
@@ -187,8 +187,8 @@
 			if (t2>n) t2=n;
 			for (i=t1;i<t2;++i)
 			{
-				text+='<div class="comment">'+comments[i].text+'</div>';
-				text+='<div class="author">'+comments[i].author+'</div>';
+				text+='<div class="comment">'+comments[i].content+'</div>';
+				text+='<div class="author">'+comments[i].creator_name+'</div>';
 			}
 			$("#content3")[0].innerHTML=text;
 			text='<button class="btn btn-default" onclick="changePage(-1)">上一页</button>';
