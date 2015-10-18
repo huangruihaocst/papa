@@ -9,3 +9,7 @@ alex_teaches_ds:
 ciara_teaches_cpp:
   user: ciara
   course: cpp
+
+deng_teaches_ds:
+  user: deng
+  course: ds

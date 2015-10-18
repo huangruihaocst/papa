@@ -129,9 +129,82 @@ class FilesControllerTest < ActionController::TestCase
     end
 
     assert_equal STATUS_FAIL, json['status']
-    assert_not_nil REASON_FILE_TOO_BIG, json['reason']
+    assert_equal REASON_FILE_TOO_BIG, json['reason']
 
     File.delete(file_path)
+  end
+
+  # POST /courses/1/files.json
+  test 'should add file to course by teacher' do
+    course = Course.first
+    teacher = course.teachers.first
+    sign_in teacher
+
+    fixture_file = fixture_file_upload('files/2.jpg', 'image/jpeg')
+
+    assert_difference %w"FileResource.count CourseFile.count" do
+      post :create, format: :json, course_id: course.id, file: {file: fixture_file, type: 'picture'}
+    end
+
+    assert_json_success
+    assert_not_nil assigns(:file).path
+    assert json['id']
+  end
+
+  # POST /courses/1/files.json
+  test 'should not add file to course by teacher from another course' do
+    course = Course.find_by_name('Data Structures')
+    teacher = User.find_by_name('ciara')
+    sign_in teacher
+
+    fixture_file = fixture_file_upload('files/2.jpg', 'image/jpeg')
+
+    assert_no_difference 'FileResource.count' do
+      post :create, format: :json, course_id: course.id, file: { file: fixture_file, type: 'picture' }
+    end
+
+    assert STATUS_FAIL, json['status']
+  end
+
+  # POST /students/1/lessons/1/files.json
+  test 'should add file to a student on the lesson by himself' do
+    lesson = Lesson.first
+    student = lesson.course.students.first
+    token = student.create_token.token
+
+    fixture_file = fixture_file_upload('files/2.jpg', 'image/jpeg')
+
+    assert_difference %w"FileResource.count StudentFile.count" do
+      post :create, format: :json,
+           token: token,
+           student_id: student.id,
+           lesson_id: lesson.id,
+           file: {file: fixture_file, type: 'picture'}
+    end
+
+    assert_json_success
+    assert_not_nil assigns(:file).path
+    assert json['id']
+  end
+
+  # POST /students/1/lessons/1/files.json
+  test 'should not add a file to a student by another student' do
+    course = Course.find_by_name('Operation System')
+    lesson = course.lessons.first
+    student = course.students.first
+    token = User.find_by_name('ciara').create_token.token
+
+    fixture_file = fixture_file_upload('files/2.jpg', 'image/jpeg')
+
+    assert_no_difference %w"FileResource.count StudentFile.count" do
+      post :create, format: :json,
+           token: token,
+           student_id: student.id,
+           lesson_id: lesson.id,
+           file: {file: fixture_file, type: 'picture'}
+    end
+
+    assert STATUS_FAIL, json['status']
   end
 
   # DELETE /files/1.json

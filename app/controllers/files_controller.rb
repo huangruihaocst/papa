@@ -27,6 +27,9 @@ class FilesController < ApplicationController
   end
 
   # POST /files.json
+  # POST /students/1/files.json
+  # POST /courses/1/files.json
+  # POST /students/1/lessons/1/files.json
   def create
     user = check_login
 
@@ -50,10 +53,51 @@ class FilesController < ApplicationController
 
     @file = FileResource.create(file_type: p[:type], name: temp_file.original_filename, path: File.join('', rel_loc), creator_id: user.id)
     if @file.valid?
+      begin
+        if params[:student_id] && params[:lesson_id]
+          user = check_login
+          student = User.find(params[:student_id])
+          lesson = Lesson.find(params[:lesson_id])
+          if lesson.course.students.include? student
+            # student add a file to himself or assistant add a file to the student
+            if user == student || lesson.course.assistants.include?(user)
+              StudentFile.create(
+                  file_resource_id: @file.id,
+                  student_id:       student.id,
+                  lesson_id:        lesson.id,
+                  creator_id:       user.id
+              )
+            else
+              @file.destroy
+              json_failed(REASON_PERMISSION_DENIED)
+              return
+            end
+          else
+            @file.destroy
+            json_failed(REASON_PERMISSION_DENIED)
+            return
+          end
+        elsif params[:course_id]
+          user = check_teacher
+          course = Course.find(params[:course_id])
+          if course.teachers.include? user
+            CourseFile.create(file_resource_id: @file.id, course_id: course.id)
+          else
+            @file.destroy
+            json_failed
+            return
+          end
+        end
+
         json_successful do |json|
           json['id'] = @file.id
         end
+      rescue ActiveRecord::RecordNotFound
+        @file.destroy
+        json_failed
+      end
     else
+      @file.destroy
       json_failed_invalid_fields(@file.errors.keys, file_type: :type, path: '', name: '')
     end
   end

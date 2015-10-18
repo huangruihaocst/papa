@@ -30,7 +30,7 @@ class StudentsController < ApplicationController
   # POST /courses/1/students/1.json
   def create
     if params[:course_id] && params[:id]
-      if Course.find(params[:course_id]).students << User.find(params[:id])
+      if Participation.create(user_id: params[:id], course_id: params[:course_id], role: ROLE_STUDENT)
         json_successful
       else
         json_failed
