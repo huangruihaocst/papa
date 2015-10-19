@@ -224,6 +224,7 @@
 			text2=$("#input-add-course-2")[0].value;
 			p.name=text1;
 			p.description=text2;
+			console.log('/semesters/'+info.semesters[choosei].id+'/courses.json');
 			$.post('/semesters/'+info.semesters[choosei].id+'/courses.json',p,  //#modify
     		function(data)
     		{
@@ -293,7 +294,6 @@
 			p.start_time=text3;
 			p.end_time=text4;
 			p.location=text5;
-			console.log(p);
 			$.post('/courses/'+info.semesters[choosei].courses[choosej].id+'/lessons.json',p,  //#modify
     		function(data)
     		{
@@ -419,6 +419,7 @@
 				info.semesters[i].tot=2;
 				info.semesters[i].name="2015年"+i;
 				info.semesters[i].courses=new Array();
+				info.semesters[i].id=0;
 				info.semesters[i].clicked=false;
 				for (j=0;j<info.semesters[i].tot;++j)
 				{
