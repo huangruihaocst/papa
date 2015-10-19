@@ -90,7 +90,7 @@
 					for (i=0;i<data.length;++i)
 					{
 						info[m]=new Array();
-						var p3=false,p4=false,p5=false;
+						var p=true;
 						$.ajax({url:"/students/"+data[i].id+".json",data:{},async:false,type:"GET",success:function(data)
 						{
 							if (data.status=="successful")
@@ -100,7 +100,9 @@
 								info[i][2]=data.department;
 								info[i][3]=data.class_name;
 								info[i][9]=data.id;
-								p3=true;
+							}else
+							{
+								p=false;
 							}
 						}});
 						$.ajax({url:"/students/"+data[i].id+"/lessons/"+classId+".json",data:{},async:false,type:"GET",success:function(data)
@@ -110,7 +112,9 @@
 								info[i][4]=data.score;
 								info[i][5]=data.content;
 								info[i][8]=data.assistant;
-								p4=true;
+							}else
+							{
+								p=false;
 							}
 						}});
 						$.ajax({url:"/students/"+data[i].id+"/lesssons/"+classId+"/files.json",data:{},async:false,type:"GET",success:function(data)
@@ -124,10 +128,12 @@
 									if (data[j].type=="jpg") ++info[i][6];
 									if (data[j].type=="mp4") ++info[i][7];
 								}
-								p5=true;
+							}else
+							{
+								p=false;
 							}
 						}});
-						if (p3&&p4&&p5) ++m;
+						if (p) ++m;
 					}
 					p2=true;
 					if (p1&&p2) deal();
