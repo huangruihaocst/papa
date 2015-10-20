@@ -1,7 +1,8 @@
-<form action="/files.json" method="post" enctype="multipart/form-data">
+<form action="/students/1/lessons/1/files.json" method="post" enctype="multipart/form-data">
   <input type="file" name="file[file]">
   <label>name
-  <input type="text" name="name">
+  <input type="text" name="file[name]">
   </label>
+  <label>type<input name="file[type]" type="text"></label>
   <button type="submit" >submit</button>
 </form>

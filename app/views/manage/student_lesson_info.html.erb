@@ -93,7 +93,7 @@
           console.log(data.lesson_comments)
       });
       // test case 
-      $.get("/students/<%=@student.id %>/files.json",{},
+      $.get("/students/<%=@student.id %>/lessons/<%=@lesson.id %>/files.json",{},
       function(d){
           console.log(d);
           data= d.files;
