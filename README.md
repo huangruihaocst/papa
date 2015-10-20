@@ -320,7 +320,7 @@ API Status:
 
     Total History:      83
     Deprecated:         18
-    Total Valid:        62
+    Total Valid:        65
     Not Implemented:    9
     Not Secured:        6
     Fully Finished:     50
