@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class SemestersControllerTest < ActionController::TestCase
-
+  include Devise::TestHelpers
   # GET /semesters.json
   test 'should get all semesters' do
     get :index, format: :json
@@ -13,6 +13,9 @@ class SemestersControllerTest < ActionController::TestCase
 
   # POST /semesters.json
   test 'should add semester' do
+    admin = User.find_by_name('alex')
+    sign_in admin
+
     assert_difference 'Semester.count' do
       post :create, format: :json, semester: { name: 'a good semester' }
     end
@@ -22,6 +25,9 @@ class SemestersControllerTest < ActionController::TestCase
 
   # PUT /semesters/1.json
   test 'should update semester' do
+    admin = User.find_by_name('alex')
+    sign_in admin
+
     put :update, format: :json, id: Semester.first.id, semester: { name: 'update semester' }
     assert_equal 'update semester', Semester.first.name
 
@@ -30,6 +36,9 @@ class SemestersControllerTest < ActionController::TestCase
 
   # DELETE /semesters/1.json
   test 'should delete semester' do
+    admin = User.find_by_name('alex')
+    sign_in admin
+
     assert_difference 'Semester.count', -1 do
       delete :destroy, format: :json, id: Semester.first.id
     end

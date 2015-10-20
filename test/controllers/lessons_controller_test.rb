@@ -1,9 +1,10 @@
 require 'test_helper'
 
 class LessonsControllerTest < ActionController::TestCase
-
+  include Devise::TestHelpers
   def setup
     @course = Course.find_by_name('Operation System')
+    @teacher = @course.teachers.first
   end
 
   # GET /course/1/lessons.json
@@ -22,8 +23,9 @@ class LessonsControllerTest < ActionController::TestCase
     assert_not_nil json['lesson']['name']
   end
 
-  # POSt /course/1/lessons.json
+  # POST /course/1/lessons.json
   test 'api should add lesson to course' do
+    sign_in @teacher
     assert_difference('Lesson.count') do
       post :create, format: :json, course_id: @course.id, lesson: {
                       name: 'test lesson',

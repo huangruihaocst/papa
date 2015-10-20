@@ -11,7 +11,7 @@ class AssistantsController < ApplicationController
     if params[:course_id]
       begin
         course = Course.find(params[:course_id])
-        must_be_a_teacher_of(param[:token], course)
+        must_be_a_teacher_of(params[:token], course)
 
         participations = course.participations.where(role: ROLE_ASSISTANT)
         @assistants = User.none
