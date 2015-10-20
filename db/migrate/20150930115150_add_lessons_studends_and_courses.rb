@@ -24,13 +24,11 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
 
     create_table :course_files do |t|
       t.integer :course_id
-      t.integer :creator_id
       t.integer :file_resource_id
     end
 
     create_table :lesson_files do |t|
       t.integer :lesson_id
-      t.integer :creator_id
       t.integer :file_resource_id
     end
 
@@ -38,6 +36,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
       t.integer :student_id
       t.integer :lesson_id
       t.integer :file_resource_id
+      t.integer :creator_id
     end
 
     create_table :assistant_files do |t|

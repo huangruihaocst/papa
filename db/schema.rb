@@ -28,7 +28,6 @@ ActiveRecord::Schema.define(version: 20151008120334) do
 
   create_table "course_files", force: :cascade do |t|
     t.integer "course_id"
-    t.integer "creator_id"
     t.integer "file_resource_id"
   end
 
@@ -60,7 +59,6 @@ ActiveRecord::Schema.define(version: 20151008120334) do
 
   create_table "lesson_files", force: :cascade do |t|
     t.integer "lesson_id"
-    t.integer "creator_id"
     t.integer "file_resource_id"
   end
 
@@ -118,6 +116,7 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.integer "student_id"
     t.integer "lesson_id"
     t.integer "file_resource_id"
+    t.integer "creator_id"
   end
 
   create_table "teaching_courses", force: :cascade do |t|
