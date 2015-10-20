@@ -8,15 +8,32 @@ class AssistantsController < ApplicationController
   end
 
   def index
-    course = Course.find(params[:course_id] || 1)
-    participations = course.participations.where(role: ROLE_ASSISTANT)
-    @assistants = User.none
-    participations.each do |p|
-      @assistants <<= p.user
+    if params[:course_id]
+      begin
+        course = Course.find(params[:course_id])
+        must_be_a_teacher_of(param[:token], course)
+
+        participations = course.participations.where(role: ROLE_ASSISTANT)
+        @assistants = User.none
+        participations.each do |p|
+          @assistants <<= p.user
+        end
+      rescue ActiveRecord::RecordNotFound
+        json_failed(REASON_RESOURCE_NOT_FOUND)
+      end
+    else
+      json_failed(REASON_NOT_IMPLEMENTED)
     end
   end
 
   def show
+    unless @assistant
+      json_failed(REASON_RESOURCE_NOT_FOUND)
+    end
+  end
+
+  def create
+    json_failed(REASON_NOT_IMPLEMENTED)
   end
 
   private

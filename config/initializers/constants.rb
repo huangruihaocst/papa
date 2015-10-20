@@ -14,6 +14,8 @@ REASON_TOKEN_TIMEOUT = 'token_timeout'
 REASON_TOKEN_NOT_MATCH = 'token_not_match'
 REASON_NOT_IMPLEMENTED = 'not_implemented'
 REASON_INVALID_OPERATION = 'invalid_operation'
+REASON_RESOURCE_NOT_FOUND = 'resource_not_found'
+REASON_INTERNAL_ERROR = 'internal_error'
 
 # json parameters when a user post an invalid json.
 REASON_INVALID_FIELD = 'invalid_field'

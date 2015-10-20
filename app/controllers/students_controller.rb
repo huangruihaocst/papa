@@ -11,25 +11,37 @@ class StudentsController < ApplicationController
   # GET /courses/1/students.json (student list of the course)
   def index
     if params[:course_id]
-      course = Course.find(params[:course_id])
-      participations = course.participations.where(role: ROLE_STUDENT)
-      @students = User.none
-      participations.each do |p|
-        @students <<= p.user
+      begin
+        course = Course.find(params[:course_id])
+        must_be_a_teacher_of(param[:token], course)
+
+        participations = course.participations.where(role: ROLE_STUDENT)
+        @students = User.none
+        participations.each do |p|
+          @students <<= p.user
+        end
+      rescue ActiveRecord::RecordNotFound
+        json_failed(REASON_RESOURCE_NOT_FOUND)
       end
     else
-      json_failed
+      json_failed(REASON_NOT_IMPLEMENTED)
     end
   end
 
   # GET /students/1.json
   def show
-    @student = User.find(params[:id])
+    begin
+      @student = User.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      json_failed(REASON_RESOURCE_NOT_FOUND)
+    end
   end
 
   # POST /courses/1/students/1.json
   def create
     if params[:course_id] && params[:id]
+      course =  Course.find(params[:course_id])
+      must_be_a_teacher_of(params[:token], course)
       if Participation.create(user_id: params[:id], course_id: params[:course_id], role: ROLE_STUDENT)
         json_successful
       else

@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     resources :teachers, only: [:index, :create, :destroy, :update]
     resources :messages, only: [:create]
     resources :files, only: [:index, :create, :delete]
+    get 'comments' => 'lesson_comments#index', as: :comments_of_course
   end
 
   resources :lessons, only: [:show, :destroy] do
@@ -54,13 +55,13 @@ Rails.application.routes.draw do
     resources :messages, only: [:index]
   end
 
-  resources :assistants do
+  resources :assistants, only: [:index, :show, :create, :update, :destroy] do
     resources :courses, only: [:index, :create]
     resources :files, only: [:index, :create]
   end
 
-  resources :teachers do
-    resources :courses, only: [:index, :create]
+  resources :teachers, only: [:index, :show, :create, :update, :destroy] do
+    resources :courses, only: [:index, :create, :update, :destroy]
   end
 
   resources :files, only: [:show, :create, :destroy]

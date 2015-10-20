@@ -13,14 +13,26 @@ class MessagesController < ApplicationController
         json_failed(REASON_PERMISSION_DENIED)
       end
     rescue ActiveRecord::RecordNotFound
-      json_failed_invalid_fields([:student_id])
+      json_failed(REASON_RESOURCE_NOT_FOUND)
     end
 
   end
 
   # POST /courses/1/messages.json
   def create
-    admin = check_admin
+    user = check_login
+
+    begin
+      course = Course.find(params[:course_id])
+    rescue ActiveRecord::RecordNotFound
+      json_failed(REASON_RESOURCE_NOT_FOUND)
+      return
+    end
+
+    unless course.teachers.include?(user) || course.assistants.include?(user)
+      json_failed(REASON_PERMISSION_DENIED)
+      return
+    end
 
     @message = Message.create(
         params.require(
@@ -28,7 +40,7 @@ class MessagesController < ApplicationController
         ).permit(
             :title, :deadline, :content
         ).merge(
-            creator_id:   admin.id,
+            creator_id:   user.id,
             message_type: params[:message][:type],
             course_id:    params[:course_id]
         )
@@ -37,7 +49,7 @@ class MessagesController < ApplicationController
     if @message && @message.valid?
       json_successful
     else
-      json_failed
+      json_failed(REASON_INVALID_FIELD)
     end
   end
 end

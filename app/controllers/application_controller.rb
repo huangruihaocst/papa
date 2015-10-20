@@ -102,6 +102,36 @@ class ApplicationController < ActionController::Base
 
   end
 
+  def must_be_a_teacher_of(token, course)
+    raise TokenException.new(REASON_TOKEN_INVALID) unless course && course.is_a?(Course)
+
+    if token
+      begin
+        token = Token.find_by_token(token)
+        raise TokenException.new(REASON_TOKEN_INVALID) unless token
+        user = token.user
+      rescue
+        if current_user
+          user = current_user
+        else
+          raise TokenException.new(REASON_TOKEN_INVALID)
+        end
+      end
+    else
+      if current_user
+        user = current_user
+      else
+        raise TokenException.new(REASON_TOKEN_INVALID)
+      end
+    end
+
+    if course.teachers.include? user
+      true
+    else
+      raise TokenException.new(REASON_PERMISSION_DENIED)
+    end
+  end
+
   include ApplicationHelper::StatusRenderingHelpers
 
   protected
