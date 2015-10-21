@@ -26,6 +26,7 @@ public class EnterActivity extends AppCompatActivity {
                 BundleHelper bundleHelper = new BundleHelper();
                 Bundle data = new Bundle();
                 PapaTelephoneNumberGetter papaTelephoneNumberGetterReal = new PapaTelephoneNumberGetterReal();
+//                bundleHelper.setPapaTelephoneNumberGetter(papaTelephoneNumberGetterReal);
                 String key_enter_sign_in = getString(R.string.key_enter_sign_in);
                 data.putParcelable(key_enter_sign_in, bundleHelper);
                 intent.putExtras(data);

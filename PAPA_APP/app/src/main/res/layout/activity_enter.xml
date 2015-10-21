@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/main_title"
         android:textSize="50sp"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

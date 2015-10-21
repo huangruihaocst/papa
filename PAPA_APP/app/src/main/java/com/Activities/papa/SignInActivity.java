@@ -3,6 +3,7 @@ package com.Activities.papa;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +33,11 @@ public class SignInActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         bundleHelper = data.getParcelable(key_enter_sign_in);
+
+//        telephoneNumberGetter = bundleHelper.getPapaTelephoneNumberGetter();
+        if(telephoneNumberGetter != null){
+            Toast.makeText(getApplicationContext(),"123",Toast.LENGTH_LONG).show();
+        }
 
         final EditText edit_username = (EditText)findViewById(R.id.username);
         final EditText edit_password = (EditText)findViewById(R.id.password);

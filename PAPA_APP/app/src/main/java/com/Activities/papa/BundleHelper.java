@@ -5,7 +5,6 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,8 +22,8 @@ public class BundleHelper implements Parcelable{
     private String student_name;
     private int student_id;
     private String identity;
-    private JSONObject jsonObject;
-    private String getter_string;
+//    private JSONObject jsonObject;
+//    private String getter_string;
 
     public BundleHelper(){
         username = "";
@@ -36,8 +35,8 @@ public class BundleHelper implements Parcelable{
         student_name = "";
         student_id = -1;
         identity = "";
-        jsonObject = new JSONObject();
-        getter_string = jsonObject.toString();
+//        jsonObject = new JSONObject();
+//        getter_string = jsonObject.toString();
     }
 
 
@@ -68,20 +67,21 @@ public class BundleHelper implements Parcelable{
     public String getIdentity(){
         return identity;
     }
-    public PapaTelephoneNumberGetter getPapaTelephoneNumberGetter(){
-        try{
-            jsonObject = new JSONObject(getter_string);
-        }catch (JSONException e){
-            Log.e("parse", e.getMessage());
-        }
-        PapaTelephoneNumberGetter papaTelephoneNumberGetter = new PapaTelephoneNumberGetter();
-        try{
-            papaTelephoneNumberGetter = (PapaTelephoneNumberGetter)jsonObject.get("getter");
-        }catch (JSONException e){
-            Log.e("parse", e.getMessage());
-        }
-        return papaTelephoneNumberGetter;
-    }
+//    public PapaTelephoneNumberGetter getPapaTelephoneNumberGetter(){
+//        try{
+//            jsonObject = new JSONObject(getter_string);
+//        }catch (JSONException e){
+//            Log.e("parse", e.getMessage());
+//        }
+//        PapaTelephoneNumberGetter papaTelephoneNumberGetter = null;
+//        try{
+//            Object object = jsonObject.get("getter");
+//            papaTelephoneNumberGetter = (PapaTelephoneNumberGetter)object;
+//        }catch (JSONException e){
+//            Log.e("parse", e.getMessage());
+//        }
+//        return papaTelephoneNumberGetter;
+//    }
 
 
     public void setUsername(String username){
@@ -111,14 +111,14 @@ public class BundleHelper implements Parcelable{
     public void setIdentity(String identity){
         this.identity = identity;
     }
-    public void setPapaTelephoneNumberGetter(PapaTelephoneNumberGetter papaTelephoneNumberGetter){
-        try{
-            jsonObject.putOpt("getter",papaTelephoneNumberGetter);
-        }catch (JSONException e){
-            Log.e("serialize", e.getMessage());
-        }
-        getter_string = jsonObject.toString();
-    }
+//    public void setPapaTelephoneNumberGetter(PapaTelephoneNumberGetter papaTelephoneNumberGetter){
+//        try{
+//            jsonObject.putOpt("getter",papaTelephoneNumberGetter);
+//        }catch (JSONException e){
+//            Log.e("serialize", e.getMessage());
+//        }
+//        getter_string = jsonObject.toString();
+//    }
 
     public int describeContents() {
         return 0;
@@ -134,7 +134,7 @@ public class BundleHelper implements Parcelable{
         out.writeString(student_name);
         out.writeInt(student_id);
         out.writeString(identity);
-        out.writeString(getter_string);
+//        out.writeString(getter_string);
     }
 
     public static final Parcelable.Creator<BundleHelper> CREATOR = new Parcelable.Creator<BundleHelper>() {
@@ -157,7 +157,7 @@ public class BundleHelper implements Parcelable{
         student_name = in.readString();
         student_id = in.readInt();
         identity = in.readString();
-        getter_string = in.readString();
+//        getter_string = in.readString();
     }
 }
 
