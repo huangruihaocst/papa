@@ -26,7 +26,6 @@ public class PapaDataBaseManager {
     // 单件
     private PapaDataBaseManager()
     {
-        token = null;
         dbAccess = new PapaDataBaseAccess();
     }
 
@@ -43,6 +42,8 @@ public class PapaDataBaseManager {
     }
 
 
+
+
     static public class SignInRequest
     {
         public String id;
@@ -55,15 +56,21 @@ public class PapaDataBaseManager {
         }
     }
 
-    private int personID;
-    private String token;
+    static public class SignInReply
+    {
+        public int personId;
+        public String token;
 
-
-
+        public SignInReply(int personId, String token)
+        {
+            this.personId = personId;
+            this.token = token;
+        }
+    }
 
     // 使用 POST 方法登录
     // 返回是否成功
-    public boolean signIn(SignInRequest signInRequest) throws PapaHttpClientException
+    public SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException
     {
         HashMap<String, String> h = new HashMap<String, String>();
 
@@ -73,17 +80,19 @@ public class PapaDataBaseManager {
         h.put("user[remember_me]", "0");
         JSONObject replyObj;
 
-        try {
+        try
+        {
             replyObj = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.post, "/users/sign_in.json", h);
-            this.token = replyObj.getString("token");
-            this.personID = replyObj.getInt("id");
+
+            return new SignInReply(replyObj.getInt("id"), replyObj.getString("token"));
         }
         catch(org.json.JSONException e)
         {
             throw new PapaDataBaseJsonError();
         }
-        return true;
     }
+
+
 
     /*
     // 获取课程线程
