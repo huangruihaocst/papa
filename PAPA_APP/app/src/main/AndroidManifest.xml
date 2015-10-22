@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.Activities.papa" >
 
-    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- en-US: needed for get telephone number -->
     <!-- ja-JP: 電話番号を取るのに必要 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -81,5 +81,6 @@
             </intent-filter>
         </activity>
     </application>
+
 
 </manifest>

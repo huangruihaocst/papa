@@ -1,27 +1,35 @@
 package com.Activities.papa;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterKongBaKongKong;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
 public class SignInActivity extends AppCompatActivity {
-
     String username;
     String password;
-    int check_message = -1;
     BundleHelper bundleHelper = new BundleHelper();
 
     // 采用何种方式获取电话
     PapaTelephoneNumberGetter telephoneNumberGetter;
+
+    // Usr, pwd EditText Widget, Buttons
+    EditText edit_username;
+    EditText edit_password;
+    Button button_sign_in;
+    Button button_get_telephone_number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +41,10 @@ public class SignInActivity extends AppCompatActivity {
         Bundle data = intent.getExtras();
         bundleHelper = data.getParcelable(key_enter_sign_in);
 
-        final EditText edit_username = (EditText)findViewById(R.id.username);
-        final EditText edit_password = (EditText)findViewById(R.id.password);
+        edit_username = (EditText)findViewById(R.id.username);
+        edit_password = (EditText)findViewById(R.id.password);
 
-        Button button_sign_in = (Button)findViewById(R.id.sign_in);
+        button_sign_in = (Button)findViewById(R.id.sign_in);
         button_sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,7 +52,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        Button button_get_telephone_number = (Button)findViewById(R.id.get_telephone_number);
+        button_get_telephone_number = (Button)findViewById(R.id.get_telephone_number);
         button_get_telephone_number.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,17 +65,32 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+
         // 默认的方法获取电话
         this.telephoneNumberGetter = new PapaTelephoneNumberGetterReal();
+
     }
 
     // 更改获取电话的方法
     public void changeTelephoneNumberGetter(PapaTelephoneNumberGetter p)
     {
+        if(p == null) return;
         this.telephoneNumberGetter = p;
     }
 
-    public void check(){// 1 for right, 0 for wrong password, and 2 for not registered
+    // 获取电话号码
+    private String getTelephoneNumber()
+            throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException {
+        return this.telephoneNumberGetter.getTelephoneNumber(getBaseContext());
+    }
+
+
+    // 登录部分, 异步
+
+    int check_message = -1;
+    public void check()
+    {
+        // 1 for right, 0 for wrong password, and 2 for not registered
         EditText edit_username = (EditText)findViewById(R.id.username);
         EditText edit_password = (EditText)findViewById(R.id.password);
         username = edit_username.getText().toString();
@@ -75,11 +98,13 @@ public class SignInActivity extends AppCompatActivity {
 
         PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
 
+        Task task = new Task(this);    // 实例化抽象AsyncTask
+        task.execute(new PapaDataBaseManager.SignInRequest(username, password));    // 调用AsyncTask，传入url参数
 
-        try {
-            if (papaDataBaseManager.signIn(username, password)) {
-                check_message = 1;
-            } else {
+        /*
+        try
+        {
+            {
                 // TODO: 区分到底是错误密码还是未注册
                 check_message = 0;
             }
@@ -90,11 +115,14 @@ public class SignInActivity extends AppCompatActivity {
 
 
         check_message = 1;
+        */
     }
 
-    public void signIn(){
+    private void signIn(){
         check();
-        if(check_message == 1){
+        /*
+        if(check_message == 1)
+        {
             Intent intent = new Intent(SignInActivity.this,CourseActivity.class);
             Bundle data = new Bundle();
             String key_sign_in_course = getString(R.string.key_sign_in_course);
@@ -108,11 +136,54 @@ public class SignInActivity extends AppCompatActivity {
         }else if(check_message == 2){
             Toast.makeText(getApplicationContext(),getString(R.string.not_signed_up),Toast.LENGTH_LONG).show();
         }
+        */
     }
 
-    public String getTelephoneNumber()
-            throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException {
-        return this.telephoneNumberGetter.getTelephoneNumber(getBaseContext());
+    class Task extends AsyncTask<PapaDataBaseManager.SignInRequest, Exception, Boolean> {
+        ProgressDialog proDialog;
+
+        public Task(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等瞄 =w=");
+            proDialog.show();
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute(){
+            // 可以与UI控件交互
+        }
+
+        @Override
+        protected Boolean doInBackground(PapaDataBaseManager.SignInRequest... params)
+        {
+            // 在后台
+            try {
+                return PapaDataBaseManager.getInstance().signIn(params[0]);
+            }
+            catch(PapaHttpClientException e)
+            {
+                publishProgress(e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // 可以与UI控件交互
+
+            Log.e("SignInAct", e[0].getMessage().toString());
+            Toast.makeText(getApplicationContext(), e[0].getMessage().toString(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            // 可以与UI控件交互
+            proDialog.dismiss();
+        }
     }
+
+
 
 }

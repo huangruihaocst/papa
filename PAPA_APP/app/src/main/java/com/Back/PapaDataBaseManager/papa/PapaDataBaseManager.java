@@ -8,12 +8,10 @@
 package com.Back.PapaDataBaseManager.papa;
 
 
-import android.util.Log;
-
-import com.Back.DataBaseAccess.papa.DataBaseAccess;
-import com.Back.DataBaseAccess.papa.PapaDataBaseNotSuccessError;
+import com.Back.DataBaseAccess.papa.PapaDataBaseAccess;
+import com.Back.DataBaseAccess.papa.PapaDataBaseJsonError;
 import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
-import com.Back.NetworkAccess.papa.UnknownMethodException;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
 import org.json.JSONObject;
 
@@ -23,16 +21,13 @@ public class PapaDataBaseManager {
 
     private static final String tag = "PapaDataBaseManager";
 
-    private int personID;
-    private String token;
-
-    DataBaseAccess dbAccess;
+    PapaDataBaseAccess dbAccess;
 
     // 单件
     private PapaDataBaseManager()
     {
         token = null;
-        dbAccess = new DataBaseAccess();
+        dbAccess = new PapaDataBaseAccess();
     }
 
     private static PapaDataBaseManager instance = null;
@@ -48,27 +43,45 @@ public class PapaDataBaseManager {
     }
 
 
+    static public class SignInRequest
+    {
+        public String id;
+        public String pwd;
+
+        public SignInRequest(String id, String pwd)
+        {
+            this.id = id;
+            this.pwd = pwd;
+        }
+    }
+
+    private int personID;
+    private String token;
+
+
+
+
     // 使用 POST 方法登录
-    public boolean signIn(String name, String password) throws org.json.JSONException, UnknownMethodException
+    // 返回是否成功
+    public boolean signIn(SignInRequest signInRequest) throws PapaHttpClientException
     {
         HashMap<String, String> h = new HashMap<String, String>();
 
         h.put("utf8", "✓");
-        h.put("user[login]", name);
-        h.put("user[password]", password);
+        h.put("user[login]", signInRequest.id);
+        h.put("user[password]", signInRequest.pwd);
         h.put("user[remember_me]", "0");
         JSONObject replyObj;
+
         try {
             replyObj = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.post, "/users/sign_in.json", h);
+            this.token = replyObj.getString("token");
+            this.personID = replyObj.getInt("id");
         }
-        catch (PapaDataBaseNotSuccessError e)
+        catch(org.json.JSONException e)
         {
-            Log.e(tag, e.getMessage().toString());
-            return false;
+            throw new PapaDataBaseJsonError();
         }
-        this.token = replyObj.getString("token");
-        this.personID = replyObj.getInt("id");
-
         return true;
     }
 

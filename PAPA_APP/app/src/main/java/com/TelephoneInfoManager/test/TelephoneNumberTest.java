@@ -32,6 +32,6 @@ public class TelephoneNumberTest extends InstrumentationTestCase {
 
 
         // 翔翔才不会告诉你电话呢瞄
-        assertEquals(s.charAt(s.length()-1), '5');
+        assertEquals(s.charAt(s.length()-1), '4');
     }
 }

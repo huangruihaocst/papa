@@ -16,54 +16,51 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 /**
  * Created by shyo on 15-10-16.
  */
-public class PapaApacheHttpClient extends PapaAbstractHttpClient {
+public class PapaApacheHttpClient extends PapaAbstractHttpClient
+{
     final static String tag = "PapaApacheHttpClient";
 
-    // 执行 post 方法
-    private static String executeRequest(HttpRequestBase request) throws org.apache.http.client.ClientProtocolException, java.io.IOException, PapaHttpClientException
+    // 执行 get / post 方法
+    private static String executeRequest(HttpRequestBase request)
+        throws PapaHttpClientException
     {
-        HttpClient httpClient = new DefaultHttpClient();
+        BasicHttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, 3 * 1000);
+        HttpConnectionParams.setSoTimeout(httpParams, 3 * 1000);
+        HttpClient httpClient = new DefaultHttpClient(httpParams);
 
-        HttpResponse response = httpClient.execute(request);
+        try {
+            HttpResponse response = httpClient.execute(request);
 
-        if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
-            String content = EntityUtils.toString(response.getEntity(), "utf-8");
-            return content;
-        }else{
-            Log.e(tag, "HTTP " + response.getStatusLine().getStatusCode() + ", NOT 200 OK");
-            throw new PapaHttpClientException();
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                String content = EntityUtils.toString(response.getEntity(), "utf-8");
+                return content;
+            } else {
+                Log.e(tag, "HTTP " + response.getStatusLine().getStatusCode() + ", NOT 200 OK");
+                throw new PapaHttpClientNot200Exception(response.getStatusLine().getStatusCode());
+            }
         }
-
-        /*
-        catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
+        catch(java.io.IOException e) {
+            e.printStackTrace();
             Log.e(tag, e.getMessage().toString());
-
-            // throw e;
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-            Log.e(tag, e.getMessage().toString());
-
-            // throw e;
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            Log.e(tag, e.getMessage().toString());
-
-            // throw e;
+            throw new PapaHttpClientIOErrorException();
         }
-        */
     }
 
     @Override
-    public String getHttpReplyByGet(String url, HashMap<String, String> parameter) {
+    protected String getHttpReplyByGet(String url, HashMap<String, String> parameter)
+        throws PapaHttpClientException
+    {
         // 准备 url
-        if(!parameter.isEmpty())
+        if(parameter != null && !parameter.isEmpty())
         {
             url += '?';
 
@@ -87,13 +84,9 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient {
 
         // 执行请求
         String reply = null;
-        try {
-            Log.i(tag, "ret = " + (reply = executeRequest(get)));
-        }
-        catch(Exception e)
-        {
 
-        }
+        Log.i(tag, "ret = " + (reply = executeRequest(get)));
+
 
         Log.i(tag, reply.toString());
 
@@ -101,7 +94,9 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient {
     }
 
     @Override
-    public String getHttpReplyByPost(String url, HashMap<String, String> parameter) {
+    protected String getHttpReplyByPost(String url, HashMap<String, String> parameter)
+        throws PapaHttpClientException
+    {
         HttpPost post = new HttpPost(url);
 
         ArrayList params = new ArrayList();
@@ -122,18 +117,11 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient {
             Log.e(tag, e.getMessage().toString());
         }
 
-        Log.i(tag, "post = " + post.getURI().toString() + "  postData ");
+        Log.i(tag, "post = " + post.getURI().toString() + ", postData ");
 
         // 执行请求
         String reply = null;
-        try {
-            Log.i(tag, "ret = " + (reply = executeRequest(post)));
-        }
-        catch(Exception e)
-        {
-            Log.e(tag, "e = " + e.getMessage().toString());
-        }
-
+        Log.i(tag, "ret = " + (reply = executeRequest(post)));
         Log.i(tag, reply.toString());
         return reply;
     }

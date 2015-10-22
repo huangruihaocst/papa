@@ -1,6 +1,7 @@
 package com.Activities.test;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.test.ActivityUnitTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.ContextThemeWrapper;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
 import com.Activities.papa.SignInActivity;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
@@ -37,36 +39,33 @@ public class SignInTest extends ActivityUnitTestCase<SignInActivity>
 
         // see http://stackoverflow.com/questions/22364433/activityunittestcase-and-startactivity-with-actionbaractivity
         mSignInIntent = new Intent(getInstrumentation().getTargetContext(), SignInActivity.class);
+        Bundle data = new Bundle();
+        mSignInIntent.putExtras(data);
+
         context = new ContextThemeWrapper(getInstrumentation().getTargetContext(), R.style.AppTheme);
+
+        setActivityContext(context);
     }
 
     @MediumTest
-    public void testGetTelephone()
-    {
+    public void testGetTelephone() {
 
-        try {
-            Log.i("testGetTelephone", "testGetTelephone()");
+        Log.i("testGetTelephone", "testGetTelephone()");
 
-            setActivityContext(context);
-            startActivity(mSignInIntent, null, null);
+        startActivity(mSignInIntent, null, null);
 
-            SignInActivity activity = getActivity();
+        SignInActivity activity = getActivity();
 
-            activity.changeTelephoneNumberGetter
-                    ((new PapaTelephoneNumberGetterKongBaKongKong()));
+        activity.changeTelephoneNumberGetter
+                ((new PapaTelephoneNumberGetterKongBaKongKong()));
 
-            final Button getTelephoneButton = (Button) activity.findViewById(R.id.get_telephone_number);
-            final TextView lineEdit = (TextView) activity.findViewById(R.id.username);
+        final Button getTelephoneButton = (Button) activity.findViewById(R.id.get_telephone_number);
+        final TextView lineEdit = (TextView) activity.findViewById(R.id.username);
 
-            getTelephoneButton.performClick();
+        getTelephoneButton.performClick();
 
 
-            assertEquals("0800092000", lineEdit.getText().toString());
-        }
-        catch(Exception e)
-        {
-            Log.e("testGetTelephone", e.getMessage());
+        assertEquals("0800092000", lineEdit.getText().toString());
 
-        }
     }
 }

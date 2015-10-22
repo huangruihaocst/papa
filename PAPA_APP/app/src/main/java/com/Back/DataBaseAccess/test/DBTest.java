@@ -3,7 +3,7 @@ package com.Back.DataBaseAccess.test;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
-import com.Back.DataBaseAccess.papa.DataBaseAccess;
+import com.Back.DataBaseAccess.papa.PapaDataBaseAccess;
 import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
 
 import org.json.JSONObject;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class DBTest extends InstrumentationTestCase
 {
     public void test1() throws Exception {
-        DataBaseAccess dbAccess = new DataBaseAccess();
+        PapaDataBaseAccess dbAccess = new PapaDataBaseAccess();
 
         JSONObject j = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.get, "/semesters.json");
 
@@ -26,7 +26,7 @@ public class DBTest extends InstrumentationTestCase
     }
 
     public void test2() throws Exception {
-        DataBaseAccess dbAccess = new DataBaseAccess();
+        PapaDataBaseAccess dbAccess = new PapaDataBaseAccess();
 
         HashMap<String, String> h = new HashMap<String, String>();
 
