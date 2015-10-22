@@ -70,7 +70,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
         // 默认的方法获取电话
-        this.telephoneNumberGetter = new PapaTelephoneNumberGetterKongBaKongKong();
+        this.telephoneNumberGetter = new PapaTelephoneNumberGetterReal();
     }
 
     // 更改获取电话的方法
@@ -100,11 +100,6 @@ public class SignInActivity extends AppCompatActivity {
         data.putParcelable(key_sign_in_course,bundleHelper);
         intent.putExtras(data);
         startActivity(intent);
-
-        /*
-            Toast.makeText(getApplicationContext(),getString(R.string.wrong_password),Toast.LENGTH_LONG).show();
-            Toast.makeText(getApplicationContext(),getString(R.string.not_signed_up),Toast.LENGTH_LONG).show();
-        */
     }
 
     private void signIn()
@@ -155,9 +150,8 @@ public class SignInActivity extends AppCompatActivity {
         protected void onProgressUpdate(Exception... e)
         {
             // UI
-            Log.e("SignInAct", e[0].getMessage().toString());
-
-            Toast.makeText(getApplicationContext(), e[0].getMessage().toString(), Toast.LENGTH_SHORT).show();
+            Log.e("SignInAct", e[0].getMessage());
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
         }
 
         @Override
