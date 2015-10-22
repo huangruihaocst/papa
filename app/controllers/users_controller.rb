@@ -3,7 +3,7 @@ class UsersController < ApplicationController
     if current_user
       render json: { status: STATUS_SUCCESS, id: current_user.id.to_s }
     else
-      json_failed
+      json_failed(REASON_PERMISSION_DENIED)
     end
   end
 end

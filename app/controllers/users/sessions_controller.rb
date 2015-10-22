@@ -7,7 +7,7 @@ module Users
     #   super
     # end
 
-    #POST /resource/sign_in
+    #POST /users/sign_in
     def create
       respond_to do |format|
         format.html { super }
@@ -20,7 +20,7 @@ module Users
       end
     end
 
-    # DELETE /resource/sign_out
+    # DELETE /users/sign_out
     def destroy
       respond_to do |format|
         format.html { super }

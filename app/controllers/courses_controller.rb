@@ -30,16 +30,14 @@ class CoursesController < ApplicationController
           json_failed
       end
     rescue ActiveRecord::RecordNotFound
-      json_failed
+      json_failed(REASON_RESOURCE_NOT_FOUND)
     end
   end
 
   # GET /courses/1.json
   def show
     unless @course
-      respond_to do |format|
-        format.json { json_failed('not found') }
-      end
+      json_failed(REASON_RESOURCE_NOT_FOUND)
     end
   end
 
@@ -76,16 +74,16 @@ class CoursesController < ApplicationController
             json_failed
           end
         else
-          json_failed
+          json_failed(REASON_INVALID_OPERATION)
       end
     rescue
-      json_failed
+      json_failed(REASON_RESOURCE_NOT_FOUND)
     end
   end
 
   # PUT /courses/1.json
   def update
-    must_by_a_teacher_of(@course)
+    must_be_a_teacher_of(params[:token], @course)
     if @course.update(params.require(:course).permit(:name, :description, :semester_id))
       json_successful
     else
@@ -97,19 +95,21 @@ class CoursesController < ApplicationController
   # DELETE /students/1/courses/1.json
   # DELETE /assistants/1/courses/1.json
   def destroy
-    must_by_a_teacher_of(@course)
+    must_be_a_teacher_of(params[:token], @course)
     case
       when params[:student_id]
-        if Participation.where(user_id: params[:student_id], course_id: @course.id, role: ROLE_STUDENT).first.destroy
+        p = Participation.where(user_id: params[:student_id], course_id: @course.id, role: ROLE_STUDENT)
+        if p.count > 0 && p.first.destroy
           json_successful
         else
-          json_failed
+          json_failed(REASON_RESOURCE_NOT_FOUND)
         end
       when params[:assistant_id]
-        if Participation.where(user_id: params[:assistant_id], course_id: @course.id, role: ROLE_ASSISTANT).first.destroy
+        p = Participation.where(user_id: params[:assistant_id], course_id: @course.id, role: ROLE_ASSISTANT)
+        if p.first.destroy
           json_successful
         else
-          json_failed
+          json_failed(REASON_RESOURCE_NOT_FOUND)
         end
       when @course
         if @course.destroy
@@ -122,7 +122,6 @@ class CoursesController < ApplicationController
     end
   end
 
-  private
   def set_course
     begin
       @course = Course.find(params[:id])
@@ -130,35 +129,4 @@ class CoursesController < ApplicationController
       @course = nil
     end
   end
-
-  def must_by_a_teacher_of(course)
-    raise TokenException.new(REASON_TOKEN_INVALID) unless course && course.is_a?(Course)
-
-    if params[:token]
-      begin
-        token = Token.find_by_token(params[:token])
-        raise TokenException.new(REASON_TOKEN_INVALID) unless token
-        user = token.user
-      rescue
-        if current_user
-          user = current_user
-        else
-          raise TokenException.new(REASON_TOKEN_INVALID)
-        end
-      end
-    else
-      if current_user
-        user = current_user
-      else
-        raise TokenException.new(REASON_TOKEN_INVALID)
-      end
-    end
-
-    if course.teachers.include? user
-      true
-    else
-      raise TokenException.new(REASON_PERMISSION_DENIED)
-    end
-  end
-
 end

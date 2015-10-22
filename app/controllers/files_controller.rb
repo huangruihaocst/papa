@@ -17,14 +17,19 @@ class FilesController < ApplicationController
       when params[:course_id]
         @files = Course.find(params[:course_id]).attached_files
       else
-        json_failed
+        json_failed(REASON_INVALID_OPERATION)
     end
   end
 
   # GET /files/1.json
   def show
-    @file = FileResource.find(params[:id])
+    begin
+      @file = FileResource.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      json_failed(REASON_RESOURCE_NOT_FOUND)
+    end
   end
+
 
   # POST /files.json
   # POST /students/1/files.json
@@ -84,7 +89,7 @@ class FilesController < ApplicationController
             CourseFile.create(file_resource_id: @file.id, course_id: course.id)
           else
             @file.destroy
-            json_failed
+            json_failed(REASON_PERMISSION_DENIED)
             return
           end
         end
@@ -94,7 +99,7 @@ class FilesController < ApplicationController
         end
       rescue ActiveRecord::RecordNotFound
         @file.destroy
-        json_failed
+        json_failed(REASON_RESOURCE_NOT_FOUND)
       end
     else
       @file.destroy
@@ -109,7 +114,7 @@ class FilesController < ApplicationController
     begin
       @file = FileResource.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      json_failed(REASON_TOKEN_NOT_MATCH)
+      json_failed(REASON_RESOURCE_NOT_FOUND)
       return
     end
 

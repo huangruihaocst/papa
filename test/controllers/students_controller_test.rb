@@ -1,8 +1,13 @@
 require 'test_helper'
 
 class StudentsControllerTest < ActionController::TestCase
+  include Devise::TestHelpers
+
   test 'api should get students by course' do
-    get :index, { format: :json, course_id: Course.find_by_name('Operation System').id }
+    course = Course.find_by_name('Operation System')
+    sign_in course.teachers.first
+
+    get :index, { format: :json, course_id: course.id }
 
     assert_json_success
     assert json['students'].is_a? Array
@@ -11,6 +16,7 @@ class StudentsControllerTest < ActionController::TestCase
   test 'api should add student by course' do
     course = Course.first
     student = User.last
+    sign_in student
 
     assert_difference 'Participation.count' do
       post :create, format: :json, course_id: course.id, id: student.id

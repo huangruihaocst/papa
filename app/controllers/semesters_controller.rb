@@ -5,37 +5,56 @@ class SemestersController < ApplicationController
   end
 
   def default
-    @semester = Semester.all.order(:name).last
+    if Semester.count > 0
+      @semester = Semester.all.order(:name).last
+    else
+      json_failed(REASON_INVALID_FIELD)
+    end
   end
 
   def create
-    respond_to do |format|
-      if Semester.create(params.require(:semester).permit(:name))
-        format.json { json_successful }
-      else
-        format.json { json_failed }
-      end
+    check_admin
+
+    if Semester.create(params.require(:semester).permit(:name))
+      json_successful
+    else
+      json_failed
     end
   end
 
   def update
-    respond_to do |format|
-      if Semester.find(params[:id]).update(params.require(:semester).permit(:name))
-        format.json { json_successful }
-      else
-        format.json { json_failed }
-      end
+    check_admin
+
+    begin
+      @semester = Semester.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      json_failed(REASON_RESOURCE_NOT_FOUND)
+      return
+    end
+    
+    if @semester.update(params.require(:semester).permit(:name))
+      json_successful
+    else
+      json_failed
     end
   end
 
   def destroy
-    respond_to do |format|
-      if Semester.find(params[:id]).destroy
-        format.json { json_successful }
-      else
-        format.json { json_failed }
-      end
+    check_admin
+
+    begin
+      @semester = Semester.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      json_failed(REASON_RESOURCE_NOT_FOUND)
+      return
     end
+
+    if @semester.destroy
+      json_successful
+    else
+      json_failed
+    end
+
   end
 
 end
