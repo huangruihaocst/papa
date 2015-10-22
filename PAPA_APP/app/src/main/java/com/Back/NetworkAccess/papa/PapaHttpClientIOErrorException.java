@@ -6,7 +6,7 @@ package com.Back.NetworkAccess.papa;
 
 public class PapaHttpClientIOErrorException extends PapaHttpClientException
 {
-    PapaHttpClientIOErrorException()
+    public PapaHttpClientIOErrorException()
     {
         super("网络 IO 读写错误");
     }

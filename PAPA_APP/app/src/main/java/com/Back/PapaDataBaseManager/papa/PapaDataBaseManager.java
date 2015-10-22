@@ -17,32 +17,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class PapaDataBaseManager {
-
-    private static final String tag = "PapaDataBaseManager";
-
-    PapaDataBaseAccess dbAccess;
-
-    // 单件
-    private PapaDataBaseManager()
-    {
-        dbAccess = new PapaDataBaseAccess();
-    }
-
-    private static PapaDataBaseManager instance = null;
-
-    public static synchronized PapaDataBaseManager getInstance()
-    {
-        if(instance == null)
-        {
-            instance = new PapaDataBaseManager();
-        }
-
-        return instance;
-    }
-
-
-
+public abstract class PapaDataBaseManager {
 
     static public class SignInRequest
     {
@@ -68,29 +43,8 @@ public class PapaDataBaseManager {
         }
     }
 
-    // 使用 POST 方法登录
-    // 返回是否成功
-    public SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException
-    {
-        HashMap<String, String> h = new HashMap<String, String>();
-
-        h.put("utf8", "✓");
-        h.put("user[login]", signInRequest.id);
-        h.put("user[password]", signInRequest.pwd);
-        h.put("user[remember_me]", "0");
-        JSONObject replyObj;
-
-        try
-        {
-            replyObj = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.post, "/users/sign_in.json", h);
-
-            return new SignInReply(replyObj.getInt("id"), replyObj.getString("token"));
-        }
-        catch(org.json.JSONException e)
-        {
-            throw new PapaDataBaseJsonError();
-        }
-    }
+    // 使用 POST 方法登录 返回是否成功
+    public abstract SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException;
 
 
 

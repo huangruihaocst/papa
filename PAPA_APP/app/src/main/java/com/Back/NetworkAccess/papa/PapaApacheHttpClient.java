@@ -125,4 +125,23 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
         Log.i(tag, reply.toString());
         return reply;
     }
+
+    // 单件
+    private static PapaApacheHttpClient instance = null;
+
+    private PapaApacheHttpClient()
+    {
+    }
+
+    public static synchronized PapaApacheHttpClient getInstance()
+    {
+        if(instance == null)
+        {
+            instance = new PapaApacheHttpClient();
+        }
+
+        return instance;
+    }
+
+
 }

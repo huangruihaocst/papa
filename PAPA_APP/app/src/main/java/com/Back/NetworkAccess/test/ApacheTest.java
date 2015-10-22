@@ -13,13 +13,13 @@ import java.util.HashMap;
 public class ApacheTest extends InstrumentationTestCase
 {
     public void testHttp1() throws Exception {
-        String s = new PapaApacheHttpClient().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://www.baidu.com", new HashMap<String, String>());
+        String s = PapaApacheHttpClient.getInstance().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://www.baidu.com", new HashMap<String, String>());
 
         assertFalse(s == null || s == "");
 
         Log.i("testApacheGet", s);
 
-        s = new PapaApacheHttpClient().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://www.baidu.com", null);
+        s = PapaApacheHttpClient.getInstance().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://www.baidu.com", null);
 
         assertFalse(s == null || s == "");
 
@@ -28,7 +28,7 @@ public class ApacheTest extends InstrumentationTestCase
 
 
     public void testHttp2() throws Exception {
-        String s = new PapaApacheHttpClient().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://shyoshyo.ddns.net:8081/index.html", null);
+        String s = PapaApacheHttpClient.getInstance().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://shyoshyo.ddns.net:8081/index.html", null);
 
         assertFalse(s == null || s == "");
 
@@ -38,7 +38,7 @@ public class ApacheTest extends InstrumentationTestCase
 
 
     public void testHttp3() throws Exception {
-        String s = new PapaApacheHttpClient().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://info.tsinghua.edu.cn", new HashMap<String, String>());
+        String s = PapaApacheHttpClient.getInstance().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://info.tsinghua.edu.cn", new HashMap<String, String>());
 
         assertFalse(s == null || s == "");
 

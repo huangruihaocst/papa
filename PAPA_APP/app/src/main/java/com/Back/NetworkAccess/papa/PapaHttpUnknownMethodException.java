@@ -1,7 +1,5 @@
 package com.Back.NetworkAccess.papa;
 
-import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-
 /**
  * Created by shyo on 15-10-16.
  */

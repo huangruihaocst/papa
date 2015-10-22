@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterKongBaKongKong;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
@@ -26,12 +28,14 @@ public class SignInActivity extends AppCompatActivity {
     // 采用何种方式获取电话
     PapaTelephoneNumberGetter telephoneNumberGetter;
 
+    // 使用何种数据库获取数据
+    PapaDataBaseManager papaDataBaseManager;
+
     // Usr, pwd EditText Widget, Buttons
     EditText edit_username;
     EditText edit_password;
     Button button_sign_in;
     Button button_get_telephone_number;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +74,8 @@ public class SignInActivity extends AppCompatActivity {
 
 
         // 默认的方法获取电话
-        this.telephoneNumberGetter = new PapaTelephoneNumberGetterKongBaKongKong();
+        this.telephoneNumberGetter = new PapaTelephoneNumberGetterReal();
+        this.papaDataBaseManager = new PapaDataBaseManagerJiaDe();
     }
 
     // 更改获取电话的方法
@@ -114,8 +119,6 @@ public class SignInActivity extends AppCompatActivity {
         username = edit_username.getText().toString();
         password = edit_password.getText().toString();
 
-        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
-
         Task task = new Task(this);    // 实例化抽象AsyncTask
         task.execute(new PapaDataBaseManager.SignInRequest(username, password));    // 调用AsyncTask，传入url参数
     }
@@ -144,7 +147,7 @@ public class SignInActivity extends AppCompatActivity {
         {
             // 在后台
             try {
-                return PapaDataBaseManager.getInstance().signIn(params[0]);
+                return papaDataBaseManager.signIn(params[0]);
             } catch(PapaHttpClientException e) {
                 publishProgress(e);
             }
