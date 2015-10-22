@@ -35,6 +35,8 @@ public class CourseActivity extends AppCompatActivity
         Bundle data = intent.getExtras();
         String key_sign_in_course = getString(R.string.key_sign_in_course);
         bundleHelper = data.getParcelable(key_sign_in_course);
+        int id = bundleHelper.getId();
+        String token = bundleHelper.getToken();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.hint_select_course));

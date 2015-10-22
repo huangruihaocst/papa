@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
+import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterKongBaKongKong;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
 public class SignInActivity extends AppCompatActivity {
@@ -69,7 +70,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
         // 默认的方法获取电话
-        this.telephoneNumberGetter = new PapaTelephoneNumberGetterReal();
+        this.telephoneNumberGetter = new PapaTelephoneNumberGetterKongBaKongKong();
     }
 
     // 更改获取电话的方法
@@ -81,17 +82,33 @@ public class SignInActivity extends AppCompatActivity {
 
     // 获取电话号码
     private String getTelephoneNumber()
-            throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException {
+            throws PapaTelephoneNumberGetter.cannotGetTelephoneNumberException
+    {
         return this.telephoneNumberGetter.getTelephoneNumber(getBaseContext());
     }
 
-
     // 登录部分, 异步
-
-    int check_message = -1;
-    public void check()
+    public void processReply(PapaDataBaseManager.SignInReply reply)
     {
-        // 1 for right, 0 for wrong password, and 2 for not registered
+        Intent intent = new Intent(SignInActivity.this,CourseActivity.class);
+        Bundle data = new Bundle();
+        String key_sign_in_course = getString(R.string.key_sign_in_course);
+
+        bundleHelper.setId(reply.personId);
+        bundleHelper.setToken(reply.token);
+
+        data.putParcelable(key_sign_in_course,bundleHelper);
+        intent.putExtras(data);
+        startActivity(intent);
+
+        /*
+            Toast.makeText(getApplicationContext(),getString(R.string.wrong_password),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),getString(R.string.not_signed_up),Toast.LENGTH_LONG).show();
+        */
+    }
+
+    private void signIn()
+    {
         EditText edit_username = (EditText)findViewById(R.id.username);
         EditText edit_password = (EditText)findViewById(R.id.password);
         username = edit_username.getText().toString();
@@ -101,44 +118,11 @@ public class SignInActivity extends AppCompatActivity {
 
         Task task = new Task(this);    // 实例化抽象AsyncTask
         task.execute(new PapaDataBaseManager.SignInRequest(username, password));    // 调用AsyncTask，传入url参数
-
-        /*
-        try
-        {
-            {
-                // TODO: 区分到底是错误密码还是未注册
-                check_message = 0;
-            }
-        }
-        catch(Exception e) {
-            check_message = 0;
-        }
-
-
-        check_message = 1;
-        */
     }
 
-    private void signIn(){
-        check();
-        if(check_message == 1)
-        {
-            Intent intent = new Intent(SignInActivity.this,CourseActivity.class);
-            Bundle data = new Bundle();
-            String key_sign_in_course = getString(R.string.key_sign_in_course);
-            bundleHelper.setUsername(username);
-            bundleHelper.setPassword(password);
-            data.putParcelable(key_sign_in_course,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        }else if(check_message == 0){
-            Toast.makeText(getApplicationContext(),getString(R.string.wrong_password),Toast.LENGTH_LONG).show();
-        }else if(check_message == 2){
-            Toast.makeText(getApplicationContext(),getString(R.string.not_signed_up),Toast.LENGTH_LONG).show();
-        }
-    }
-
-    class Task extends AsyncTask<PapaDataBaseManager.SignInRequest, Exception, Boolean> {
+    class Task extends AsyncTask
+            <PapaDataBaseManager.SignInRequest, Exception, PapaDataBaseManager.SignInReply>
+    {
         ProgressDialog proDialog;
 
         public Task(Context context) {
@@ -151,37 +135,37 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute(){
-            // 可以与UI控件交互
+            // UI
         }
 
         @Override
-        protected Boolean doInBackground(PapaDataBaseManager.SignInRequest... params)
+        protected PapaDataBaseManager.SignInReply doInBackground
+                (PapaDataBaseManager.SignInRequest... params)
         {
-
-            check_message = 1;
             // 在后台
             try {
                 return PapaDataBaseManager.getInstance().signIn(params[0]);
-            }
-            catch(PapaHttpClientException e) {
+            } catch(PapaHttpClientException e) {
                 publishProgress(e);
             }
-            return false;
+            return null;
         }
 
         @Override
-        protected void onProgressUpdate(Exception... e) {
-            // 可以与UI控件交互
+        protected void onProgressUpdate(Exception... e)
+        {
+            // UI
+            Log.e("SignInAct", e[0].getMessage().toString());
 
-            Log.e("SignInAct", e[0].getMessage());
-            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), e[0].getMessage().toString(), Toast.LENGTH_SHORT).show();
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
-            // 可以与UI控件交互
+        protected void onPostExecute(PapaDataBaseManager.SignInReply rlt) {
+            // UI
+
             proDialog.dismiss();
+            if(rlt != null) processReply(rlt);
         }
     }
-
 }
