@@ -22,6 +22,8 @@ public class BundleHelper implements Parcelable{
     private String student_name;
     private int student_id;
     private String identity;
+    private int id;
+    private String token;
 //    private JSONObject jsonObject;
 //    private String getter_string;
 
@@ -35,6 +37,8 @@ public class BundleHelper implements Parcelable{
         student_name = "";
         student_id = -1;
         identity = "";
+        id = -1;
+        token = "";
 //        jsonObject = new JSONObject();
 //        getter_string = jsonObject.toString();
     }
@@ -66,6 +70,12 @@ public class BundleHelper implements Parcelable{
     }
     public String getIdentity(){
         return identity;
+    }
+    public int getId(){
+        return id;
+    }
+    public String getToken(){
+        return token;
     }
 //    public PapaTelephoneNumberGetter getPapaTelephoneNumberGetter(){
 //        try{
@@ -110,6 +120,12 @@ public class BundleHelper implements Parcelable{
     }
     public void setIdentity(String identity){
         this.identity = identity;
+    }
+    public void setId(int id){
+        this.id = id;
+    }
+    public void setToken(String token){
+        this.token = token;
     }
 //    public void setPapaTelephoneNumberGetter(PapaTelephoneNumberGetter papaTelephoneNumberGetter){
 //        try{

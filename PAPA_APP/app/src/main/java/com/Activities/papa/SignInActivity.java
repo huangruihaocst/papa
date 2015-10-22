@@ -121,7 +121,6 @@ public class SignInActivity extends AppCompatActivity {
 
     private void signIn(){
         check();
-        /*
         if(check_message == 1)
         {
             Intent intent = new Intent(SignInActivity.this,CourseActivity.class);
@@ -137,7 +136,6 @@ public class SignInActivity extends AppCompatActivity {
         }else if(check_message == 2){
             Toast.makeText(getApplicationContext(),getString(R.string.not_signed_up),Toast.LENGTH_LONG).show();
         }
-        */
     }
 
     class Task extends AsyncTask<PapaDataBaseManager.SignInRequest, Exception, Boolean> {
@@ -145,7 +143,7 @@ public class SignInActivity extends AppCompatActivity {
 
         public Task(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等瞄 =w=");
+            proDialog.setMessage("稍等喵 =w=");
             proDialog.show();
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
@@ -159,12 +157,13 @@ public class SignInActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(PapaDataBaseManager.SignInRequest... params)
         {
+
+            check_message = 1;
             // 在后台
             try {
                 return PapaDataBaseManager.getInstance().signIn(params[0]);
             }
-            catch(PapaHttpClientException e)
-            {
+            catch(PapaHttpClientException e) {
                 publishProgress(e);
             }
             return false;
@@ -174,8 +173,8 @@ public class SignInActivity extends AppCompatActivity {
         protected void onProgressUpdate(Exception... e) {
             // 可以与UI控件交互
 
-            Log.e("SignInAct", e[0].getMessage().toString());
-            Toast.makeText(getApplicationContext(), e[0].getMessage().toString(), Toast.LENGTH_LONG).show();
+            Log.e("SignInAct", e[0].getMessage());
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -184,7 +183,5 @@ public class SignInActivity extends AppCompatActivity {
             proDialog.dismiss();
         }
     }
-
-
 
 }
