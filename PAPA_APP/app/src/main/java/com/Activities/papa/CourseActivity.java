@@ -167,6 +167,13 @@ public class CourseActivity extends AppCompatActivity
             data.putParcelable(key_to_settings,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
+        } else if(id == R.id.nav_notification){
+            Intent intent = new Intent(CourseActivity.this,NotificationActivity.class);
+            Bundle data = new Bundle();
+            String key_to_notification = getString(R.string.key_to_notification);
+            data.putParcelable(key_to_notification,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

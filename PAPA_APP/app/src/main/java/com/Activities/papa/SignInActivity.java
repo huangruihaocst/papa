@@ -147,8 +147,7 @@ public class SignInActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate(Exception... e)
-        {
+        protected void onProgressUpdate(Exception... e) {
             // UI
             Log.e("SignInAct", e[0].getMessage());
             Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();

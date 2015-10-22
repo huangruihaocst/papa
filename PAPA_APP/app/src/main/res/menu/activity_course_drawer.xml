@@ -10,6 +10,8 @@
             android:title="@string/upload_history" />
         <item android:id="@+id/nav_edit_profile" android:icon="@android:drawable/ic_menu_edit"
             android:title="@string/edit_profile" />
+        <item android:id="@+id/nav_notification" android:icon="@drawable/ic_sms_grey600_24dp"
+            android:title="@string/notification" />
     </group>
 
     <item android:title="@string/more">
