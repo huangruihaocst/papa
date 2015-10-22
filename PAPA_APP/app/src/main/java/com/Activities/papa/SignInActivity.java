@@ -111,8 +111,15 @@ public class SignInActivity extends AppCompatActivity {
 
         PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
 
-        Task task = new Task(this);    // 实例化抽象AsyncTask
-        task.execute(new PapaDataBaseManager.SignInRequest(username, password));    // 调用AsyncTask，传入url参数
+//        Task task = new Task(this);    // 实例化抽象AsyncTask
+//        task.execute(new PapaDataBaseManager.SignInRequest(username, password));    // 调用AsyncTask，传入url参数
+
+        Intent intent = new Intent(SignInActivity.this,CourseActivity.class);
+        Bundle data = new Bundle();
+        String key_sign_in_course = getString(R.string.key_sign_in_course);
+        data.putParcelable(key_sign_in_course,bundleHelper);
+        intent.putExtras(data);
+        startActivity(intent);
     }
 
     class Task extends AsyncTask

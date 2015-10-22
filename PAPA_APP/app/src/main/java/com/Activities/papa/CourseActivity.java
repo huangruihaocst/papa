@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.text.Layout;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,6 +75,11 @@ public class CourseActivity extends AppCompatActivity
             MenuItem item = menu.findItem(R.id.nav_upload_history);
             item.setVisible(false);
         }
+
+        android.support.design.widget.NavigationView headerLayout = (android.support.design.widget.NavigationView) findViewById(R.id.nav_view);
+        LinearLayout ly = (LinearLayout)headerLayout.inflateHeaderView(R.layout.nav_header_course);
+        TextView username_label = (TextView) ly.findViewById(R.id.username_label);
+        username_label.setText("1234");
 
         getCourses();
 
