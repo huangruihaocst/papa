@@ -283,5 +283,4 @@ public class CourseActivity extends AppCompatActivity
         intent.putExtras(data);
         startActivity(intent);
     }
-
 }
