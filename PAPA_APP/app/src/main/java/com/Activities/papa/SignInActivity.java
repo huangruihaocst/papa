@@ -44,6 +44,8 @@ public class SignInActivity extends AppCompatActivity {
         edit_username = (EditText)findViewById(R.id.username);
         edit_password = (EditText)findViewById(R.id.password);
 
+        // telephoneNumberGetter = bundleHelper.getPapaTelephoneNumberGetter();
+
         button_sign_in = (Button)findViewById(R.id.sign_in);
         button_sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +70,6 @@ public class SignInActivity extends AppCompatActivity {
 
         // 默认的方法获取电话
         this.telephoneNumberGetter = new PapaTelephoneNumberGetterReal();
-
     }
 
     // 更改获取电话的方法
