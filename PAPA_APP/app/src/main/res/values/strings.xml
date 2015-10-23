@@ -31,7 +31,10 @@
     <string name="more">更多</string>
     <string name="notification">通知栏</string>
     <string name="get_telephone_number">获取手机号</string>
-
+    <string name="user_id">学号</string>
+    <string name="user_class">班级</string>
+    <string name="user_grade">成绩</string>
+    <string name="user_comment">评价</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -42,6 +45,8 @@
     <string name="action_upload">上传实验结果</string>
     <string name="action_edit_grades">编辑成绩</string>
     <string name="action_student_information">学生信息</string>
+    <string name="action_generate_QR_code">生成二维码</string>
+    <string name="action_edit_detail">编辑成绩</string>
 
     <string name="title_semester">学期</string>
 

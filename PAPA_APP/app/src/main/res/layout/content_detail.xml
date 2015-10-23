@@ -11,22 +11,96 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_detail"
     tools:context="com.example.huang.papa.DetailActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="详情"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/action_edit_grades"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="@color/colorPrimary"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:id="@+id/edit_grades"/>
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_id"
+                android:id="@+id/textView4"
+                android:theme="@style/DetailHead"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2014011385"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/textView4"
+                android:layout_toEndOf="@+id/textView4"
+                android:layout_marginLeft="27dp"
+                android:layout_marginStart="27dp"
+                android:theme="@style/DetailContent"
+                android:id="@+id/user_id" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_class"
+                android:theme="@style/DetailHead"
+                android:layout_below="@+id/textView4"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="23dp"
+                android:id="@+id/textView5" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="计44"
+                android:theme="@style/DetailContent"
+                android:layout_alignTop="@+id/textView5"
+                android:layout_alignLeft="@+id/user_id"
+                android:layout_alignStart="@+id/user_id"
+                android:id="@+id/user_class" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_grade"
+                android:theme="@style/DetailHead"
+                android:layout_below="@+id/textView5"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="23dp"
+                android:id="@+id/textView7" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/DetailContent"
+                android:textColor="@color/colorPrimary"
+                android:inputType="number"
+                android:maxLines="1"
+                android:maxLength="3"
+                android:text="100"
+                android:id="@+id/user_grade"
+                android:background="#FAFAFA"
+                android:layout_alignTop="@+id/textView7"
+                android:layout_alignLeft="@+id/user_class"
+                android:layout_alignStart="@+id/user_class" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_comment"
+                android:theme="@style/DetailHead"
+                android:layout_below="@+id/textView7"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="23dp"
+                android:id="@+id/textView9"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/DetailContent"
+                android:textColor="@color/colorPrimary"
+                android:inputType="textMultiLine"
+                android:text="好"
+                android:id="@+id/user_comment"
+                android:background="#FAFAFA"
+                android:layout_alignTop="@+id/textView9"
+                android:layout_alignLeft="@+id/user_class"
+                android:layout_alignStart="@+id/user_class"
+                android:scrollbars="vertical"/>
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

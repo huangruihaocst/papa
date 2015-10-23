@@ -2,6 +2,7 @@ package com.Activities.papa;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +24,10 @@ public class DetailActivity extends AppCompatActivity
     String experiment_name;
     String identity;
     BundleHelper bundleHelper = new BundleHelper();
+    TextView user_id;
+    TextView user_class;
+    EditText user_grade;
+    EditText user_comment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +45,11 @@ public class DetailActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(experiment_name);
         setSupportActionBar(toolbar);
+
+        user_id = (TextView)findViewById(R.id.user_id);
+        user_class = (TextView)findViewById(R.id.user_class);
+        user_grade = (EditText)findViewById(R.id.user_grade);
+        user_comment = (EditText)findViewById(R.id.user_comment);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -64,10 +75,7 @@ public class DetailActivity extends AppCompatActivity
         }
         setHeaderView(navigationView);
 
-        Button button_edit_grades = (Button)findViewById(R.id.edit_grades);
-        if(identity.equals("student")){
-            button_edit_grades.setVisibility(View.GONE);
-        }
+        getDetail();
     }
 
     @Override
@@ -84,6 +92,13 @@ public class DetailActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.detail, menu);
+        if(identity.equals("teacher_assistant")){
+            MenuItem item = menu.findItem(R.id.action_generate_QR_code);
+            item.setVisible(false);
+        }else if(identity.equals("student")){
+            MenuItem item = menu.findItem(R.id.action_edit_detail);
+            item.setVisible(false);
+        }
         return true;
     }
 
@@ -99,6 +114,13 @@ public class DetailActivity extends AppCompatActivity
             return true;
         }else if(id == R.id.action_student_information){
             return true;
+        }else if(id == R.id.action_generate_QR_code){
+            return true;
+        }else if(id == R.id.action_edit_detail){
+            user_grade.setEnabled(true);
+            user_grade.setFocusable(true);
+            user_comment.setEnabled(true);
+            user_comment.setFocusable(true);
         }
 
         return super.onOptionsItemSelected(item);
@@ -171,5 +193,19 @@ public class DetailActivity extends AppCompatActivity
         TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
         TextView mail_label = (TextView)findViewById(R.id.mail_label);
         ImageView image_label = (ImageView)findViewById(R.id.image_label);
+    }
+
+    //call this in another thread
+    private void getDetail(){
+        user_id.setText("2014");
+        user_class.setText("计43");
+        user_comment.setText("吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊" +
+                "吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊" +
+                "吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊" +
+                "吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊" +
+                "吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊" +
+                "吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊");
+        user_grade.setEnabled(false);
+        user_comment.setEnabled(false);
     }
 }
