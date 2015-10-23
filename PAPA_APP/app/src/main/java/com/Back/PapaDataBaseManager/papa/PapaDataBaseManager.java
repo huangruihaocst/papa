@@ -15,10 +15,16 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public abstract class PapaDataBaseManager {
 
+
+    // 登录
     static public class SignInRequest
     {
         public String id;
@@ -46,6 +52,9 @@ public abstract class PapaDataBaseManager {
     // 使用 POST 方法登录 返回是否成功
     public abstract SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    // 获取学期
     static public class SemesterReply
     {
         public HashMap semester;
@@ -57,6 +66,34 @@ public abstract class PapaDataBaseManager {
     }
 
     public abstract SemesterReply getSemester() throws PapaHttpClientException;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    // 获取学生课程
+    static public class GetStuCourseRequest
+    {
+        public int id;
+        public String token;
+
+        public GetStuCourseRequest(int id, String token)
+        {
+            this.id = id;
+            this.token = token;
+        }
+    }
+
+    static public class GetStuCourseReply
+    {
+        public List<Map.Entry<Integer, String>> course;
+
+        public GetStuCourseReply()
+        {
+            course = new ArrayList<>();
+        }
+    }
+
+    // 使用 POST 方法登录 返回是否成功
+    public abstract GetStuCourseReply getStuCourse(GetStuCourseRequest request) throws PapaHttpClientException;
 
 
     /*

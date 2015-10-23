@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,17 +29,22 @@ import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private String[] course_teacher_assistant_list;
-    private String[] course_student_list;
+    // private String[] course_student_list;
     BundleHelper bundleHelper = new BundleHelper();
 
     PapaDataBaseManager papaDataBaseManager;
 
     TabLayout tabLayout;
+
+    int id;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +56,9 @@ public class CourseActivity extends AppCompatActivity
         Bundle data = intent.getExtras();
         String key_sign_in_course = getString(R.string.key_sign_in_course);
         bundleHelper = data.getParcelable(key_sign_in_course);
-        int id = bundleHelper.getId();
-        String token = bundleHelper.getToken();
+
+        id = bundleHelper.getId();
+        token = bundleHelper.getToken();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.hint_select_course));
@@ -91,28 +96,9 @@ public class CourseActivity extends AppCompatActivity
             item.setVisible(false);
         }
 
-        getCourses();
-
-        ListView CourseTeacherAssistantListView = (ListView)findViewById(R.id.course_teacher_assistant_list);
-        CourseTeacherAssistantListView.setAdapter(new MyTeacherAssistantAdapter());
-        CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(course_teacher_assistant_list, position, "teacher_assistant");
-            }
-        });
-
-        ListView CourseStudentListView = (ListView)findViewById(R.id.course_student_list);
-        CourseStudentListView.setAdapter(new MyStudentAdapter());
-        CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(course_student_list, position, "student");
-            }
-        });
-
-
+        getStudentCourses();
     }
+
 
     @Override
     public void onBackPressed() {
@@ -208,35 +194,6 @@ public class CourseActivity extends AppCompatActivity
         return true;
     }
 
-    private void getCourses()
-    {
-//        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
-//
-//        List<String> studentList = new ArrayList<String>();
-//        List<String> assistList = new ArrayList<String>();
-//
-//        try {
-//            papaDataBaseManager.getCourses(studentList, assistList);
-//            course_student_list = studentList.toArray(new String[studentList.size()]);
-//            course_teacher_assistant_list = assistList.toArray(new String[assistList.size()]);
-//        }
-//        catch (Exception e)
-//        {
-//            // TODO: What if courses cannot be received?
-//
-//        }
-//        Please do not delete the code below when debugging:
-        course_student_list = new String[3];
-        for(int i = 0;i < 3;i ++){
-            course_student_list[i] = "课程" + i;
-        }
-        course_teacher_assistant_list = new String[3];
-        for(int i = 0;i < 3;i ++){
-            course_teacher_assistant_list[i] = "课程" + i;
-        }
-    }
-
-
     private class MyTeacherAssistantAdapter extends BaseAdapter {
         @Override
         public int getCount(){
@@ -262,9 +219,16 @@ public class CourseActivity extends AppCompatActivity
     }
 
     private class MyStudentAdapter extends BaseAdapter {
+        private List<Map.Entry<Integer, String>> lst;
+
+        public MyStudentAdapter(List<Map.Entry<Integer, String>> lst)
+        {
+            this.lst = lst;
+        }
+
         @Override
         public int getCount(){
-            return course_student_list.length;
+            return lst.size();
         }
         @Override
         public Object getItem(int arg0){
@@ -277,7 +241,7 @@ public class CourseActivity extends AppCompatActivity
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
             TextView mTextView = new TextView(getApplicationContext());
-            mTextView.setText(course_student_list[position]);
+            mTextView.setText(lst.get(position).getValue());
             mTextView.setTextSize(35);
 //            mTextView.setTextColor(getColor(R.color.colorPrimary));
             mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
@@ -285,6 +249,7 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
+    /*
     private void startExperimentActivity(String[] course_list,int position,String identity){
         Intent intent = new Intent(CourseActivity.this, ExperimentActivity.class);
         Bundle data = new Bundle();
@@ -295,6 +260,9 @@ public class CourseActivity extends AppCompatActivity
         intent.putExtras(data);
         startActivity(intent);
     }
+    */
+
+
 
 
 
@@ -360,5 +328,88 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
+
+    // Courses
+    private void getStudentCourses()
+    {
+        new GetStudentCourseTask(this).execute(new PapaDataBaseManager.GetStuCourseRequest(id, token));
+    }
+
+
+    class GetStudentCourseTask extends
+            AsyncTask<PapaDataBaseManager.GetStuCourseRequest,Exception, PapaDataBaseManager.GetStuCourseReply>
+    {
+        ProgressDialog proDialog;
+
+        public GetStudentCourseTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute(){
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetStuCourseReply doInBackground
+                (PapaDataBaseManager.GetStuCourseRequest... params)
+        {
+            // 在后台
+            try {
+                return papaDataBaseManager.getStuCourse(params[0]);
+            } catch(PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetStuCourseReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if(rlt != null) setStudentCourses(rlt);
+        }
+    }
+
+
+
+    private void setStudentCourses(PapaDataBaseManager.GetStuCourseReply rlt) {
+
+        course_teacher_assistant_list = new String[3];
+        for(int i = 0;i < 3;i ++){
+            course_teacher_assistant_list[i] = "课程" + i;
+        }
+
+        ListView CourseTeacherAssistantListView = (ListView)findViewById(R.id.course_teacher_assistant_list);
+        CourseTeacherAssistantListView.setAdapter(new MyTeacherAssistantAdapter());
+        CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // startExperimentActivity(course_teacher_assistant_list, position, "teacher_assistant");
+            }
+        });
+
+
+        ListView CourseStudentListView = (ListView)findViewById(R.id.course_student_list);
+        CourseStudentListView.setAdapter(new MyStudentAdapter(rlt.course));
+        CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // startExperimentActivity(course_student_list, position, "student");
+            }
+        });
+    }
 
 }

@@ -150,6 +150,8 @@ public class BundleHelper implements Parcelable{
         out.writeString(student_name);
         out.writeInt(student_id);
         out.writeString(identity);
+        out.writeInt(id);
+        out.writeString(token);
 //        out.writeString(getter_string);
     }
 
@@ -173,6 +175,8 @@ public class BundleHelper implements Parcelable{
         student_name = in.readString();
         student_id = in.readInt();
         identity = in.readString();
+        id = in.readInt();
+        token = in.readString();
 //        getter_string = in.readString();
     }
 }

@@ -52,4 +52,9 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
         r.semester.put(100, "2013 Fall");
         return r;
     }
+
+    @Override
+    public GetStuCourseReply getStuCourse(GetStuCourseRequest request) throws PapaHttpClientException {
+        return null;
+    }
 }

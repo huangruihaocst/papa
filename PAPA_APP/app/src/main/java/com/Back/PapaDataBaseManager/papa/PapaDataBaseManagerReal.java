@@ -10,7 +10,9 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by shyo on 15-10-22.
@@ -64,6 +66,37 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 JSONObject obj = array.getJSONObject(i);
 
                 ans.semester.put(obj.getInt("id"), obj.getString("name"));
+
+                Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
+            };
+
+            return ans;
+        }
+        catch(org.json.JSONException e) {
+            throw new PapaDataBaseJsonError();
+        }
+    }
+
+    @Override
+    public GetStuCourseReply getStuCourse(GetStuCourseRequest request) throws PapaHttpClientException {
+        try
+        {
+            HashMap<String, String> h = new HashMap<String, String>();
+
+            h.put("token", request.token);
+
+            GetStuCourseReply ans = new GetStuCourseReply();
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.get, "/students/" + request.id + "/courses.json", h);
+
+
+            JSONArray array = reply.getJSONArray("courses");
+            Log.i(tag, "ret = " + array + " len = " + array.length());
+
+            for (int i = 0; i < array.length(); i++)
+            {
+                JSONObject obj = array.getJSONObject(i);
+
+                ans.course.add(new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name")));
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
             };

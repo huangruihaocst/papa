@@ -21,6 +21,8 @@ import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterKongBaKongKong;
 import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
 public class SignInActivity extends AppCompatActivity {
+    final public String tag = "SignInActivity";
+
     String username;
     String password;
     BundleHelper bundleHelper = new BundleHelper();
@@ -102,6 +104,8 @@ public class SignInActivity extends AppCompatActivity {
 
         bundleHelper.setId(reply.personId);
         bundleHelper.setToken(reply.token);
+
+        Log.e(tag, reply.personId + "," + reply.token);
 
         data.putParcelable(key_sign_in_course,bundleHelper);
         intent.putExtras(data);
