@@ -46,6 +46,17 @@ public abstract class PapaDataBaseManager {
     // 使用 POST 方法登录 返回是否成功
     public abstract SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException;
 
+    static public class SemesterReply
+    {
+        public HashMap semester;
+
+        public SemesterReply()
+        {
+            semester = new HashMap();
+        }
+    }
+
+    public abstract SemesterReply getSemester() throws PapaHttpClientException;
 
 
     /*

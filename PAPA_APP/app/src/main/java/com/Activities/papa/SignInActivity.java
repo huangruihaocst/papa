@@ -76,7 +76,7 @@ public class SignInActivity extends AppCompatActivity {
 
         // 默认的方法获取电话
         this.telephoneNumberGetter = new PapaTelephoneNumberGetterReal();
-        this.papaDataBaseManager = new PapaDataBaseManagerJiaDe();
+        this.papaDataBaseManager = new PapaDataBaseManagerReal();
     }
 
     // 更改获取电话的方法

@@ -1,9 +1,13 @@
 package com.Activities.papa;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,17 +24,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
+
+import java.util.HashMap;
+import java.util.Iterator;
+
 public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private String[] course_teacher_assistant_list;
     private String[] course_student_list;
-    private String[] semester_list;
     BundleHelper bundleHelper = new BundleHelper();
+
+    PapaDataBaseManager papaDataBaseManager;
+
+    TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_course);
 
         Intent intent = getIntent();
@@ -44,12 +59,14 @@ public class CourseActivity extends AppCompatActivity
         toolbar.setTitle(getString(R.string.hint_select_course));
         setSupportActionBar(toolbar);
 
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.semester_tab);
+        tabLayout = (TabLayout)findViewById(R.id.semester_tab);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        this.papaDataBaseManager = new PapaDataBaseManagerReal();
+
+
         getSemester();
-        for(int i = 0;i < semester_list.length;i ++){
-            tabLayout.addTab(tabLayout.newTab().setText(semester_list[i]));
-        }
+
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -90,9 +107,10 @@ public class CourseActivity extends AppCompatActivity
         CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(course_student_list,position,"student");
+                startExperimentActivity(course_student_list, position, "student");
             }
         });
+
 
     }
 
@@ -218,12 +236,6 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
-    private void getSemester(){
-        semester_list = new String[10];
-        for(int i = 0;i < 10;i ++){
-            semester_list[i] = "学期" + i;
-        }
-    }
 
     private class MyTeacherAssistantAdapter extends BaseAdapter {
         @Override
@@ -283,4 +295,70 @@ public class CourseActivity extends AppCompatActivity
         intent.putExtras(data);
         startActivity(intent);
     }
+
+
+
+    // Semester
+
+    private void getSemester() {
+        GetSemesterTask task = new GetSemesterTask(this);
+        task.execute();
+    }
+
+    class GetSemesterTask extends AsyncTask<Void, Exception, PapaDataBaseManager.SemesterReply>
+    {
+        ProgressDialog proDialog;
+
+        public GetSemesterTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute(){
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.SemesterReply doInBackground
+                (Void... params)
+        {
+            // 在后台
+            try {
+                return papaDataBaseManager.getSemester();
+            } catch(PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.SemesterReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if(rlt != null) setSemester(rlt.semester);
+        }
+    }
+
+
+    void setSemester(HashMap h) {
+        Iterator iterator = h.keySet().iterator();
+        while (iterator.hasNext()) {
+            Object key = iterator.next();
+            tabLayout.addTab(tabLayout.newTab().setText((String) h.get(key)));
+        }
+    }
+
+
 }

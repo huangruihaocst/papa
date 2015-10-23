@@ -16,9 +16,9 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
 
     // Announcement: You should finish this class before the discussion section.
 
-
-    @Override
-    public SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException {
+    // @Mato_No1
+    private void kaSi()
+    {
         synchronized(this)
         {
             try {
@@ -30,8 +30,26 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
                 e.printStackTrace();
             }
         }
+
+    }
+
+    @Override
+    public SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException {
+        kaSi();
         if(signInRequest.id.equals("123") && signInRequest.pwd.equals("123"))
             return new SignInReply(1, "watashi");
         throw new PapaHttpClientNot200Exception(401);
+    }
+
+    @Override
+    public SemesterReply getSemester() throws PapaHttpClientException {
+        kaSi();
+        SemesterReply r = new SemesterReply();
+        r.semester.put(1, "2015 Fall");
+        r.semester.put(2, "2014 Spring");
+        r.semester.put(3, "2014 Fall");
+        r.semester.put(4, "2013 Spring");
+        r.semester.put(100, "2013 Fall");
+        return r;
     }
 }

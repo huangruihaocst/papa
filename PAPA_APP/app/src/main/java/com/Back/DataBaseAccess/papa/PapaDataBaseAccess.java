@@ -18,7 +18,7 @@ public class PapaDataBaseAccess
 {
     private PapaAbstractHttpClient client;
 
-    private static final String host = "183.173.43.217"; //"shyoshyo.ddns.net";
+    private static final String host = "10.1.2.71"; //"shyoshyo.ddns.net";
     private static final String port = "80";
     private static final String tag = "PapaDataBaseAccess";
 
