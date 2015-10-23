@@ -85,6 +85,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     
     # namespace user
     # 用户相关
+    ?GET    /users/1.json             得到用户的信息     "user": user
     POST    /users/sign_in.json       登陆               utf8=✓&user[login]=xxx&user[password]=123&user[remember_me]=0
         返回:  token: '123456777777777', id: 123
         *上面对号的utf-8编码值为0xE2 0x9C 0x93                                                          Everyone
@@ -94,6 +95,8 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         not_implemented
     PUT     /users/1.json             修改用户信息                                                      User
         not_implemented
+    GET    /users/current.json       获取当前用户id          "id": "123"                                 Current User
+        permission_denied: 未登录
 
     # namespace semesters
     GET    /semesters.json               获得所有学年     "semesters": [semester, ...]                  Student
@@ -288,10 +291,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     DELETE /files/1.json             删除自己上传的文件                                                  Creator           
         resource_not_found: file_id不存在
         permission_denied: 当前用户不是文件创建者
-    # 用户相关
-    GET    /users/current.json       获取当前用户id          "id": "123"                                 Current User
-        permission_denied: 未登录
-
+    
     # App更新
     GET    /android/current_version.json 得到当前最新版本号  {"version": "xx", "apk_path": "xx"}         Student
         always successful
@@ -321,10 +321,10 @@ Deprecated APIs:
     
 API Status:
 
-    Total History:      83
+    Total History:      84
     Deprecated:         18
-    Total Valid:        65
-    Not Implemented:    9
+    Total Valid:        66
+    Not Implemented:    10
     Not Secured:        6
     Fully Finished:     50
         

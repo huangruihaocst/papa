@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   }
 
   get 'users/current' => 'users#current'
+  get 'users/:id' => 'users#show'
 
   resources :semesters, only: [:index, :create, :update, :destroy] do
     resources :courses, only: [:index]
@@ -21,8 +22,12 @@ Rails.application.routes.draw do
     post 'teachers/:id' => 'teachers#create', as: :create_teacher
 
     resources :assistants, only: [:index, :create, :destroy]
+    post 'assistants/:id' => 'assistants#create', as: :create_assistant
+
     resources :lessons, only: [:index, :create, :destroy]
-    resources :teachers, only: [:index, :create, :destroy, :update]
+    resources :teachers, only: [:index, :create, :destroy, :update, :show]
+    post 'teachers/:id' => 'teachers#create', as: :create_teacher
+
     resources :messages, only: [:create]
     resources :files, only: [:index, :create, :delete]
     get 'comments' => 'lesson_comments#index', as: :comments_of_course
@@ -41,23 +46,26 @@ Rails.application.routes.draw do
 
     # for attendence
     resources :students, only: [:index, :create]
+    post 'students/:id' => 'students#create'
 
     resources :files, only: [:index, :create, :delete]
   end
 
   resources :students, only: [:index, :show, :create, :update, :destroy] do
-    resources :courses, only: [:index, :update]
+    resources :courses, only: [:index, :update, :destroy]
     post 'courses/:id' => 'courses#create', as: :create_course
 
     resources :files, only: [:index, :create, :destroy]
     resources :lessons, only: [:show, :update] do
-      resources :files, only: [:show, :create, :destroy]
+      get 'comments' => 'lesson_comments#from_student'
+      resources :files, only: [:index, :show, :create, :destroy]
     end
     resources :messages, only: [:index]
   end
 
   resources :assistants, only: [:index, :show, :create, :update, :destroy] do
     resources :courses, only: [:index, :create]
+    post 'courses/:id' => 'courses#create'
     resources :files, only: [:index, :create]
   end
 
@@ -67,7 +75,7 @@ Rails.application.routes.draw do
 
   resources :files, only: [:show, :create, :destroy]
 
-  namespace :android do
+  namespace :apps do
     get 'current_version' => 'android_apps#current_version'
     post 'current_version' => 'android_apps#create'
   end

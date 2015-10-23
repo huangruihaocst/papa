@@ -1,6 +1,9 @@
 s = Semester.create(name: '2015')
 
 c1 = Course.create(name: 'os', description: '123', semester_id: s.id)
+l1 = c1.lessons.create(name: 'os-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+
+
 c2 = Course.create(name: 'ds', description: '中文', semester_id: s.id)
 c3 = Course.create(name: '语文', description: 'fuck', semester_id: s.id)
 
@@ -14,6 +17,9 @@ u3 = User.create(name:'ciara', phone:'333', email:'c@d.e', password:'123', passw
 
 
 p11 = Participation.create(user_id: u1.id, course_id: c1.id, role: ROLE_STUDENT)
+lesson_status1 = LessonStatus.create(user_id: u1.id, lesson_id: c1.lessons.first.id, creator_id: u1.id, score: 123)
+
+
 p12 = Participation.create(user_id: u1.id, course_id: c2.id, role: ROLE_ASSISTANT)
 p21 = Participation.create(user_id: u2.id, course_id: c1.id, role: ROLE_STUDENT)
 p22 = Participation.create(user_id: u2.id, course_id: c2.id, role: ROLE_STUDENT)

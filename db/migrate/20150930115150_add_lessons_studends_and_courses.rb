@@ -60,6 +60,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
       t.string :score
       t.integer :user_id
       t.integer :lesson_id
+      t.integer :creator_id
       t.timestamps
     end
 
