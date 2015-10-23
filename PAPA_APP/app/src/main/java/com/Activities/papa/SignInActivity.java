@@ -14,11 +14,9 @@ import android.widget.Toast;
 
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterKongBaKongKong;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
+import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
+import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
 public class SignInActivity extends AppCompatActivity {
     final public String tag = "SignInActivity";

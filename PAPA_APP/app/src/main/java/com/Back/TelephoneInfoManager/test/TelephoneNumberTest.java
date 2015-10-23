@@ -1,12 +1,11 @@
-package com.TelephoneInfoManager.test;
+package com.Back.TelephoneInfoManager.test;
 
 import android.content.Context;
 import android.test.InstrumentationTestCase;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
+
+import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Created by shyo on 15-10-11.

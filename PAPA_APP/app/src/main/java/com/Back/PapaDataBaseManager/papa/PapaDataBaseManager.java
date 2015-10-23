@@ -8,16 +8,10 @@
 package com.Back.PapaDataBaseManager.papa;
 
 
-import com.Back.DataBaseAccess.papa.PapaDataBaseAccess;
-import com.Back.DataBaseAccess.papa.PapaDataBaseJsonError;
-import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,30 +64,31 @@ public abstract class PapaDataBaseManager {
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     // 获取学生课程
-    static public class GetStuCourseRequest
+    static public class GetCourseRequest
     {
         public int id;
         public String token;
 
-        public GetStuCourseRequest(int id, String token)
+        public GetCourseRequest(int id, String token)
         {
             this.id = id;
             this.token = token;
         }
     }
 
-    static public class GetStuCourseReply
+    static public class GetCourseReply
     {
         public List<Map.Entry<Integer, String>> course;
 
-        public GetStuCourseReply()
+        public GetCourseReply()
         {
             course = new ArrayList<>();
         }
     }
 
     // 使用 POST 方法登录 返回是否成功
-    public abstract GetStuCourseReply getStuCourse(GetStuCourseRequest request) throws PapaHttpClientException;
+    public abstract GetCourseReply getStuCourse(GetCourseRequest request) throws PapaHttpClientException;
+    public abstract GetCourseReply getTACourse(GetCourseRequest request) throws PapaHttpClientException;
 
 
     /*

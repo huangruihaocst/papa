@@ -4,12 +4,11 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
+import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
+import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Handler;
 
 public class EnterActivity extends AppCompatActivity {
 

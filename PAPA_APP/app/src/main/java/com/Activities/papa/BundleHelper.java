@@ -2,12 +2,6 @@ package com.Activities.papa;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by huang on 15-10-10.

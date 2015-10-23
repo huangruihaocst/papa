@@ -1,8 +1,6 @@
 package com.Back.PapaDataBaseManager.papa;
 
-import com.Back.DataBaseAccess.papa.PapaDataBaseNotSuccessError;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
-import com.Back.NetworkAccess.papa.PapaHttpClientIOErrorException;
 import com.Back.NetworkAccess.papa.PapaHttpClientNot200Exception;
 
 /**
@@ -54,7 +52,12 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     }
 
     @Override
-    public GetStuCourseReply getStuCourse(GetStuCourseRequest request) throws PapaHttpClientException {
+    public GetCourseReply getStuCourse(GetCourseRequest request) throws PapaHttpClientException {
+        return null;
+    }
+
+    @Override
+    public GetCourseReply getTACourse(GetCourseRequest request) throws PapaHttpClientException {
         return null;
     }
 }
