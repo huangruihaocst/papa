@@ -36,6 +36,12 @@
     <string name="user_grade">成绩</string>
     <string name="user_comment">评价</string>
     <string name="now_editable">现在可以编辑成绩和评价了</string>
+    <string name="select_type">请选择上传的内容</string>
+    <string-array name="upload_type">
+        <item name="camera">照相</item>
+        <item name="video">录像</item>
+        <item name="gallery">本地相册</item>
+    </string-array>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
