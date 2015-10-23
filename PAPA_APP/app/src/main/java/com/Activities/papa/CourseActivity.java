@@ -3,6 +3,7 @@ package com.Activities.papa;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +25,7 @@ public class CourseActivity extends AppCompatActivity
 
     private String[] course_teacher_assistant_list;
     private String[] course_student_list;
+    private String[] semester_list;
     BundleHelper bundleHelper = new BundleHelper();
 
     @Override
@@ -41,6 +43,13 @@ public class CourseActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.hint_select_course));
         setSupportActionBar(toolbar);
+
+        TabLayout tabLayout = (TabLayout)findViewById(R.id.semester_tab);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        getSemester();
+        for(int i = 0;i < semester_list.length;i ++){
+            tabLayout.addTab(tabLayout.newTab().setText(semester_list[i]));
+        }
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +176,13 @@ public class CourseActivity extends AppCompatActivity
             data.putParcelable(key_to_settings,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
+        } else if(id == R.id.nav_notification){
+            Intent intent = new Intent(CourseActivity.this,NotificationActivity.class);
+            Bundle data = new Bundle();
+            String key_to_notification = getString(R.string.key_to_notification);
+            data.putParcelable(key_to_notification,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -199,6 +215,13 @@ public class CourseActivity extends AppCompatActivity
         course_teacher_assistant_list = new String[3];
         for(int i = 0;i < 3;i ++){
             course_teacher_assistant_list[i] = "课程" + i;
+        }
+    }
+
+    private void getSemester(){
+        semester_list = new String[10];
+        for(int i = 0;i < 10;i ++){
+            semester_list[i] = "学期" + i;
         }
     }
 
@@ -260,5 +283,4 @@ public class CourseActivity extends AppCompatActivity
         intent.putExtras(data);
         startActivity(intent);
     }
-
 }
