@@ -3,6 +3,8 @@ require 'test_helper'
 class TeachersControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 
+  ## DONE except update
+
   # GET /courses/1/teachers.json
   test 'should get teachers by course' do
     get :index, format: :json, course_id: Course.find_by_name('Operation System').id

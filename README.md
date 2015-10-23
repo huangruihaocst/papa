@@ -154,7 +154,9 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         permission_denied: 不是该课程的老师
         invalid_fields: lesson参数无效
     ?DELETE /lessons/1.json          删掉实验课
-        暂时不检查错误
+        permisson_denied: 不是该课程的老师
+        resource_not_found: lesson_id不存在
+        internal_error: 其他内部错误, 如果遇到请联系我
     ?GET    /courses/1/comments.json  得到某门课程所有学生的所有评论                                      Teacher
         not_implemented(罗干要求)
     
@@ -186,6 +188,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     # namespace students
     # 学生相关
     GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]        Student
+        permisson_denied: 未登录
         resource_not_found: student_id不存在
     GET    /students/1/files.json    获得学生所有文件列表   "files": [{"id":1, "type": "jpg", "path": "xx"}...]  Student 
         permission_denied: 当前用户不是student_id
@@ -221,7 +224,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     POST   /students/1/lessons/1/files.json 在某门实验课上添加视频图片                                    Student
         permission_denied: 一下三条至少有一条不满足:
             1. 用户已经登陆或当前token有效
-            2. student_id包含在lesson_id对应的课程的学生名单中
+            2. student_id包含在lesson_id对应的课程的学生名单中 ***(或者当前用户是课程的老师)
             3. 当前用户是student_id或当前用户在lesson_id的助教名单中
         invalid_fields: file参数或type参数未指定或者格式不正确
         file_too_big: 文件大小超过指定大小(100M, 该数值请查看config/initializers/constants.rb)
@@ -246,7 +249,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         internal_error: 其他内部错误, 如果遇到请联系我
     GET    /assistants/1/files.json   助教上传的所有文件    "files": [file, ...]                         Assistant
         permission_denied: 当前用户和assistant_id不匹配
-        resource_not_found: lesson_id不存在
+        resource_not_found: assistant_id不存在
         
     # 老师相关
     GET    /teachers/1.json           获得某个老师的信息    "teacher": teacher                           Student
