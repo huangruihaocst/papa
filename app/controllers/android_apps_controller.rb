@@ -8,10 +8,12 @@ class AndroidAppsController < ApplicationController
 
   # POST /android_apps/current_version.json
   def create
+    check_admin
+
     if AndroidApp.create(params.require(:android_app).permit(:version, :file_resource_id))
       json_successful
     else
-      json_failed
+      json_failed(REASON_INVALID_FIELD)
     end
   end
 

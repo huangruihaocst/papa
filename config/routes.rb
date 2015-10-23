@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
-  get 'users/current_user.json' => 'users#current'
+  get 'users/current' => 'users#current'
 
   resources :semesters, only: [:index, :create, :update, :destroy] do
     resources :courses, only: [:index]
@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     resources :teachers, only: [:index, :create, :destroy, :update]
     resources :messages, only: [:create]
     resources :files, only: [:index, :create, :delete]
+    get 'comments' => 'lesson_comments#index', as: :comments_of_course
   end
 
   resources :lessons, only: [:show, :destroy] do
@@ -34,6 +35,7 @@ Rails.application.routes.draw do
     resources :students, only: [:show] do
       # assistants' comments to the student
       resources :comments, controller: 'student_comments', only: [:index, :create]
+      get 'comment' => 'student_comments#default'
     end
 
     # for attendence
@@ -53,13 +55,13 @@ Rails.application.routes.draw do
     resources :messages, only: [:index]
   end
 
-  resources :assistants do
+  resources :assistants, only: [:index, :show, :create, :update, :destroy] do
     resources :courses, only: [:index, :create]
     resources :files, only: [:index, :create]
   end
 
-  resources :teachers do
-    resources :courses, only: [:index, :create]
+  resources :teachers, only: [:index, :show, :create, :update, :destroy] do
+    resources :courses, only: [:index, :create, :update, :destroy]
   end
 
   resources :files, only: [:show, :create, :destroy]

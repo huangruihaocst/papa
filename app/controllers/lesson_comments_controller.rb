@@ -1,6 +1,7 @@
 class LessonCommentsController < ApplicationController
 
   # GET /lessons/1/comments.json
+  # GET /courses/1/comments.json
   def index
     if params[:lesson_id]
       @lesson_comments = Lesson.find(params[:lesson_id]).lesson_comments

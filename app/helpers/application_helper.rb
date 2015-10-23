@@ -15,9 +15,7 @@ module ApplicationHelper
       end
 
       if reason
-        render json: { status: 'failed', reason: reason }.merge(addition)
-      else
-        render json: { status: 'failed' }.merge(addition)
+        render json: { status: 'failed', reason: reason ? reason : REASON_INTERNAL_ERROR }.merge(addition)
       end
     end
 

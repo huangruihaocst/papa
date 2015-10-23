@@ -6,37 +6,43 @@ class LessonsController < ApplicationController
   # GET /courses/1/lessons.json
   def index
     if params[:course_id]
-      @lessons = Course.find(params[:course_id]).lessons
+      begin
+        @lessons = Course.find(params[:course_id]).lessons
+      rescue ActiveRecord::RecordNotFound
+        json_failed(REASON_RESOURCE_NOT_FOUND)
+      end
     else
-      json_failed
+      json_failed(REASON_INVALID_OPERATION)
     end
   end
 
   # GET /lessons/1.json
   def show
     unless @lesson
-      respond_to do |format|
-        format.html { html_failed('not found') }
-        format.json { json_failed('not found') }
-      end
+      json_failed(REASON_RESOURCE_NOT_FOUND)
     end
   end
 
   # POST /courses/1/lessons.json
   def create
-    @lesson = Course.find(params[:course_id]).lessons.create(
+    begin
+      @course = Course.find(params[:course_id])
+    rescue ActiveRecord::RecordNotFound
+      json_failed(REASON_RESOURCE_NOT_FOUND)
+      return
+    end
+
+    must_be_a_teacher_of(params[:token], @course)
+
+    @lesson = @course.lessons.create(
         params.require(:lesson).
         permit(:name, :description, :start_time, :end_time, :location).
             merge({ course_id: params[:course_id] }))
 
-    respond_to do |format|
-      if @lesson.valid?
-        format.html { redirect_to @lesson }
-        format.json { json_successful }
-      else
-        format.html { html_failed }
-        format.json { json_failed }
-      end
+    if @lesson.valid?
+      json_successful
+    else
+      json_failed(REASON_INVALID_FIELD)
     end
   end
 
