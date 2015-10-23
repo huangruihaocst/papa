@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import java.util.Map;
 
 public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    final static String tag = "CourseActivity";
     BundleHelper bundleHelper = new BundleHelper();
 
     PapaDataBaseManager papaDataBaseManager;
@@ -64,7 +67,7 @@ public class CourseActivity extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.semester_tab);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-        this.papaDataBaseManager = new PapaDataBaseManagerReal();
+        this.papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
 
 
         getSemester();
@@ -226,18 +229,20 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
-    /*
-    private void startExperimentActivity(String[] course_list,int position,String identity){
+
+    private void startExperimentActivity(String courseName, int courseId, String identity){
         Intent intent = new Intent(CourseActivity.this, ExperimentActivity.class);
         Bundle data = new Bundle();
         String key_course_experiment = getString(R.string.key_course_experiment);
-        bundleHelper.setCourseName(course_list[position]);
+        bundleHelper.setCourseName(courseName);
+        bundleHelper.setCourseId(courseId);
+        Log.i(tag, courseName + "=" + courseId);
         bundleHelper.setIdentity(identity);
         data.putParcelable(key_course_experiment,bundleHelper);
         intent.putExtras(data);
         startActivity(intent);
     }
-    */
+
 
 
     // Semester
@@ -401,25 +406,25 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
-    private void setStudentCourses(PapaDataBaseManager.GetCourseReply rlt) {
+    private void setStudentCourses(final PapaDataBaseManager.GetCourseReply rlt) {
         ListView CourseStudentListView = (ListView) findViewById(R.id.course_student_list);
         CourseStudentListView.setAdapter(new MyAdapter(rlt.course));
         CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // startExperimentActivity(course_student_list, position, "student");
+                startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "student");
             }
         });
     }
 
 
-    private void setTeacherCourses(PapaDataBaseManager.GetCourseReply rlt) {
+    private void setTeacherCourses(final PapaDataBaseManager.GetCourseReply rlt) {
         ListView CourseTeacherAssistantListView = (ListView) findViewById(R.id.course_teacher_assistant_list);
         CourseTeacherAssistantListView.setAdapter(new MyAdapter(rlt.course));
         CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // startExperimentActivity(course_teacher_assistant_list, position, "teacher_assistant");
+                startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "student");
             }
         });
     }

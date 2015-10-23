@@ -3,6 +3,9 @@ package com.Activities.papa;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
+
 /**
  * Created by huang on 15-10-10.
  */
@@ -16,6 +19,8 @@ public class BundleHelper implements Parcelable{
     private String student_name;
     private int student_id;
     private String identity;
+
+
     private int id;
     private String token;
 //    private JSONObject jsonObject;
@@ -172,6 +177,11 @@ public class BundleHelper implements Parcelable{
         id = in.readInt();
         token = in.readString();
 //        getter_string = in.readString();
+    }
+
+    public PapaDataBaseManager getPapaDataBaseManager()
+    {
+        return new PapaDataBaseManagerJiaDe();
     }
 }
 

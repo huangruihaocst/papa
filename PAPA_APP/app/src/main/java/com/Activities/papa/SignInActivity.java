@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
@@ -76,7 +77,7 @@ public class SignInActivity extends AppCompatActivity {
 
         // 默认的方法获取电话
         this.telephoneNumberGetter = new PapaTelephoneNumberGetterReal();
-        this.papaDataBaseManager = new PapaDataBaseManagerReal();
+        this.papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
     }
 
     // 更改获取电话的方法

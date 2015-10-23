@@ -138,4 +138,33 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             throw new PapaDataBaseJsonError();
         }
     }
+
+    @Override
+    public GetLessonReply getLesson(GetLessonRequest request) throws PapaHttpClientException {
+        try
+        {
+            HashMap<String, String> h = new HashMap<String, String>();
+
+            GetLessonReply ans = new GetLessonReply();
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.get, "/courses/" + request.courseId + "/lessons.json", h);
+
+
+            JSONArray array = reply.getJSONArray("lessons");
+            Log.i(tag, "ret = " + array + " len = " + array.length());
+
+            for (int i = 0; i < array.length(); i++)
+            {
+                JSONObject obj = array.getJSONObject(i);
+
+                ans.lesson.add(new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name")));
+
+                Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
+            };
+
+            return ans;
+        }
+        catch(org.json.JSONException e) {
+            throw new PapaDataBaseJsonError();
+        }
+    }
 }
