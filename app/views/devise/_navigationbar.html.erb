@@ -5,7 +5,7 @@
         <a class="navbar-brand" href="">网络原理实验管理系统</a>
       </div>
       <ul class="nav navbar-nav pull-right">
-          <li class="user_msg"><a id="user_name"><%= @current_user.email %></a></li>
+          <li class="user_msg"><a id="user_name"></a></li>
           <li class="user_msg">
             <%= link_to "Sign out",destroy_user_session_path , method: :delete %>
           </li>

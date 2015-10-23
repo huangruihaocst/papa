@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :courses, only: [:show, :update, :destroy] do
     resources :students, only: [:index, :destroy]
     post 'students/:id' => 'students#create', as: :create_student
+    post 'teachers/:id' => 'teachers#create', as: :create_teacher
 
     resources :assistants, only: [:index, :create, :destroy]
     resources :lessons, only: [:index, :create, :destroy]
