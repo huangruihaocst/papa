@@ -17,7 +17,7 @@ class SemestersController < ApplicationController
 
     semester = Semester.create(params.require(:semester).permit(:name))
     if semester
-        json_successful
+        json_successful(id: semester.id)
     else
       json_failed
     end
