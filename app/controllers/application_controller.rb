@@ -16,9 +16,14 @@ class ApplicationController < ActionController::Base
 
   # the following class macro and two methods are token authentication helpers
   rescue_from TokenException, with: :invalid_token
+  rescue_from ActiveRecord::RecordNotFound, with: :resource_not_found
   def invalid_token(except)
     json_failed(except.message)
   end
+  def resource_not_found(except)
+    json_failed(REASON_RESOURCE_NOT_FOUND)
+  end
+
   # raise TokenException if authentication failure occurs
   def check_token(user_id, token_str = nil, teacher_required = false)
     raise TokenException.new(REASON_TOKEN_INVALID) unless user_id
@@ -30,17 +35,12 @@ class ApplicationController < ActionController::Base
     if token_str
       token = Token.find_by_token(token_str)
       # deny when teacher_required is required but the token is not a teacher
-      if token && token.user_id == user_id.to_i && (!teacher_required || token.user.is_teacher)
-        unless token.token_valid?
-          raise TokenException.new(REASON_TOKEN_TIMEOUT)
-        end
-      else
-        raise TokenException.new(REASON_TOKEN_INVALID)
-      end
+      raise TokenException.new(REASON_TOKEN_INVALID) unless token && token.user_id == user_id.to_i
+      raise TokenException.new(REASON_TOKEN_TIMEOUT) unless token.token_valid?
+      raise TokenException.new(REASON_PERMISSION_DENIED) unless !teacher_required || token.user.is_teacher
     elsif current_user
-      if current_user.id != user_id.to_i
-        raise TokenException.new(REASON_TOKEN_INVALID)
-      end
+      raise TokenException.new(REASON_PERMISSION_DENIED) unless current_user.id == user_id.to_i
+      raise TokenException.new(REASON_PERMISSION_DENIED) unless !teacher_required || current_user.is_teacher
     else
       raise TokenException.new(REASON_TOKEN_INVALID)
     end
@@ -49,57 +49,51 @@ class ApplicationController < ActionController::Base
 
   def check_login
     if params[:token]
-      token = Token.find_by_token(params[:token])
-      if token && token.user.is_a?(User) && token.token_valid?
-        token.user
-      else
+      begin
+        token = Token.find_by_token(params[:token])
+      rescue ActiveRecord::RecordNotFound
         raise TokenException.new(REASON_TOKEN_INVALID)
       end
+      raise TokenException.new(REASON_TOKEN_INVALID) unless token && token.user.is_a?(User) && token.token_valid?
+      token.user
+    elsif current_user
+      current_user
     else
-      if current_user
-        current_user
-      else
-        raise TokenException.new(REASON_TOKEN_INVALID)
-      end
+      raise TokenException.new(REASON_TOKEN_INVALID)
     end
   end
 
   def check_admin
     if params[:token]
-      token = Token.find_by_token(params[:token])
-      if token && token.user.is_a?(User) && token.token_valid? && token.user.is_admin?
-        token.user
-      else
+      begin
+        token = Token.find_by_token(params[:token])
+      rescue ActiveRecord::RecordNotFound
         raise TokenException.new(REASON_TOKEN_INVALID)
       end
+      raise TokenException.new(REASON_TOKEN_INVALID) unless token && token.user.is_a?(User)
+      raise TokenException.new(REASON_TOKEN_TIMEOUT) unless token.token_valid?
+      raise TokenException.new(REASON_PERMISSION_DENIED) unless token.user.is_admin?
+      token.user
+    elsif current_user
+      raise TokenException.new(REASON_PERMISSION_DENIED) unless current_user.is_admin?
+      current_user
     else
-      if current_user && current_user.is_admin?
-        current_user
-      else
-        raise TokenException.new(REASON_TOKEN_INVALID)
-      end
+      raise TokenException.new(REASON_TOKEN_INVALID)
     end
   end
 
   def check_teacher
     if params[:token]
       token = Token.find_by_token(params[:token])
-      if token && token.user.is_a?(User) && token.token_valid? && token.user.is_teacher?
-        token.user
-      else
-        raise TokenException.new(REASON_TOKEN_INVALID)
-      end
+      raise TokenException.new(REASON_TOKEN_INVALID) unless token && token.user.is_a?(User) && token.token_valid?
+      raise TokenException.new(REASON_PERMISSION_DENIED) unless token.user.is_teacher?
+      token.user
+    elsif current_user
+      raise TokenException.new(REASON_PERMISSION_DENIED) unless current_user.is_teacher?
+      current_user
     else
-      if current_user && current_user.is_teacher?
-        current_user
-      else
-        raise TokenException.new(REASON_TOKEN_INVALID)
-      end
+      raise TokenException.new(REASON_TOKEN_INVALID)
     end
-  end
-
-  def check_token_type(token_str, type)
-
   end
 
   def must_be_a_teacher_of(token, course)
@@ -111,25 +105,15 @@ class ApplicationController < ActionController::Base
         raise TokenException.new(REASON_TOKEN_INVALID) unless token
         user = token.user
       rescue
-        if current_user
-          user = current_user
-        else
-          raise TokenException.new(REASON_TOKEN_INVALID)
-        end
-      end
-    else
-      if current_user
-        user = current_user
-      else
         raise TokenException.new(REASON_TOKEN_INVALID)
       end
+    else
+      raise TokenException.new(REASON_TOKEN_INVALID) unless current_user
+      user = current_user
     end
 
-    if course.teachers.include? user
-      true
-    else
-      raise TokenException.new(REASON_PERMISSION_DENIED)
-    end
+    raise TokenException.new(REASON_PERMISSION_DENIED) unless course.teachers.include?(user)
+    true
   end
 
   include ApplicationHelper::StatusRenderingHelpers
