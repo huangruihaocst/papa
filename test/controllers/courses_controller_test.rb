@@ -85,6 +85,7 @@ class CoursesControllerTest < ActionController::TestCase
 
     assert_equal json['status'], STATUS_SUCCESS
     assert_not_nil json['course']['name']
+    assert_not_nil json['course']['semester_id']
   end
 
   # GET /courses/-1.json
