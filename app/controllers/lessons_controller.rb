@@ -48,10 +48,14 @@ class LessonsController < ApplicationController
 
   # DELETE /lessons/1.json
   def destroy
-    if @lesson && @lesson.destroy
-      json_successful
+    if @lesson
+      if @lesson.destroy
+        json_successful
+      else
+        json_failed
+      end
     else
-      json_failed
+      json_failed(REASON_RESOURCE_NOT_FOUND)
     end
   end
 

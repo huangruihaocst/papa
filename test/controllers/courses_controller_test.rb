@@ -1,6 +1,9 @@
 require 'test_helper'
 
 class CoursesControllerTest < ActionController::TestCase
+  include Devise::TestHelpers
+
+  ## DONE
 
   # GET /semesters/1/courses.json
   test 'api should get courses by semester' do
@@ -143,9 +146,6 @@ class CoursesControllerTest < ActionController::TestCase
 
   # DELETE /courses/1.json
   test 'api should delete course by id with teacher token' do
-    u = User.find_by_name('alex')
-    token_str = u.create_token.token
-
     course = Course.find_by_name('Operation System')
     teacher = course.teachers.first
     token_str = teacher.create_token.token

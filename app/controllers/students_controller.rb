@@ -2,9 +2,6 @@ class StudentsController < ApplicationController
 
   before_action only: [:show] do
     set_student
-
-    raise TokenException.new(REASON_TOKEN_INVALID) unless @student
-    check_token(params[:token], @student.id)
   end
 
   # GET /lessons/1/students.json (sign in the lesson)
@@ -23,13 +20,16 @@ class StudentsController < ApplicationController
       rescue ActiveRecord::RecordNotFound
         json_failed(REASON_RESOURCE_NOT_FOUND)
       end
-    else
+    elsif params[:lesson_id]
       json_failed(REASON_NOT_IMPLEMENTED)
+    else
+      json_failed(REASON_INVALID_OPERATION)
     end
   end
 
   # GET /students/1.json
   def show
+    check_login
     begin
       @student = User.find(params[:id])
     rescue ActiveRecord::RecordNotFound
@@ -38,6 +38,7 @@ class StudentsController < ApplicationController
   end
 
   # POST /courses/1/students/1.json
+  # POST /lessons/1/students/1.json
   def create
     if params[:course_id] && params[:id]
       course =  Course.find(params[:course_id])
@@ -47,6 +48,8 @@ class StudentsController < ApplicationController
       else
         json_failed
       end
+    elsif params[:lesson_id] && param[:id]
+      json_failed(REASON_NOT_IMPLEMENTED)
     else
       json_failed
     end
@@ -55,10 +58,21 @@ class StudentsController < ApplicationController
   # DELETE /courses/1/students/1.json
   def destroy
     if params[:course_id] && params[:id]
-      if Participation.where(user_id: params[:id]).where(course_id: params[:course_id]).first.destroy
-        json_successful
-      else
-        json_failed
+      begin
+        course = Course.find(params[:course_id])
+        must_be_a_teacher_of(params[:token], course)
+        ps = Participation.where(user_id: params[:id]).where(course_id: params[:course_id])
+        if ps.count > 0
+          if ps.first.destroy
+            json_successful
+          else
+            json_failed
+          end
+        else
+          json_failed(REASON_RESOURCE_NOT_FOUND)
+        end
+      rescue ActiveRecord::RecordNotFound
+        json_failed(REASON_RESOURCE_NOT_FOUND)
       end
     else
       json_failed

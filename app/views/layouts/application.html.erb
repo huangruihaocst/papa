@@ -7,6 +7,11 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+<%= render :partial => "navigationbar" %>
+<div id="MainContent" style="text-align: center">
 <%= yield %>
+</div>
+<%= render :partial => "footbar"%>
 </body>
+
 </html>

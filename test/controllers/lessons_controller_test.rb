@@ -2,6 +2,9 @@ require 'test_helper'
 
 class LessonsControllerTest < ActionController::TestCase
   include Devise::TestHelpers
+
+  # DONE
+
   def setup
     @course = Course.find_by_name('Operation System')
     @teacher = @course.teachers.first
@@ -47,8 +50,24 @@ class LessonsControllerTest < ActionController::TestCase
 
   # DELETE /lessons/1.json
   test 'should delete lesson by id' do
+    teacher = @course.teachers.first
+    lesson = @course.lessons.first
+    sign_in teacher
+
     assert_difference 'Lesson.count', -1 do
-      delete :destroy, format: :json, id: Lesson.first.id
+      delete :destroy, format: :json, id: lesson.id
+    end
+
+    assert_json_success
+  end
+
+  test 'should not delete lesson by id if he is not a teacher of the lesson' do
+    teacher = User.find_by_name('betty')
+    lesson = @course.lessons.first
+    sign_in teacher
+
+    assert_difference 'Lesson.count', -1 do
+      delete :destroy, format: :json, id: lesson.id
     end
 
     assert_json_success

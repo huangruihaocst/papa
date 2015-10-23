@@ -3,6 +3,8 @@ require 'test_helper'
 class FilesControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 
+  ## DONE
+
   # GET /students/1/lessons/1/files.json
   test 'should get student files on lesson' do
     student = User.find_by_name('betty')

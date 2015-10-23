@@ -3,6 +3,8 @@ require 'test_helper'
 class MessagesControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 
+  ## DONE
+
   # GET /students/1/messages.json
   test 'should get message by student' do
     student = User.find_by_name('alex')
