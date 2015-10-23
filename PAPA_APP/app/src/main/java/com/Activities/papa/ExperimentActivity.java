@@ -1,8 +1,12 @@
 package com.Activities.papa;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,26 +21,46 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
+
+import java.util.List;
+import java.util.Map;
 
 public class ExperimentActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    final static String tag = "ExperimentActivity";
 
-    String[] experiment_list;
+
     String course_name;
+    int courseId;
     String identity;
     BundleHelper bundleHelper = new BundleHelper();
+
+    PapaDataBaseManager papaDataBaseManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_experiment);
 
+
         final String key_course_experiment = getString(R.string.key_course_experiment);
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         bundleHelper = data.getParcelable(key_course_experiment);
         course_name = bundleHelper.getCourseName();
+        courseId = bundleHelper.getCourseId();
+        Log.i(tag, courseId + "");
+
         identity = bundleHelper.getIdentity();
+
+        this.papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(course_name);
         setSupportActionBar(toolbar);
@@ -64,29 +88,7 @@ public class ExperimentActivity extends AppCompatActivity
             item.setVisible(false);
         }
 
-        getExperiments(course_name);
-
-        ListView ExperimentListView = (ListView)findViewById(R.id.experiment_list);
-        ExperimentListView.setAdapter(new MyAdapter());
-        ExperimentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent();
-                Bundle data = new Bundle();
-                bundleHelper.setExperimentName(experiment_list[position]);
-                if(identity.equals("teacher_assistant")){
-                    String key_experiment_student = getString(R.string.key_experiment_student);
-                    data.putParcelable(key_experiment_student,bundleHelper);
-                    intent = new Intent(ExperimentActivity.this,StudentActivity.class);
-                }else if(identity.equals("student")){
-                    String key_to_detail = getString(R.string.key_to_detail);
-                    data.putParcelable(key_to_detail,bundleHelper);
-                    intent = new Intent(ExperimentActivity.this,DetailActivity.class);
-                }
-                intent.putExtras(data);
-                startActivity(intent);
-            }
-        });
+        getExperiments();
     }
 
     @Override
@@ -184,22 +186,31 @@ public class ExperimentActivity extends AppCompatActivity
     }
 
     private class MyAdapter extends BaseAdapter {
-        @Override
-        public int getCount(){
-            return experiment_list.length;
+        private List<Map.Entry<Integer, String>> lst;
+
+        public MyAdapter(List<Map.Entry<Integer, String>> lst) {
+            this.lst = lst;
         }
+
         @Override
-        public Object getItem(int arg0){
+        public int getCount() {
+            return lst.size();
+        }
+
+        @Override
+        public Object getItem(int arg0) {
             return arg0;
         }
+
         @Override
-        public long getItemId(int position){
+        public long getItemId(int position) {
             return position;
         }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
             TextView mTextView = new TextView(getApplicationContext());
-            mTextView.setText(experiment_list[position]);
+            mTextView.setText(lst.get(position).getValue());
             mTextView.setTextSize(35);
 //            mTextView.setTextColor(getColor(R.color.colorPrimary));
             mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
@@ -207,10 +218,86 @@ public class ExperimentActivity extends AppCompatActivity
         }
     }
 
-    private void getExperiments(String course_name){
+    private void getExperiments(){
+        /*
         experiment_list = new String[10];
         for(int i = 0;i < 10;i ++){
             experiment_list[i] = "实验" + i;
         }
+        */
+        new Task(this).execute(new PapaDataBaseManager.GetLessonRequest(courseId));
+    }
+
+    class Task extends
+            AsyncTask<PapaDataBaseManager.GetLessonRequest, Exception,PapaDataBaseManager.GetLessonReply> {
+        ProgressDialog proDialog;
+
+        public Task(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetLessonReply doInBackground
+                (PapaDataBaseManager.GetLessonRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getLesson(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetLessonReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setExperiments(rlt);
+        }
+    }
+
+    void setExperiments(final PapaDataBaseManager.GetLessonReply rlt)
+    {
+        ListView ExperimentListView = (ListView)findViewById(R.id.experiment_list);
+        ExperimentListView.setAdapter(new MyAdapter(rlt.lesson));
+        ExperimentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                Bundle data = new Bundle();
+                bundleHelper.setExperimentName(rlt.lesson.get(position).getValue());
+                bundleHelper.setExperiment_id(rlt.lesson.get(position).getKey());
+
+                if(identity.equals("teacher_assistant")){
+                    String key_experiment_student = getString(R.string.key_experiment_student);
+                    data.putParcelable(key_experiment_student,bundleHelper);
+                    intent = new Intent(ExperimentActivity.this,StudentActivity.class);
+                }else if(identity.equals("student")){
+                    String key_to_detail = getString(R.string.key_to_detail);
+                    data.putParcelable(key_to_detail,bundleHelper);
+                    intent = new Intent(ExperimentActivity.this,DetailActivity.class);
+                }
+
+                intent.putExtras(data);
+                startActivity(intent);
+            }
+        });
     }
 }

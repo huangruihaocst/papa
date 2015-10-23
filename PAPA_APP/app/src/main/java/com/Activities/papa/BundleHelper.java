@@ -2,12 +2,9 @@ package com.Activities.papa;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
 
 /**
  * Created by huang on 15-10-10.
@@ -22,6 +19,8 @@ public class BundleHelper implements Parcelable{
     private String student_name;
     private int student_id;
     private String identity;
+
+
     private int id;
     private String token;
 //    private JSONObject jsonObject;
@@ -150,6 +149,8 @@ public class BundleHelper implements Parcelable{
         out.writeString(student_name);
         out.writeInt(student_id);
         out.writeString(identity);
+        out.writeInt(id);
+        out.writeString(token);
 //        out.writeString(getter_string);
     }
 
@@ -173,7 +174,14 @@ public class BundleHelper implements Parcelable{
         student_name = in.readString();
         student_id = in.readInt();
         identity = in.readString();
+        id = in.readInt();
+        token = in.readString();
 //        getter_string = in.readString();
+    }
+
+    public PapaDataBaseManager getPapaDataBaseManager()
+    {
+        return new PapaDataBaseManagerJiaDe();
     }
 }
 

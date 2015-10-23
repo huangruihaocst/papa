@@ -5,10 +5,9 @@
  * ja-JP: 電話番号を取得する
  */
 
-package com.TelephoneInfoManager.papa;
+package com.Back.TelephoneInfoManager.papa;
 
 import android.content.Context;
-import android.telephony.TelephonyManager;
 
 public class PapaTelephoneNumberGetter
 {

@@ -18,13 +18,13 @@ public class PapaDataBaseAccess
 {
     private PapaAbstractHttpClient client;
 
-    private static final String host = "192.168.1.115";
+    private static final String host = "10.1.2.71"; //"shyoshyo.ddns.net";
     private static final String port = "80";
     private static final String tag = "PapaDataBaseAccess";
 
     public PapaDataBaseAccess()
     {
-        client = new PapaApacheHttpClient();
+        client = PapaApacheHttpClient.getInstance();
     }
 
     public String getDataBaseReplyAsString(PapaAbstractHttpClient.HttpMethod method, String url, HashMap<String, String> parameters)

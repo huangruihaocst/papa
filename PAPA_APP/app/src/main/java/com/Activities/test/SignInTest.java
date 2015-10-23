@@ -1,5 +1,4 @@
 package com.Activities.test;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.test.ActivityUnitTestCase;
@@ -9,12 +8,9 @@ import android.view.ContextThemeWrapper;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
 import com.Activities.papa.SignInActivity;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
-import com.TelephoneInfoManager.papa.PapaTelephoneNumberGetterKongBaKongKong;
+import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetterKongBaKongKong;
 
 
 /**

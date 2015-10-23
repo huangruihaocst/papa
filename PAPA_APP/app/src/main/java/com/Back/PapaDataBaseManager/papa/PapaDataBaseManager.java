@@ -8,42 +8,17 @@
 package com.Back.PapaDataBaseManager.papa;
 
 
-import com.Back.DataBaseAccess.papa.PapaDataBaseAccess;
-import com.Back.DataBaseAccess.papa.PapaDataBaseJsonError;
-import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
-import org.json.JSONObject;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class PapaDataBaseManager {
-
-    private static final String tag = "PapaDataBaseManager";
-
-    PapaDataBaseAccess dbAccess;
-
-    // 单件
-    private PapaDataBaseManager()
-    {
-        dbAccess = new PapaDataBaseAccess();
-    }
-
-    private static PapaDataBaseManager instance = null;
-
-    public static synchronized PapaDataBaseManager getInstance()
-    {
-        if(instance == null)
-        {
-            instance = new PapaDataBaseManager();
-        }
-
-        return instance;
-    }
+public abstract class PapaDataBaseManager {
 
 
-
-
+    // 登录
     static public class SignInRequest
     {
         public String id;
@@ -68,124 +43,80 @@ public class PapaDataBaseManager {
         }
     }
 
-    // 使用 POST 方法登录
-    // 返回是否成功
-    public SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException
+    // 使用 POST 方法登录 返回是否成功
+    public abstract SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    // 获取学期
+    static public class SemesterReply
     {
-        HashMap<String, String> h = new HashMap<String, String>();
+        public HashMap semester;
 
-        h.put("utf8", "✓");
-        h.put("user[login]", signInRequest.id);
-        h.put("user[password]", signInRequest.pwd);
-        h.put("user[remember_me]", "0");
-        JSONObject replyObj;
-
-        try
+        public SemesterReply()
         {
-            replyObj = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.post, "/users/sign_in.json", h);
-
-            return new SignInReply(replyObj.getInt("id"), replyObj.getString("token"));
-        }
-        catch(org.json.JSONException e)
-        {
-            throw new PapaDataBaseJsonError();
+            semester = new HashMap();
         }
     }
 
+    public abstract SemesterReply getSemester() throws PapaHttpClientException;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
-    /*
-    // 获取课程线程
-    private class GetCourseThread extends Thread
+    // 获取学生课程
+    static public class GetCourseRequest
     {
-        private boolean success;
-        private String token;
-        private List<String> studentCourses;
-        private List<String> assistCourses;
+        public int id;
+        public String token;
 
-        public boolean getSuccess()
+        public GetCourseRequest(int id, String token)
         {
-            return success;
-        }
-
-        public GetCourseThread(List<String> studentCourses, List<String> assistCourses, String token)
-        {
+            this.id = id;
             this.token = token;
-            this.studentCourses = studentCourses;
-            this.assistCourses = assistCourses;
-            this.success = false;
-        }
-
-        private void iGetCourses(String url, List<String> lst) throws Exception
-        {
-            HttpGet get = new HttpGet(url);
-
-            Log.i(tag, "url = " + get.getURI().toString());
-
-            // 执行请求
-            String reply;
-            Log.i(tag, "ret = " + (reply = executeRequest(get)));
-
-            if (reply == null) {
-                throw new Exception("nothing return");
-            }
-
-            // parse json
-            JSONTokener jsonParser = new JSONTokener(reply);
-            JSONObject replyObj = (JSONObject) jsonParser.nextValue();
-            if (!replyObj.getString("status").equals("successful")) {
-                throw new Exception("not successful, ret \"" + replyObj.getString("status") + "\"");
-            }
-
-            JSONArray courseArray = replyObj.getJSONArray("courses");
-            Log.i(tag, "ret = " + courseArray + " len = " + courseArray.length());
-
-            for (int i = 0; i < courseArray.length(); i++)
-            {
-                lst.add(courseArray.getJSONObject(i).getString("name"));
-                Log.i(tag, "JSONObject ins " + lst.get(lst.size() - 1));
-            }
-        }
-
-        public void run()
-        {
-            try {
-                iGetCourses("http://" + host + ":" + port + "/students/" + personID + "/courses.json?" + "token=" + token, studentCourses);
-                iGetCourses("http://" + host + ":" + port + "/assistants/" + personID + "/courses.json?" + "token=" + token, assistCourses);
-
-                success = true;
-                Log.i(tag, "get course success in thread");
-            }
-            catch (Exception e)
-            {
-                Log.d(tag, "e.getCause()= " + e.getCause());
-                Log.d(tag, "e.getMessage()= " + e.getMessage());
-                Log.i(tag, "post fail");
-            }
-        }
-    };
-
-    public void getCourses(List<String> studentCourses, List<String> assistCourses)
-    {
-        studentCourses.clear();
-        assistCourses.clear();
-
-        GetCourseThread thread = new GetCourseThread(studentCourses, assistCourses, token);
-
-        thread.start();
-        try
-        {
-            thread.join();
-        }
-        catch (Exception e)
-        {
-            Log.e(tag, "e.getMessage() = " + e.getMessage());
-        }
-        if(thread.getSuccess())
-        {
-            Log.i(tag, "get course success");
         }
     }
-    */
+
+    static public class GetCourseReply
+    {
+        public List<Map.Entry<Integer, String>> course;
+
+        public GetCourseReply()
+        {
+            course = new ArrayList<>();
+        }
+    }
+
+    // 使用 POST 方法登录 返回是否成功
+    public abstract GetCourseReply getStuCourse(GetCourseRequest request) throws PapaHttpClientException;
+    public abstract GetCourseReply getTACourse(GetCourseRequest request) throws PapaHttpClientException;
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    // 获取学生课程
+    static public class GetLessonRequest
+    {
+        public int courseId;
+
+        public GetLessonRequest(int courseId)
+        {
+            this.courseId = courseId;
+        }
+    }
+
+    static public class GetLessonReply
+    {
+        public List<Map.Entry<Integer, String>> lesson;
+
+        public GetLessonReply()
+        {
+            lesson = new ArrayList<>();
+        }
+    }
+
+    // 使用 POST 方法登录 返回是否成功
+    public abstract GetLessonReply getLesson(GetLessonRequest request) throws PapaHttpClientException;
+
 
 }

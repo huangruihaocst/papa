@@ -1,10 +1,14 @@
 package com.Activities.papa;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,36 +26,54 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private String[] course_teacher_assistant_list;
-    private String[] course_student_list;
-    private String[] semester_list;
+    final static String tag = "CourseActivity";
     BundleHelper bundleHelper = new BundleHelper();
+
+    PapaDataBaseManager papaDataBaseManager;
+
+    TabLayout tabLayout;
+
+    int id;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_course);
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         String key_sign_in_course = getString(R.string.key_sign_in_course);
         bundleHelper = data.getParcelable(key_sign_in_course);
-        int id = bundleHelper.getId();
-        String token = bundleHelper.getToken();
+
+        id = bundleHelper.getId();
+        token = bundleHelper.getToken();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.hint_select_course));
         setSupportActionBar(toolbar);
 
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.semester_tab);
+        tabLayout = (TabLayout) findViewById(R.id.semester_tab);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        this.papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
+
+
         getSemester();
-        for(int i = 0;i < semester_list.length;i ++){
-            tabLayout.addTab(tabLayout.newTab().setText(semester_list[i]));
-        }
+
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +92,7 @@ public class CourseActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if(bundleHelper.getIdentity().equals("teacher_assistant")){
+        if (bundleHelper.getIdentity().equals("teacher_assistant")) {
             Menu menu = navigationView.getMenu();
             MenuItem item = menu.findItem(R.id.nav_upload_history);
             item.setVisible(false);
@@ -81,27 +103,28 @@ public class CourseActivity extends AppCompatActivity
         TextView username_label = (TextView) ly.findViewById(R.id.username_label);
         username_label.setText("1234");
 
-        getCourses();
+//        ListView CourseTeacherAssistantListView = (ListView)findViewById(R.id.course_teacher_assistant_list);
+//        CourseTeacherAssistantListView.setAdapter(new MyTeacherAssistantAdapter());
+//        CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                startExperimentActivity(course_teacher_assistant_list, position, "teacher_assistant");
+//            }
+//        });
+//
+//        ListView CourseStudentListView = (ListView)findViewById(R.id.course_student_list);
+//        CourseStudentListView.setAdapter(new MyStudentAdapter());
+//        CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                startExperimentActivity(course_student_list,position,"student");
+//            }
+//        });
 
-        ListView CourseTeacherAssistantListView = (ListView)findViewById(R.id.course_teacher_assistant_list);
-        CourseTeacherAssistantListView.setAdapter(new MyTeacherAssistantAdapter());
-        CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(course_teacher_assistant_list, position, "teacher_assistant");
-            }
-        });
-
-        ListView CourseStudentListView = (ListView)findViewById(R.id.course_student_list);
-        CourseStudentListView.setAdapter(new MyStudentAdapter());
-        CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(course_student_list,position,"student");
-            }
-        });
-
+        getStudentCourses();
+        getTeacherCourses();
     }
+
 
     @Override
     public void onBackPressed() {
@@ -142,52 +165,52 @@ public class CourseActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_favorite) {
-            Intent intent = new Intent(CourseActivity.this,FavoriteActivity.class);
+            Intent intent = new Intent(CourseActivity.this, FavoriteActivity.class);
             Bundle data = new Bundle();
             String key_to_favorite = getString(R.string.key_to_favorite);
-            data.putParcelable(key_to_favorite,bundleHelper);
+            data.putParcelable(key_to_favorite, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
         } else if (id == R.id.nav_experiment_history) {
-            Intent intent = new Intent(CourseActivity.this,ExperimentHistoryActivity.class);
+            Intent intent = new Intent(CourseActivity.this, ExperimentHistoryActivity.class);
             Bundle data = new Bundle();
             String key_to_experiment_history = getString(R.string.key_to_experiment_history);
-            data.putParcelable(key_to_experiment_history,bundleHelper);
+            data.putParcelable(key_to_experiment_history, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
         } else if (id == R.id.nav_upload_history) {
-            Intent intent = new Intent(CourseActivity.this,UploadHistoryActivity.class);
+            Intent intent = new Intent(CourseActivity.this, UploadHistoryActivity.class);
             Bundle data = new Bundle();
             String key_to_upload_history = getString(R.string.key_to_upload_history);
-            data.putParcelable(key_to_upload_history,bundleHelper);
+            data.putParcelable(key_to_upload_history, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
         } else if (id == R.id.nav_edit_profile) {
-            Intent intent = new Intent(CourseActivity.this,EditProfileActivity.class);
+            Intent intent = new Intent(CourseActivity.this, EditProfileActivity.class);
             Bundle data = new Bundle();
             String key_to_edit_profile = getString(R.string.key_to_edit_profile);
-            data.putParcelable(key_to_edit_profile,bundleHelper);
+            data.putParcelable(key_to_edit_profile, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
         } else if (id == R.id.nav_help) {
-            Intent intent = new Intent(CourseActivity.this,HelpActivity.class);
+            Intent intent = new Intent(CourseActivity.this, HelpActivity.class);
             Bundle data = new Bundle();
             String key_to_help = getString(R.string.key_to_help);
-            data.putParcelable(key_to_help,bundleHelper);
+            data.putParcelable(key_to_help, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
         } else if (id == R.id.nav_settings) {
-            Intent intent = new Intent(CourseActivity.this,SettingsActivity.class);
+            Intent intent = new Intent(CourseActivity.this, SettingsActivity.class);
             Bundle data = new Bundle();
             String key_to_settings = getString(R.string.key_to_settings);
-            data.putParcelable(key_to_settings,bundleHelper);
+            data.putParcelable(key_to_settings, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
-        } else if(id == R.id.nav_notification){
-            Intent intent = new Intent(CourseActivity.this,NotificationActivity.class);
+        } else if (id == R.id.nav_notification) {
+            Intent intent = new Intent(CourseActivity.this, NotificationActivity.class);
             Bundle data = new Bundle();
             String key_to_notification = getString(R.string.key_to_notification);
-            data.putParcelable(key_to_notification,bundleHelper);
+            data.putParcelable(key_to_notification, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
         }
@@ -197,58 +220,33 @@ public class CourseActivity extends AppCompatActivity
         return true;
     }
 
-    private void getCourses()
-    {
-//        PapaDataBaseManager papaDataBaseManager = PapaDataBaseManager.getInstance();
-//
-//        List<String> studentList = new ArrayList<String>();
-//        List<String> assistList = new ArrayList<String>();
-//
-//        try {
-//            papaDataBaseManager.getCourses(studentList, assistList);
-//            course_student_list = studentList.toArray(new String[studentList.size()]);
-//            course_teacher_assistant_list = assistList.toArray(new String[assistList.size()]);
-//        }
-//        catch (Exception e)
-//        {
-//            // TODO: What if courses cannot be received?
-//
-//        }
-//        Please do not delete the code below when debugging:
-        course_student_list = new String[3];
-        for(int i = 0;i < 3;i ++){
-            course_student_list[i] = "课程" + i;
-        }
-        course_teacher_assistant_list = new String[3];
-        for(int i = 0;i < 3;i ++){
-            course_teacher_assistant_list[i] = "课程" + i;
-        }
-    }
 
-    private void getSemester(){
-        semester_list = new String[10];
-        for(int i = 0;i < 10;i ++){
-            semester_list[i] = "学期" + i;
-        }
-    }
+    private class MyAdapter extends BaseAdapter {
+        private List<Map.Entry<Integer, String>> lst;
 
-    private class MyTeacherAssistantAdapter extends BaseAdapter {
-        @Override
-        public int getCount(){
-            return course_teacher_assistant_list.length;
+        public MyAdapter(List<Map.Entry<Integer, String>> lst) {
+            this.lst = lst;
         }
+
         @Override
-        public Object getItem(int arg0){
+        public int getCount() {
+            return lst.size();
+        }
+
+        @Override
+        public Object getItem(int arg0) {
             return arg0;
         }
+
         @Override
-        public long getItemId(int position){
+        public long getItemId(int position) {
             return position;
         }
+
         @Override
-        public View getView(int position, View convertView, ViewGroup parent){
+        public View getView(int position, View convertView, ViewGroup parent) {
             TextView mTextView = new TextView(getApplicationContext());
-            mTextView.setText(course_teacher_assistant_list[position]);
+            mTextView.setText(lst.get(position).getValue());
             mTextView.setTextSize(35);
 //            mTextView.setTextColor(getColor(R.color.colorPrimary));
             mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
@@ -256,38 +254,203 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
-    private class MyStudentAdapter extends BaseAdapter {
-        @Override
-        public int getCount(){
-            return course_student_list.length;
-        }
-        @Override
-        public Object getItem(int arg0){
-            return arg0;
-        }
-        @Override
-        public long getItemId(int position){
-            return position;
-        }
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent){
-            TextView mTextView = new TextView(getApplicationContext());
-            mTextView.setText(course_student_list[position]);
-            mTextView.setTextSize(35);
-//            mTextView.setTextColor(getColor(R.color.colorPrimary));
-            mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
-            return mTextView;
-        }
-    }
 
-    private void startExperimentActivity(String[] course_list,int position,String identity){
+    private void startExperimentActivity(String courseName, int courseId, String identity){
         Intent intent = new Intent(CourseActivity.this, ExperimentActivity.class);
         Bundle data = new Bundle();
         String key_course_experiment = getString(R.string.key_course_experiment);
-        bundleHelper.setCourseName(course_list[position]);
+        bundleHelper.setCourseName(courseName);
+        bundleHelper.setCourseId(courseId);
+        Log.i(tag, courseName + "=" + courseId);
         bundleHelper.setIdentity(identity);
         data.putParcelable(key_course_experiment,bundleHelper);
         intent.putExtras(data);
         startActivity(intent);
+    }
+
+
+
+    // Semester
+
+    private void getSemester() {
+        GetSemesterTask task = new GetSemesterTask(this);
+        task.execute();
+    }
+
+    class GetSemesterTask extends AsyncTask<Void, Exception, PapaDataBaseManager.SemesterReply> {
+        ProgressDialog proDialog;
+
+        public GetSemesterTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.SemesterReply doInBackground
+                (Void... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getSemester();
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.SemesterReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setSemester(rlt.semester);
+        }
+    }
+
+
+    void setSemester(HashMap h) {
+        Iterator iterator = h.keySet().iterator();
+        while (iterator.hasNext()) {
+            Object key = iterator.next();
+            tabLayout.addTab(tabLayout.newTab().setText((String) h.get(key)));
+        }
+    }
+
+
+    // Courses
+    private void getStudentCourses() {
+        new GetStudentCourseTask(this).execute(new PapaDataBaseManager.GetCourseRequest(id, token));
+    }
+
+    private void getTeacherCourses() {
+        new GetTeacherCourseTask(this).execute(new PapaDataBaseManager.GetCourseRequest(id, token));
+    }
+
+    class GetStudentCourseTask extends
+            AsyncTask<PapaDataBaseManager.GetCourseRequest, Exception, PapaDataBaseManager.GetCourseReply> {
+        ProgressDialog proDialog;
+
+        public GetStudentCourseTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetCourseReply doInBackground
+                (PapaDataBaseManager.GetCourseRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getStuCourse(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetCourseReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setStudentCourses(rlt);
+        }
+    }
+
+
+    class GetTeacherCourseTask extends
+            AsyncTask<PapaDataBaseManager.GetCourseRequest, Exception, PapaDataBaseManager.GetCourseReply> {
+        ProgressDialog proDialog;
+
+        public GetTeacherCourseTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetCourseReply doInBackground
+                (PapaDataBaseManager.GetCourseRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getTACourse(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetCourseReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setTeacherCourses(rlt);
+        }
+    }
+
+    private void setStudentCourses(final PapaDataBaseManager.GetCourseReply rlt) {
+        ListView CourseStudentListView = (ListView) findViewById(R.id.course_student_list);
+        CourseStudentListView.setAdapter(new MyAdapter(rlt.course));
+        CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "student");
+            }
+        });
+    }
+
+
+    private void setTeacherCourses(final PapaDataBaseManager.GetCourseReply rlt) {
+        ListView CourseTeacherAssistantListView = (ListView) findViewById(R.id.course_teacher_assistant_list);
+        CourseTeacherAssistantListView.setAdapter(new MyAdapter(rlt.course));
+        CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "teacher_assistant");
+            }
+        });
     }
 }
