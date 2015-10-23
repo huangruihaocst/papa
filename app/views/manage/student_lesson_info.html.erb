@@ -89,7 +89,7 @@
       });
       $.get("/students/<%=@student.id %>/lessons/<%=@lesson.id %>/comments.json",{},function(data)
       {
-          console.log(data.lesson_comments)
+          console.log(data);
       });
       // test case
       data=[];
