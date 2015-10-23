@@ -31,6 +31,7 @@ public class SignInActivity extends AppCompatActivity {
     // 使用何种数据库获取数据
     PapaDataBaseManager papaDataBaseManager;
 
+    
     // Usr, pwd EditText Widget, Buttons
     EditText edit_username;
     EditText edit_password;
