@@ -2,9 +2,6 @@ class AssistantsController < ApplicationController
 
   before_action only: [:show] do
     set_assistant
-
-    raise TokenException.new(REASON_TOKEN_INVALID) unless @assistant
-    check_token(params[:token], @assistant.id)
   end
 
   def index

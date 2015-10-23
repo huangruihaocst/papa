@@ -2,6 +2,9 @@ require 'test_helper'
 
 class SemestersControllerTest < ActionController::TestCase
   include Devise::TestHelpers
+
+  ## DONE
+
   # GET /semesters.json
   test 'should get all semesters' do
     get :index, format: :json
