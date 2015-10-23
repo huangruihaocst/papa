@@ -3,8 +3,10 @@ package com.Activities.papa;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -32,6 +34,8 @@ public class DetailActivity extends AppCompatActivity
     TextView user_class;
     EditText user_grade;
     EditText user_comment;
+    private static final int SELECT_PICTURE = 1;
+    private String selectedImagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,8 +131,11 @@ public class DetailActivity extends AppCompatActivity
                     }else if(which == 1){//video
 
                     }else if(which == 2){//gallery
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
-                        startActivity(intent);
+                        Intent intent = new Intent();
+                        intent.setType("image/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(Intent.createChooser(intent,
+                                "Select Picture"), SELECT_PICTURE);
                     }
                 }
             });
@@ -224,5 +231,35 @@ public class DetailActivity extends AppCompatActivity
         user_comment.setText(comment);
         user_grade.setEnabled(false);
         user_comment.setEnabled(false);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+                selectedImagePath = getPath(selectedImageUri);
+            }
+        }
+        Toast.makeText(getApplicationContext(),"123",Toast.LENGTH_LONG).show();
+    }
+
+    public String getPath(Uri uri) {
+        // just some safety built in
+        if( uri == null ) {
+            // TODO perform some logging or show user feedback
+            return null;
+        }
+        // try to retrieve the image from the media store first
+        // this will only work for images selected from gallery
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if( cursor != null ){
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        // this is our fallback here
+        return uri.getPath();
     }
 }
