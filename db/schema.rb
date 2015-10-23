@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.string   "score"
     t.integer  "user_id"
     t.integer  "lesson_id"
+    t.integer  "creator_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

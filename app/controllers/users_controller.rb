@@ -15,6 +15,4 @@ class UsersController < ApplicationController
       json_failed(REASON_RESOURCE_NOT_FOUND)
     end
   end
-
-
 end
