@@ -59,7 +59,7 @@
 				</div>
 				<div class="modal-body">
 					<h4>学期名称</h4>
-					<input id="input-semester-1" type="text" class="form-control"></input>
+					<input id="input-add-semester-1" type="text" class="form-control"></input>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-primary" onclick="confirmSemester()" data-dismiss="modal">添加</button>
@@ -188,30 +188,34 @@
 		
 		function confirmSemester()  //向后台传输新学期的信息
 		{
-			var text1,i;
-			text1=$("#input-semester-1")[0].value;
-			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: ""},   //#modify
+			var text1,i,p;
+			text1=$("#input-add-semester-1")[0].value;
+			p=new Object();
+			p.semester=new Object();
+			p.semester.name=text1;
+			console.log(p);
+			$.post('/semesters.json', p,
     		function(data)
     		{
-    			if (data=="fail")
+    			console.log(data);
+    			if (data.status=="failed")
     			{
     				alert("添加失败");
     				return;
     			}
-    			if (data=="succeed")
+    			if (data.status=="successful")
     			{
     				for (i=++info.tot;i>0;--i)
     				{
     					info.semesters[i]=info.semesters[i-1];
     				}
-    				info.semesters[0]=new Object();
-    				info.semesters[0].name=text1;
+    				info.semesters[0]=p.semester;
     				info.semesters[0].tot=0;
     				info.semesters[0].courses=new Array();
     				showInfo();
     				return;
     			}
-    			alert("unexpected:"+data);
+    			alert("unexpected: /semesters.json");
     		}
     		);
 		}
@@ -219,13 +223,16 @@
 		function confirmCourse()  //新课程的信息
 		{
 			var text1,text2,i,p;
-			p=new Object();
 			text1=$("#input-add-course-1")[0].value;
 			text2=$("#input-add-course-2")[0].value;
-			p.name=text1;
-			p.description=text2;
-			console.log('/semesters/'+info.semesters[choosei].id+'/courses.json');
-			$.post('/semesters/'+info.semesters[choosei].id+'/courses.json',p,  //#modify
+			p=new Object();
+			p.course=new Object();
+			p.course.name=text1;
+			p.course.description=text2;
+			p.course.semester=info.semesters[choosei].id;
+			console.log(p);
+			
+			$.post('/teachers/'+usersId+'/courses.json', p,
     		function(data)
     		{
     			console.log(data);
@@ -241,7 +248,7 @@
     					info.semesters[choosei].courses[i]=info.semesters[choosei].courses[i-1];
     				}
     				p.id=data.id;
-    				info.semesters[choosei].courses[0]=p;
+    				info.semesters[choosei].courses[0]=p.course;
     				info.semesters[choosei].courses[0].tot=0;
     				info.semesters[choosei].courses[0].classes=new Array();
     				showInfo();
@@ -294,6 +301,7 @@
 			p.start_time=text3;
 			p.end_time=text4;
 			p.location=text5;
+			
 			$.post('/courses/'+info.semesters[choosei].courses[choosej].id+'/lessons.json',p,  //#modify
     		function(data)
     		{
@@ -335,6 +343,7 @@
 			p.end_time=text4;
 			p.location=text5;
 			console.log(p);
+			
 			$.post('/lessons/'+p.id+'.json',p,  //#modify
     		function(data)
     		{
@@ -467,8 +476,10 @@
 						info.semesters[j].clicked=false;
 					}
 					usersId=data2.id;
-					$.ajax({url:"/teachers/"+usersId+"/course.json",data:{},async:false,type:"GET",success:function(data)    //#modify
+					
+					$.ajax({url:"/teachers/"+usersId+"/courses.json",data:{},async:false,type:"GET",success:function(data)    //#modify
 					{
+						console.log(data);
 						if (data.status=="failed")
 						{
 							alert("获取信息失败");
@@ -477,7 +488,7 @@
 						if (data.status=="successful")
 						{
 							data=data.courses;
-							for (p1=0;p1<data.length();++p1)
+							for (p1=0;p1<data.length;++p1)
 							{
 								i=-1;
 								for (j=0;j<info.tot;++j)
@@ -532,6 +543,7 @@
 				console.log(1,data);
 				if (data1&&data2) deal();
 			}});
+			
 			$.ajax({url:"/users/current.json",data:{},type:"GET",success:function(data)    //#modify
 			{
 				data2=data;
@@ -636,23 +648,15 @@
 			event.stopPropagation();
 		}
 		
-		function check(str)
-		{
-			console.log(str);
-			str=str.replace(/\r\n/ig,"<br>");
-			console.log(str);
-			return str;
-		}
-		
-
 		function showInfo()  //显示课程信息
 		{
 			var i,j,k,text="";j=k=-1;
+			
 			for (i=0;i<info.tot;++i)
 			{
 				text+='<div class="rectangleSemester btn btn-default" onclick="change('+i+','+j+','+k+')">';
 				text+='<div class="names">'+info.semesters[i].name+'</div>';
-			//	text+='<div class="btn btn-info custombutton" onclick="addSemester(event)">添加学期</div>';
+				text+='<div class="btn btn-info custombutton" onclick="addSemester(event)">添加学期</div>';
 				text+='<div class="btn btn-info custombutton" onclick="addCourse(event,'+i+')">添加课程</div>';
 				text+='</div>';
 				k=-1;
@@ -684,6 +688,7 @@
 				}
 				j=-1;
 			}
+			
 			$("#content")[0].innerHTML=text;
 		}
 		
