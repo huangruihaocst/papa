@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
-  get 'users/current_user.json' => 'users#current'
+  get 'users/current' => 'users#current'
 
   resources :semesters, only: [:index, :create, :update, :destroy] do
     resources :courses, only: [:index]
