@@ -24,6 +24,7 @@ class SemestersControllerTest < ActionController::TestCase
     end
 
     assert_json_success
+    assert_not_nil json['id']
   end
 
   # PUT /semesters/1.json

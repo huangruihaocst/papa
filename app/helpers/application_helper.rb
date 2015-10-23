@@ -31,8 +31,8 @@ module ApplicationHelper
       end
     end
 
-    def json_successful
-      addition = {}
+    def json_successful(parameters = nil)
+      addition = parameters ? parameters.clone : {}
       if block_given?
         yield addition
       end

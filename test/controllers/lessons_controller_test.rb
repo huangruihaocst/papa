@@ -38,6 +38,7 @@ class LessonsControllerTest < ActionController::TestCase
                   }
     end
     assert_json_success
+    assert_not_nil json['id']
   end
 
   # POST /courses/1/lessons.json

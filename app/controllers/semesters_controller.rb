@@ -15,8 +15,9 @@ class SemestersController < ApplicationController
   def create
     check_admin
 
-    if Semester.create(params.require(:semester).permit(:name))
-      json_successful
+    semester = Semester.create(params.require(:semester).permit(:name))
+    if semester
+        json_successful(id: semester.id)
     else
       json_failed
     end

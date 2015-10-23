@@ -79,7 +79,7 @@ class FilesControllerTest < ActionController::TestCase
 
     assert_json_success
     assert_not_nil assigns(:file).path
-    assert json['id']
+    assert_not_nil json['id']
   end
 
   # POST /files.json
@@ -150,7 +150,7 @@ class FilesControllerTest < ActionController::TestCase
 
     assert_json_success
     assert_not_nil assigns(:file).path
-    assert json['id']
+    assert_not_nil json['id']
   end
 
   # POST /courses/1/files.json
@@ -186,7 +186,7 @@ class FilesControllerTest < ActionController::TestCase
 
     assert_json_success
     assert_not_nil assigns(:file).path
-    assert json['id']
+    assert_not_nil json['id']
   end
 
   # POST /students/1/lessons/1/files.json

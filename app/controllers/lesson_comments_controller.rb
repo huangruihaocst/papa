@@ -14,8 +14,9 @@ class LessonCommentsController < ApplicationController
   def create
     if check_current_user_student_of_lesson(params[:lesson_id])
       lesson = Lesson.find(params[:lesson_id])
-      if lesson.lesson_comments.create(params.require(:lesson_comment).permit(:content, :score))
-        json_successful
+      comment = lesson.lesson_comments.create(params.require(:lesson_comment).permit(:content, :score))
+      if comment
+        json_successful(id: comment.id)
       else
         json_failed
       end

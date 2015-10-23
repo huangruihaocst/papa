@@ -40,7 +40,7 @@ class LessonsController < ApplicationController
             merge({ course_id: params[:course_id] }))
 
     if @lesson.valid?
-      json_successful
+      json_successful(id: @lesson.id)
     else
       json_failed(REASON_INVALID_FIELD)
     end

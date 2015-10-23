@@ -115,6 +115,7 @@ class CoursesControllerTest < ActionController::TestCase
     end
 
     assert_equal STATUS_SUCCESS, json['status']
+    assert_not_nil json['id']
   end
 
   # POST /assistants/1/courses/1.json
