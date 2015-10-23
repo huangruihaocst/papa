@@ -47,7 +47,7 @@ class MessagesController < ApplicationController
     )
 
     if @message && @message.valid?
-      json_successful
+      json_successful(id: @message.id)
     else
       json_failed(REASON_INVALID_FIELD)
     end

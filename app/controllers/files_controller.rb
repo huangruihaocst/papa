@@ -94,9 +94,7 @@ class FilesController < ApplicationController
           end
         end
 
-        json_successful do |json|
-          json['id'] = @file.id
-        end
+        json_successful(id: @file.id)
       rescue ActiveRecord::RecordNotFound
         @file.destroy
         json_failed(REASON_RESOURCE_NOT_FOUND)

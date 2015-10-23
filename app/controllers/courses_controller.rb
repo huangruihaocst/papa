@@ -53,7 +53,7 @@ class CoursesController < ApplicationController
           teacher = User.find(params[:teacher_id])
           course = Course.create(course_create_params)
           if teacher.teaching_courses.create(course_id: course.id)
-            json_successful
+            json_successful(id: course.id)
           else
             json_failed
           end
