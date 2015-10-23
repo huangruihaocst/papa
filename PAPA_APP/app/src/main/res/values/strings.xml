@@ -35,6 +35,7 @@
     <string name="user_class">班级</string>
     <string name="user_grade">成绩</string>
     <string name="user_comment">评价</string>
+    <string name="now_editable">现在可以编辑成绩和评价了</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -46,7 +47,6 @@
     <string name="action_edit_grades">编辑成绩</string>
     <string name="action_student_information">学生信息</string>
     <string name="action_generate_QR_code">生成二维码</string>
-    <string name="action_edit_detail">编辑成绩</string>
 
     <string name="title_semester">学期</string>
 

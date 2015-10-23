@@ -13,8 +13,4 @@
         android:title="@string/action_generate_QR_code"
         android:orderInCategory="100"
         app:showAsAction="never" />
-    <item android:id="@+id/action_edit_detail"
-        android:title="@string/action_edit_detail"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
 </menu>

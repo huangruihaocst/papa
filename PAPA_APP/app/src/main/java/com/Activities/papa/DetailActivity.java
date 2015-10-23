@@ -2,6 +2,8 @@ package com.Activities.papa;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -51,14 +53,20 @@ public class DetailActivity extends AppCompatActivity
         user_grade = (EditText)findViewById(R.id.user_grade);
         user_comment = (EditText)findViewById(R.id.user_comment);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_edit_detail);
+        if(identity.equals("student")){
+            fab.setVisibility(View.GONE);
+        }
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                user_grade.setEnabled(true);
+                user_grade.setFocusable(true);
+                user_comment.setEnabled(true);
+                user_comment.setFocusable(true);
+                Snackbar.make(view,getString(R.string.now_editable), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -95,9 +103,6 @@ public class DetailActivity extends AppCompatActivity
         if(identity.equals("teacher_assistant")){
             MenuItem item = menu.findItem(R.id.action_generate_QR_code);
             item.setVisible(false);
-        }else if(identity.equals("student")){
-            MenuItem item = menu.findItem(R.id.action_edit_detail);
-            item.setVisible(false);
         }
         return true;
     }
@@ -116,11 +121,6 @@ public class DetailActivity extends AppCompatActivity
             return true;
         }else if(id == R.id.action_generate_QR_code){
             return true;
-        }else if(id == R.id.action_edit_detail){
-            user_grade.setEnabled(true);
-            user_grade.setFocusable(true);
-            user_comment.setEnabled(true);
-            user_comment.setFocusable(true);
         }
 
         return super.onOptionsItemSelected(item);
@@ -199,12 +199,11 @@ public class DetailActivity extends AppCompatActivity
     private void getDetail(){
         user_id.setText("2014");
         user_class.setText("计43");
-        user_comment.setText("吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊" +
-                "吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊" +
-                "吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊" +
-                "吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊" +
-                "吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊" +
-                "吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊吼啊");
+        String comment = "";
+        for(int i = 0;i < 100;i ++){
+            comment += "吼啊";
+        }
+        user_comment.setText(comment);
         user_grade.setEnabled(false);
         user_comment.setEnabled(false);
     }
