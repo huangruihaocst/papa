@@ -94,12 +94,19 @@
       // test case 
       $.get("/students/<%=@student.id %>/lessons/<%=@lesson.id %>/files.json",{},
       function(d){
-          console.log(d);
-          data= d.files;
+          var data=[];
+          for(var i in d.files)
+              $.ajax({
+                  url:"/files/"+ d.files[i].id.toString()+".json",
+                  async: false,
+                  type: 'GET',
+                  success :function(ret){ console.log(ret);data[i]= ret.file; }
+              });
           str="";
+          console.log(data);
           for(var i in data)
           {
-              str+="<span class='label label-default' style='margin-right: 10px;font-size: 16px'>"+data[i].path+"</span>";
+              str+="<span class='label label-default' style='margin-right: 10px;font-size: 16px'>"+data[i].name+"</span>";
               str+="<button class='btn btn-sm btn-primary' onclick=changeVideo("+i.toString()+
               ")><span class='glyphicon glyphicon-play'></span>Play</button><hr>";
           }
