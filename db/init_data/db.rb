@@ -13,7 +13,7 @@ l3 = c1.lessons.create(name: 'os-l3', start_time: Time.now, end_time: Time.now +
 l4 = c2.lessons.create(name: 'ds-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 
 u0 = User.create(name:'admin', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123', is_admin: true)
-u1 = User.create(name:'alex', phone:'1234', email:'a@b.c', password:'123', password_confirmation:'123', is_teacher: true)
+u1 = User.create(name:'alex', phone:'1234', email:'aa@b.c', password:'123', password_confirmation:'123', is_teacher: true)
 u2 = User.create(name:'betty', phone:'222', email:'b@c.d', password:'123', password_confirmation:'123')
 u3 = User.create(name:'ciara', phone:'333', email:'c@d.e', password:'123', password_confirmation:'123')
 u4 = User.create(name:'delta', phone:'444', email:'d@d.e', password:'123', password_confirmation:'123')
