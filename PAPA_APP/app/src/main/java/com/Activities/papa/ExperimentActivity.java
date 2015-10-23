@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,6 +89,7 @@ public class ExperimentActivity extends AppCompatActivity
             MenuItem item = menu.findItem(R.id.nav_upload_history);
             item.setVisible(false);
         }
+        setHeaderView(navigationView);
 
         getExperiments();
     }
@@ -299,5 +302,12 @@ public class ExperimentActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+    }
+
+    private void setHeaderView(NavigationView navigationView){
+        LinearLayout linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
+        TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
+        TextView mail_label = (TextView)findViewById(R.id.mail_label);
+        ImageView image_label = (ImageView)findViewById(R.id.image_label);
     }
 }

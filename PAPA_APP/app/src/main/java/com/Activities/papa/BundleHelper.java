@@ -1,5 +1,6 @@
 package com.Activities.papa;
 
+import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -19,8 +20,6 @@ public class BundleHelper implements Parcelable{
     private String student_name;
     private int student_id;
     private String identity;
-
-
     private int id;
     private String token;
 //    private JSONObject jsonObject;

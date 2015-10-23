@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -60,6 +62,7 @@ public class StudentActivity extends AppCompatActivity
             MenuItem item = menu.findItem(R.id.nav_upload_history);
             item.setVisible(false);
         }
+        setHeaderView(navigationView);
 
         getStudents(experiment_name);
 
@@ -203,5 +206,12 @@ public class StudentActivity extends AppCompatActivity
         for(int i = 0;i < 10;i ++){
             student_list[i] = "学生" + i;
         }
+    }
+
+    private void setHeaderView(NavigationView navigationView){
+        LinearLayout linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
+        TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
+        TextView mail_label = (TextView)findViewById(R.id.mail_label);
+        ImageView image_label = (ImageView)findViewById(R.id.image_label);
     }
 }

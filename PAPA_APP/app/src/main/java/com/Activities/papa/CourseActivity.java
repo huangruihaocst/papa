@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -97,29 +98,7 @@ public class CourseActivity extends AppCompatActivity
             MenuItem item = menu.findItem(R.id.nav_upload_history);
             item.setVisible(false);
         }
-
-        android.support.design.widget.NavigationView headerLayout = (android.support.design.widget.NavigationView) findViewById(R.id.nav_view);
-        LinearLayout ly = (LinearLayout)headerLayout.inflateHeaderView(R.layout.nav_header_course);
-        TextView username_label = (TextView) ly.findViewById(R.id.username_label);
-        username_label.setText("1234");
-
-//        ListView CourseTeacherAssistantListView = (ListView)findViewById(R.id.course_teacher_assistant_list);
-//        CourseTeacherAssistantListView.setAdapter(new MyTeacherAssistantAdapter());
-//        CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                startExperimentActivity(course_teacher_assistant_list, position, "teacher_assistant");
-//            }
-//        });
-//
-//        ListView CourseStudentListView = (ListView)findViewById(R.id.course_student_list);
-//        CourseStudentListView.setAdapter(new MyStudentAdapter());
-//        CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                startExperimentActivity(course_student_list,position,"student");
-//            }
-//        });
+        setHeaderView(navigationView);
 
         getStudentCourses();
         getTeacherCourses();
@@ -452,5 +431,13 @@ public class CourseActivity extends AppCompatActivity
                 startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "teacher_assistant");
             }
         });
+    }
+
+    //a function to change the profile in the navigation drawer, just call it in another thread
+    private void setHeaderView(NavigationView navigationView){
+        LinearLayout linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
+        TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
+        TextView mail_label = (TextView)findViewById(R.id.mail_label);
+        ImageView image_label = (ImageView)findViewById(R.id.image_label);
     }
 }

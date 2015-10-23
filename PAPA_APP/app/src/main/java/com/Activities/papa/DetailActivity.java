@@ -12,6 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -59,6 +62,7 @@ public class DetailActivity extends AppCompatActivity
             MenuItem item = menu.findItem(R.id.nav_upload_history);
             item.setVisible(false);
         }
+        setHeaderView(navigationView);
 
         Button button_edit_grades = (Button)findViewById(R.id.edit_grades);
         if(identity.equals("student")){
@@ -160,5 +164,12 @@ public class DetailActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void setHeaderView(NavigationView navigationView){
+        LinearLayout linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
+        TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
+        TextView mail_label = (TextView)findViewById(R.id.mail_label);
+        ImageView image_label = (ImageView)findViewById(R.id.image_label);
     }
 }
