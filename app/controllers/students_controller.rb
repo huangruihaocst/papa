@@ -30,11 +30,7 @@ class StudentsController < ApplicationController
   # GET /students/1.json
   def show
     check_login
-    begin
-      @student = User.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      json_failed(REASON_RESOURCE_NOT_FOUND)
-    end
+    json_failed(REASON_RESOURCE_NOT_FOUND) unless @student
   end
 
   # POST /courses/1/students/1.json
@@ -83,13 +79,12 @@ class StudentsController < ApplicationController
   def set_student
     begin
       student = User.find(params[:id])
-      ### just for debug, default course_id is 1
-      @participation = student.participations.where(course_id: params[:course_id] || 1).first
-      if @participation.role == ROLE_STUDENT
+      #@participation = student.participations.where(course_id: params[:course_id]).first
+      #if @participation.role == ROLE_STUDENT
         @student = student
-      else
-        @student = nil
-      end
+      #else
+      #  @student = nil
+      #end
     rescue ActiveRecord::RecordNotFound
       @student = nil
     end

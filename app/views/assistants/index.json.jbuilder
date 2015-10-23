@@ -5,6 +5,7 @@ json.assistants do
     json.extract! assistant, :id
     json.extract! assistant, :name
     json.extract! assistant, :phone
+    json.extract! assistant, :email
   end
 end
 
