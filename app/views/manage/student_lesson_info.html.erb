@@ -62,7 +62,7 @@
               <video id="video-screen" class="video-js vjs-big-play-centered"
                      width="500" height="264" style="margin: auto" controls
                      preload="auto" data-setup="{}">
-                <source id="video-src" src="/test.mp4" type='video/mp4;' />
+                <!--source id="video-src" src="/test.mp4" type='video/mp4;' /-->
               </video>
               </div>
     </div>
@@ -72,10 +72,10 @@
     <div class="row">
       <div class="col-md-8">
         <div style="margin: 20px;border-right: groove 1px #000000">
-        <img src="/photos/1.jpg" />
+        <img id="img-screen" src="/photos/1.jpg" width="70%"/>
         </div>
       </div>
-      <div class="col-md-4 label-list" id="photo-list"
+      <div class="col-md-4 label-list" id="picture-list"
            style="padding: 20px;text-align: left;"></div>
     </div>
   </div>
@@ -91,10 +91,11 @@
       {
           console.log(data.lesson_comments)
       });
-      // test case 
+      // test case
+      data=[];
       $.get("/students/<%=@student.id %>/lessons/<%=@lesson.id %>/files.json",{},
       function(d){
-          var data=[];
+          data=[];
           for(var i in d.files)
               $.ajax({
                   url:"/files/"+ d.files[i].id.toString()+".json",
@@ -105,14 +106,28 @@
           str="";
           console.log(data);
           for(var i in data)
+          if(data[i].type == "video")
           {
               str+="<span class='label label-default' style='margin-right: 10px;font-size: 16px'>"+data[i].name+"</span>";
               str+="<button class='btn btn-sm btn-primary' onclick=changeVideo("+i.toString()+
               ")><span class='glyphicon glyphicon-play'></span>Play</button><hr>";
           }
-          //console.log(str);
           $("#video-list").html(str);
+          str= "";
+          for(var i in data)
+          if(data[i].type == "picture")
+          {
+              str+="<span class='label label-default' style='margin-right: 10px;font-size: 16px'>"+data[i].name+"</span>";
+              str+="<button class='btn btn-sm btn-primary' onclick=changePicture("+i.toString()+
+                      ")><span class='glyphicon glyphicon-view'></span>View</button><hr>";
+          }
+          $("#picture-list").html(str);
+          //console.log(str);
       });
+      function changePicture(x)
+      {
+          $("#img-screen").attr("src",data[x].path);
+      }
       function changeVideo(x)
       {
           $("video").attr("src",data[x].path);
