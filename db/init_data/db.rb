@@ -1,4 +1,6 @@
 s = Semester.create(name: '2015')
+s1 = Semester.create(name: '2014')
+s2 = Semester.create(name: '2013')
 
 c1 = Course.create(name: 'os', description: '123', semester_id: s.id)
 l1 = c1.lessons.create(name: 'os-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
