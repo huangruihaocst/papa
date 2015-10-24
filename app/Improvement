@@ -1,0 +1,26 @@
+sprint 2:
+1. 所有的　UI
+2. database:
+       interface
+   所有的数据接口
+3. 
+
+
+
+1.登录界面:
+	1)EditText的下划线的颜色设为主题颜色(状态栏)
+	2)提示信息的字体(细字体)
+	3)登录按钮放在ToolBar上
+2.抽屉的基类:
+	1)动态改变的用户信息(早晚得实现)
+	2)用Fragment实现,现在是在复制代码实现的,不美
+3.ListView
+	1)改用RecyclerView或者CardView
+	2)抽象化Adapter,不要在每个Activity中重写BaseAdapter
+4.状态栏
+	1)尝试使用沉浸式状态栏
+5.ToolBar:
+	1)不知为啥一直不能显示按钮
+	2)现在是通过menu显示一些选项,希望能直接摆在ToolBar上不要折叠
+6.Bundle
+	1)现在传输数据有点不正常,迟早得解决
