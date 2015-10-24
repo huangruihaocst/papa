@@ -34,11 +34,7 @@
 		
 		function loadInfo()
 		{
-			$.get("/lessons/"+classId+".json",{},
-			function(data)
-			{
-				classInfo=data.name;
-			});
+			
 			classInfo="计算机组成原理实验1";
 			var i;
 			n=9;m=2;
@@ -58,41 +54,91 @@
 				info[i][7]="1";
 				info[i][8]="XX";
 			}
+			showInfo();
+			var p1=false,p2=false;
+			function deal()
+			{
+				showInfo();
+			}
+			$.get("/lessons/"+classId+".json",{},
+			function(data)
+			{
+				if (data.status=="failed")
+				{
+					alert("实验信息加载失败");
+					return;
+				}
+				if (data.status=="successful")
+				{
+					classInfo=data.name;
+					p1=true;
+					if (p1&&p2) deal();
+				}
+				alert("unexpected: /lessons/id.json");
+			});
 			$.get("/courses/"+courseId+"/students.json",{},
 			function(data)
 			{
-				var i;
-				for (i=0;i<data.length;++i)
+				if (data.status=="failed")
 				{
-					info[i]=new Array();
-					$.get("/students/"+data[i].id+".json",{},
-					function(data2)
-					{
-						info[i][0]=data2.student_number;
-						info[i][1]=data2.name;
-						info[i][2]=data2.department;
-						info[i][3]=data2.class;  //#modify
-						info[i][9]=data2.id;
-					});
-					$.get("/students/"+data[i].id+"/lessons/"+classId+".json",{},
-					function(data2)
-					{
-						info[i][4]=data2.score;
-						info[i][5]=data2.content;
-						info[i][8]=data2.assistant;
-					});
-					$.get("/students/"+data[i].id+"/lesssons/"+classId+"/files.json",{},
-					function(data2)
-					{
-						info[i][7]=info[i][8]=0;
-						var j;
-						for (j=0;j<data2.length;++j)
-						{
-							if (data2[j].type=="jpg") ++info[i][6];
-							if (data2[j].type=="mp4") ++info[i][7];
-						}
-					});
+					alert("学生名单加载失败");
+					return;
 				}
+				if (data.status=="successful")
+				{
+					var i;
+					for (i=0;i<data.length;++i)
+					{
+						info[m]=new Array();
+						var p=true;
+						$.ajax({url:"/students/"+data[i].id+".json",data:{},async:false,type:"GET",success:function(data)
+						{
+							if (data.status=="successful")
+							{
+								info[i][0]=data.student_number;
+								info[i][1]=data.name;
+								info[i][2]=data.department;
+								info[i][3]=data.class_name;
+								info[i][9]=data.id;
+							}else
+							{
+								p=false;
+							}
+						}});
+						$.ajax({url:"/students/"+data[i].id+"/lessons/"+classId+".json",data:{},async:false,type:"GET",success:function(data)
+						{
+							if (data.status=="successful")
+							{
+								info[i][4]=data.score;
+								info[i][5]=data.content;
+								info[i][8]=data.assistant;
+							}else
+							{
+								p=false;
+							}
+						}});
+						$.ajax({url:"/students/"+data[i].id+"/lesssons/"+classId+"/files.json",data:{},async:false,type:"GET",success:function(data)
+						{
+							if (data.status=="successful")
+							{
+								info[i][7]=info[i][8]=0;
+								var j;
+								for (j=0;j<data.length;++j)
+								{
+									if (data[j].type=="jpg") ++info[i][6];
+									if (data[j].type=="mp4") ++info[i][7];
+								}
+							}else
+							{
+								p=false;
+							}
+						}});
+						if (p) ++m;
+					}
+					p2=true;
+					if (p1&&p2) deal();
+				}
+				alert("unexpected: /courses/id/students.json");
 			});
 		}
 		
@@ -228,6 +274,5 @@
 		}
 		
 		loadInfo();
-		showInfo();
 	</script>
 </body>

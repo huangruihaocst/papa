@@ -1,5 +1,5 @@
 class FilesController < ApplicationController
-
+  FILE_MAX_SIZE=10000000
   # GET /students/1/lessons/1/files.json
   # GET /assistants/1/lessons/1/files.json
   # GET /lessons/1/files.json
