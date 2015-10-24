@@ -46,6 +46,23 @@ class LessonsController < ApplicationController
     end
   end
 
+  # PUT /lessons/1.json
+  def update
+    begin
+      @lesson = Lesson.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      json_failed(REASON_RESOURCE_NOT_FOUND)
+      return
+    end
+
+    must_be_a_teacher_of(params[:token], @lesson.course)
+    if @lesson.update(params.require(:lesson).permit(:name, :description))
+      json_successful
+    else
+      json_failed
+    end
+  end
+
   # DELETE /lessons/1.json
   def destroy
     if @lesson
