@@ -32,7 +32,7 @@ Rails.application.routes.draw do
     get 'comments' => 'lesson_comments#index', as: :comments_of_course
   end
 
-  resources :lessons, only: [:show, :destroy] do
+  resources :lessons, only: [:show, :destroy, :update] do
     # students' comments to the lesson
     resources :comments, controller: 'lesson_comments', only: [:index, :create]
 
