@@ -18,12 +18,14 @@ u2 = User.create(name:'betty', phone:'222', email:'b@c.d', password:'123', passw
 u3 = User.create(name:'ciara', phone:'333', email:'c@d.e', password:'123', password_confirmation:'123')
 u4 = User.create(name:'delta', phone:'444', email:'d@d.e', password:'123', password_confirmation:'123')
 u5 = User.create(name:'gamma', phone:'555', email:'e@d.e', password:'123', password_confirmation:'123')
+u6 = User.create(name:'yula', phone:'666', email:'f@d.e', password:'123', password_confirmation:'123')
 
 TeachingCourse.create(user_id: u1.id, course_id: c1.id)
 Participation.create(user_id: u2.id, course_id: c1.id, role: ROLE_ASSISTANT)
 Participation.create(user_id: u3.id, course_id: c1.id, role: ROLE_ASSISTANT)
 Participation.create(user_id: u4.id, course_id: c1.id, role: ROLE_STUDENT)
 Participation.create(user_id: u5.id, course_id: c1.id, role: ROLE_STUDENT)
+Participation.create(user_id: u6.id, course_id: c1.id, role: ROLE_STUDENT)
 
 LessonStatus.create(user_id: u4.id, lesson_id: l1.id, creator_id: u2.id, score: 123)
 LessonStatus.create(user_id: u5.id, lesson_id: l1.id, creator_id: u2.id, score: 111)
