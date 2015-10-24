@@ -26,62 +26,120 @@
 		
 		function loadInfo()
 		{
+			getId();
+			courseInfo="计算机组成原理";
+			var i;
+			n=4;m=2;tot=3;
+			items=new Object();
+			items.peopleInfo=new Array();
+			items.classNames=new Array();
+			items.peopleInfo[0]="学号";items.peopleInfo[1]="姓名";
+			items.peopleInfo[2]="系";items.peopleInfo[3]="班级";
+			items.classNames[0]="1";items.classNames[1]="2";items.classNames[2]="3";
+			info=new Array();
+			for (i=0;i<m;++i)
+			{
+				info[i]=new Object();
+				info[i].people=new Object();
+				info[i].classScore=new Array();
+				info[i].people.student_number="201401130"+i;
+				info[i].people.name="A"+i;
+				info[i].people.department="计算机系";
+				info[i].people.class_name="计xx";
+				info[i].people.id=0;
+				info[i].classScore[0]=i;
+				info[i].classScore[1]=i;
+				info[i].classScore[2]=i;
+			}
+			showInfo();
+			var p1=false,p2=false;
+			function deal()
+			{
+				$.get("/courses/"+courseId+"/students.json",{},
+				function(data)
+				{
+					if (data.status=="failed")
+					{
+						alert("学生名单加载失败");
+						return;
+					}
+					if (data.status=="successful")
+					{
+						var i,j;
+						for (i=0;i<data.length;++i)
+						{
+							info[m]=new Object();
+							var p=true;
+							$.ajax({url:"/students/"+data[i].id+".json",data:{},type:"GET",async:false,success:function(data)
+							{
+								if (data.status=="successful")
+								{
+									info[i].people=data.student;
+								}else
+								{
+									p=false;
+								}
+							}});
+							for (j=0;j<tot;++j)
+							{
+								$.ajax({url:"/students/"+data[i].id+"/lessons/"+classId[j]+".json",data:{},type:"GET",async:false,success:function(data)
+								{
+									if (data.status=="successful")
+									{
+										info[i].classScore[j]=data.score;
+									}else
+									{
+										p=false;
+									}
+								}});
+							}
+							if (p) ++m;
+						}
+						showInfo();
+					}
+				});
+			}
 			$.get("/courses/"+courseId+".json",{},
 			function(data)
 			{
-				courseInfo=data.name;
+				console.log(data);
+				if (data.status=="failed")
+				{
+					alert("获取课程信息失败");
+					return;
+				}
+				if (data.status=="successful")
+				{
+					courseInfo=data.name;
+					p1=true;
+					if (p1&&p2) deal();
+					return;
+				}
+				alert("unexpected: /courses/id.json");
 			});
 			$.get("/courses/"+courseId+"/lessons.json",{},
 			function(data)
 			{
-				var i;tot=data.length;
-				for (i=0;i<data.length;++i)
+				console.log(data);
+				if (data.status=="failed")
 				{
-					classId[i]=data[i].id;
+					alert("获取实验信息失败");
+					return;
 				}
-			});
-			courseInfo="计算机组成原理";
-			var i;
-			n=7;m=2;tot=3;
-			items=new Array();
-			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="1";items[5]="2";items[6]="3";
-			info=new Array();
-			for (i=0;i<m;++i)
-			{
-				info[i]=new Array();
-				info[i][0]="201401130"+i;
-				info[i][1]="A"+i;
-				info[i][2]="计算机系";
-				info[i][3]="计xx";
-				info[i][4]=i;
-				info[i][5]=i;
-				info[i][6]=i;
-			}
-			$.get("/courses/"+courseId+"/students.json",{},
-			function(data)
-			{
-				var i,j;
-				for (i=0;i<data.length;++i)
+				if (data.status=="successful")
 				{
-					info[i]=new Array();
-					$.get("/students/"+data[i].id+".json",{},
-					function(data2)
+					data=data.lessons;
+					var i;tot=data.length;
+					for (i=0;i<data.length;++i)
 					{
-						info[i][0]=data2.student_number;
-						info[i][1]=data2.name;
-						info[i][2]=data2.department;
-						info[i][3]=data2.class;  //#modify
-						info[i][n]=data2.id;
-					});
-					for (j=0;j<tot;++j)
-					{
-						$.get("/students/"+data[i].id+"/lessons/"+classId[j]+".json",{},
-						function(data2)
-						{
-							info[i][j+4]=data2.score;
-						});
+						classId[i]=data[i].id;
+						items.classNames[i]=data.name;
 					}
+					p2=true;
+					if (p1&&p2) deal();
+					return;
 				}
+				alert("unexpected: /courses/id/lessons.json");
 			});
 		}
 		
@@ -190,22 +248,25 @@
 			var i,j,text="";
 			text+='<h3>课程成绩</h3>';
 			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
-			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th>';
-			text+='<th><a id="export" onclick="clickDownload(this)" download="'+courseInfo+'.csv" href="#">导出</a>'+'</th></tr>';
-			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">成绩</th></tr>';
+			text+='<thread><tr><th colspan="'+n+'">'+courseInfo+'</th>';
+			text+='<th colspan="'+tot+'"><a id="export" onclick="clickDownload(this)" download="'+courseInfo+'.csv" href="#">导出</a>'+'</th></tr>';
+			text+='<tr><th colspan="'+n+'">学生信息</th><th colspan="'+tot+'">成绩</th></tr>';
 			text+='<tr>';
 			for (i=0;i<n;++i)
-			text+='<th onclick="option('+i+')">'+items[i]+'</th>';
+			text+='<th onclick="option('+i+')">'+items.peopleInfo[i]+'</th>';
+			for (i=0;i<tot;++i)
+			text+='<th onclick="option('+i+')">'+items.classNames[i]+'</th>';
 			text+='</thread><tbody>';
 			for (i=0;i<m;++i)
 			{
 				text+='<tr>';
-				for (j=0;j<n;++j) if (j<4)
+				text+='<td>'+info[i].people.student_number+'</td>';
+				text+='<td>'+info[i].people.name+'</td>';
+				text+='<td>'+info[i].people.department+'</td>';
+				text+='<td>'+info[i].people.class_name+'</td>';
+				for (j=0;j<tot;++j)
 				{
-					text+='<td>'+info[i][j]+'</td>';
-				}else
-				{
-					text+='<td ondblclick="change('+(i+3)+','+j+')">'+info[i][j]+'</td>';
+					text+='<td ondblclick="change('+(i+3)+','+j+')">'+info[i].classScore[j]+'</td>';
 				}
 				text+='</tr>';
 			}
@@ -214,6 +275,5 @@
 		}
 		
 		loadInfo();
-		showInfo();
 	</script>
 </body>

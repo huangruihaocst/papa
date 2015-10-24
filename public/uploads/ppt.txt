@@ -1,2 +1,0 @@
-This is a ppt file with suffix txt.
-// for update test

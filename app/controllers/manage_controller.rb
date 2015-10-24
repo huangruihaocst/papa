@@ -1,6 +1,6 @@
 class ManageController < ApplicationController
-  layout "main"
-  #before_action :authenticate_user!
+  layout "application"
+  before_action :authenticate_user!
   def index
   end
   def main_page
@@ -20,8 +20,9 @@ class ManageController < ApplicationController
   def show_photos
     @id= params[:id]
   end
-  def show_videos
-    @id= params[:id]
+  def student_lesson_info
+    @student = User.find(params[:id])
+    @lesson = Lesson.find(params[:lessonId])
   end
   def AddCourseToCurrentUser
     if(user_signed_in?)
