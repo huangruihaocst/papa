@@ -16,6 +16,10 @@ class LessonsControllerTest < ActionController::TestCase
 
     assert_equal json['status'], STATUS_SUCCESS
     assert json['lessons'].count > 0
+    assert_not_nil json['lessons'][0]['name']
+    assert_not_nil json['lessons'][0]['start_time']
+    assert_not_nil json['lessons'][0]['end_time']
+    assert_not_nil json['lessons'][0]['location']
   end
 
   # GET /lessons/1.json
@@ -24,6 +28,9 @@ class LessonsControllerTest < ActionController::TestCase
 
     assert_equal json['status'], STATUS_SUCCESS
     assert_not_nil json['lesson']['name']
+    assert_not_nil json['lesson']['start_time']
+    assert_not_nil json['lesson']['end_time']
+    assert_not_nil json['lesson']['location']
   end
 
   # POST /course/1/lessons.json
@@ -31,6 +38,7 @@ class LessonsControllerTest < ActionController::TestCase
     sign_in @teacher
     assert_difference('Lesson.count') do
       post :create, format: :json, course_id: @course.id, lesson: {
+                      description: '123',
                       name: 'test lesson',
                       start_time: '2015/10/10 10:20:30',
                       end_time: '2015/10/10 10:20:30',
@@ -62,6 +70,7 @@ class LessonsControllerTest < ActionController::TestCase
     assert_json_success
   end
 
+  # DELETE /lessons/1.json
   test 'should not delete lesson by id if he is not a teacher of the lesson' do
     teacher = User.find_by_name('betty')
     lesson = @course.lessons.first

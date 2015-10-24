@@ -39,7 +39,7 @@ class TeachersController < ApplicationController
   def show
     if params[:id]
       begin
-        @teacher = User.find(param[:id])
+        @teacher = User.find(params[:id])
         unless @teacher.is_teacher
           json_failed(REASON_RESOURCE_NOT_FOUND)
         end

@@ -39,12 +39,12 @@ class AssistantsController < ApplicationController
     begin
       assistant = User.find(params[:id])
       ### just for debug, default course_id is 1
-      @participation = assistant.participations.where(course_id: params[:course_id] || 1).first
-      if @participation.role == ROLE_ASSISTANT
+      #@participation = assistant.participations.where(course_id: params[:course_id]).first
+      #if @participation && @participation.role == ROLE_ASSISTANT
         @assistant = assistant
-      else
-        @assistant = nil
-      end
+      #else
+      #  @assistant = nil
+      #end
     rescue ActiveRecord::RecordNotFound
       @assistant = nil
     end

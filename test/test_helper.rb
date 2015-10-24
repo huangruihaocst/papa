@@ -15,6 +15,14 @@ class ActiveSupport::TestCase
     assert_equal STATUS_SUCCESS, json['status']
   end
 
+  def assert_json_status(status)
+    assert_equal status, json['status']
+  end
+
+  def assert_json_reason(reason)
+    assert_equal reason, json['reason']
+  end
+
 
   # Add more helper methods to be used by all tests here...
 end
