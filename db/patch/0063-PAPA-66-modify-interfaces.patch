@@ -1,0 +1,138 @@
+From 5eebc29765faa161e1f621246dac5ef6b4f13356 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sun, 11 Oct 2015 20:21:13 +0800
+Subject: [PATCH 063/150] PAPA-66 modify interfaces
+
+---
+ README.md                                   |  5 ++++-
+ app/controllers/lessons_controller.rb       |  2 +-
+ app/controllers/semesters_controller.rb     | 21 +++++++++++++++++++++
+ config/routes.rb                            |  2 +-
+ test/controllers/courses_controller_test.rb |  1 +
+ test/controllers/lessons_controller_test.rb | 17 ++++++++---------
+ 6 files changed, 36 insertions(+), 12 deletions(-)
+
+diff --git a/README.md b/README.md
+index a1a283c..059b7d9 100644
+--- a/README.md
++++ b/README.md
+@@ -178,7 +178,10 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+     
+ Http Parameters/JSON对象格式
+     
+-    semester number=2009
++    注意：奕semester举例,在URL中格式均为
++    semester[name]=2009
++    
++    semester name=string
+     
+     course  id=int,
+             name=string,
+diff --git a/app/controllers/lessons_controller.rb b/app/controllers/lessons_controller.rb
+index d58763b..01c73ce 100644
+--- a/app/controllers/lessons_controller.rb
++++ b/app/controllers/lessons_controller.rb
+@@ -24,7 +24,7 @@ class LessonsController < ApplicationController
+   def create
+     @lesson =  Lesson.create(
+         params.require(:lesson).
+-            permit(:name, :description, :start_time, :end_time, :location, :course_id))
++            permit(:name, :description, :start_time, :end_time, :location).merge({ course_id: params[:course_id] }))
+ 
+     respond_to do |format|
+       if @lesson.valid?
+diff --git a/app/controllers/semesters_controller.rb b/app/controllers/semesters_controller.rb
+index b1f0674..7c166e2 100644
+--- a/app/controllers/semesters_controller.rb
++++ b/app/controllers/semesters_controller.rb
+@@ -1,2 +1,23 @@
+ class SemestersController < ApplicationController
++
++  def index
++    @semesters = Semester.all
++  end
++
++  def default
++    Semester.all.order(:name).last
++  end
++
++  def create
++    Semester.create()
++  end
++
++  def update
++
++  end
++
++  def delete
++
++  end
++
+ end
+diff --git a/config/routes.rb b/config/routes.rb
+index 728168f..3a60f86 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -18,7 +18,7 @@ Rails.application.routes.draw do
+     resources :messages, only: [:create]
+   end
+ 
+-  resources :lessons, only: [:show, :create, :index] do
++  resources :lessons, only: [:show] do
+     # students' comments to the lesson
+     resources :comments, controller: 'lesson_comments', only: [:index, :create]
+ 
+diff --git a/test/controllers/courses_controller_test.rb b/test/controllers/courses_controller_test.rb
+index 2f7e452..57fb67c 100644
+--- a/test/controllers/courses_controller_test.rb
++++ b/test/controllers/courses_controller_test.rb
+@@ -75,4 +75,5 @@ class CoursesControllerTest < ActionController::TestCase
+     json = JSON.parse(@response.body)
+     assert_equal json['status'], STATUS_FAIL
+   end
++
+ end
+diff --git a/test/controllers/lessons_controller_test.rb b/test/controllers/lessons_controller_test.rb
+index 85ad593..f80fef3 100644
+--- a/test/controllers/lessons_controller_test.rb
++++ b/test/controllers/lessons_controller_test.rb
+@@ -3,7 +3,7 @@ require 'test_helper'
+ class LessonsControllerTest < ActionController::TestCase
+ 
+   test 'api should get all lessons' do
+-    get :index, format: :json
++    get :index, format: :json, course_id: 1
+     json = JSON.parse(@response.body)
+     assert_equal json['status'], STATUS_SUCCESS
+     assert json['lessons'].count > 0
+@@ -18,20 +18,19 @@ class LessonsControllerTest < ActionController::TestCase
+ 
+   test 'api should add lesson' do
+     assert_difference('Lesson.count') do
+-      post :create, format: :json, lesson: {
+-                       name: 'test lesson',
+-                       start_time: '2015/10/10 10:20:30',
+-                       end_time: '2015/10/10 10:20:30',
+-                       location: '"name": "here"',
+-                       course_id: 1
+-                   }
++      post :create, format: :json, course_id: 1, lesson: {
++                      name: 'test lesson',
++                      start_time: '2015/10/10 10:20:30',
++                      end_time: '2015/10/10 10:20:30',
++                      location: '"name": "here"'
++                  }
+     end
+     assert_equal JSON.parse(@response.body)['status'], STATUS_SUCCESS
+   end
+ 
+   test 'api should not add bad lesson' do
+     assert_no_difference('Lesson.count') do
+-      post :create, format: :json, lesson: { bad_name: 'bad name' }
++      post :create, format: :json, course_id: 1, lesson: { bad_name: 'bad name' }
+     end
+     assert_equal JSON.parse(@response.body)['status'], STATUS_FAIL
+   end
+-- 
+1.9.1
+

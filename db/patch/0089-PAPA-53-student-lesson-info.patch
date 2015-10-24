@@ -1,0 +1,223 @@
+From 45ae2a2116fae5658883cfadec3e88c63a34bd7a Mon Sep 17 00:00:00 2001
+From: sleepy_chord <sj702d5@foxmail.com>
+Date: Fri, 16 Oct 2015 15:36:37 +0800
+Subject: [PATCH 089/150] PAPA-53 student-lesson info
+
+---
+ app/controllers/manage_controller.rb          |  5 +-
+ app/views/manage/show_videos.html.erb         | 57 -----------------
+ app/views/manage/student_lesson_info.html.erb | 88 +++++++++++++++++++++++++++
+ app/views/test/index.html.erb                 | 14 ++---
+ config/routes.rb                              |  2 +-
+ 5 files changed, 99 insertions(+), 67 deletions(-)
+ delete mode 100644 app/views/manage/show_videos.html.erb
+ create mode 100644 app/views/manage/student_lesson_info.html.erb
+
+diff --git a/app/controllers/manage_controller.rb b/app/controllers/manage_controller.rb
+index 20a2c37..8e33179 100644
+--- a/app/controllers/manage_controller.rb
++++ b/app/controllers/manage_controller.rb
+@@ -20,8 +20,9 @@ class ManageController < ApplicationController
+   def show_photos
+     @id= params[:id]
+   end
+-  def show_videos
+-    @id= params[:id]
++  def student_lesson_info
++    @student = User.find(params[:id])
++    @lesson = Lesson.find(params[:lessonId])
+   end
+   def AddCourseToCurrentUser
+     if(user_signed_in?)
+diff --git a/app/views/manage/show_videos.html.erb b/app/views/manage/show_videos.html.erb
+deleted file mode 100644
+index 5290f72..0000000
+--- a/app/views/manage/show_videos.html.erb
++++ /dev/null
+@@ -1,57 +0,0 @@
+-
+-  <script src="/video/video.js" type="text/javascript" charset="utf-8"></script>
+-  <script type="text/javascript">
+-      // 这段代码必须放在video.js后面ss
+-      // 页面加载完成  才加载VideoJS的标签
+-      VideoJS.setupAllWhenReady();
+-  </script>
+-  <!-- 皮肤 -->
+-  <link rel="stylesheet" href="/video/video-js.css" type="text/css" media="screen" title="Video JS">
+-
+-  <div class="container-fluid">
+-    <div class="row">
+-    <div class="col-md-8">
+-            <!-- Begin VideoJS -->
+-            <div class="video-js-box " style="margin: 20px;border-right: groove 1px #000000">
+-              <video id="video-screen" class="video-js vjs-big-play-centered"
+-                     width="500" height="264" style="margin: auto" controls
+-                     preload="auto" data-setup="{}">
+-                <source id="video-src" src="/test.mp4" type='video/mp4;' />
+-              </video>
+-              </div>
+-    </div>
+-      <div class="col-md-4 label-list" id="video-list" 
+-           style="padding: 20px;text-align: left;"></div>
+-    </div>
+-    <div class="row">
+-      <div class="col-md-8">
+-        <div style="margin: 20px;border-right: groove 1px #000000">
+-        <img src="/photos/1.jpg" />
+-        </div>
+-      </div>
+-      <div class="col-md-4 label-list" id="photo-list"
+-           style="padding: 20px;text-align: left;"></div>
+-    </div>
+-    </div>
+-  </div>
+-<!-- End VideoJS -->
+-  <script>
+-      // test case 
+-      data=[{id:'1',path:"/test.mp4"},{id:'2',path:"/xxx.mp4"}];
+-      (function(){
+-          str="";
+-          for(var i in data)
+-          {
+-              str+="<span class='label label-default' style='margin-right: 10px;font-size: 16px'>"+data[i].path+"</span>";
+-              str+="<button class='btn btn-sm btn-primary' onclick=changeVideo("+i.toString()+
+-              ")><span class='glyphicon glyphicon-play'></span>Play</button><hr>";
+-          }
+-          //console.log(str);
+-          $("#video-list").html(str);
+-      })();
+-      function changeVideo(x)
+-      {
+-          $("video").attr("src",data[x].path);
+-          $("video")[0].load();
+-      }
+-  </script>
+diff --git a/app/views/manage/student_lesson_info.html.erb b/app/views/manage/student_lesson_info.html.erb
+new file mode 100644
+index 0000000..cb97af3
+--- /dev/null
++++ b/app/views/manage/student_lesson_info.html.erb
+@@ -0,0 +1,88 @@
++
++  <script src="/video/video.js" type="text/javascript" charset="utf-8"></script>
++  <script type="text/javascript">
++      // 这段代码必须放在video.js后面ss
++      // 页面加载完成  才加载VideoJS的标签
++      VideoJS.setupAllWhenReady();
++  </script>
++  <!-- 皮肤 -->
++  <link rel="stylesheet" href="/video/video-js.css" type="text/css" media="screen" title="Video JS">
++
++  <div class="container-fluid">
++    <div class="row">
++      <div class="col-md-3">
++        <div style="margin: 20px">
++        <h2><%= @student.name%></h2>
++        </div>
++      </div>
++      <div class="col-md-9">
++        <div class="panel panel-default" style="margin-top: 20px;">
++          <div class="panel-heading"><%= @lesson.name%></div>
++          <div class="panel-body" style="text-align: left">
++            <div class="col-md-6">
++                <div class="input-group">
++                    <span class="input-group-addon">实验评分</span>
++                    <input type="text" class="form-control" value="hah" readonly="true">
++                </div>
++                <br>
++                <div class="panel panel-success">
++                  <div class="panel-heading">实验评论：</div>
++                  <div class="panel-body" id="lesson-comment">实验做得不错</div>
++                </div>
++            </div>
++            <div class="col-md-6">
++              <div class="input-group">
++                <span class="input-group-addon">学生得分</span>
++                <input type="text" class="form-control" value="hah">
++              </div>
++            </div>
++          </div>
++        </div>
++      </div>
++    </div>
++    <hr>
++    <div class="row">
++    <div class="col-md-8">
++            <!-- Begin VideoJS -->
++            <div class="video-js-box " style="margin: 20px;border-right: groove 1px #000000">
++              <video id="video-screen" class="video-js vjs-big-play-centered"
++                     width="500" height="264" style="margin: auto" controls
++                     preload="auto" data-setup="{}">
++                <source id="video-src" src="/test.mp4" type='video/mp4;' />
++              </video>
++              </div>
++    </div>
++      <div class="col-md-4 label-list" id="video-list" 
++           style="padding: 20px;text-align: left;"></div>
++    </div>
++    <div class="row">
++      <div class="col-md-8">
++        <div style="margin: 20px;border-right: groove 1px #000000">
++        <img src="/photos/1.jpg" />
++        </div>
++      </div>
++      <div class="col-md-4 label-list" id="photo-list"
++           style="padding: 20px;text-align: left;"></div>
++    </div>
++  </div>
++<!-- End VideoJS -->
++  <script>
++      // test case 
++      data=[{id:'1',path:"/test.mp4"},{id:'2',path:"/xxx.mp4"}];
++      (function(){
++          str="";
++          for(var i in data)
++          {
++              str+="<span class='label label-default' style='margin-right: 10px;font-size: 16px'>"+data[i].path+"</span>";
++              str+="<button class='btn btn-sm btn-primary' onclick=changeVideo("+i.toString()+
++              ")><span class='glyphicon glyphicon-play'></span>Play</button><hr>";
++          }
++          //console.log(str);
++          $("#video-list").html(str);
++      })();
++      function changeVideo(x)
++      {
++          $("video").attr("src",data[x].path);
++          $("video")[0].load();
++      }
++  </script>
+diff --git a/app/views/test/index.html.erb b/app/views/test/index.html.erb
+index da8c841..abf51d0 100644
+--- a/app/views/test/index.html.erb
++++ b/app/views/test/index.html.erb
+@@ -1,7 +1,7 @@
+-
+-<script>
+-    (function (){
+-    $.post('/manage/AddCourseToCurrentUser',{name: "ttt",description:"just  ttt", role: 'student'},
+-    function(data){alert(data)});}
+-    )();
+-</script>
+\ No newline at end of file
++<form action="/files.json" method="post">
++  <input type="file" name="file[file]">
++  <label>name
++  <input type="text" name="name">
++  </label>
++  <button type="submit" >submit</button>
++</form>
+diff --git a/config/routes.rb b/config/routes.rb
+index 9807e93..23078f1 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -74,6 +74,6 @@ Rails.application.routes.draw do
+   get 'manage/CourseInfo/:id' => 'manage#course_info'
+   get 'manage/ClassInfo/:id' => 'manage#class_info'
+   get 'manage/ShowPhotos/:id' => 'manage#show_photos'
+-  get 'manage/student/:id/lesson/:lessonId' => 'manage#show_videos'
++  get 'manage/student/:id/lesson/:lessonId' => 'manage#student_lesson_info'
+   post 'manage/AddCourseToCurrentUser' => 'manage#AddCourseToCurrentUser'
+ end
+-- 
+1.9.1
+

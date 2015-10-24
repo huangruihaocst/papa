@@ -1,0 +1,191 @@
+From 2bf97b267ee404586d50b6e08dc53bcf473986ce Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Fri, 9 Oct 2015 23:35:21 +0800
+Subject: [PATCH 053/150] database schema done
+
+---
+ README.md | 164 +++++++++++++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 120 insertions(+), 44 deletions(-)
+
+diff --git a/README.md b/README.md
+index d1c1e26..aa42373 100644
+--- a/README.md
++++ b/README.md
+@@ -86,54 +86,130 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+ 得到token字符串, 在以下url中会用到
+ 
+ ###各个URL对应JSON文件格式, 以及各个URL功能简介
+-
++标注:
++    1. xxx parameter代表http参数，在后边会说明
++    2. xxx 代表xxx类对象的json，在后面说明
++    3. \[xxx, ...\] 代表xxx类对象数组的json，在后面说明
++    
+     标记方法：
+     HTTP方法 URL                      功能                JSON格式(GET)/URL参数(POST/UPDATE/DELETE)     Token
+-        
++    
+     列表：
+-    GET    /courses.json             获得所有课程         "courses": [{"id": 1, "name": "xxx"}, ...]    No
+-    GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          No
+-    GET    /courses/1/students.json  获得id=1课的所有学生 "students": [{"id": 1, "name": "xx"}, ...]    No
+-    GET    /courses/1/assistants.json 类似上一个
+-  
+-    GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            No
+-
+-    GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..]         No
+-    GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]       Student Token
+-    GET    /students/1/courses.json  获得id=1学生所有的课程 "courses": [{"id": 1, "name": "xxx"}, ..]   Student Token
++    # namespace semesters
++    GET    /semesters.json               获得所有学年     "semesters": [semester, ...]              Student
++    POST   /semesters.json               添加一个学年     semester parameters                       Teacher
++    PUT    /semesters/1.json             修改学年信息     semester parameters                       Teacher
++    DELETE /semesters/1.json             删除某个学年     id                                        Teacher
++    GET    /semesters/courses.json       获得某个学年的所有课程 "courses": [course, ...]                Student
++    GET    /semesters/default.json       获得默认学期     "semester": semester                      Student   
+     
+-    GET    /assistants.json          类似students
+-    GET    /assistants/1.json        类似students
+-    GET    /assistants/1/courses.json 类似students
+-
+-举例：得到一个课程id=1的所有学生列表
+-   
+-```Java
+-[Java code]
+-import org.apache.http.client.HttpClient;
+-import org.apache.http.client.methods.HttpGet;
+-
+-class Main {
+-    void main(String args[]) {
+-        HttpGet httpRequest = new HttpGet("http://localhost:3000/courses/1/students.json");
+-        HttpResponse httpResponse = httpClient.execute(httpRequest);  
+-        // if successful
+-        if (httpResponse.getStatusLine().getStatusCode() == 200) {
+-            strResult = EntityUtils.toString(httpResponse.getEntity());
+-            // here, strResult is
+-            //  {
+-            //      "status": "successful",
+-            //      "students": [
+-            //          { "id": 1, "name": "Alex Wang" },
+-            //          { "id": 2, "name": "Fuck Shit" }
+-            //      ]
+-            //  }
+-        }
+-    }
+-}
+-
+-```
+-
++    # namespace courses
++    # 课程相关
++    GET    /courses.json             获得所有课程(包含所有学年的) "courses": [course, ...]               Student
++    POST   /courses.json             添加课程             course parameters                             Teacher
++    PUT    /courses/1.json           修改课程             course parameters                             Teacher
++    DELETE /courses/1.json           删除课程             id                                            Teacher
++    GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          Student
++    GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                       Student
++    POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
++    PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
++    DELETE /courses/1/teachers/1.json 删除老师            id                                            Teacher
++    
++    # 与课程有关系的表
++    GET    /courses/1/students.json  获得id=1课的所有学生 "students": [student, ...]                    Assistant
++    GET    /courses/1/assistants.json 类似上一个          "assistants": [assistant, ...]                Student
++    POST   /courses/1/assistants.json 添加助教            id                                            Teacher
++    GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            Student
++    
++    # namespace lessons
++    GET    /lessons/1.json           获得某门实验课的信息  "lesson": lesson                             Student
++    GET    /lessons/1/comments.json  获得某门课程的评价    "comments": [comment, ...]                   Teacher
++    POST   /lessons/1/comments.json  添加学生对课程的评价  lesson comment parameters                    Student
++    GET    /lessons/1/students/1/comments.json 查看助教对学生的评价 "student_comments": [student_comment,...] Student
++    POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant
++    GET    /lessons/1/students.json  某门实验课的到课学生列表 students id                               Teacher
++    POST   /lessons/1/students/1.json 学生签到                                                         Student
++    
++    # namespace students
++    # 学生相关
++    GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..] 
++    GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]       Student
++    POST   /students.json            添加一个学生         student parameters                            Teacher
++    PUT    /students/1.json          修改学生             student parameters                            Student
++    DELETE /students/1.json          删除学生             id                                            Teacher
++    
++    # 文件相关
++    GET    /students/1/files.json    获得学生所有文件列表   "files": [{"id":1, "type": "jpg", "path": "xx"}...]  Student 
++    POST   /students/1/files.json    学生添加文件                                                        Student
++    DELETE /students/1/files/1.json  删除文件                                                            Creator
++    
++    # 课程实验课相关
++    GET    /students/1/courses.json  获得所有课程           "courses": [course...]                       Student
++    PUT    /students/1/courses.json  修改学生课程列表                                                    Teacher
++    GET    /students/1/lessons/1.json       获得学生课程的信息，包括成绩     "course": course_score       Student
++    POST   /students/1/lessons/1.json       修改学生课程信息                                             Assistant  
++    GET    /students/1/lessons/1/files.json 获得某门实验课某个学生的所有文件 "files": [file, ...]         Student
++    POST   /students/1/lessons/files.json 在某门实验课上添加视频图片                                      Student
++    
++    GET    /assistants.json           获得所有助教信息      "assistant": [assistant, ...]                Student
++    GET    /assistants/1.json         获得某个助教信息      "assistant": assistant                       Assistant
++    GET    /assistants/1/courses.json 获得某个助教的所有课程 "courses": [course, ...]                    Assistant
++    GET    /assistants/files.json     助教上传的所有文件    "files": [file, ...]                         Assistant
++    
++    # 消息推送
++    GET    /students/1/messages.json  查询学生的所有消息     "messages": [message_id, ...]               Student
++    POST   /courses/1/messages.json   发送消息到某门课的所有学生 "message": message                       Assistant
++    
++    # 
++    
++Http Parameters/JSON对象格式
++    
++    1. Http Parameters
++    semester number=2009
++    
++    course  id=int,
++            name=string,
++            semester=int,
++            description=string
++            
++    lesson  id=int, 
++            name=string,   
++            description=string,
++            start_time=datetime
++            end_time=datetime
++            location=string
++            attached_file_path=string
++    
++    student id=int,
++            name=string,
++            student_number=int,
++            phone=string,
++            email=string,
++            class=string,
++            department=string,
++            avator_path=string
++            
++    assistant id=int,
++            name=string,
++            phone,
++            email=string,
++            avator_path=string
++            
++    lesson_remark id=int        // 学生对课程的评价
++            content=string
++            score=int
++            
++    student_remark id=int      // 助教对学生的评价
++            content=string
++            score=int(0-10)
++            
++    message id=int
++            type=string(homework|notification),
++            title=string,
++            deadline=datetime,
++            content=string,
++            user_id=int
++            
+ ###reason的可能值和含义
+ REASON_TOKEN_INVALID = 'token_invalid'      // token没有指定或者无效，应该检查url参数
+ REASON_TOKEN_TIMEOUT = 'token_timeout'      // token过时了，应该重新登陆
+-- 
+1.9.1
+

@@ -1,0 +1,238 @@
+From 0cfcc708e1636997bd0591bb190faf542f2ea592 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sat, 26 Sep 2015 19:18:04 +0800
+Subject: [PATCH 004/150] project config in README.md
+
+---
+ Gemfile                                 |  8 ++++-
+ Gemfile.lock                            | 23 ++++++++++++-
+ README.md                               | 59 ++++++++++++++++++++++++++++++++-
+ app/assets/javascripts/application.js   |  1 +
+ app/assets/stylesheets/application.css  | 15 ---------
+ app/assets/stylesheets/application.scss |  2 ++
+ app/views/layouts/application.html.erb  |  2 ++
+ 7 files changed, 92 insertions(+), 18 deletions(-)
+ delete mode 100644 app/assets/stylesheets/application.css
+ create mode 100644 app/assets/stylesheets/application.scss
+
+diff --git a/Gemfile b/Gemfile
+index 08918c5..aa836da 100644
+--- a/Gemfile
++++ b/Gemfile
+@@ -1,4 +1,4 @@
+-source 'https://rubygems.org'
++source 'http://ruby.taobao.org'
+ 
+ 
+ # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+@@ -23,6 +23,12 @@ gem 'jbuilder', '~> 2.0'
+ # bundle exec rake doc:rails generates the API under doc/api.
+ gem 'sdoc', '~> 0.4.0', group: :doc
+ 
++# Use Bootstrap as front-end framework.
++gem 'bootstrap-sass', '~> 3.3.5'
++
++# Use Devise for authentication
++gem 'devise'
++
+ # Use ActiveModel has_secure_password
+ # gem 'bcrypt', '~> 3.1.7'
+ 
+diff --git a/Gemfile.lock b/Gemfile.lock
+index 9266e82..230198b 100644
+--- a/Gemfile.lock
++++ b/Gemfile.lock
+@@ -1,5 +1,5 @@
+ GEM
+-  remote: https://rubygems.org/
++  remote: http://ruby.taobao.org/
+   specs:
+     actionmailer (4.2.4)
+       actionpack (= 4.2.4)
+@@ -37,8 +37,15 @@ GEM
+       thread_safe (~> 0.3, >= 0.3.4)
+       tzinfo (~> 1.1)
+     arel (6.0.3)
++    autoprefixer-rails (6.0.3)
++      execjs
++      json
++    bcrypt (3.1.10)
+     binding_of_caller (0.7.2)
+       debug_inspector (>= 0.0.1)
++    bootstrap-sass (3.3.5.1)
++      autoprefixer-rails (>= 5.0.0.1)
++      sass (>= 3.3.0)
+     builder (3.2.2)
+     coffee-rails (4.1.0)
+       coffee-script (>= 2.2.0)
+@@ -48,6 +55,13 @@ GEM
+       execjs
+     coffee-script-source (1.9.1.1)
+     debug_inspector (0.0.2)
++    devise (3.5.2)
++      bcrypt (~> 3.0)
++      orm_adapter (~> 0.1)
++      railties (>= 3.2.6, < 5)
++      responders
++      thread_safe (~> 0.1)
++      warden (~> 1.2.3)
+     erubis (2.7.0)
+     execjs (2.6.0)
+     globalid (0.3.6)
+@@ -72,6 +86,7 @@ GEM
+     multi_json (1.11.2)
+     nokogiri (1.6.6.2)
+       mini_portile (~> 0.6.0)
++    orm_adapter (0.5.0)
+     rack (1.6.4)
+     rack-test (0.6.3)
+       rack (>= 1.0)
+@@ -102,6 +117,8 @@ GEM
+     rake (10.4.2)
+     rdoc (4.2.0)
+     ref (2.0.0)
++    responders (2.1.0)
++      railties (>= 4.2.0, < 5)
+     sass (3.4.18)
+     sass-rails (5.0.4)
+       railties (>= 4.0.0, < 5.0)
+@@ -133,6 +150,8 @@ GEM
+     uglifier (2.7.2)
+       execjs (>= 0.3.0)
+       json (>= 1.8.0)
++    warden (1.2.3)
++      rack (>= 1.0)
+     web-console (2.2.1)
+       activemodel (>= 4.0)
+       binding_of_caller (>= 0.7.2)
+@@ -143,7 +162,9 @@ PLATFORMS
+   ruby
+ 
+ DEPENDENCIES
++  bootstrap-sass (~> 3.3.5)
+   coffee-rails (~> 4.1.0)
++  devise
+   jbuilder (~> 2.0)
+   jquery-rails
+   rails (= 4.2.4)
+diff --git a/README.md b/README.md
+index 29ea11b..f296164 100644
+--- a/README.md
++++ b/README.md
+@@ -1 +1,58 @@
+-==README for papdb
++#What's papdb?
++Papdb is a back-end and an api provider for PapaCard App with simple web management pages.
++
++##Development Environment
++*   Ruby 2.2.2
++*   Rails 4.2.4
++*   sqlite3 - database back-end
++*   devise 3.5.2 - authentication
++*   jquery/bootstrap-sass - front-end frameworks
++
++##How To Setup Development Environment
++###For Ubuntu/Debian
++
++#### 0. Download source code.
++#### 1. Install RVM
++    #!/bin/sh
++    gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
++    curl -sSL https://get.rvm.io | bash -s stable
++or visit [rvm.io](http://rvm.io)
++#### 2. Install Ruby
++    #!/bin/sh
++    bash -l
++    rvm install 2.2.2
++    rvm use 2.2.2
++    ruby -v
++    
++#### 3. Configure project and database.
++    #!/bin/sh
++    bundle install
++    rake db:migrate
++    rake db:seed
++    rails s
++For production, use:
++
++    #!/bin/sh
++    bundle install
++    rake db:migrate RAILS_ENV=production
++    rake db:seed RAILS_ENV=production
++    rake assets:precompile
++    rails s -e production
++and nginx configuration file:
++    
++    server {
++      listen 80 default_server;
++    
++      root /xxx;
++      index index.html;
++    
++      server_name localhost;
++    
++      location / {
++        proxy_redirect off;
++        proxy_pass http://localhost:3000;
++      }
++
++##Database schema
++I'm busy...
++    
+\ No newline at end of file
+diff --git a/app/assets/javascripts/application.js b/app/assets/javascripts/application.js
+index e07c5a8..7465856 100644
+--- a/app/assets/javascripts/application.js
++++ b/app/assets/javascripts/application.js
+@@ -13,4 +13,5 @@
+ //= require jquery
+ //= require jquery_ujs
+ //= require turbolinks
++//= require bootstrap-sprockets
+ //= require_tree .
+diff --git a/app/assets/stylesheets/application.css b/app/assets/stylesheets/application.css
+deleted file mode 100644
+index f9cd5b3..0000000
+--- a/app/assets/stylesheets/application.css
++++ /dev/null
+@@ -1,15 +0,0 @@
+-/*
+- * This is a manifest file that'll be compiled into application.css, which will include all the files
+- * listed below.
+- *
+- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+- * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+- *
+- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+- * compiled file so the styles you add here take precedence over styles defined in any styles
+- * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+- * file per style scope.
+- *
+- *= require_tree .
+- *= require_self
+- */
+diff --git a/app/assets/stylesheets/application.scss b/app/assets/stylesheets/application.scss
+new file mode 100644
+index 0000000..abccfca
+--- /dev/null
++++ b/app/assets/stylesheets/application.scss
+@@ -0,0 +1,2 @@
++@import "bootstrap-sprockets";
++@import "bootstrap";
+\ No newline at end of file
+diff --git a/app/views/layouts/application.html.erb b/app/views/layouts/application.html.erb
+index a2faa3b..84c70e0 100644
+--- a/app/views/layouts/application.html.erb
++++ b/app/views/layouts/application.html.erb
+@@ -8,6 +8,8 @@
+ </head>
+ <body>
+ 
++<%= button_to 'Hello', '#', class: 'btn btn-success' %>
++
+ <%= yield %>
+ 
+ </body>
+-- 
+1.9.1
+

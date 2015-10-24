@@ -1,0 +1,610 @@
+From ca123638ac198fbe7f8d0c218b8f3cd3da1e6e09 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Tue, 13 Oct 2015 02:16:15 +0800
+Subject: [PATCH 073/150] finish course
+
+---
+ README.md                                          |  10 +-
+ app/controllers/application_controller.rb          |  10 +-
+ app/controllers/courses_controller.rb              | 129 ++++++++++++++-------
+ app/controllers/students_controller.rb             |   8 +-
+ app/models/assisting_course.rb                     |   9 --
+ app/models/learning_course.rb                      |   9 --
+ app/models/user.rb                                 |   2 -
+ config/routes.rb                                   |   6 +-
+ ...50930115150_add_lessons_studends_and_courses.rb |  10 --
+ db/schema.rb                                       |  10 --
+ test/controllers/courses_controller_test.rb        |  78 ++++++++++++-
+ test/controllers/students_controller_test.rb       |  16 ++-
+ test/fixtures/assisting_courses.yml                |  11 --
+ test/fixtures/learning_courses.yml                 |  11 --
+ test/fixtures/participations.yml                   |   7 +-
+ test/fixtures/teaching_courses.yml                 |   7 --
+ 16 files changed, 206 insertions(+), 127 deletions(-)
+ delete mode 100644 app/models/assisting_course.rb
+ delete mode 100644 app/models/learning_course.rb
+ delete mode 100644 test/fixtures/assisting_courses.yml
+ delete mode 100644 test/fixtures/learning_courses.yml
+
+diff --git a/README.md b/README.md
+index cbf7d49..c05fd07 100644
+--- a/README.md
++++ b/README.md
+@@ -160,7 +160,9 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+     
+     # 课程实验课相关
+     GET    /students/1/courses.json  获得所有课程           "courses": [course...]                       Student
+-    PUT    /students/1/courses.json  修改学生课程列表                                                    Teacher
++    #!PUT    /students/1/courses.json  修改学生课程列表                                                    Teacher
++    POST   /students/1/courses/1.json       给学生添加课程
++    DELETE /students/1/courses/1.json       给学生删除课程
+     GET    /students/1/lessons/1.json       获得学生课程的信息，包括成绩     "course": course_score       Student
+     PUT    /students/1/lessons/1.json       修改学生课程信息                                             Assistant  
+     GET    /students/1/lessons/1/files.json 获得某门实验课某个学生的所有文件 "files": [file, ...]         Student
+@@ -330,12 +332,6 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
+     teaching_course id=int
+             belongs_to user
+             belongs_to course
+-    assisting_course id=int
+-            belongs_to user
+-            belongs_to course
+-    learning_course id=int
+-            belongs_to user
+-            belongs_to course
+     lesson_status id=int
+             score=string
+             belongs_to user
+diff --git a/app/controllers/application_controller.rb b/app/controllers/application_controller.rb
+index 8c7c559..80ba9f0 100644
+--- a/app/controllers/application_controller.rb
++++ b/app/controllers/application_controller.rb
+@@ -20,13 +20,17 @@ class ApplicationController < ActionController::Base
+     json_failed(except.message)
+   end
+   # raise TokenException if authentication failure occurs
+-  def check_token(token_str, user_id, is_teacher = false)
++  def check_token(user_id, token_str = nil, teacher_required = false)
+     raise TokenException.new(REASON_TOKEN_INVALID) unless user_id
+ 
++    if !token_str && params[:token]
++      token_str = params[:token]
++    end
++
+     if token_str
+       token = Token.find_by_token(token_str)
+-      # deny when is_teacher is required but the token is not a teacher
+-      if token && token.user_id == user_id.to_i && (!is_teacher || token.user.is_teacher)
++      # deny when teacher_required is required but the token is not a teacher
++      if token && token.user_id == user_id.to_i && (!teacher_required || token.user.is_teacher)
+         if Time.now > token.valid_until
+           raise TokenException.new(REASON_TOKEN_TIMEOUT)
+         end
+diff --git a/app/controllers/courses_controller.rb b/app/controllers/courses_controller.rb
+index c779ca2..6b49bc5 100644
+--- a/app/controllers/courses_controller.rb
++++ b/app/controllers/courses_controller.rb
+@@ -1,32 +1,36 @@
+ class CoursesController < ApplicationController
+ 
+-  before_action :set_course, only: [:show]
++  before_action :set_course, only: [:show, :destroy]
+ 
+   # GET /semesters/1/courses.json
+   # GET /students/1/courses.json
+   # GET /assistants/1/courses.json
+   # GET /teachers/1/courses.json
+   def index
+-    case
+-      when params[:semester_id]
+-        @courses = Semester.find(params[:semester_id]).courses
+-      when params[:teacher_id]
+-        check_token(params[:token], params[:teacher_id], true)
+-        @courses = User.find(params[:teacher_id]).real_teaching_courses
+-      when params[:student_id]
+-        check_token(params[:token], params[:student_id])
+-        @courses = Course.none
+-        User.find(params[:student_id]).participations.each do |participation|
+-          @courses <<= participation.course if ROLE_STUDENT == participation.role
+-        end
+-      when params[:assistant_id]
+-        check_token(params[:token], params[:assistant_id])
+-        @courses = Course.none
+-        User.find(params[:assistant_id]).participations.each do |participation|
+-          @courses <<= participation.course if ROLE_ASSISTANT == participation.role
+-        end
+-      else
+-        json_failed
++    begin
++      case
++        when params[:semester_id]
++          @courses = Semester.find(params[:semester_id]).courses
++        when params[:teacher_id]
++          check_token(params[:teacher_id], params[:token], true)
++          @courses = User.find(params[:teacher_id]).real_teaching_courses
++        when params[:student_id]
++          check_token(params[:student_id])
++          @courses = Course.none
++          User.find(params[:student_id]).participations.each do |participation|
++            @courses <<= participation.course if ROLE_STUDENT == participation.role
++          end
++        when params[:assistant_id]
++          check_token(params[:assistant_id])
++          @courses = Course.none
++          User.find(params[:assistant_id]).participations.each do |participation|
++            @courses <<= participation.course if ROLE_ASSISTANT == participation.role
++          end
++        else
++          json_failed
++      end
++    rescue ActiveRecord::RecordNotFound
++      json_failed
+     end
+   end
+ 
+@@ -43,11 +47,11 @@ class CoursesController < ApplicationController
+   # POST /assistants/1/courses/1.json
+   # POST /students/1/courses/1.json
+   def create
+-    course_create_params = params.require(:course).permit(:name, :description, :semester_id)
+     begin
+       case
+         when params[:teacher_id]
+-          check_token(params[:token], params[:teacher_id], true)
++          course_create_params = params.require(:course).permit(:name, :description, :semester_id)
++          check_token(params[:teacher_id], params[:token], true)
+           teacher = User.find(params[:teacher_id])
+           course = Course.create(course_create_params)
+           if teacher.teaching_courses.create(course_id: course.id)
+@@ -55,22 +59,18 @@ class CoursesController < ApplicationController
+           else
+             json_failed
+           end
+-        when params[:assistant_id] && params[:course_id]
+-          check_token(params[:token], params[:assistant_id])
+-          assistant = User.find(params[:assistant_id])
+-          course = Course.find(params[:course_id])
+-          assistant.courses << course
+-          if assistant.save
++        when params[:assistant_id] && params[:id]
++          check_token(params[:assistant_id])
++          if Participation.create(user_id: params[:assistant_id],
++              course_id: params[:id], role: ROLE_ASSISTANT).valid?
+             json_successful
+           else
+             json_failed
+           end
+-        when params[:student_id] && params[:course_id]
+-          check_token(params[:token], params[:student_id])
+-          student = User.find(params[:student_id])
+-          course = Course.find(params[:course_id])
+-          student.courses << course
+-          if student.save
++        when params[:student_id] && params[:id]
++          check_token(params[:student_id])
++          if Participation.create(user_id: params[:student_id],
++               course_id: params[:id], role: ROLE_STUDENT).valid?
+             json_successful
+           else
+             json_failed
+@@ -92,11 +92,32 @@ class CoursesController < ApplicationController
+     end
+   end
+ 
++  # DELETE /courses/1.json
++  # DELETE /students/1/courses/1.json
++  # DELETE /assistants/1/courses/1.json
+   def destroy
+-    if Course.find(params[:id]).destroy
+-      json_successful
+-    else
+-      json_failed
++    must_by_teacher_of(@course)
++    case
++      when params[:student_id]
++        if Participation.where(user_id: params[:student_id], course_id: @course.id, role: ROLE_STUDENT).first.destroy
++          json_successful
++        else
++          json_failed
++        end
++      when params[:assistant_id]
++        if Participation.where(user_id: params[:assistant_id], course_id: @course.id, role: ROLE_ASSISTANT).first.destroy
++          json_successful
++        else
++          json_failed
++        end
++      when @course
++        if @course.destroy
++          json_successful
++        else
++          json_failed
++        end
++      else
++        json_failed
+     end
+   end
+ 
+@@ -109,4 +130,34 @@ class CoursesController < ApplicationController
+     end
+   end
+ 
++  def must_by_teacher_of(course)
++    raise TokenException.new(REASON_TOKEN_INVALID) unless course && course.is_a?(Course)
++
++    if params[:token]
++      begin
++        token = Token.find_by_token(params[:token])
++        raise TokenException.new(REASON_TOKEN_INVALID) unless token
++        user = token.user
++      rescue
++        if current_user
++          user = current_user
++        else
++          raise TokenException.new(REASON_TOKEN_INVALID)
++        end
++      end
++    else
++      if current_user
++        user = current_user
++      else
++        raise TokenException.new(REASON_TOKEN_INVALID)
++      end
++    end
++
++    if course.teachers.include? user
++      true
++    else
++      raise TokenException.new(REASON_PERMISSION_DENIED)
++    end
++  end
++
+ end
+diff --git a/app/controllers/students_controller.rb b/app/controllers/students_controller.rb
+index dc0ea89..307fd99 100644
+--- a/app/controllers/students_controller.rb
++++ b/app/controllers/students_controller.rb
+@@ -38,8 +38,12 @@ class StudentsController < ApplicationController
+ 
+   # DELETE /courses/1/students/1.json
+   def destroy
+-    if params[:course_id] && params[:student_id]
+-
++    if params[:course_id] && params[:id]
++      if Participation.where(user_id: params[:id]).where(course_id: params[:course_id]).first.destroy
++        json_successful
++      else
++        json_failed
++      end
+     else
+       json_failed
+     end
+diff --git a/app/models/assisting_course.rb b/app/models/assisting_course.rb
+deleted file mode 100644
+index 4c43c5f..0000000
+--- a/app/models/assisting_course.rb
++++ /dev/null
+@@ -1,9 +0,0 @@
+-class AssistingCourse < ActiveRecord::Base
+-  # assistant
+-  belongs_to :user
+-  # the course you assist
+-  belongs_to :course
+-
+-  validates_associated :user
+-  validates_associated :course
+-end
+diff --git a/app/models/learning_course.rb b/app/models/learning_course.rb
+deleted file mode 100644
+index 9203c2b..0000000
+--- a/app/models/learning_course.rb
++++ /dev/null
+@@ -1,9 +0,0 @@
+-class LearningCourse < ActiveRecord::Base
+-  # student
+-  belongs_to :user
+-  # the course you learn
+-  belongs_to :course
+-
+-  validates_associated :user
+-  validates_associated :course
+-end
+diff --git a/app/models/user.rb b/app/models/user.rb
+index 5b5b034..e466608 100644
+--- a/app/models/user.rb
++++ b/app/models/user.rb
+@@ -10,8 +10,6 @@ class User < ActiveRecord::Base
+ 
+   has_many :teaching_courses
+   has_many :real_teaching_courses, through: :teaching_courses, source: :course
+-  has_many :assisting_courses
+-  has_many :learning_courses
+   has_many :lesson_statuses
+   has_many :assistant_to_student_comments, class_name: 'StudentComment', foreign_key: :creator_id
+   has_many :from_assistant_comments, class_name: 'StudentComment', foreign_key: :student_id
+diff --git a/config/routes.rb b/config/routes.rb
+index d59ef29..26fd67d 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -13,7 +13,9 @@ Rails.application.routes.draw do
+   get 'semesters/default' => 'semesters#default'
+ 
+   resources :courses, only: [:show, :update, :destroy] do
+-    resources :students, only: [:index, :create, :destroy]
++    resources :students, only: [:index, :destroy]
++    post 'students/:id' => 'students#create', as: :create_student
++
+     resources :assistants, only: [:index, :create, :destroy]
+     resources :lessons, only: [:index, :create, :destroy]
+     resources :teachers, only: [:index, :create, :destroy, :update]
+@@ -39,6 +41,8 @@ Rails.application.routes.draw do
+ 
+   resources :students, only: [:index, :show, :create, :update, :destroy] do
+     resources :courses, only: [:index, :update]
++    post 'courses/:id' => 'courses#create', as: :create_course
++
+     resources :files, only: [:index, :create, :destroy]
+     resources :lessons, only: [:show, :update] do
+       resources :files, only: [:show, :create, :destroy]
+diff --git a/db/migrate/20150930115150_add_lessons_studends_and_courses.rb b/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
+index 74e58cc..5e4424f 100644
+--- a/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
++++ b/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
+@@ -57,16 +57,6 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
+       t.integer :course_id
+     end
+ 
+-    create_table :assisting_courses do |t|
+-      t.integer :user_id
+-      t.integer :course_id
+-    end
+-
+-    create_table :learning_courses do |t|
+-      t.integer :user_id
+-      t.integer :course_id
+-    end
+-
+     create_table :lesson_statuses do |t|
+       t.string :score
+       t.integer :user_id
+diff --git a/db/schema.rb b/db/schema.rb
+index 6fdbdbc..16f4b0b 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -26,11 +26,6 @@ ActiveRecord::Schema.define(version: 20151008120334) do
+     t.integer "file_resource_id"
+   end
+ 
+-  create_table "assisting_courses", force: :cascade do |t|
+-    t.integer "user_id"
+-    t.integer "course_id"
+-  end
+-
+   create_table "course_files", force: :cascade do |t|
+     t.integer "course_id"
+     t.integer "creator_id"
+@@ -54,11 +49,6 @@ ActiveRecord::Schema.define(version: 20151008120334) do
+     t.datetime "updated_at"
+   end
+ 
+-  create_table "learning_courses", force: :cascade do |t|
+-    t.integer "user_id"
+-    t.integer "course_id"
+-  end
+-
+   create_table "lesson_comments", force: :cascade do |t|
+     t.text     "content"
+     t.string   "score"
+diff --git a/test/controllers/courses_controller_test.rb b/test/controllers/courses_controller_test.rb
+index 5d543f4..a0c021e 100644
+--- a/test/controllers/courses_controller_test.rb
++++ b/test/controllers/courses_controller_test.rb
+@@ -12,6 +12,13 @@ class CoursesControllerTest < ActionController::TestCase
+     assert json['courses'].count > 0
+   end
+ 
++  # GET /semester/1/courses.json
++  test 'should not get courses by bad semester' do
++    get :index, format: :json, semester_id: -1
++    json = JSON.parse(response.body)
++    assert_equal STATUS_FAIL, json['status']
++  end
++
+   # GET /teachers/1/courses.json
+   test 'api should get courses by teacher' do
+     u = User.find_by_name('alex')
+@@ -95,8 +102,50 @@ class CoursesControllerTest < ActionController::TestCase
+     assert_equal STATUS_SUCCESS, json['status']
+   end
+ 
++  # POST /teachers/1/courses.json
++  test 'api should create course by teacher' do
++    u = User.find_by_name('alex')
++    token_str = u.create_token.token
++
++    assert_difference 'TeachingCourse.count' do
++      post :create, teacher_id: u.id, token: token_str, course: { name: 'test course', description: 'new' }
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
++  # POST /assistants/1/courses/1.json
++  test 'api should relate course to assitant' do
++    u = User.find_by_name('ciara')
++    token_str = u.create_token.token
++    course = Course.first
++
++    assert_difference 'Participation.count' do
++      post :create, assistant_id: u.id, id: course.id, token: token_str
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
++  # POST /students/1/courses/1.json
++  test 'api should relate course to student' do
++    u = User.find_by_name('betty')
++    token_str = u.create_token.token
++    course = Course.first
++
++    assert_difference 'Participation.count' do
++      post :create, student_id: u.id, id: course.id, token: token_str
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
++
+   # DELETE /courses/1.json
+   test 'api should delete course by id with teacher token' do
++    u = User.find_by_name('alex')
++    token_str = u.create_token.token
++
+     course = Course.find_by_name('Operation System')
+     teacher = course.teachers.first
+     token_str = teacher.create_token.token
+@@ -107,13 +156,34 @@ class CoursesControllerTest < ActionController::TestCase
+     assert_equal STATUS_SUCCESS, json['status']
+   end
+ 
+-  # POST /teachers/1/courses.json
+-  test 'api should create course by teacher' do
++  # DELETE /students/1/courses/1.json
++  test 'should unrelate course with student' do
+     u = User.find_by_name('alex')
+     token_str = u.create_token.token
+ 
+-    assert_difference 'TeachingCourse.count' do
+-      post :create, teacher_id: u.id, token: token_str, course: { name: 'test course', description: 'new' }
++    user = User.find_by_name('alex')
++    course = Course.find_by_name('Operation System')
++
++    assert_difference 'Participation.count', -1 do
++      delete :destroy, foramt: :json, student_id: user.id, id: course.id, token: token_str
+     end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
++  # DELETE /assistants/1/courses/1.json
++  test 'should unrelate course with assistant' do
++    u = User.find_by_name('alex')
++    token_str = u.create_token.token
++
++    p = Participation.where(role: ROLE_ASSISTANT).first
++    user = p.user
++    course = p.course
++
++    assert_difference 'Participation.count', -1 do
++      delete :destroy, foramt: :json, assistant_id: user.id, id: course.id, token: token_str
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
+   end
+ end
+diff --git a/test/controllers/students_controller_test.rb b/test/controllers/students_controller_test.rb
+index 10c9919..dc2d0d8 100644
+--- a/test/controllers/students_controller_test.rb
++++ b/test/controllers/students_controller_test.rb
+@@ -3,17 +3,31 @@ require 'test_helper'
+ class StudentsControllerTest < ActionController::TestCase
+   test 'api should get students by course' do
+     get :index, { format: :json, course_id: Course.find_by_name('Operation System').id }
+-    json = JSON.parse(@response.body)
++    json = JSON.parse(response.body)
+     assert_equal json['status'], STATUS_SUCCESS
+     assert json['students'].is_a? Array
+   end
+ 
+   test 'api should add student by course' do
++    course = Course.first
++    student = User.last
+ 
++    assert_difference 'Participation.count' do
++      post :create, format: :json, course_id: course.id, id: student.id
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
+   end
+ 
+   test 'api should remove student from course' do
++    course = Participation.first.course
++    student = Participation.first.user
+ 
++    assert_difference 'Participation.count', -1 do
++      delete :destroy, format: :json, course_id: course.id, id: student.id
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
+   end
+ 
+ end
+diff --git a/test/fixtures/assisting_courses.yml b/test/fixtures/assisting_courses.yml
+deleted file mode 100644
+index 937a0c0..0000000
+--- a/test/fixtures/assisting_courses.yml
++++ /dev/null
+@@ -1,11 +0,0 @@
+-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+-
+-# This model initially had no columns defined.  If you add columns to the
+-# model remove the '{}' from the fixture names and add the columns immediately
+-# below each fixture, per the syntax in the comments below
+-#
+-one: {}
+-# column: value
+-#
+-two: {}
+-#  column: value
+diff --git a/test/fixtures/learning_courses.yml b/test/fixtures/learning_courses.yml
+deleted file mode 100644
+index 937a0c0..0000000
+--- a/test/fixtures/learning_courses.yml
++++ /dev/null
+@@ -1,11 +0,0 @@
+-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+-
+-# This model initially had no columns defined.  If you add columns to the
+-# model remove the '{}' from the fixture names and add the columns immediately
+-# below each fixture, per the syntax in the comments below
+-#
+-one: {}
+-# column: value
+-#
+-two: {}
+-#  column: value
+diff --git a/test/fixtures/participations.yml b/test/fixtures/participations.yml
+index 9994761..6207b7a 100644
+--- a/test/fixtures/participations.yml
++++ b/test/fixtures/participations.yml
+@@ -5,7 +5,12 @@ alex_os:
+ 
+ betty_os:
+   user: betty
+-  course: cpp
++  course: os
++  role: <%= ROLE_ASSISTANT %>
++
++betty_os:
++  user: betty
++  course: os
+   role: <%= ROLE_ASSISTANT %>
+ 
+ alex_ds:
+diff --git a/test/fixtures/teaching_courses.yml b/test/fixtures/teaching_courses.yml
+index 0c5093e..d32a3b9 100644
+--- a/test/fixtures/teaching_courses.yml
++++ b/test/fixtures/teaching_courses.yml
+@@ -1,10 +1,3 @@
+-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+-
+-# This model initially had no columns defined.  If you add columns to the
+-# model remove the '{}' from the fixture names and add the columns immediately
+-# below each fixture, per the syntax in the comments below
+-#
+-
+ alex_teaches_os:
+   user: alex
+   course: os
+-- 
+1.9.1
+

@@ -1,0 +1,24 @@
+From aac454d9432768692750be345c38a277a3554444 Mon Sep 17 00:00:00 2001
+From: sleepy_chord <sj702d5@foxmail.com>
+Date: Fri, 16 Oct 2015 12:10:52 +0800
+Subject: [PATCH 085/150] PAPA-53 routes modified
+
+---
+ config/routes.rb | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config/routes.rb b/config/routes.rb
+index 88d2fad..9807e93 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -74,6 +74,6 @@ Rails.application.routes.draw do
+   get 'manage/CourseInfo/:id' => 'manage#course_info'
+   get 'manage/ClassInfo/:id' => 'manage#class_info'
+   get 'manage/ShowPhotos/:id' => 'manage#show_photos'
+-  get 'manage/ShowVideos/:id' => 'manage#show_videos'
++  get 'manage/student/:id/lesson/:lessonId' => 'manage#show_videos'
+   post 'manage/AddCourseToCurrentUser' => 'manage#AddCourseToCurrentUser'
+ end
+-- 
+1.9.1
+

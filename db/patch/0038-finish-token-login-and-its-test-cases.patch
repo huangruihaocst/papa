@@ -1,0 +1,373 @@
+From 4ab43ef6703b415bb5081fd1f87cdafaa1ccf026 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Thu, 8 Oct 2015 21:24:00 +0800
+Subject: [PATCH 038/150] finish token login and its test cases
+
+---
+ README.md                                          | 38 +++++++++++++++-------
+ app/controllers/courses_controller.rb              | 13 +++++---
+ app/controllers/students_controller.rb             |  4 +++
+ app/controllers/users/sessions_controller.rb       | 12 +++----
+ app/models/token.rb                                | 36 ++++++++++++++++++++
+ app/models/user.rb                                 | 11 +++++--
+ config/initializers/constants.rb                   |  7 ++++
+ .../20151008120334_add_authentication_token.rb     |  9 +++++
+ db/schema.rb                                       |  8 ++++-
+ test/controllers/courses_controller_test.rb        | 30 +++++++++++++++++
+ test/controllers/users/sessions_controller_test.rb | 10 ++++--
+ 11 files changed, 149 insertions(+), 29 deletions(-)
+ create mode 100644 app/models/token.rb
+ create mode 100644 db/migrate/20151008120334_add_authentication_token.rb
+
+diff --git a/README.md b/README.md
+index 0eb7466..84ffe32 100644
+--- a/README.md
++++ b/README.md
+@@ -65,28 +65,38 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
+ 
+ 该JSON文件格式为：
+ { 
+-    status: 'successful'/'failed' // 代表获取成功与否
+-    reason: 'xxx'                 // 如果失败了， 这里显示失败原因
+-    \*CONTENT\*                   // 其余部分每个URL不同，对于每个URL请在下一章节看对应的数据格式
++    status: 'successful'/'failed', // 代表获取成功与否
++    reason: 'xxx',                 // 如果失败了， 这里显示失败原因
++    \*CONTENT\*                    // 其余部分每个URL不同，对于每个URL请在下一章节看对应的数据格式
+ }
+ 
++###登陆
++POST /users/sign_in     login=phone&encrpyted_password=xxx
++返回json
++{ 
++    status: 'successful'/'faild',
++    reason: 'invalid_password...', // 具体含义在后面介绍
++    token: '123456777777777'
++}
++得到token字符串, 在以下url中会用到
++
+ ###各个URL对应JSON文件格式, 以及各个URL功能简介
+ 
+     标记方法：
+-    HTTP方法 URL                      功能                JSON格式(GET)/URL参数(POST/UPDATE/DELETE)
++    HTTP方法 URL                      功能                JSON格式(GET)/URL参数(POST/UPDATE/DELETE)     Token
+         
+     
+     列表：
+-    GET    /courses.json             获得所有课程         "courses": [{"id": 1, "name": "xxx"}, ...]
+-    GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }
+-    GET    /courses/1/students.json  获得id=1课的所有学生 "students": [{"id": 1, "name": "xx"}, ...]
++    GET    /courses.json             获得所有课程         "courses": [{"id": 1, "name": "xxx"}, ...]    No
++    GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          No
++    GET    /courses/1/students.json  获得id=1课的所有学生 "students": [{"id": 1, "name": "xx"}, ...]    No
+   
+-    GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]
++    GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            No
++
++    GET    /students.json            获得所有学生         "students": [{"id":1, "name": "xx"..]         No
++    GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]       Student Token
++    GET    /students/1/courses.json  获得id=1学生所有的课程 "courses": [{"id": 1, "name": "xxx"}, ..]   Student Token
+ 
+-    GET    /students.json            获得所有学生         "students": [{"id":1, "name": "xx"..]
+-    GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]
+-    GET    /students/1/courses.json  获得id=1学生所有的课程 "courses": [{"id": 1, "name": "xxx"}, ..]
+-   
+ 举例：得到一个课程id=1的所有学生列表
+    
+ ```Java
+@@ -115,6 +125,10 @@ class Main {
+ 
+ ```
+ 
++###reason的可能值和含义
++REASON_TOKEN_INVALID = 'token_invalid'      // token没有指定或者无效，应该检查url参数
++REASON_TOKEN_TIMEOUT = 'token_timeout'      // token过时了，应该重新登陆
++
+ ##TODO
+ 1.  Database Schema
+ 1.  Unit Test
+diff --git a/app/controllers/courses_controller.rb b/app/controllers/courses_controller.rb
+index f751a1b..cfbe829 100644
+--- a/app/controllers/courses_controller.rb
++++ b/app/controllers/courses_controller.rb
+@@ -5,15 +5,20 @@ class CoursesController < ApplicationController
+   # GET /courses
+   # GET /courses.json
+   def index
++    # list courses of a student
+     if params[:student_id]
+-      @courses = Course.none
+-      User.find(params[:student_id]).participations.each do |participation|
+-        @courses <<= participation.course
++      result = Token.check_token(params, params[:student_id])
++      if result == STATUS_SUCCESS
++          @courses = Course.none
++          User.find(params[:student_id]).participations.each do |participation|
++            @courses <<= participation.course
++          end
++      else
++        json_failed(result)
+       end
+     else
+       @courses = Course.all
+     end
+-
+   end
+ 
+   # GET /courses/1
+diff --git a/app/controllers/students_controller.rb b/app/controllers/students_controller.rb
+index 96273dc..4ca3a1f 100644
+--- a/app/controllers/students_controller.rb
++++ b/app/controllers/students_controller.rb
+@@ -12,11 +12,15 @@ class StudentsController < ApplicationController
+   end
+ 
+   def show
++    # invalid student id
+     unless @student
+       respond_to do |format|
+         format.json { json_failed('not found') }
+       end
+     end
++
++    result = Token.check_token(params, @student.id)
++    json_failed(result) unless result == STATUS_SUCCESS
+   end
+ 
+   private
+diff --git a/app/controllers/users/sessions_controller.rb b/app/controllers/users/sessions_controller.rb
+index 63606ca..f7b92e2 100644
+--- a/app/controllers/users/sessions_controller.rb
++++ b/app/controllers/users/sessions_controller.rb
+@@ -13,19 +13,20 @@ class Users::SessionsController < Devise::SessionsController
+       format.json do
+         self.resource = warden.authenticate!(auth_options)
+         sign_in(resource_name, resource)
+-        render json: { status: STATUS_SUCCESS }
++        token = resource.create_token
++        render json: { status: STATUS_SUCCESS, token: token.token }
+       end
+     end
+-
+   end
+ 
+-  # #DELETE /resource/sign_out
++  # DELETE /resource/sign_out
+   def destroy
+     respond_to do |format|
+       format.html { super }
+       format.json do
+         begin
+-          Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
++          token = Token.find_by_token(params[:token])
++          token.destroy
+           render json: { status: STATUS_SUCCESS }
+         rescue
+           render json: { status: STATUS_FAIL }
+@@ -34,11 +35,10 @@ class Users::SessionsController < Devise::SessionsController
+     end
+   end
+ 
+-
+   protected
+ 
+   #If you have extra params to permit, append them to the sanitizer.
+   def configure_sign_in_params
+-    devise_parameter_sanitizer.for(:sign_in) << :login
++    devise_parameter_sanitizer.for(:sign_in) << :login << :token
+   end
+ end
+diff --git a/app/models/token.rb b/app/models/token.rb
+new file mode 100644
+index 0000000..f491fa1
+--- /dev/null
++++ b/app/models/token.rb
+@@ -0,0 +1,36 @@
++class Token < ActiveRecord::Base
++  validates_associated :user
++  validates :valid_until, presence: true
++  validates :token, presence: true
++
++  belongs_to :user
++
++  def self.safe_token
++    rand(TOKEN_MAX_RAND).to_s
++  end
++
++  def token_valid?
++    valid_until < Time.now
++  end
++
++  def self.check_token(params, user_id)
++    return REASON_TOKEN_INVALID unless params[:token]
++
++    begin
++      token = Token.find_by_token(params[:token])
++      raise ActiveRecord::RecordNotFound unless token
++      if token.user_id == user_id.to_i
++        if token.valid_until > Time.now
++          return STATUS_SUCCESS
++        else
++          return REASON_TOKEN_TIMEOUT
++        end
++      else
++        return REASON_TOKEN_INVALID
++      end
++    rescue ActiveRecord::RecordNotFound
++      return REASON_TOKEN_INVALID
++    end
++  end
++
++end
+\ No newline at end of file
+diff --git a/app/models/user.rb b/app/models/user.rb
+index a5a7ff0..55e991c 100644
+--- a/app/models/user.rb
++++ b/app/models/user.rb
+@@ -1,12 +1,12 @@
+ class User < ActiveRecord::Base
+-  # Include default devise modules. Others available are:
+-  # :confirmable, :lockable, :timeoutable and :omniauthable
++
+   devise :database_authenticatable, :registerable,
+          :recoverable, :rememberable, :trackable, :validatable
+-  # phone, name, email
+ 
++  # phone, name, email
+   has_many :participations
+   has_many :courses, through: :participations
++  has_many :tokens
+ 
+   # the following 4 methods allow us to login with phone or email
+   def login=(login)
+@@ -28,4 +28,9 @@ class User < ActiveRecord::Base
+     false
+   end
+ 
++  # for token authentication
++  def create_token
++    Token.create(user_id: id, token: Token.safe_token, valid_until: Time.now + TOKEN_VALID_TIME_SEC)
++  end
++
+ end
+diff --git a/config/initializers/constants.rb b/config/initializers/constants.rb
+index 66cacea..a6813ad 100644
+--- a/config/initializers/constants.rb
++++ b/config/initializers/constants.rb
+@@ -3,3 +3,10 @@ ROLE_STUDENT = 'student'
+ ROLE_ASSISTANT = 'assistant'
+ STATUS_SUCCESS = 'successful'
+ STATUS_FAIL = 'failed'
++
++TOKEN_MAX_RAND = 2**192 - 1
++TOKEN_VALID_TIME_SEC = 2 * 60 * 60 # 2h
++
++REASON_PERMISSION_DENIED = 'permission_denied'
++REASON_TOKEN_INVALID = 'token_invalid'
++REASON_TOKEN_TIMEOUT = 'token_timeout'
+\ No newline at end of file
+diff --git a/db/migrate/20151008120334_add_authentication_token.rb b/db/migrate/20151008120334_add_authentication_token.rb
+new file mode 100644
+index 0000000..0fcc548
+--- /dev/null
++++ b/db/migrate/20151008120334_add_authentication_token.rb
+@@ -0,0 +1,9 @@
++class AddAuthenticationToken < ActiveRecord::Migration
++  def change
++    create_table :tokens do |t|
++      t.string    :token, null: false
++      t.integer   :user_id, null: false
++      t.datetime  :valid_until, null: false
++    end
++  end
++end
+diff --git a/db/schema.rb b/db/schema.rb
+index 61784be..19da888 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -11,7 +11,7 @@
+ #
+ # It's strongly recommended that you check this file into your version control system.
+ 
+-ActiveRecord::Schema.define(version: 20150930115150) do
++ActiveRecord::Schema.define(version: 20151008120334) do
+ 
+   create_table "courses", force: :cascade do |t|
+     t.string "name"
+@@ -33,6 +33,12 @@ ActiveRecord::Schema.define(version: 20150930115150) do
+     t.string  "role",      default: "student"
+   end
+ 
++  create_table "tokens", force: :cascade do |t|
++    t.string   "token",       null: false
++    t.integer  "user_id",     null: false
++    t.datetime "valid_until", null: false
++  end
++
+   create_table "users", force: :cascade do |t|
+     t.string   "name",                   default: ""
+     t.string   "phone"
+diff --git a/test/controllers/courses_controller_test.rb b/test/controllers/courses_controller_test.rb
+index 7c4af81..25bb8b7 100644
+--- a/test/controllers/courses_controller_test.rb
++++ b/test/controllers/courses_controller_test.rb
+@@ -9,6 +9,36 @@ class CoursesControllerTest < ActionController::TestCase
+     assert json['courses'].count > 0
+   end
+ 
++  test 'api should get courses by student with token' do
++    u = User.first
++    token_str = u.create_token.token
++
++    get :index, format: :json, student_id: u.id, token: token_str
++    json = JSON.parse(@response.body)
++    assert_equal json['status'], STATUS_SUCCESS
++    assert_not_nil json['courses']
++  end
++
++  test 'api should not get courses by student with invalid token' do
++    u = User.first
++
++    get :index, format: :json, student_id: u.id, token: 'invalid token'
++    json = JSON.parse(@response.body)
++    assert_equal STATUS_FAIL, json['status']
++    assert_equal json['reason'], REASON_TOKEN_INVALID
++  end
++
++  test 'api should not get courses if time out' do
++    u = User.first
++    # create an invalid token
++    token = Token.create(user_id: u.id, token: rand(TOKEN_MAX_RAND).to_s, valid_until: Time.now - 200)
++
++    get :index, format: :json, student_id: u.id, token: token.token
++    json = JSON.parse(@response.body)
++    assert_equal json['status'], STATUS_FAIL
++    assert_equal json['reason'], REASON_TOKEN_TIMEOUT
++  end
++
+   test 'api should get course by id' do
+     get :show, format: :json, id: Course.first.id
+     json = JSON.parse(@response.body)
+diff --git a/test/controllers/users/sessions_controller_test.rb b/test/controllers/users/sessions_controller_test.rb
+index 24f06a0..9aaa314 100644
+--- a/test/controllers/users/sessions_controller_test.rb
++++ b/test/controllers/users/sessions_controller_test.rb
+@@ -19,9 +19,13 @@ class Users::SessionsControllerTest < ActionController::TestCase
+     assert_equal assigns[:user].email, 'alex@b.c'
+   end
+ 
+-  test 'should sign out and returns json' do
+-    sign_in User.first
+-    delete :destroy, { format: :json }
++  test 'should sign in and sign out with token' do
++    post :create, { format: :json, user: { login: 'alex@b.c', password: '123' } }
++    json = JSON.parse(@response.body)
++    assert_equal json['status'], STATUS_SUCCESS
++    assert_not_nil json['token']
++
++    post :destroy, { format: :json, token: json['token'] }
+     json = JSON.parse(@response.body)
+     assert_equal json['status'], STATUS_SUCCESS
+   end
+-- 
+1.9.1
+

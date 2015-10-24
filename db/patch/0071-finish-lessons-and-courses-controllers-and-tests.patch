@@ -1,0 +1,723 @@
+From 3a7c5484db33e25af36ff6cb84613974876ff01d Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Mon, 12 Oct 2015 17:59:49 +0800
+Subject: [PATCH 071/150] finish lessons and courses controllers and tests
+
+---
+ README.md                                          | 24 +++++++-----
+ app/controllers/courses_controller.rb              | 17 +++++++++
+ app/controllers/lesson_comments_controller.rb      | 11 ++++++
+ app/controllers/lessons_controller.rb              | 28 ++++++++++----
+ app/controllers/semesters_controller.rb            | 18 +++++++--
+ app/controllers/teachers_controller.rb             | 40 ++++++++++++++++++++
+ app/models/course.rb                               |  4 +-
+ app/views/teachers/index.json.jbuilder             |  7 ++++
+ config/initializers/constants.rb                   |  1 +
+ config/routes.rb                                   | 22 +++++------
+ test/controllers/courses_controller_test.rb        | 43 ++++++++++++++++++++++
+ .../controllers/lesson_comments_controller_test.rb | 11 ++++--
+ test/controllers/lessons_controller_test.rb        | 19 ++++++++--
+ test/controllers/semesters_controller_test.rb      | 41 +++++++++++++++++++--
+ test/controllers/students_controller_test.rb       |  9 +++++
+ test/controllers/teachers_controller_test.rb       | 34 +++++++++++++++--
+ test/fixtures/courses.yml                          |  7 +++-
+ test/fixtures/semesters.yml                        | 20 +++++-----
+ test/fixtures/teaching_courses.yml                 |  8 ++++
+ test/fixtures/users.yml                            |  7 ++++
+ 20 files changed, 314 insertions(+), 57 deletions(-)
+ create mode 100644 app/views/teachers/index.json.jbuilder
+
+diff --git a/README.md b/README.md
+index 9304ee6..6b50471 100644
+--- a/README.md
++++ b/README.md
+@@ -105,31 +105,37 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+     
+     # namespace courses
+     # 课程相关
+-    GET    /courses.json             获得所有课程(包含所有学年的) "courses": [course, ...]               Student
+-    POST   /courses.json             添加课程             course parameters                             Teacher
++    #!GET    /courses.json             获得所有课程(包含所有学年的) "courses": [course, ...]               Student
++    #!POST   /courses.json             添加课程             course parameters                             Teacher
+     PUT    /courses/1.json           修改课程             course parameters                             Teacher
+     DELETE /courses/1.json           删除课程             id                                            Teacher
+     GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          Student
+     
+     # 与课程有关系的资源
+     GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                        Student
+-    POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
+-    PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
++    #!POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
++    #!PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
+     DELETE /courses/1/teachers/1.json 删除老师            id                                            Teacher
+     
+     GET    /courses/1/students.json  获得id=1课的所有学生 "students": [student, ...]                    Assistant
+-    POST   /courses/1/students.json  添加学生
++    #!POST   /courses/1/students.json  添加学生              
+     DELETE /courses/1/students/1.json 删除学生
++    ?POST   /courses/1/students/1.json 添加学生
+     GET    /courses/1/assistants.json 类似上一个          "assistants": [assistant, ...]                Student
+-    POST   /courses/1/assistants.json 添加助教            id                                            Teacher
+-    DELETE /courses/1/assistants/1.json 删除助教
++    #!POST   /courses/1/assistants.json 添加助教            id                                            Teacher
++    #!DELETE /courses/1/assistants/1.json 删除助教
++    ?POST   /courses/1/assistants/1.json 添加助教            id                                            Teacher
++    
+     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            Student
+     POST   /courses/1/lessons.json   向课程中添加实验课
+-    DELETE /courses/1/lessons/1.json 从课程中删除实验课
++    #!DELETE /courses/1/lessons/1.json 从课程中删除实验课
++    ?DELETE /lessons/1.json          删掉实验课
+     
+     # namespace lessons
+     GET    /lessons/1.json           获得某门实验课的信息  "lesson": lesson                             Student
+-    GET    /lessons/1/comments.json  获得某门课程的评价    "comments": [comment, ...]                   Teacher
++    #!GET    /lessons/1/comments.json  获得某门课程的评价    "comments": [comment, ...]                   Teacher
++    ?GET    /lessons/1/comments.json  获得某门课程的评价    "lesson_comments": [lesson_comment, ...]                   Teacher
++
+     POST   /lessons/1/comments.json  添加学生对课程的评价  lesson comment parameters                    Student
+     GET    /lessons/1/students/1/comments.json 查看助教对学生的评价 "student_comments": [student_comment,...] Student
+     POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant
+diff --git a/app/controllers/courses_controller.rb b/app/controllers/courses_controller.rb
+index df93a06..c779ca2 100644
+--- a/app/controllers/courses_controller.rb
++++ b/app/controllers/courses_controller.rb
+@@ -83,6 +83,23 @@ class CoursesController < ApplicationController
+     end
+   end
+ 
++  # PUT /courses/1.json
++  def update
++    if Course.find(params[:id]).update(params.require(:course).permit(:name, :description, :semester_id))
++      json_successful
++    else
++      json_failed
++    end
++  end
++
++  def destroy
++    if Course.find(params[:id]).destroy
++      json_successful
++    else
++      json_failed
++    end
++  end
++
+   private
+   def set_course
+     begin
+diff --git a/app/controllers/lesson_comments_controller.rb b/app/controllers/lesson_comments_controller.rb
+index 6d73a91..7f01907 100644
+--- a/app/controllers/lesson_comments_controller.rb
++++ b/app/controllers/lesson_comments_controller.rb
+@@ -1,2 +1,13 @@
+ class LessonCommentsController < ApplicationController
++
++  # GET /lessons/1/comments.json
++  def index
++
++  end
++
++  # POST /lessons/1/comments.json
++  def create
++
++  end
++
+ end
+diff --git a/app/controllers/lessons_controller.rb b/app/controllers/lessons_controller.rb
+index 01c73ce..6a4af07 100644
+--- a/app/controllers/lessons_controller.rb
++++ b/app/controllers/lessons_controller.rb
+@@ -1,15 +1,17 @@
+ 
+ class LessonsController < ApplicationController
+ 
+-  before_action :set_lesson, only: [:show]
++  before_action :set_lesson, only: [:show, :destroy]
+ 
+-  # GET /lessons
+-  # GET /lessons.json
++  # GET /courses/1/lessons.json
+   def index
+-    @lessons = Lesson.all
++    if params[:course_id]
++      @lessons = Course.find(params[:course_id]).lessons
++    else
++      json_failed
++    end
+   end
+ 
+-  # GET /lessons/1
+   # GET /lessons/1.json
+   def show
+     unless @lesson
+@@ -20,11 +22,12 @@ class LessonsController < ApplicationController
+     end
+   end
+ 
+-  # POST /lessons
++  # POST /courses/1/lessons.json
+   def create
+-    @lesson =  Lesson.create(
++    @lesson = Course.find(params[:course_id]).lessons.create(
+         params.require(:lesson).
+-            permit(:name, :description, :start_time, :end_time, :location).merge({ course_id: params[:course_id] }))
++        permit(:name, :description, :start_time, :end_time, :location).
++            merge({ course_id: params[:course_id] }))
+ 
+     respond_to do |format|
+       if @lesson.valid?
+@@ -37,6 +40,15 @@ class LessonsController < ApplicationController
+     end
+   end
+ 
++  # DELETE /lessons/1.json
++  def destroy
++    if @lesson && @lesson.destroy
++      json_successful
++    else
++      json_failed
++    end
++  end
++
+   private
+   def set_lesson
+     begin
+diff --git a/app/controllers/semesters_controller.rb b/app/controllers/semesters_controller.rb
+index d17298b..43c44a1 100644
+--- a/app/controllers/semesters_controller.rb
++++ b/app/controllers/semesters_controller.rb
+@@ -19,11 +19,23 @@ class SemestersController < ApplicationController
+   end
+ 
+   def update
+-
++    respond_to do |format|
++      if Semester.find(params[:id]).update(params.require(:semester).permit(:name))
++        format.json { json_successful }
++      else
++        format.json { json_failed }
++      end
++    end
+   end
+ 
+-  def delete
+-
++  def destroy
++    respond_to do |format|
++      if Semester.find(params[:id]).destroy
++        format.json { json_successful }
++      else
++        format.json { json_failed }
++      end
++    end
+   end
+ 
+ end
+diff --git a/app/controllers/teachers_controller.rb b/app/controllers/teachers_controller.rb
+index 2ed69e9..00aa1f6 100644
+--- a/app/controllers/teachers_controller.rb
++++ b/app/controllers/teachers_controller.rb
+@@ -1,2 +1,42 @@
+ class TeachersController < ApplicationController
++
++  # GET /courses/1/teachers.json
++  def index
++    @teachers = Course.find(params[:course_id]).teachers
++  end
++
++  # POST /courses/1/teachers/1.json
++  # POST /teachers.json
++  def create
++    if params[:id]
++      course = Course.find(params[:course_id])
++      teacher = User.find(params[:id])
++
++      course.teachers << teacher
++      if course.save
++        json_successful
++      else
++        json_failed
++      end
++    else
++      json_failed(REASON_NOT_IMPLEMENTED)
++    end
++  end
++
++  # DELETE /courses/1/teachers/1.json
++  # DELETE /teachers/1.json
++  def destroy
++    if params[:course_id]
++      course = Course.find(params[:course_id])
++      teacher = User.find(params[:id])
++      if teacher.teaching_courses.where(course_id: course.id).first.destroy
++        json_successful
++      else
++        json_failed
++      end
++    else
++      json_failed(REASON_NOT_IMPLEMENTED)
++    end
++  end
++
+ end
+diff --git a/app/models/course.rb b/app/models/course.rb
+index ef29249..f57483b 100644
+--- a/app/models/course.rb
++++ b/app/models/course.rb
+@@ -6,10 +6,10 @@ class Course < ActiveRecord::Base
+   has_many :lessons
+ 
+   has_many :participations
+-  has_many :students, through: :participations, foreign_key: :user, class_name: 'User'
++  has_many :students, through: :participations, source: :user
+ 
+   has_many :teaching_courses
+-  has_many :teachers, through: :teaching_courses, foreign_key: :user, class_name: 'User'
++  has_many :teachers, through: :teaching_courses, source: :user
+ 
+   has_many :messages
+ 
+diff --git a/app/views/teachers/index.json.jbuilder b/app/views/teachers/index.json.jbuilder
+new file mode 100644
+index 0000000..3f12b2f
+--- /dev/null
++++ b/app/views/teachers/index.json.jbuilder
+@@ -0,0 +1,7 @@
++json.status STATUS_SUCCESS
++json.teachers do
++  json.array!(@teachers) do |teacher|
++    json.extract! teacher, :id
++    json.extract! teacher, :name
++  end
++end
+\ No newline at end of file
+diff --git a/config/initializers/constants.rb b/config/initializers/constants.rb
+index 389a610..8600334 100644
+--- a/config/initializers/constants.rb
++++ b/config/initializers/constants.rb
+@@ -11,5 +11,6 @@ REASON_PERMISSION_DENIED = 'permission_denied'
+ REASON_TOKEN_INVALID = 'token_invalid'
+ REASON_TOKEN_TIMEOUT = 'token_timeout'
+ REASON_TOKEN_NOT_MATCH = 'token_not_match'
++REASON_NOT_IMPLEMENTED = 'not_implemented'
+ 
+ ALLOWED_FILE_SUFFIXES = [ 'jpg', 'gif', 'png', 'mp4', 'mpg', 'avi' ]
+\ No newline at end of file
+diff --git a/config/routes.rb b/config/routes.rb
+index e9ad6f7..13d959f 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -7,20 +7,20 @@ Rails.application.routes.draw do
+ 
+   get 'users/current_user.json' => 'users#current'
+ 
+-  resources :semesters, only: [:index, :create, :update, :delete] do
++  resources :semesters, only: [:index, :create, :update, :destroy] do
+     resources :courses, only: [:index]
+-    get 'default' => 'semesters#default'
+   end
++  get 'semesters/default' => 'semesters#default'
+ 
+-  resources :courses, only: [:show, :update, :delete] do
+-    resources :students, only: [:index, :create, :delete]
+-    resources :assistants, only: [:index, :create, :delete]
+-    resources :lessons, only: [:index, :create, :delete]
+-    resources :teachers, only: [:index, :create, :delete, :update]
++  resources :courses, only: [:show, :update, :destroy] do
++    resources :students, only: [:index, :create, :destroy]
++    resources :assistants, only: [:index, :create, :destroy]
++    resources :lessons, only: [:index, :create, :destroy]
++    resources :teachers, only: [:index, :create, :destroy, :update]
+     resources :messages, only: [:create]
+   end
+ 
+-  resources :lessons, only: [:show] do
++  resources :lessons, only: [:show, :destroy] do
+     # students' comments to the lesson
+     resources :comments, controller: 'lesson_comments', only: [:index, :create]
+ 
+@@ -34,11 +34,11 @@ Rails.application.routes.draw do
+     resources :students, only: [:index, :create]
+   end
+ 
+-  resources :students, only: [:index, :show, :create, :update, :delete] do
++  resources :students, only: [:index, :show, :create, :update, :destroy] do
+     resources :courses, only: [:index, :update]
+-    resources :files, only: [:index, :create, :delete]
++    resources :files, only: [:index, :create, :destroy]
+     resources :lessons, only: [:show, :update] do
+-      resources :files, only: [:show, :create, :delete]
++      resources :files, only: [:show, :create, :destroy]
+     end
+     resources :messages, only: [:index]
+   end
+diff --git a/test/controllers/courses_controller_test.rb b/test/controllers/courses_controller_test.rb
+index 967782e..5d543f4 100644
+--- a/test/controllers/courses_controller_test.rb
++++ b/test/controllers/courses_controller_test.rb
+@@ -2,6 +2,17 @@ require 'test_helper'
+ 
+ class CoursesControllerTest < ActionController::TestCase
+ 
++  # GET /semesters/1/courses.json
++  test 'api should get courses by semester' do
++    semester = Semester.first
++
++    get :index, format: :json, semester_id: semester.id
++    json = JSON.parse(@response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++    assert json['courses'].count > 0
++  end
++
++  # GET /teachers/1/courses.json
+   test 'api should get courses by teacher' do
+     u = User.find_by_name('alex')
+     token_str = u.create_token.token
+@@ -12,6 +23,7 @@ class CoursesControllerTest < ActionController::TestCase
+     assert json['courses'].count > 0
+   end
+ 
++  # GET /assistants/1/courses.json
+   test 'api should get courses by assistant with token' do
+     u = User.find_by_name('betty')
+     token_str = u.create_token.token
+@@ -22,6 +34,7 @@ class CoursesControllerTest < ActionController::TestCase
+     assert_not_nil json['courses']
+   end
+ 
++  # GET /students/1/courses.json
+   test 'api should get courses by student with token' do
+     u = User.first
+     token_str = u.create_token.token
+@@ -32,6 +45,7 @@ class CoursesControllerTest < ActionController::TestCase
+     assert_not_nil json['courses']
+   end
+ 
++  # GET /student/1/courses.json
+   test 'api should not get courses by student with invalid token' do
+     u = User.first
+ 
+@@ -41,6 +55,7 @@ class CoursesControllerTest < ActionController::TestCase
+     assert_equal json['reason'], REASON_TOKEN_INVALID
+   end
+ 
++  # GET /student/1/courses.json
+   test 'api should not get courses by student if time out' do
+     u = User.first
+     # create an invalid token
+@@ -52,6 +67,7 @@ class CoursesControllerTest < ActionController::TestCase
+     assert_equal json['reason'], REASON_TOKEN_TIMEOUT
+   end
+ 
++  # GET /courses/1.json
+   test 'api should get course by id' do
+     get :show, format: :json, id: Course.first.id
+     json = JSON.parse(@response.body)
+@@ -59,12 +75,39 @@ class CoursesControllerTest < ActionController::TestCase
+     assert_not_nil json['course']['name']
+   end
+ 
++  # GET /courses/-1.json
+   test 'api should not get course by invalid id' do
+     get :show, format: :json, id: -1
+     json = JSON.parse(@response.body)
+     assert_equal json['status'], STATUS_FAIL
+   end
+ 
++  # PUT /courses/1.json
++  test 'api should update course by id with teacher token' do
++    course = Course.find_by_name('Operation System')
++    course_id = course.id
++    teacher = course.teachers.first
++    token_str = teacher.create_token.token
++
++    put :update, format: :json, id: course.id, token: token_str, course: { name: 'fuck' }
++    assert_equal 'fuck', Course.find(course_id).name
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
++  # DELETE /courses/1.json
++  test 'api should delete course by id with teacher token' do
++    course = Course.find_by_name('Operation System')
++    teacher = course.teachers.first
++    token_str = teacher.create_token.token
++    assert_difference 'Course.count', -1 do
++      delete :destroy, format: :json, id: course.id, token: token_str
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
++  # POST /teachers/1/courses.json
+   test 'api should create course by teacher' do
+     u = User.find_by_name('alex')
+     token_str = u.create_token.token
+diff --git a/test/controllers/lesson_comments_controller_test.rb b/test/controllers/lesson_comments_controller_test.rb
+index 4ce9b47..1b48798 100644
+--- a/test/controllers/lesson_comments_controller_test.rb
++++ b/test/controllers/lesson_comments_controller_test.rb
+@@ -1,7 +1,12 @@
+ require 'test_helper'
+ 
+ class LessonCommentsControllerTest < ActionController::TestCase
+-  # test "the truth" do
+-  #   assert true
+-  # end
++  test 'should get comments by lesson id' do
++    get :index, format: :json, lesson_id: Lesson.first.id
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++    assert_not_nil json['lesson_comments']
++    assert json['lesson_comments'].count > 0
++  end
++
+ end
+diff --git a/test/controllers/lessons_controller_test.rb b/test/controllers/lessons_controller_test.rb
+index f80fef3..bcec0c4 100644
+--- a/test/controllers/lessons_controller_test.rb
++++ b/test/controllers/lessons_controller_test.rb
+@@ -2,8 +2,12 @@ require 'test_helper'
+ 
+ class LessonsControllerTest < ActionController::TestCase
+ 
+-  test 'api should get all lessons' do
+-    get :index, format: :json, course_id: 1
++  def setup
++    @course = Course.find_by_name('Operation System')
++  end
++
++  test 'api should get all lessons by course' do
++    get :index, format: :json, course_id: @course.id
+     json = JSON.parse(@response.body)
+     assert_equal json['status'], STATUS_SUCCESS
+     assert json['lessons'].count > 0
+@@ -18,7 +22,7 @@ class LessonsControllerTest < ActionController::TestCase
+ 
+   test 'api should add lesson' do
+     assert_difference('Lesson.count') do
+-      post :create, format: :json, course_id: 1, lesson: {
++      post :create, format: :json, course_id: @course.id, lesson: {
+                       name: 'test lesson',
+                       start_time: '2015/10/10 10:20:30',
+                       end_time: '2015/10/10 10:20:30',
+@@ -30,10 +34,17 @@ class LessonsControllerTest < ActionController::TestCase
+ 
+   test 'api should not add bad lesson' do
+     assert_no_difference('Lesson.count') do
+-      post :create, format: :json, course_id: 1, lesson: { bad_name: 'bad name' }
++      post :create, format: :json, course_id: @course.id, lesson: { bad_name: 'bad name' }
+     end
+     assert_equal JSON.parse(@response.body)['status'], STATUS_FAIL
+   end
+ 
++  test 'should delete lesson by id' do
++    assert_difference 'Lesson.count', -1 do
++      delete :destroy, format: :json, id: Lesson.first.id
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
+ 
+ end
+diff --git a/test/controllers/semesters_controller_test.rb b/test/controllers/semesters_controller_test.rb
+index 212257a..38967d8 100644
+--- a/test/controllers/semesters_controller_test.rb
++++ b/test/controllers/semesters_controller_test.rb
+@@ -1,7 +1,42 @@
+ require 'test_helper'
+ 
+ class SemestersControllerTest < ActionController::TestCase
+-  # test "the truth" do
+-  #   assert true
+-  # end
++  test 'should get all semesters' do
++    get :index, format: :json
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++    assert_not_nil json['semesters']
++    assert json['semesters'].count > 0
++  end
++
++  test 'should add semester' do
++    assert_difference 'Semester.count' do
++      post :create, format: :json, semester: { name: 'a good semester' }
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
++  test 'should update semester' do
++    put :update, format: :json, id: Semester.first.id, semester: { name: 'update semester' }
++    assert_equal 'update semester', Semester.first.name
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
++  test 'should delete semester' do
++    assert_difference 'Semester.count', -1 do
++      delete :destroy, format: :json, id: Semester.first.id
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
++  test 'should get default semester' do
++    get :default, format: :json
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++    assert_not_nil json['semester']
++  end
++
+ end
+diff --git a/test/controllers/students_controller_test.rb b/test/controllers/students_controller_test.rb
+index 383cc5a..10c9919 100644
+--- a/test/controllers/students_controller_test.rb
++++ b/test/controllers/students_controller_test.rb
+@@ -7,4 +7,13 @@ class StudentsControllerTest < ActionController::TestCase
+     assert_equal json['status'], STATUS_SUCCESS
+     assert json['students'].is_a? Array
+   end
++
++  test 'api should add student by course' do
++
++  end
++
++  test 'api should remove student from course' do
++
++  end
++
+ end
+diff --git a/test/controllers/teachers_controller_test.rb b/test/controllers/teachers_controller_test.rb
+index 29ac71e..b419799 100644
+--- a/test/controllers/teachers_controller_test.rb
++++ b/test/controllers/teachers_controller_test.rb
+@@ -1,7 +1,35 @@
+ require 'test_helper'
+ 
+ class TeachersControllerTest < ActionController::TestCase
+-  # test "the truth" do
+-  #   assert true
+-  # end
++  test 'should get teachers by course' do
++    get :index, format: :json, course_id: Course.find_by_name('Operation System').id
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++    assert_not_nil json['teachers']
++    assert json['teachers'].count > 0
++  end
++
++  test 'should add teacher to course' do
++    teacher = User.find_by_name('ciara')
++    course = Course.find_by_name('Operation System')
++    course_creator = course.teachers.first
++    token_str = course_creator.create_token.token
++
++    assert_difference 'course.teachers.count' do
++      post :create, id: teacher.id, course_id: course.id, token: token_str
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
++  test 'should remove teacher from course' do
++    course = Course.find_by_name('Operation System')
++    teacher = course.teachers.first
++    assert_difference 'course.teachers.count', -1 do
++      delete :destroy, format: :json, id: teacher.id, course_id: course.id
++    end
++    json = JSON.parse(response.body)
++    assert_equal STATUS_SUCCESS, json['status']
++  end
++
+ end
+diff --git a/test/fixtures/courses.yml b/test/fixtures/courses.yml
+index 4edf95b..3f2f1c2 100644
+--- a/test/fixtures/courses.yml
++++ b/test/fixtures/courses.yml
+@@ -1,14 +1,19 @@
+ adv_physics:
+   name: Advanced Physics
++  semester: y2015s1
+ 
+ os:
+   name: Operation System
++  semester: y2015s1
+ 
+ compiler:
+   name: Modern Compiler Design and Practice
++  semester: y2015s1
+ 
+ cpp:
+   name: Programming C++
++  semester: y2015s2
+ 
+ ds:
+-  name: Data Structures
+\ No newline at end of file
++  name: Data Structures
++  semester: y2015s3
+\ No newline at end of file
+diff --git a/test/fixtures/semesters.yml b/test/fixtures/semesters.yml
+index 937a0c0..13374a3 100644
+--- a/test/fixtures/semesters.yml
++++ b/test/fixtures/semesters.yml
+@@ -1,11 +1,11 @@
+-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++y2015s1:
++  name: 201501
+ 
+-# This model initially had no columns defined.  If you add columns to the
+-# model remove the '{}' from the fixture names and add the columns immediately
+-# below each fixture, per the syntax in the comments below
+-#
+-one: {}
+-# column: value
+-#
+-two: {}
+-#  column: value
++y2015s2:
++  name: 201502
++
++y2015s3:
++  name: 201503
++
++y2014s1:
++  name: 201501
+\ No newline at end of file
+diff --git a/test/fixtures/teaching_courses.yml b/test/fixtures/teaching_courses.yml
+index c3ff516..0c5093e 100644
+--- a/test/fixtures/teaching_courses.yml
++++ b/test/fixtures/teaching_courses.yml
+@@ -8,3 +8,11 @@
+ alex_teaches_os:
+   user: alex
+   course: os
++
++alex_teaches_ds:
++  user: alex
++  course: ds
++
++ciara_teaches_cpp:
++  user: ciara
++  course: cpp
+diff --git a/test/fixtures/users.yml b/test/fixtures/users.yml
+index 05cc1b8..006340d 100644
+--- a/test/fixtures/users.yml
++++ b/test/fixtures/users.yml
+@@ -11,3 +11,10 @@ betty:
+   email: 'betty@b.c'
+   encrypted_password: <%= User.new.send(:password_digest, '123') %>
+   is_teacher: false
++
++ciara:
++  name: 'ciara'
++  phone: '121'
++  email: 'ciara@b.c'
++  encrypted_password: <%= User.new.send(:password_digest, '123') %>
++  is_teacher: true
+\ No newline at end of file
+-- 
+1.9.1
+

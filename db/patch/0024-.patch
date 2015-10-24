@@ -1,0 +1,1392 @@
+From 081877e927836d4233bf5ef908e068dfa84032fe Mon Sep 17 00:00:00 2001
+From: luogan <luogan_62625686@126.com>
+Date: Mon, 5 Oct 2015 14:53:24 +0800
+Subject: [PATCH 024/150] =?UTF-8?q?=E4=BF=AE=E6=94=B9=E4=BA=86=E6=96=87?=
+ =?UTF-8?q?=E4=BB=B6=E5=90=8D?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ app/views/manage/classScore.html.erb   |  65 --------------
+ app/views/manage/classScore.html.erb~  |  99 +++++++++++++++++++--
+ app/views/manage/class_info.html.erb   | 120 +++++++++++++++++++++++++
+ app/views/manage/class_score.html.erb  | 156 +++++++++++++++++++++++++++++++++
+ app/views/manage/courseInfo.html.erb   |  95 --------------------
+ app/views/manage/courseInfo.html.erb~  |  57 +++++++-----
+ app/views/manage/courseScore.html.erb  |  64 --------------
+ app/views/manage/courseScore.html.erb~ |  41 ++++++++-
+ app/views/manage/course_info.html.erb  | 120 +++++++++++++++++++++++++
+ app/views/manage/course_score.html.erb |  97 ++++++++++++++++++++
+ app/views/manage/mainPage.html.erb     | 134 ----------------------------
+ app/views/manage/main_page.html.erb    | 134 ++++++++++++++++++++++++++++
+ app/views/manage/studentInfo.html.erb  |   0
+ app/views/manage/student_info.html.erb |   0
+ 14 files changed, 795 insertions(+), 387 deletions(-)
+ delete mode 100644 app/views/manage/classScore.html.erb
+ create mode 100644 app/views/manage/class_info.html.erb
+ create mode 100644 app/views/manage/class_score.html.erb
+ delete mode 100644 app/views/manage/courseInfo.html.erb
+ delete mode 100644 app/views/manage/courseScore.html.erb
+ create mode 100644 app/views/manage/course_info.html.erb
+ create mode 100644 app/views/manage/course_score.html.erb
+ delete mode 100644 app/views/manage/mainPage.html.erb
+ create mode 100644 app/views/manage/main_page.html.erb
+ delete mode 100644 app/views/manage/studentInfo.html.erb
+ create mode 100644 app/views/manage/student_info.html.erb
+
+diff --git a/app/views/manage/classScore.html.erb b/app/views/manage/classScore.html.erb
+deleted file mode 100644
+index 9286286..0000000
+--- a/app/views/manage/classScore.html.erb
++++ /dev/null
+@@ -1,65 +0,0 @@
+-<head>
+-	<style type="text/css">
+-		#content
+-		{
+-			padding-left:20%;
+-			padding-right:20%;
+-			padding-top:3%:
+-		}
+-	</style>
+-</head>
+-<body>
+-	<div id="content">	
+-	</div>
+-	<script>
+-		var n,m,info,items,courseInfo;
+-		
+-		function loadInfo()
+-		{
+-			courseInfo="计算机组成原理实验1";
+-			var i;
+-			n=9;m=2;
+-			items=new Array();
+-			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="成绩";items[5]="评价";items[6]="图片";items[7]="视频";items[8]="打分助教";
+-			info=new Array();
+-			for (i=0;i<m;++i)
+-			{
+-				info[i]=new Array();
+-				info[i][0]="201401130"+i;
+-				info[i][1]="A"+i;
+-				info[i][2]="计算机系";
+-				info[i][3]="计xx";
+-				info[i][4]=10;
+-				info[i][5]="1";
+-				info[i][6]="1";
+-				info[i][7]="1";
+-				info[i][8]="XX";
+-			}
+-		}
+-		
+-		function showInfo()
+-		{
+-			var i,j,text="";
+-			text+='<table class="table table-bordered table-striped table-hover">';
+-			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
+-			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">实验情况</th></tr>';
+-			text+='<tr>';
+-			for (i=0;i<n;++i) text+='<th>'+items[i]+'</th>';
+-			text+='</thread><tbody>';
+-			for (i=0;i<m;++i)
+-			{
+-				text+='<tr>';
+-				for (j=0;j<n;++j)
+-				{
+-					text+='<td>'+info[i][j]+'</td>';
+-				}
+-				text+='</tr>';
+-			}
+-			text+='</tbody></table>';
+-			$("#content")[0].innerHTML=text;
+-		}
+-		
+-		loadInfo();
+-		showInfo();
+-	</script>
+-</body>
+diff --git a/app/views/manage/classScore.html.erb~ b/app/views/manage/classScore.html.erb~
+index 32495a6..435defa 100644
+--- a/app/views/manage/classScore.html.erb~
++++ b/app/views/manage/classScore.html.erb~
+@@ -4,15 +4,23 @@
+ 		{
+ 			padding-left:20%;
+ 			padding-right:20%;
+-			padding-up:3%:
++			padding-top:3%:
++		}
++		.ownbutton
++		{
++			width:100%;
++			height:100%;
+ 		}
+ 	</style>
++	<script>
++		var KEYCODE_ENTER=13,KEYCODE_ESC=27;
++	</script>
+ </head>
+ <body>
+ 	<div id="content">	
+ 	</div>
+ 	<script>
+-		var n,m,info,items,courseInfo;
++		var n,m,info,items,courseInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
+ 		
+ 		function loadInfo()
+ 		{
+@@ -37,21 +45,102 @@
+ 			}
+ 		}
+ 		
++		function compare(x,y,p)
++		{
++			if (p==0&&x<y||p==1&&x>y) return true;
++			else return false;
++		}
++		
++		function qsort(l,r,x,p)
++		{
++			var i=l,j=r,m=info[Math.floor((i+j)/2)][x],t;
++			while (i<=j)
++			{
++				while (i<=j&&compare(info[i][x],m,p)) ++i;
++				while (i<=j&&compare(m,info[j][x],p)) --j;
++				if (i<=j)
++				{
++					t=info[i];info[i]=info[j];info[j]=t;
++					++i;--j;
++				}
++			}
++			if (i<r) qsort(i,r,x,p);
++			if (l<j) qsort(l,j,x,p);
++		}
++		
++		function option(x)
++		{
++			if (x!=lastChoose) lastChoose=x,p=0;
++			else p=1-p;
++			console.log(x,p);
++			qsort(0,m-1,x,p);
++			showInfo();
++		}
++		
++		function enterPress(evt,i,j)
++		{
++			evt=evt?evt:(window.event?window.event:null);
++			if (evt.keyCode==KEYCODE_ENTER)
++			{
++				var p=$("#table1")[0].rows[i].cells[j],text=$("input")[0].value;
++				if isNaN
++				p.innerHTML=text;
++				focusi=focusj=-1;
++			}
++		}
++		
++		function escPress(event)
++		{
++			var evt=event?event:(window.event?window.event:null);
++			if (evt.keyCode==KEYCODE_ESC)
++			{
++				if (focusi!=-1&&focusj!=-1)
++				{
++					p=$("#table1")[0].rows[focusi].cells[focusj],text=$("input")[0].placeholder;
++					p.innerHTML=text;
++					focusi=focusj=-1;
++				}
++			}
++		}
++		window.document.onkeydown=escPress;
++		
++		function change(i,j)
++		{
++			var p,text;
++			if (focusi==i&&focusj==j) return;
++			if (focusi!=-1&&focusj!=-1)
++			{
++				p=$("#table1")[0].rows[focusi].cells[focusj],text=$("input")[0].placeholder;
++				p.innerHTML=text;
++			}
++			focusi=i;focusj=j;
++			p=$("#table1")[0].rows[i].cells[j];text=p.innerHTML;
++			text='<input type="text" class="form-control" onkeydown="enterPress(event,'+i+','+j+')" placeholder="'+text+'">';
++			p.innerHTML=text;
++		}
++		
+ 		function showInfo()
+ 		{
+ 			var i,j,text="";
+-			text+='<table class="table table-bordered table-striped table-hover">';
++			text+='<h3>实验成绩</h3>';
++			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
+ 			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
+ 			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">实验情况</th></tr>';
+ 			text+='<tr>';
+-			for (i=0;i<n;++i) text+='<th>'+items[i]+'</th>';
++			for (i=0;i<n;++i) if (i!=5&&i!=6&&i!=7)
++			text+='<th onclick="option('+i+')">'+items[i]+'</th>';
++			else
++			text+='<th>'+items[i]+'</th>';
+ 			text+='</thread><tbody>';
+ 			for (i=0;i<m;++i)
+ 			{
+ 				text+='<tr>';
+-				for (j=0;j<n;++j)
++				for (j=0;j<n;++j) if (j!=4)
+ 				{
+ 					text+='<td>'+info[i][j]+'</td>';
++				}else
++				{
++					text+='<td ondblclick="change('+(i+3)+','+j+')">'+info[i][j]+'</td>';
+ 				}
+ 				text+='</tr>';
+ 			}
+diff --git a/app/views/manage/class_info.html.erb b/app/views/manage/class_info.html.erb
+new file mode 100644
+index 0000000..7e269ad
+--- /dev/null
++++ b/app/views/manage/class_info.html.erb
+@@ -0,0 +1,120 @@
++<head>
++	<style type="text/css">
++		#content
++		{
++			padding-left:20%;
++			padding-right:20%;
++			padding-top:3%:
++		}
++		.content
++		{
++			width:50%;
++			height:400px;
++			font-size:40px;
++		}
++		#content3
++		{
++			font-size:30px;
++		}
++		.comment
++		{
++			font-size:25px;
++			margin-top:30px;
++		}
++		.author
++		{
++			font-size:15px;
++			margin-top:2px;
++		}
++		.chart
++		{
++			width:100%;
++			height:300px;
++	</style>
++</head>
++<body>
++	<script type="text/javascript" src="/chart.js"></script>
++	<div id="content">
++		<div id="content1" class="content">
++			到课情况</br>
++			<canvas id="chart1" class="chart"></canvas>
++		</div>
++		<div id="content2" class="content">
++			学生评分</br>
++			<canvas id="chart2" class="chart"></canvas>
++		</div>
++		<div id="content3">
++		</div>
++		<div id="contentbutton">
++		</div>
++	</div>
++	<script>
++		var n,courseInfo,comments=new Array(),people=new Array(2),score=new Array(11);
++		$("#chart1")[0].height=$("#chart1")[0].width;
++		$("#chart2")[0].height=$("#chart2")[0].width;
++		var totalPages,nowPage,numberPerPage=15;
++		function loadInfo()
++		{
++			people[0]=100;people[1]=10;
++			for (i=0;i<11;++i) score[i]=10;
++			courseInfo="计算机组成原理";
++			var i;
++			n=100;
++			for (i=0;i<n;++i)
++			{
++				comments[i]=new Object();
++				comments[i].author="A"+i;
++				comments[i].text="aaa";
++			}
++			totalPages=Math.floor((n-1)/numberPerPage+1);
++			nowPage=1;
++		}
++		
++		function changePage(x)
++		{
++			nowPage+=x;
++			if (nowPage<1) nowPage=1;
++			if (nowPage>totalPages) nowPage=totalPages;
++			showComments();
++		}
++		
++		function showComments()
++		{
++			var text="课程评价</br>",t1,t2;
++			t1=(nowPage-1)*numberPerPage;
++			t2=nowPage*numberPerPage;
++			if (t2>n) t2=n;
++			for (i=t1;i<t2;++i)
++			{
++				text+='<div class="comment">'+comments[i].text+'</div>';
++				text+='<div class="author">'+comments[i].author+'</div>';
++			}
++			$("#content3")[0].innerHTML=text;
++			text='<button class="btn btn-default" onclick="changePage(-1)">上一页</button>';
++			text+='第'+nowPage+'页 共'+totalPages+'页<button class="btn btn-default" onclick="changePage(1)">下一页</button>';
++			$("#contentbutton")[0].innerHTML=text;
++		}
++		
++		function showInfo()
++		{
++			var data,data2,text="",i;
++			data={labels:["上课人数","缺勤人数"],datasets:[{
++					fillColor : "rgba(151,187,205,0.5)",
++					strokeColor : "rgba(151,187,205,1)",
++					data : [people[0],people[1]]}]};
++			data2={labels:["0分","1分","2分","3分","4分","5分","6分","7分","8分","9分","10分"],datasets:[{
++					fillColor : "rgba(151,187,205,0.5)",
++					strokeColor : "rgba(151,187,205,1)",
++					data : [score[0],score[1],score[2],score[3],score[4],score[5],score[6],score[7],score[8],score[9],score[10]]}]};
++			var mychart,ctx = $("#chart1")[0].getContext("2d");
++			mychart=new Chart(ctx).Bar(data);
++			ctx = $("#chart2")[0].getContext("2d");
++			mychart=new Chart(ctx).Bar(data2);
++			showComments();
++			
++		}
++		
++		loadInfo();
++		showInfo();
++	</script>
++</body>
+diff --git a/app/views/manage/class_score.html.erb b/app/views/manage/class_score.html.erb
+new file mode 100644
+index 0000000..f365236
+--- /dev/null
++++ b/app/views/manage/class_score.html.erb
+@@ -0,0 +1,156 @@
++<head>
++	<style type="text/css">
++		#content
++		{
++			padding-left:20%;
++			padding-right:20%;
++			padding-top:3%:
++		}
++		.ownbutton
++		{
++			width:100%;
++			height:100%;
++		}
++	</style>
++	<script>
++		var KEYCODE_ENTER=13,KEYCODE_ESC=27;
++	</script>
++</head>
++<body>
++	<div id="content">	
++	</div>
++	<script>
++		var n,m,info,items,courseInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
++		
++		function loadInfo()
++		{
++			courseInfo="计算机组成原理实验1";
++			var i;
++			n=9;m=2;
++			items=new Array();
++			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="成绩";items[5]="评价";items[6]="图片";items[7]="视频";items[8]="打分助教";
++			info=new Array();
++			for (i=0;i<m;++i)
++			{
++				info[i]=new Array();
++				info[i][0]="201401130"+i;
++				info[i][1]="A"+i;
++				info[i][2]="计算机系";
++				info[i][3]="计xx";
++				info[i][4]=10;
++				info[i][5]="1";
++				info[i][6]="1";
++				info[i][7]="1";
++				info[i][8]="XX";
++			}
++		}
++		
++		function compare(x,y,p)
++		{
++			if (p==0&&x<y||p==1&&x>y) return true;
++			else return false;
++		}
++		
++		function qsort(l,r,x,p)
++		{
++			var i=l,j=r,m=info[Math.floor((i+j)/2)][x],t;
++			while (i<=j)
++			{
++				while (i<=j&&compare(info[i][x],m,p)) ++i;
++				while (i<=j&&compare(m,info[j][x],p)) --j;
++				if (i<=j)
++				{
++					t=info[i];info[i]=info[j];info[j]=t;
++					++i;--j;
++				}
++			}
++			if (i<r) qsort(i,r,x,p);
++			if (l<j) qsort(l,j,x,p);
++		}
++		
++		function option(x)
++		{
++			if (x!=lastChoose) lastChoose=x,p=0;
++			else p=1-p;
++			console.log(x,p);
++			qsort(0,m-1,x,p);
++			showInfo();
++		}
++		
++		function enterPress(evt,i,j)
++		{
++			evt=evt?evt:(window.event?window.event:null);
++			if (evt.keyCode==KEYCODE_ENTER)
++			{
++				var p=$("#table1")[0].rows[i].cells[j],text=$("input")[0].value;
++				if (!isNaN(text))
++				{
++					p.innerHTML=text;
++					focusi=focusj=-1;
++				}
++			}
++		}
++		
++		function escPress(event)
++		{
++			var evt=event?event:(window.event?window.event:null);
++			if (evt.keyCode==KEYCODE_ESC)
++			{
++				if (focusi!=-1&&focusj!=-1)
++				{
++					p=$("#table1")[0].rows[focusi].cells[focusj],text=$("input")[0].placeholder;
++					p.innerHTML=text;
++					focusi=focusj=-1;
++				}
++			}
++		}
++		window.document.onkeydown=escPress;
++		
++		function change(i,j)
++		{
++			var p,text;
++			if (focusi==i&&focusj==j) return;
++			if (focusi!=-1&&focusj!=-1)
++			{
++				p=$("#table1")[0].rows[focusi].cells[focusj],text=$("input")[0].placeholder;
++				p.innerHTML=text;
++			}
++			focusi=i;focusj=j;
++			p=$("#table1")[0].rows[i].cells[j];text=p.innerHTML;
++			text='<input type="text" class="form-control" onkeydown="enterPress(event,'+i+','+j+')" placeholder="'+text+'">';
++			p.innerHTML=text;
++		}
++		
++		function showInfo()
++		{
++			var i,j,text="";
++			text+='<h3>实验成绩</h3>';
++			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
++			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
++			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">实验情况</th></tr>';
++			text+='<tr>';
++			for (i=0;i<n;++i) if (i!=5&&i!=6&&i!=7)
++			text+='<th onclick="option('+i+')">'+items[i]+'</th>';
++			else
++			text+='<th>'+items[i]+'</th>';
++			text+='</thread><tbody>';
++			for (i=0;i<m;++i)
++			{
++				text+='<tr>';
++				for (j=0;j<n;++j) if (j!=4)
++				{
++					text+='<td>'+info[i][j]+'</td>';
++				}else
++				{
++					text+='<td ondblclick="change('+(i+3)+','+j+')">'+info[i][j]+'</td>';
++				}
++				text+='</tr>';
++			}
++			text+='</tbody></table>';
++			$("#content")[0].innerHTML=text;
++		}
++		
++		loadInfo();
++		showInfo();
++	</script>
++</body>
+diff --git a/app/views/manage/courseInfo.html.erb b/app/views/manage/courseInfo.html.erb
+deleted file mode 100644
+index 1db350e..0000000
+--- a/app/views/manage/courseInfo.html.erb
++++ /dev/null
+@@ -1,95 +0,0 @@
+-<head>
+-	<style type="text/css">
+-		#content
+-		{
+-			padding-left:20%;
+-			padding-right:20%;
+-			padding-top:3%:
+-		}
+-		.content
+-		{
+-			width:50%;
+-			height:400px;
+-			font-size:40px;
+-		}
+-		#content3
+-		{
+-			font-size:30px;
+-		}
+-		.comment
+-		{
+-			font-size:25px;
+-			margin-top:30px;
+-		}
+-		.author
+-		{
+-			font-size:15px;
+-			margin-top:2px;
+-		}
+-		.chart
+-		{
+-			width:100%;
+-			height:300px;
+-	</style>
+-</head>
+-<body>
+-	<script type="text/javascript" src="/chart.js"></script>
+-	<div id="content">
+-		<div id="content1" class="content">
+-			到课情况</br>
+-			<canvas id="chart1" class="chart"></canvas>
+-		</div>
+-		<div id="content2" class="content">
+-			学生评分</br>
+-			<canvas id="chart2" class="chart"></canvas>
+-		</div>
+-		<div id="content3">
+-		</div>
+-	</div>
+-	<script>
+-		var n,courseInfo,comments=new Array(),people=new Array(2),score=new Array(11);
+-		$("#chart1")[0].height=$("#chart1")[0].width;
+-		$("#chart2")[0].height=$("#chart2")[0].width;
+-		function loadInfo()
+-		{
+-			people[0]=100;people[1]=10;
+-			for (i=0;i<11;++i) score[i]=10;
+-			courseInfo="计算机组成原理";
+-			var i;
+-			n=10;
+-			for (i=0;i<n;++i)
+-			{
+-				comments[i]=new Object();
+-				comments[i].author="A"+i;
+-				comments[i].text="aaa";
+-			}
+-		}
+-		
+-		function showInfo()
+-		{
+-			var data,data2,text="",i;
+-			data={labels:["上课人数","缺勤人数"],datasets:[{
+-					fillColor : "rgba(151,187,205,0.5)",
+-					strokeColor : "rgba(151,187,205,1)",
+-					data : [people[0],people[1]]}]};
+-			data2={labels:["0分","1分","2分","3分","4分","5分","6分","7分","8分","9分","10分"],datasets:[{
+-					fillColor : "rgba(151,187,205,0.5)",
+-					strokeColor : "rgba(151,187,205,1)",
+-					data : [score[0],score[1],score[2],score[3],score[4],score[5],score[6],score[7],score[8],score[9],score[10]]}]};
+-			var mychart,ctx = $("#chart1")[0].getContext("2d");
+-			mychart=new Chart(ctx).Bar(data);
+-			ctx = $("#chart2")[0].getContext("2d");
+-			mychart=new Chart(ctx).Bar(data2);
+-			text+="课程评价</br>";
+-			for (i=0;i<n;++i)
+-			{
+-				text+='<div class="comment">'+comments[i].text+'</div>';
+-				text+='<div class="author">'+comments[i].author+'</div>';
+-			}
+-			$("#content3")[0].innerHTML=text;
+-		}
+-		
+-		loadInfo();
+-		showInfo();
+-	</script>
+-</body>
+diff --git a/app/views/manage/courseInfo.html.erb~ b/app/views/manage/courseInfo.html.erb~
+index aabc1a2..dcf1ea5 100644
+--- a/app/views/manage/courseInfo.html.erb~
++++ b/app/views/manage/courseInfo.html.erb~
+@@ -45,56 +45,73 @@
+ 		</div>
+ 		<div id="content3">
+ 		</div>
++		<div id="contentbutton">
++		</div>
+ 	</div>
+ 	<script>
+ 		var n,courseInfo,comments=new Array(),people=new Array(2),score=new Array(11);
+ 		$("#chart1")[0].height=$("#chart1")[0].width;
+ 		$("#chart2")[0].height=$("#chart2")[0].width;
++		var totalPages,nowPage,numberPerPage=15;
+ 		function loadInfo()
+ 		{
+ 			people[0]=100;people[1]=10;
+ 			for (i=0;i<11;++i) score[i]=10;
+ 			courseInfo="计算机组成原理";
+ 			var i;
+-			n=10;
++			n=100;
+ 			for (i=0;i<n;++i)
+ 			{
+ 				comments[i]=new Object();
+ 				comments[i].author="A"+i;
+ 				comments[i].text="aaa";
+ 			}
++			totalPages=Math.floor((n-1)/numberPerPage+1);
++			nowPage=1;
++		}
++		
++		function changePage(x)
++		{
++			nowPage+=x;
++			if (nowPage<1) nowPage=1;
++			if (nowPage>totalPages) nowPage=totalPages;
++			showComments();
++		}
++		
++		function showComments()
++		{
++			var text="课程评价</br>",t1,t2;
++			t1=(nowPage-1)*numberPerPage;
++			t2=nowPage*numberPerPage;
++			if (t2>n) t2=n;
++			for (i=t1;i<t2;++i)
++			{
++				text+='<div class="comment">'+comments[i].text+'</div>';
++				text+='<div class="author">'+comments[i].author+'</div>';
++			}
++			$("#content3")[0].innerHTML=text;
++			text='<button class="btn btn-default" onclick="changePage(-1)">上一页</button>';
++			text+='第'+nowPage+'页 共'+totalPages+'页<button class="btn btn-default" onclick="pageChange(1)">下一页</button>';
++			$("#contentbutton")[0].innerHTML=text;
+ 		}
+ 		
+ 		function showInfo()
+ 		{
+ 			var data,data2,text="",i;
+ 			data={labels:["上课人数","缺勤人数"],datasets:[{
+-					fillColor: "rgba(220,220,220,0.5)",
+-                	strokeColor: "rgba(0,102,51,1)",
+-                	pointColor: "rgba(220,220,220,1)",
+-                	pointStrokeColor: "#339933",
+-                	pointHighlightFill: "#339933",
+-                	pointHighlightStroke: "rgba(220,220,220,1)",
++					fillColor : "rgba(151,187,205,0.5)",
++					strokeColor : "rgba(151,187,205,1)",
+ 					data : [people[0],people[1]]}]};
+ 			data2={labels:["0分","1分","2分","3分","4分","5分","6分","7分","8分","9分","10分"],datasets:[{
+-					fillColor: "rgba(220,220,220,0.5)",
+-                	strokeColor: "rgba(0,102,51,1)",
+-                	pointColor: "rgba(220,220,220,1)",
+-                	pointStrokeColor: "#339933",
+-                	pointHighlightFill: "#339933",
+-                	pointHighlightStroke: "rgba(220,220,220,1)",
++					fillColor : "rgba(151,187,205,0.5)",
++					strokeColor : "rgba(151,187,205,1)",
+ 					data : [score[0],score[1],score[2],score[3],score[4],score[5],score[6],score[7],score[8],score[9],score[10]]}]};
+ 			var mychart,ctx = $("#chart1")[0].getContext("2d");
+ 			mychart=new Chart(ctx).Bar(data);
+ 			ctx = $("#chart2")[0].getContext("2d");
+ 			mychart=new Chart(ctx).Bar(data2);
+-			text+="课程评价</br>";
+-			for (i=0;i<n;++i)
+-			{
+-				text+='<div class="comment">'+comments[i].text+'</div>';
+-				text+='<div class="author">'+comments[i].author+'</div>';
+-			}
+-			$("#content3")[0].innerHTML=text;
++			showComments();
++			
+ 		}
+ 		
+ 		loadInfo();
+diff --git a/app/views/manage/courseScore.html.erb b/app/views/manage/courseScore.html.erb
+deleted file mode 100644
+index 7dd17d4..0000000
+--- a/app/views/manage/courseScore.html.erb
++++ /dev/null
+@@ -1,64 +0,0 @@
+-<head>
+-	<style type="text/css">
+-		#content
+-		{
+-			padding-left:20%;
+-			padding-right:20%;
+-			padding-top:3%:
+-		}
+-	</style>
+-</head>
+-<body>
+-	<div id="content">	
+-	</div>
+-	<script>
+-		var n,m,info,items,courseInfo;
+-		
+-		function loadInfo()
+-		{
+-			courseInfo="计算机组成原理";
+-			var i;
+-			n=7;m=2;
+-			items=new Array();
+-			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="1";items[5]="2";items[6]="3";
+-			info=new Array();
+-			for (i=0;i<m;++i)
+-			{
+-				info[i]=new Array();
+-				info[i][0]="201401130"+i;
+-				info[i][1]="A"+i;
+-				info[i][2]="计算机系";
+-				info[i][3]="计xx";
+-				info[i][4]=i;
+-				info[i][5]=i;
+-				info[i][6]=i;
+-			}
+-		}
+-		
+-		function showInfo()
+-		{
+-			var i,j,text="";
+-			text+='<h3>到课情况</h3>';
+-			text+='<table class="table table-bordered table-striped table-hover">';
+-			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
+-			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">成绩</th></tr>';
+-			text+='<tr>';
+-			for (i=0;i<n;++i) text+='<th>'+items[i]+'</th>';
+-			text+='</thread><tbody>';
+-			for (i=0;i<m;++i)
+-			{
+-				text+='<tr>';
+-				for (j=0;j<n;++j)
+-				{
+-					text+='<td>'+info[i][j]+'</td>';
+-				}
+-				text+='</tr>';
+-			}
+-			text+='</tbody></table>';
+-			$("#content")[0].innerHTML=text;
+-		}
+-		
+-		loadInfo();
+-		showInfo();
+-	</script>
+-</body>
+diff --git a/app/views/manage/courseScore.html.erb~ b/app/views/manage/courseScore.html.erb~
+index 22247a3..ba791d3 100644
+--- a/app/views/manage/courseScore.html.erb~
++++ b/app/views/manage/courseScore.html.erb~
+@@ -4,7 +4,7 @@
+ 		{
+ 			padding-left:20%;
+ 			padding-right:20%;
+-			padding-up:3%:
++			padding-top:3%:
+ 		}
+ 	</style>
+ </head>
+@@ -12,7 +12,7 @@
+ 	<div id="content">	
+ 	</div>
+ 	<script>
+-		var n,m,info,items,courseInfo;
++		var n,m,info,items,courseInfo,lastChoose=-1,p=0;
+ 		
+ 		function loadInfo()
+ 		{
+@@ -35,15 +35,48 @@
+ 			}
+ 		}
+ 		
++		function compare(x,y,p)
++		{
++			if (p==0&&x<y||p==1&&x>y) return true;
++			else return false;
++		}
++		
++		function qsort(l,r,x,p)
++		{
++			var i=l,j=r,m=info[Math.floor((i+j)/2)][x],t;
++			while (i<=j)
++			{
++				while (i<=j&&compare(info[i][x],m,p)) ++i;
++				while (i<=j&&compare(m,info[j][x],p)) --j;
++				if (i<=j)
++				{
++					t=info[i];info[i]=info[j];info[j]=t;
++					++i;--j;
++				}
++			}
++			if (i<r) qsort(i,r,x,p);
++			if (l<j) qsort(l,j,x,p);
++		}
++		
++		function option(x)
++		{
++			if (x!=lastChoose) lastChoose=x,p=0;
++			else p=1-p;
++			console.log(x,p);
++			qsort(0,m-1,x,p);
++			showInfo();
++		}
++		
+ 		function showInfo()
+ 		{
+ 			var i,j,text="";
+-			text+='<h3>到课情况</h3>';
++			text+='<h3>课程成绩</h3>';
+ 			text+='<table class="table table-bordered table-striped table-hover">';
+ 			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
+ 			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">成绩</th></tr>';
+ 			text+='<tr>';
+-			for (i=0;i<n;++i) text+='<th>'+items[i]+'</th>';
++			for (i=0;i<n;++i)
++			text+='<th onclick="option('+i+')">'+items[i]+'</th>';
+ 			text+='</thread><tbody>';
+ 			for (i=0;i<m;++i)
+ 			{
+diff --git a/app/views/manage/course_info.html.erb b/app/views/manage/course_info.html.erb
+new file mode 100644
+index 0000000..7e269ad
+--- /dev/null
++++ b/app/views/manage/course_info.html.erb
+@@ -0,0 +1,120 @@
++<head>
++	<style type="text/css">
++		#content
++		{
++			padding-left:20%;
++			padding-right:20%;
++			padding-top:3%:
++		}
++		.content
++		{
++			width:50%;
++			height:400px;
++			font-size:40px;
++		}
++		#content3
++		{
++			font-size:30px;
++		}
++		.comment
++		{
++			font-size:25px;
++			margin-top:30px;
++		}
++		.author
++		{
++			font-size:15px;
++			margin-top:2px;
++		}
++		.chart
++		{
++			width:100%;
++			height:300px;
++	</style>
++</head>
++<body>
++	<script type="text/javascript" src="/chart.js"></script>
++	<div id="content">
++		<div id="content1" class="content">
++			到课情况</br>
++			<canvas id="chart1" class="chart"></canvas>
++		</div>
++		<div id="content2" class="content">
++			学生评分</br>
++			<canvas id="chart2" class="chart"></canvas>
++		</div>
++		<div id="content3">
++		</div>
++		<div id="contentbutton">
++		</div>
++	</div>
++	<script>
++		var n,courseInfo,comments=new Array(),people=new Array(2),score=new Array(11);
++		$("#chart1")[0].height=$("#chart1")[0].width;
++		$("#chart2")[0].height=$("#chart2")[0].width;
++		var totalPages,nowPage,numberPerPage=15;
++		function loadInfo()
++		{
++			people[0]=100;people[1]=10;
++			for (i=0;i<11;++i) score[i]=10;
++			courseInfo="计算机组成原理";
++			var i;
++			n=100;
++			for (i=0;i<n;++i)
++			{
++				comments[i]=new Object();
++				comments[i].author="A"+i;
++				comments[i].text="aaa";
++			}
++			totalPages=Math.floor((n-1)/numberPerPage+1);
++			nowPage=1;
++		}
++		
++		function changePage(x)
++		{
++			nowPage+=x;
++			if (nowPage<1) nowPage=1;
++			if (nowPage>totalPages) nowPage=totalPages;
++			showComments();
++		}
++		
++		function showComments()
++		{
++			var text="课程评价</br>",t1,t2;
++			t1=(nowPage-1)*numberPerPage;
++			t2=nowPage*numberPerPage;
++			if (t2>n) t2=n;
++			for (i=t1;i<t2;++i)
++			{
++				text+='<div class="comment">'+comments[i].text+'</div>';
++				text+='<div class="author">'+comments[i].author+'</div>';
++			}
++			$("#content3")[0].innerHTML=text;
++			text='<button class="btn btn-default" onclick="changePage(-1)">上一页</button>';
++			text+='第'+nowPage+'页 共'+totalPages+'页<button class="btn btn-default" onclick="changePage(1)">下一页</button>';
++			$("#contentbutton")[0].innerHTML=text;
++		}
++		
++		function showInfo()
++		{
++			var data,data2,text="",i;
++			data={labels:["上课人数","缺勤人数"],datasets:[{
++					fillColor : "rgba(151,187,205,0.5)",
++					strokeColor : "rgba(151,187,205,1)",
++					data : [people[0],people[1]]}]};
++			data2={labels:["0分","1分","2分","3分","4分","5分","6分","7分","8分","9分","10分"],datasets:[{
++					fillColor : "rgba(151,187,205,0.5)",
++					strokeColor : "rgba(151,187,205,1)",
++					data : [score[0],score[1],score[2],score[3],score[4],score[5],score[6],score[7],score[8],score[9],score[10]]}]};
++			var mychart,ctx = $("#chart1")[0].getContext("2d");
++			mychart=new Chart(ctx).Bar(data);
++			ctx = $("#chart2")[0].getContext("2d");
++			mychart=new Chart(ctx).Bar(data2);
++			showComments();
++			
++		}
++		
++		loadInfo();
++		showInfo();
++	</script>
++</body>
+diff --git a/app/views/manage/course_score.html.erb b/app/views/manage/course_score.html.erb
+new file mode 100644
+index 0000000..ba791d3
+--- /dev/null
++++ b/app/views/manage/course_score.html.erb
+@@ -0,0 +1,97 @@
++<head>
++	<style type="text/css">
++		#content
++		{
++			padding-left:20%;
++			padding-right:20%;
++			padding-top:3%:
++		}
++	</style>
++</head>
++<body>
++	<div id="content">	
++	</div>
++	<script>
++		var n,m,info,items,courseInfo,lastChoose=-1,p=0;
++		
++		function loadInfo()
++		{
++			courseInfo="计算机组成原理";
++			var i;
++			n=7;m=2;
++			items=new Array();
++			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="1";items[5]="2";items[6]="3";
++			info=new Array();
++			for (i=0;i<m;++i)
++			{
++				info[i]=new Array();
++				info[i][0]="201401130"+i;
++				info[i][1]="A"+i;
++				info[i][2]="计算机系";
++				info[i][3]="计xx";
++				info[i][4]=i;
++				info[i][5]=i;
++				info[i][6]=i;
++			}
++		}
++		
++		function compare(x,y,p)
++		{
++			if (p==0&&x<y||p==1&&x>y) return true;
++			else return false;
++		}
++		
++		function qsort(l,r,x,p)
++		{
++			var i=l,j=r,m=info[Math.floor((i+j)/2)][x],t;
++			while (i<=j)
++			{
++				while (i<=j&&compare(info[i][x],m,p)) ++i;
++				while (i<=j&&compare(m,info[j][x],p)) --j;
++				if (i<=j)
++				{
++					t=info[i];info[i]=info[j];info[j]=t;
++					++i;--j;
++				}
++			}
++			if (i<r) qsort(i,r,x,p);
++			if (l<j) qsort(l,j,x,p);
++		}
++		
++		function option(x)
++		{
++			if (x!=lastChoose) lastChoose=x,p=0;
++			else p=1-p;
++			console.log(x,p);
++			qsort(0,m-1,x,p);
++			showInfo();
++		}
++		
++		function showInfo()
++		{
++			var i,j,text="";
++			text+='<h3>课程成绩</h3>';
++			text+='<table class="table table-bordered table-striped table-hover">';
++			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
++			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">成绩</th></tr>';
++			text+='<tr>';
++			for (i=0;i<n;++i)
++			text+='<th onclick="option('+i+')">'+items[i]+'</th>';
++			text+='</thread><tbody>';
++			for (i=0;i<m;++i)
++			{
++				text+='<tr>';
++				for (j=0;j<n;++j)
++				{
++					text+='<td>'+info[i][j]+'</td>';
++				}
++				text+='</tr>';
++			}
++			text+='</tbody></table>';
++			$("#content")[0].innerHTML=text;
++		}
++		
++		loadInfo();
++		showInfo();
++	</script>
++</body>
+diff --git a/app/views/manage/mainPage.html.erb b/app/views/manage/mainPage.html.erb
+deleted file mode 100644
+index 5f3db9f..0000000
+--- a/app/views/manage/mainPage.html.erb
++++ /dev/null
+@@ -1,134 +0,0 @@
+-<head>
+-	<style type="text/css">
+-		#content
+-		{
+-			padding-left:20%;
+-			padding-right:20%;
+-			padding-top:3%:
+-		}
+-		.rectangleSemester
+-		{
+-			width:100%;
+-			height:50px;
+-			margin-top:15px;
+-		}
+-		.rectangleCourse
+-		{
+-			width:95%;
+-			height:50px;
+-			margin-left:4%;
+-			margin-right:1%;
+-			margin-top:6px;
+-		}
+-		.rectangleClass
+-		{
+-			width:90%;
+-			height:50px;
+-			margin-left:8%;
+-			margin-right:2%;
+-			margin-top:4px;
+-		}
+-		.rectangleCourseContent
+-		{
+-			width:95%;
+-			margin-left:4%;
+-			margin-right:1%;
+-			margin-top:6px;
+-		}
+-		.rectangleClassContent
+-		{
+-			width:90%;
+-			margin-left:8%;
+-			margin-right:2%;
+-			margin-top:4px;
+-		}
+-	</style>
+-</head>
+-<body>
+-	<div id="content">
+-	</div> 
+-	
+-	<script type="text/javascript">
+-	
+-		var semesters=new Array(),courses=new Array(),classes=new Array();
+-		var nowSemester=-1,nowCourse=-1,nowClass=-1;
+-		
+-		function loadCourse()
+-		{
+-			var i,j,k;
+-			for (i=0;i<=1;++i)
+-			{
+-				semesters[i]=new Object();
+-				semesters[i].name="2015年"+i;
+-				courses[i]=new Array();
+-				classes[i]=new Array();
+-				for (j=0;j<=1;++j)
+-				{
+-					courses[i][j]=new Object();
+-					courses[i][j].name="大学物理"+j;
+-					classes[i][j]=new Array();
+-					for (k=0;k<=1;++k)
+-					{
+-						classes[i][j][k]=new Object();
+-						classes[i][j][k].name="实验"+k;
+-					}
+-				}
+-			}
+-		}
+-		   
+-		function change(_semester,_course,_class)
+-		{
+-			if (nowSemester==_semester && (nowCourse==_course || _course==-1) && (nowClass==_class || _class==-1))
+-			{
+-				nowClass=-1;
+-				if (_class==-1) nowCourse=-1;
+-				if (_course==-1) nowSemester=-1;
+-			}else
+-			{
+-				nowSemester=_semester;
+-				nowCourse=_course;
+-				nowClass=_class;
+-			}
+-			showCourse();
+-		}
+-
+-		function showCourse()
+-		{
+-			var i,j,k,text="";i=j=k=-1;
+-			for (i=0;i<semesters.length;++i)
+-			{
+-				text+='<div class="rectangleSemester btn btn-default" onclick="change('+i+','+j+','+k+')">';
+-				text+=semesters[i].name;
+-				text+='</div>';
+-				j=k=-1;
+-				if (nowSemester==i)
+-				for (j=0;j<courses[i].length;++j)
+-				{
+-					text+='<div class="rectangleCourse btn btn-default" onclick="change('+i+','+j+','+k+')">';
+-					text+=courses[i][j].name;
+-					text+='</div>';
+-					k=-1;
+-					if (nowCourse==j)
+-					for (k=0;k<classes[i][j].length;++k)
+-					{
+-						text+='<div class="rectangleClass btn btn-default" onclick="change('+i+','+j+','+k+')">';
+-						text+=classes[i][j][k].name;
+-						text+='</div>';
+-						if (nowClass==k)
+-						{
+-							text+='<div class="rectangleClassContent btn btn-default">';
+-							text+='ddd';
+-							text+='</div>';
+-						}
+-					}
+-				}
+-			}
+-			console.log(text);
+-			$("#content")[0].innerHTML=text;
+-		}
+-		
+-		loadCourse();
+-		showCourse();
+-
+-	</script>
+-</body>
+diff --git a/app/views/manage/main_page.html.erb b/app/views/manage/main_page.html.erb
+new file mode 100644
+index 0000000..5f3db9f
+--- /dev/null
++++ b/app/views/manage/main_page.html.erb
+@@ -0,0 +1,134 @@
++<head>
++	<style type="text/css">
++		#content
++		{
++			padding-left:20%;
++			padding-right:20%;
++			padding-top:3%:
++		}
++		.rectangleSemester
++		{
++			width:100%;
++			height:50px;
++			margin-top:15px;
++		}
++		.rectangleCourse
++		{
++			width:95%;
++			height:50px;
++			margin-left:4%;
++			margin-right:1%;
++			margin-top:6px;
++		}
++		.rectangleClass
++		{
++			width:90%;
++			height:50px;
++			margin-left:8%;
++			margin-right:2%;
++			margin-top:4px;
++		}
++		.rectangleCourseContent
++		{
++			width:95%;
++			margin-left:4%;
++			margin-right:1%;
++			margin-top:6px;
++		}
++		.rectangleClassContent
++		{
++			width:90%;
++			margin-left:8%;
++			margin-right:2%;
++			margin-top:4px;
++		}
++	</style>
++</head>
++<body>
++	<div id="content">
++	</div> 
++	
++	<script type="text/javascript">
++	
++		var semesters=new Array(),courses=new Array(),classes=new Array();
++		var nowSemester=-1,nowCourse=-1,nowClass=-1;
++		
++		function loadCourse()
++		{
++			var i,j,k;
++			for (i=0;i<=1;++i)
++			{
++				semesters[i]=new Object();
++				semesters[i].name="2015年"+i;
++				courses[i]=new Array();
++				classes[i]=new Array();
++				for (j=0;j<=1;++j)
++				{
++					courses[i][j]=new Object();
++					courses[i][j].name="大学物理"+j;
++					classes[i][j]=new Array();
++					for (k=0;k<=1;++k)
++					{
++						classes[i][j][k]=new Object();
++						classes[i][j][k].name="实验"+k;
++					}
++				}
++			}
++		}
++		   
++		function change(_semester,_course,_class)
++		{
++			if (nowSemester==_semester && (nowCourse==_course || _course==-1) && (nowClass==_class || _class==-1))
++			{
++				nowClass=-1;
++				if (_class==-1) nowCourse=-1;
++				if (_course==-1) nowSemester=-1;
++			}else
++			{
++				nowSemester=_semester;
++				nowCourse=_course;
++				nowClass=_class;
++			}
++			showCourse();
++		}
++
++		function showCourse()
++		{
++			var i,j,k,text="";i=j=k=-1;
++			for (i=0;i<semesters.length;++i)
++			{
++				text+='<div class="rectangleSemester btn btn-default" onclick="change('+i+','+j+','+k+')">';
++				text+=semesters[i].name;
++				text+='</div>';
++				j=k=-1;
++				if (nowSemester==i)
++				for (j=0;j<courses[i].length;++j)
++				{
++					text+='<div class="rectangleCourse btn btn-default" onclick="change('+i+','+j+','+k+')">';
++					text+=courses[i][j].name;
++					text+='</div>';
++					k=-1;
++					if (nowCourse==j)
++					for (k=0;k<classes[i][j].length;++k)
++					{
++						text+='<div class="rectangleClass btn btn-default" onclick="change('+i+','+j+','+k+')">';
++						text+=classes[i][j][k].name;
++						text+='</div>';
++						if (nowClass==k)
++						{
++							text+='<div class="rectangleClassContent btn btn-default">';
++							text+='ddd';
++							text+='</div>';
++						}
++					}
++				}
++			}
++			console.log(text);
++			$("#content")[0].innerHTML=text;
++		}
++		
++		loadCourse();
++		showCourse();
++
++	</script>
++</body>
+diff --git a/app/views/manage/studentInfo.html.erb b/app/views/manage/studentInfo.html.erb
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/app/views/manage/student_info.html.erb b/app/views/manage/student_info.html.erb
+new file mode 100644
+index 0000000..e69de29
+-- 
+1.9.1
+

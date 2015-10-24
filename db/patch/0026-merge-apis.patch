@@ -1,0 +1,41 @@
+From 2e3c7760bd4df1403cfa34850afbea03a9ce55bb Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Mon, 5 Oct 2015 16:49:46 +0800
+Subject: [PATCH 026/150] merge apis
+
+---
+ app/views/devise/sessions/new.html.erb | 4 ++--
+ config/initializers/devise.rb          | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/app/views/devise/sessions/new.html.erb b/app/views/devise/sessions/new.html.erb
+index bdfc844..b261cfd 100644
+--- a/app/views/devise/sessions/new.html.erb
++++ b/app/views/devise/sessions/new.html.erb
+@@ -2,8 +2,8 @@
+ 
+ <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+   <div class="field">
+-    <%= f.label :phone %><br />
+-    <%= f.text_field :phone, autofocus: true %>
++    <%= f.label :email %><br />
++    <%= f.email_field :email, autofocus: true %>
+   </div>
+ 
+   <div class="field">
+diff --git a/config/initializers/devise.rb b/config/initializers/devise.rb
+index c7620b2..c6cd874 100644
+--- a/config/initializers/devise.rb
++++ b/config/initializers/devise.rb
+@@ -31,7 +31,7 @@ Devise.setup do |config|
+   # session. If you need permissions, you should implement that in a before filter.
+   # You can also supply a hash where the value is a boolean determining whether
+   # or not authentication should be aborted when the value is not present.
+-  config.authentication_keys = [:email, :phone]
++  config.authentication_keys = [:email]
+ 
+   # Configure parameters from the request object used for authentication. Each entry
+   # given should be a request method and it will automatically be passed to the
+-- 
+1.9.1
+

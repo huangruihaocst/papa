@@ -1,0 +1,38 @@
+From d6e9d73eb7503075765288c623a042fc28499a11 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Fri, 9 Oct 2015 13:14:12 +0800
+Subject: [PATCH 040/150] sign_in returns an id
+
+---
+ app/controllers/users/sessions_controller.rb       | 2 +-
+ test/controllers/users/sessions_controller_test.rb | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/app/controllers/users/sessions_controller.rb b/app/controllers/users/sessions_controller.rb
+index f7b92e2..00e3258 100644
+--- a/app/controllers/users/sessions_controller.rb
++++ b/app/controllers/users/sessions_controller.rb
+@@ -14,7 +14,7 @@ class Users::SessionsController < Devise::SessionsController
+         self.resource = warden.authenticate!(auth_options)
+         sign_in(resource_name, resource)
+         token = resource.create_token
+-        render json: { status: STATUS_SUCCESS, token: token.token }
++        render json: { status: STATUS_SUCCESS, token: token.token, id: resource.id }
+       end
+     end
+   end
+diff --git a/test/controllers/users/sessions_controller_test.rb b/test/controllers/users/sessions_controller_test.rb
+index 9aaa314..0b32ca6 100644
+--- a/test/controllers/users/sessions_controller_test.rb
++++ b/test/controllers/users/sessions_controller_test.rb
+@@ -24,6 +24,7 @@ class Users::SessionsControllerTest < ActionController::TestCase
+     json = JSON.parse(@response.body)
+     assert_equal json['status'], STATUS_SUCCESS
+     assert_not_nil json['token']
++    assert_not_nil json['id']
+ 
+     post :destroy, { format: :json, token: json['token'] }
+     json = JSON.parse(@response.body)
+-- 
+1.9.1
+

@@ -1,0 +1,40 @@
+From bfca99d8d322dad902aceddd226431891215d4db Mon Sep 17 00:00:00 2001
+From: luogan <luogan_62625686@126.com>
+Date: Mon, 19 Oct 2015 22:17:45 +0800
+Subject: [PATCH 108/150] PAPA-121
+
+---
+ app/views/manage/main_page.html.erb | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/app/views/manage/main_page.html.erb b/app/views/manage/main_page.html.erb
+index d426446..08a7169 100644
+--- a/app/views/manage/main_page.html.erb
++++ b/app/views/manage/main_page.html.erb
+@@ -224,6 +224,7 @@
+ 			text2=$("#input-add-course-2")[0].value;
+ 			p.name=text1;
+ 			p.description=text2;
++			console.log('/semesters/'+info.semesters[choosei].id+'/courses.json');
+ 			$.post('/semesters/'+info.semesters[choosei].id+'/courses.json',p,  //#modify
+     		function(data)
+     		{
+@@ -293,7 +294,6 @@
+ 			p.start_time=text3;
+ 			p.end_time=text4;
+ 			p.location=text5;
+-			console.log(p);
+ 			$.post('/courses/'+info.semesters[choosei].courses[choosej].id+'/lessons.json',p,  //#modify
+     		function(data)
+     		{
+@@ -419,6 +419,7 @@
+ 				info.semesters[i].tot=2;
+ 				info.semesters[i].name="2015年"+i;
+ 				info.semesters[i].courses=new Array();
++				info.semesters[i].id=0;
+ 				info.semesters[i].clicked=false;
+ 				for (j=0;j<info.semesters[i].tot;++j)
+ 				{
+-- 
+1.9.1
+

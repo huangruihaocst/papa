@@ -1,0 +1,26 @@
+From c998839f61176ad371eeead468c609e844cbb290 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Thu, 1 Oct 2015 21:27:38 +0800
+Subject: [PATCH 016/150] add teacher flag
+
+---
+ app/models/teacher_course.rb | 6 ------
+ 1 file changed, 6 deletions(-)
+ delete mode 100644 app/models/teacher_course.rb
+
+diff --git a/app/models/teacher_course.rb b/app/models/teacher_course.rb
+deleted file mode 100644
+index ea48ecc..0000000
+--- a/app/models/teacher_course.rb
++++ /dev/null
+@@ -1,6 +0,0 @@
+-class TeacherCourse < ActiveRecord::Base
+-  self.table_name = 'teachers_courses'
+-
+-  belongs_to  :teacher
+-  belongs_to  :course
+-end
+\ No newline at end of file
+-- 
+1.9.1
+

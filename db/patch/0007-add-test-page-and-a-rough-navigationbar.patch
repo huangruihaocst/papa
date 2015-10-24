@@ -1,0 +1,126 @@
+From 5847c56a1dbbe671b594715f4d7e98abdaffc76d Mon Sep 17 00:00:00 2001
+From: sleepy_chord <sj702d5@foxmail.com>
+Date: Sun, 27 Sep 2015 11:33:02 +0800
+Subject: [PATCH 007/150] add test page and a rough navigationbar
+
+---
+ app/assets/javascripts/test.coffee       |  3 +++
+ app/assets/stylesheets/test.scss         |  3 +++
+ app/controllers/test_controller.rb       |  6 ++++++
+ app/helpers/test_helper.rb               |  2 ++
+ app/views/layouts/main.html.erb          | 14 ++++++++++++++
+ app/views/test/_navigationbar.html.erb   |  4 ++++
+ app/views/test/index.html.erb            |  0
+ config/routes.rb                         |  2 +-
+ test/controllers/test_controller_test.rb |  7 +++++++
+ 9 files changed, 40 insertions(+), 1 deletion(-)
+ create mode 100644 app/assets/javascripts/test.coffee
+ create mode 100644 app/assets/stylesheets/test.scss
+ create mode 100644 app/controllers/test_controller.rb
+ create mode 100644 app/helpers/test_helper.rb
+ create mode 100644 app/views/layouts/main.html.erb
+ create mode 100644 app/views/test/_navigationbar.html.erb
+ create mode 100644 app/views/test/index.html.erb
+ create mode 100644 test/controllers/test_controller_test.rb
+
+diff --git a/app/assets/javascripts/test.coffee b/app/assets/javascripts/test.coffee
+new file mode 100644
+index 0000000..24f83d1
+--- /dev/null
++++ b/app/assets/javascripts/test.coffee
+@@ -0,0 +1,3 @@
++# Place all the behaviors and hooks related to the matching controller here.
++# All this logic will automatically be available in application.js.
++# You can use CoffeeScript in this file: http://coffeescript.org/
+diff --git a/app/assets/stylesheets/test.scss b/app/assets/stylesheets/test.scss
+new file mode 100644
+index 0000000..97f8988
+--- /dev/null
++++ b/app/assets/stylesheets/test.scss
+@@ -0,0 +1,3 @@
++// Place all the styles related to the test controller here.
++// They will automatically be included in application.css.
++// You can use Sass (SCSS) here: http://sass-lang.com/
+diff --git a/app/controllers/test_controller.rb b/app/controllers/test_controller.rb
+new file mode 100644
+index 0000000..e231f4e
+--- /dev/null
++++ b/app/controllers/test_controller.rb
+@@ -0,0 +1,6 @@
++class TestController < ApplicationController
++  layout "main"
++  def index
++
++  end
++end
+diff --git a/app/helpers/test_helper.rb b/app/helpers/test_helper.rb
+new file mode 100644
+index 0000000..09b6d50
+--- /dev/null
++++ b/app/helpers/test_helper.rb
+@@ -0,0 +1,2 @@
++module TestHelper
++end
+diff --git a/app/views/layouts/main.html.erb b/app/views/layouts/main.html.erb
+new file mode 100644
+index 0000000..86b0ea7
+--- /dev/null
++++ b/app/views/layouts/main.html.erb
+@@ -0,0 +1,14 @@
++<!DOCTYPE html>
++<html>
++<head>
++  <title>Papdb</title>
++  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
++  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
++  <%= csrf_meta_tags %>
++</head>
++<body>
++<%= render :partial => "navigationbar" %>
++<%= yield %>
++
++</body>
++</html>
+diff --git a/app/views/test/_navigationbar.html.erb b/app/views/test/_navigationbar.html.erb
+new file mode 100644
+index 0000000..eba441b
+--- /dev/null
++++ b/app/views/test/_navigationbar.html.erb
+@@ -0,0 +1,4 @@
++<div class="header">
++  <p>网络原理实验管理系统</p>
++  <br>
++</div>
+\ No newline at end of file
+diff --git a/app/views/test/index.html.erb b/app/views/test/index.html.erb
+new file mode 100644
+index 0000000..e69de29
+diff --git a/config/routes.rb b/config/routes.rb
+index fc2791d..3ca0237 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -8,7 +8,7 @@ Rails.application.routes.draw do
+ 
+   # Example of regular route:
+   #   get 'products/:id' => 'catalog#view'
+-
++  get 'test' => 'test#index'
+   # Example of named route that can be invoked with purchase_url(id: product.id)
+   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
+ 
+diff --git a/test/controllers/test_controller_test.rb b/test/controllers/test_controller_test.rb
+new file mode 100644
+index 0000000..35c36f8
+--- /dev/null
++++ b/test/controllers/test_controller_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class TestControllerTest < ActionController::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+-- 
+1.9.1
+

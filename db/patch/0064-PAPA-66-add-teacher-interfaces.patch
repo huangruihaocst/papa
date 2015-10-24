@@ -1,0 +1,21 @@
+From beef4c7a76d4c1633609d9f4465342ba89e52ae8 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sun, 11 Oct 2015 20:58:41 +0800
+Subject: [PATCH 064/150] PAPA-66 add teacher interfaces
+
+---
+ app/views/semesters/default.json.jbuilder | 0
+ app/views/semesters/index.json.jbuilder   | 0
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 app/views/semesters/default.json.jbuilder
+ create mode 100644 app/views/semesters/index.json.jbuilder
+
+diff --git a/app/views/semesters/default.json.jbuilder b/app/views/semesters/default.json.jbuilder
+new file mode 100644
+index 0000000..e69de29
+diff --git a/app/views/semesters/index.json.jbuilder b/app/views/semesters/index.json.jbuilder
+new file mode 100644
+index 0000000..e69de29
+-- 
+1.9.1
+

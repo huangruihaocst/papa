@@ -1,0 +1,37 @@
+From 55e3adc09e130886617d216f87dc88bd601b2017 Mon Sep 17 00:00:00 2001
+From: luogan <luogan_62625686@126.com>
+Date: Thu, 15 Oct 2015 22:52:30 +0800
+Subject: [PATCH 078/150] PAPA-115
+
+---
+ app/views/manage/class_info.html.erb | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/app/views/manage/class_info.html.erb b/app/views/manage/class_info.html.erb
+index 953cfa1..b05d143 100644
+--- a/app/views/manage/class_info.html.erb
++++ b/app/views/manage/class_info.html.erb
+@@ -63,7 +63,7 @@
+ 		
+ 		function loadInfo()
+ 		{
+-			people[0].attend=100;people.absense=10;
++			people.attend=100;people.absense=10;
+ 			for (i=0;i<11;++i) score[i]=10;
+ 			courseInfo="计算机组成原理";
+ 			var i;
+@@ -96,6 +96,11 @@
+ 					});
+ 				}
+ 			});
++			$.get("/lessons/"+classId+"/comments.json",{},
++			function(data)
++			{
++				comments[n++]=data;
++			});
+ 		}
+ 		
+ 		function changePage(x)
+-- 
+1.9.1
+

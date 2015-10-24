@@ -1,0 +1,361 @@
+From ac55592b162b09bd81fb756edde0edba82dc83d0 Mon Sep 17 00:00:00 2001
+From: luogan <luogan_62625686@126.com>
+Date: Sun, 11 Oct 2015 22:44:59 +0800
+Subject: [PATCH 070/150] =?UTF-8?q?PAPA-70=20=E4=BF=AE=E6=94=B9=E4=BA=86ma?=
+ =?UTF-8?q?inpage?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ app/views/manage/main_page.html.erb | 209 +++++++++++++++++++++++++++++++-----
+ 1 file changed, 180 insertions(+), 29 deletions(-)
+
+diff --git a/app/views/manage/main_page.html.erb b/app/views/manage/main_page.html.erb
+index 925f337..016a1d7 100644
+--- a/app/views/manage/main_page.html.erb
++++ b/app/views/manage/main_page.html.erb
+@@ -78,9 +78,9 @@
+ 				</div>
+ 				<div class="modal-body">
+ 					<h4>课程标题</h4>
+-					<input id="input-course-1" type="text" class="form-control"></input>
++					<input id="input-add-course-1" type="text" class="form-control"></input>
+ 					<h4>课程内容</h4>
+-					<textarea id="input-course-2" type="text" class="form-control"></textarea>
++					<textarea id="input-add-course-2" type="text" class="form-control"></textarea>
+ 				</div>
+ 				<div class="modal-footer">
+ 					<button class="btn btn-primary" onclick="confirmCourse()" data-dismiss="modal">添加</button>
+@@ -90,6 +90,27 @@
+ 		</div>
+ 	</div>
+ 	
++	<div class="modal fade" id="modal-modify-course" tabindex="-1" role="dialog" aria-hidden="true">
++		<div class="modal-dialog">
++			<div class="modal-content">
++				<div class="modal-header">
++					<button class="close" type="button" data-dismiss="modal">×</button>
++					<h3>课程信息</h3>
++				</div>
++				<div class="modal-body">
++					<h4>课程标题</h4>
++					<input id="input-modify-course-1" type="text" class="form-control"></input>
++					<h4>课程内容</h4>
++					<textarea id="input-modify-course-2" type="text" class="form-control"></textarea>
++				</div>
++				<div class="modal-footer">
++					<button class="btn btn-primary" onclick="modifyCourse()" data-dismiss="modal">修改</button>
++					<button class="btn btn-default" data-dismiss="modal">取消</button>
++				</div>
++			</div>
++		</div>
++	</div>
++	
+ 	<div class="modal fade" id="modal-add-class" tabindex="-1" role="dialog" aria-hidden="true">
+ 		<div class="modal-dialog">
+ 			<div class="modal-content">
+@@ -99,9 +120,9 @@
+ 				</div>
+ 				<div class="modal-body">
+ 					<h4>实验标题</h4>
+-					<input id="input-class-1" type="text" class="form-control"></input>
++					<input id="input-add-class-1" type="text" class="form-control"></input>
+ 					<h4>实验内容</h4>
+-					<textarea id="input-class-2" type="text" class="form-control"></textarea>
++					<textarea id="input-add-class-2" type="text" class="form-control"></textarea>
+ 				</div>
+ 				<div class="modal-footer">
+ 					<button class="btn btn-primary" onclick="confirmClass()" data-dismiss="modal">添加</button>
+@@ -111,9 +132,30 @@
+ 		</div>
+ 	</div>
+ 	
++	<div class="modal fade" id="modal-modify-class" tabindex="-1" role="dialog" aria-hidden="true">
++		<div class="modal-dialog">
++			<div class="modal-content">
++				<div class="modal-header">
++					<button class="close" type="button" data-dismiss="modal">×</button>
++					<h3>实验信息</h3>
++				</div>
++				<div class="modal-body">
++					<h4>实验标题</h4>
++					<input id="input-modify-class-1" type="text" class="form-control"></input>
++					<h4>实验内容</h4>
++					<textarea id="input-modify-class-2" type="text" class="form-control"></textarea>
++				</div>
++				<div class="modal-footer">
++					<button class="btn btn-primary" onclick="modifyClass()" data-dismiss="modal">修改</button>
++					<button class="btn btn-default" data-dismiss="modal">取消</button>
++				</div>
++			</div>
++		</div>
++	</div>
++	
+ 	<script type="text/javascript">
+ 	
+-		var info,choosei,choosej,choosek;
++		var info,choosei,choosej,choosek,usersId;
+ 		
+ 		function confirmSemester()  //向后台传输新学期的信息
+ 		{
+@@ -145,11 +187,11 @@
+     		);
+ 		}
+ 		
+-		function confirmCourse()  //向后台传输新课程的信息
++		function confirmCourse()  //新课程的信息
+ 		{
+ 			var text1,text2,i;
+-			text1=$("#input-course-1")[0].value;
+-			text2=$("#input-course-2")[0].value;
++			text1=$("#input-add-course-1")[0].value;
++			text2=$("#input-add-course-2")[0].value;
+ 			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},
+     		function(data)
+     		{
+@@ -166,7 +208,7 @@
+     				}
+     				info.semesters[choosei].courses[0]=new Object();
+     				info.semesters[choosei].courses[0].name=text1;
+-    				info.semesters[choosei].courses[0].content=text2;
++    				info.semesters[choosei].courses[0].description=text2;
+     				info.semesters[choosei].courses[0].tot=0;
+     				info.semesters[choosei].courses[0].classes=new Array();
+     				showInfo();
+@@ -175,13 +217,38 @@
+     			alert("unexpected:"+data);
+     		}
+     		);
+-		}
++    	}
++    	
++    	function modifyCourse()    //修改课程信息
++    	{
++    		var text1,text2,i;
++    		text1=$("#input-modify-course-1")[0].value;
++			text2=$("#input-modify-course-2")[0].value;
++			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},
++    		function(data)
++    		{
++    			if (data=="fail")
++    			{
++    				alert("修改失败");
++    				return;
++    			}
++    			if (data=="succeed")
++    			{
++    				info.semesters[choosei].courses[choosej].name=text1;
++    				info.semesters[choosei].courses[choosej].description=text2;
++    				showInfo();
++    				return;
++    			}
++    			alert("unexpected:"+data);
++    		}
++    		);
++    	}
+ 		
+-		function confirmClass()  //向后台传输新实验的信息
++		function confirmClass()  //新实验的信息
+ 		{
+ 			var text1,text2,i;
+-			text1=$("#input-class-1")[0].value;
+-			text2=$("#input-class-2")[0].value;
++			text1=$("#input-add-class-1")[0].value;
++			text2=$("#input-add-class-2")[0].value;
+ 			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},
+     		function(data)
+     		{
+@@ -198,7 +265,32 @@
+     				}
+     				info.semesters[choosei].courses[choosej].classes[0]=new Object();
+     				info.semesters[choosei].courses[choosej].classes[0].name=text1;
+-    				info.semesters[choosei].courses[choosej].classes[0].content=text2;
++    				info.semesters[choosei].courses[choosej].classes[0].description=text2;
++    				showInfo();
++    				return;
++    			}
++    			alert("unexpected:"+data);
++    		}
++    		);
++		}
++		
++		function modifyClass()  //修改实验信息
++		{
++			var text1,text2,i;
++			text1=$("#input-modify-class-1")[0].value;
++			text2=$("#input-modify-class-2")[0].value;
++			$.post('/manage/AddCourseToCurrentUser',{name: text1,description: text2},
++    		function(data)
++    		{
++    			if (data=="fail")
++    			{
++    				alert("修改失败");
++    				return;
++    			}
++    			if (data=="succeed")
++    			{
++    				info.semesters[choosei].courses[choosej].classes[choosek].name=text1;
++    				info.semesters[choosei].courses[choosej].classes[choosek].description=text2;
+     				showInfo();
+     				return;
+     			}
+@@ -225,18 +317,65 @@
+ 					info.semesters[i].courses[j]=new Object();
+ 					info.semesters[i].courses[j].tot=2;
+ 					info.semesters[i].courses[j].name="大学物理"+j;
+-					info.semesters[i].courses[j].content="a";
++					info.semesters[i].courses[j].description="a";
+ 					info.semesters[i].courses[j].classes=new Array();
+ 					info.semesters[i].courses[j].clicked=false;
+ 					for (k=0;k<=info.semesters[i].courses[j].tot;++k)
+ 					{
+ 						info.semesters[i].courses[j].classes[k]=new Object();
+ 						info.semesters[i].courses[j].classes[k].name="实验"+k;
+-						info.semesters[i].courses[j].classes[k].content="a";
++						info.semesters[i].courses[j].classes[k].description="a";
+ 						info.semesters[i].courses[j].classes[k].clicked=false;
+ 					}
+ 				}
+ 			}
++			$.get("/semesters.json",{},function(data)
++			{
++				for (i=0;i<data.length();++i)
++				{
++					j=info.tot++;
++					info.semesters[j]=new Object();
++					info.semesters[j].name=data[i].name;
++					info.semesters[j].id=data[i].id;
++					info.semesters[i].courses=new Array();
++					info.semesters[i].clicked=false;
++				}
++			});
++			$.get("/users/current.json",{},function(data)
++			{
++				usersId=data.id;
++			});
++			$.get("/teachers/"+usersId+"/course.json",{},function(data)
++			{
++				var p1,p2;
++				for (p1=0;p1<data.length();++p1)
++				{
++					i=-1;
++					for (j=0;j<info.tot;++j)
++					if (info.semesters[j].id==data[p1].semester)
++					{
++						i=j;break;
++					}
++					if (i==-1)
++					{
++						alert("No such semester.");continue;
++					}
++					j=info.semesters[j].tot++;
++					info.semesters[i].courses[j]=data[p1];
++					info.semesters[i].courses[j].tot=0;
++					info.semesters[i].courses[j].classes=new Array();
++					info.semesters[i].courses[j].clicked=false;
++					$.get("/courses/"+data[p1].id+"/lessons.json",{},function(data2)
++					{
++						for (p2=0;p2<data2.length;++p2)
++						{
++							k=info.semesters[i].courses[j].tot++;
++							info.semesters[i].courses[j].classes[k]=data2[p2];
++							info.semesters[i].courses[j].classes[k].clicked=false;
++						}
++					});
++				}
++			});
+ 		}
+ 		   
+ 		function change(i,j,k)  //i, j, k分别表示当前点击的学期，课程，实验
+@@ -250,9 +389,28 @@
+ 			showInfo();
+ 		}
+ 		
++		function changeCourseInfo(event,i,j)   //修改第i学期第j门课的信息
++		{
++			$("#input-modify-course-1")[0].value=info.semesters[i].courses[j].name;
++			$("#input-modify-course-2")[0].value=info.semesters[i].courses[j].description;
++			choosei=i;choosej=j;
++			$('#modal-modify-course').modal('show');
++			event.stopPropagation();
++		}
++		
++		function changeClassInfo(event,i,j,k)  //修改第i学期第j门课的第k次实验的信息
++		{
++			console.log(i,j,k);
++			$("#input-modify-class-1")[0].value=info.semesters[i].courses[j].classes[k].name;
++			$("#input-modify-class-2")[0].value=info.semesters[i].courses[j].classes[k].description;
++			choosei=i;choosej=j;choosek=k;
++			$('#modal-modify-class').modal('show');
++			event.stopPropagation();
++		}
++		
+ 		function addSemester(event)  //添加学期
+ 		{
+-			$("#input-semester-1")[0].value="";
++			$("#input-add-semester-1")[0].value="";
+ 			$('#modal-add-semester').modal('show');
+ 			event.stopPropagation();
+ 		}
+@@ -260,7 +418,7 @@
+ 		function addCourse(event,i)  //为第i学期添加课程
+ 		{
+ 			choosei=i;
+-			$("#input-course-1")[0].value=$("#input-course-1")[0].value="";
++			$("#input-add-course-1")[0].value=$("#input-add-course-1")[0].value="";
+ 			$('#modal-add-course').modal('show');
+ 			event.stopPropagation();
+ 		}
+@@ -268,7 +426,7 @@
+ 		function addClass(event,i,j) //为第i学期第j门课添加实验
+ 		{
+ 			choosei=i;choosej=j;
+-			$("#input-class-1")[0].value=$("#input-class-2")[0].value="";
++			$("#input-add-class-1")[0].value=$("#input-add-class-2")[0].value="";
+ 			$('#modal-add-class').modal('show');
+ 			event.stopPropagation();
+ 		}
+@@ -309,7 +467,7 @@
+ 			{
+ 				text+='<div class="rectangleSemester btn btn-default" onclick="change('+i+','+j+','+k+')">';
+ 				text+='<div class="names">'+info.semesters[i].name+'</div>';
+-				text+='<div class="btn btn-info custombutton" onclick="addSemester(event)">添加学期</div>';
++			//	text+='<div class="btn btn-info custombutton" onclick="addSemester(event)">添加学期</div>';
+ 				text+='<div class="btn btn-info custombutton" onclick="addCourse(event,'+i+')">添加课程</div>';
+ 				text+='</div>';
+ 				k=-1;
+@@ -318,28 +476,21 @@
+ 				{
+ 					text+='<div class="rectangleCourse btn btn-default" onclick="change('+i+','+j+','+k+')">';
+ 					text+='<div class="names">'+info.semesters[i].courses[j].name+'</div>';
++					text+='<div class="btn btn-info custombutton" onclick="changeCourseInfo(event,'+i+','+j+')">查看|修改信息</div>';
+ 					text+='<div class="btn btn-info custombutton" onclick="addClass(event,'+i+','+j+')">添加实验</div>';
+ 					text+='<div class="btn btn-info custombutton" onclick="showCourseScore(event,'+i+','+j+')">查看成绩</div>';
+ 					text+='<div class="btn btn-info custombutton" onclick="showCourseInfo(event,'+i+','+j+')">课程情况</div>';
+ 					text+='</div>';
+ 					if (info.semesters[i].courses[j].clicked)
+ 					{
+-						text+='<div class="rectangleCourseContent btn btn-default">';
+-						text+=check(info.semesters[i].courses[j].content);
+-						text+='</div>';
+ 						for (k=0;k<info.semesters[i].courses[j].tot;++k)
+ 						{
+ 							text+='<div class="rectangleClass btn btn-default" onclick="change('+i+','+j+','+k+')">';
+ 							text+='<div class="names">'+info.semesters[i].courses[j].classes[k].name+'</div>';
++							text+='<div class="btn btn-info custombutton" onclick="changeClassInfo(event,'+i+','+j+','+k+')">查看|修改信息</div>';
+ 							text+='<div class="btn btn-info custombutton" onclick="showClassScore(event,'+i+','+j+','+k+')">查看成绩</div>';
+ 							text+='<div class="btn btn-info custombutton" onclick="showClassInfo(event,'+i+','+j+','+k+')">实验情况</div>';
+ 							text+='</div>';
+-							if (info.semesters[i].courses[j].classes[k].clicked)
+-							{
+-								text+='<div class="rectangleClassContent btn btn-default">';
+-								text+=check(info.semesters[i].courses[j].classes[k].content);
+-								text+='</div>';
+-							}
+ 						}
+ 					}
+ 					k=-1;
+-- 
+1.9.1
+

@@ -1,0 +1,82 @@
+From cdbc1c305d6a46519be69a49e4e017237f58a542 Mon Sep 17 00:00:00 2001
+From: sleepy_chord <sj702d5@foxmail.com>
+Date: Sun, 11 Oct 2015 00:12:32 +0800
+Subject: [PATCH 057/150] PAPA-53
+
+---
+ .gitignore                            |  2 ++
+ app/views/manage/show_videos.html.erb | 44 +++++++++++++----------------------
+ 2 files changed, 18 insertions(+), 28 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index f853578..0a61739 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -19,4 +19,6 @@
+ /.idea
+ 
+ *~
++# ignore mp4
++/public/*.mp4
+ 
+diff --git a/app/views/manage/show_videos.html.erb b/app/views/manage/show_videos.html.erb
+index 656caa6..4147d78 100644
+--- a/app/views/manage/show_videos.html.erb
++++ b/app/views/manage/show_videos.html.erb
+@@ -1,4 +1,4 @@
+-<head>
++
+   <script src="/video/video.js" type="text/javascript" charset="utf-8"></script>
+   <script type="text/javascript">
+       // 这段代码必须放在video.js后面ss
+@@ -7,32 +7,20 @@
+   </script>
+   <!-- 皮肤 -->
+   <link rel="stylesheet" href="/video/video-js.css" type="text/css" media="screen" title="Video JS">
+-</head>
+ 
+-<!-- Begin VideoJS -->
+-<div class="video-js-box " style="margin: 20px">
+-  <video id="example_video_1" class="video-js" width="640" height="264" style="margin: auto" controls="controls" preload="auto" poster="http://video-js.zencoder.com/oceans-clip.png">
+-    <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+-    <source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm; codecs="vp8, vorbis"' />
+-    <source src="http://video-js.zencoder.com/oceans-clip.ogv" type='video/ogg; codecs="theora, vorbis"' />
+-    <!-- 如果浏览器不兼容HTML5则使用flash播放 -->
+-    <object id="flash_fallback_1" class="vjs-flash-fallback" width="640" height="264" type="application/x-shockwave-flash"
+-            data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
+-      <param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
+-      <param name="allowfullscreen" value="true" />
+-      <param name="flashvars" value='config={"playlist":["http://video-js.zencoder.com/oceans-clip.png", {"url": "http://video-js.zencoder.com/oceans-clip.mp4","autoPlay":false,"autoBuffering":true}]}' />
+-      <!-- 视频图片. -->
+-      <img src="http://video-js.zencoder.com/oceans-clip.png" width="640" height="264" alt="Poster Image"
+-           title="No video playback capabilities." />
+-    </object>
+-  </video>
+-  <!-- 这里是几个源文件的下载地址 -->
+-  <p class="vjs-no-video"><strong>Download Video:</strong>
+-    <a href="http://video-js.zencoder.com/oceans-clip.mp4">MP4</a>,
+-    <a href="http://video-js.zencoder.com/oceans-clip.webm">WebM</a>,
+-    <a href="http://video-js.zencoder.com/oceans-clip.ogv">Ogg</a><br>
+-    <!-- Support VideoJS by keeping this link. -->
+-    <a href="http://videojs.com">HTML5 Video Player</a> by VideoJS
+-  </p>
+-</div>
++  <div class="container-fluid">
++    <div class="row">
++    <div class="col-md-8">
++            <!-- Begin VideoJS -->
++            <div class="video-js-box " style="margin: 20px;border-right: groove 1px #000000">
++              <video id="example_video_3" class="video-js vjs-big-play-centered"
++                     width="500" height="264" style="margin: auto" controls
++                     preload="auto" data-setup="{}">
++                <source src="/test.mp4" type='video/mp4;' />
++              </video>
++              </div>
++    </div>
++      <div class="col-md-4"></div>
++    </div>
++  </div>
+ <!-- End VideoJS -->
+-- 
+1.9.1
+

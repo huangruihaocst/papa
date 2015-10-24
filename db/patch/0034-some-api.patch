@@ -1,0 +1,116 @@
+From c6b250d8e83eb67579b5d12ee79295372a04d741 Mon Sep 17 00:00:00 2001
+From: sleepy_chord <sj702d5@foxmail.com>
+Date: Wed, 7 Oct 2015 16:23:39 +0800
+Subject: [PATCH 034/150] some api
+
+---
+ app/controllers/manage_controller.rb     | 12 ++++++++----
+ app/views/layouts/application.html.erb   |  3 ++-
+ app/views/layouts/main.html.erb          |  4 ++--
+ app/views/manage/_navigationbar.html.erb |  4 ++--
+ app/views/test/index.html.erb            |  7 ++++++-
+ config/routes.rb                         |  1 +
+ 6 files changed, 21 insertions(+), 10 deletions(-)
+
+diff --git a/app/controllers/manage_controller.rb b/app/controllers/manage_controller.rb
+index 750f9a1..2c35889 100644
+--- a/app/controllers/manage_controller.rb
++++ b/app/controllers/manage_controller.rb
+@@ -25,12 +25,16 @@ class ManageController < ApplicationController
+   end
+   def AddCourseToCurrentUser
+     if(user_signed_in?)
+-      uId=@current_user.id;
+       c=Course.where("name = ?",params[:name]).first;
+-      if(not c)
+-        c=Course.create(name: params[:name],description : params[:description])
++      unless c
++        c=Course.create(name: params[:name],description: params[:description])
+       end
+-
++      unless User.find(@current_user.id).courses.where("course_id=?",c.id).first
++        Participation.create(user_id: @current_user.id, course_id: c.id, role: params[:role]);
++      end
++      render :text => "succeed"
++    else
++      render :text => "fail"
+     end
+   end
+ end
+diff --git a/app/views/layouts/application.html.erb b/app/views/layouts/application.html.erb
+index a2faa3b..2da9fc3 100644
+--- a/app/views/layouts/application.html.erb
++++ b/app/views/layouts/application.html.erb
+@@ -7,7 +7,8 @@
+   <%= csrf_meta_tags %>
+ </head>
+ <body>
+-
++<p class="notice"><%=notice%></p>
++<p class="alert"><%=alert%></p>
+ <%= yield %>
+ 
+ </body>
+diff --git a/app/views/layouts/main.html.erb b/app/views/layouts/main.html.erb
+index 8b96323..ed1b01f 100644
+--- a/app/views/layouts/main.html.erb
++++ b/app/views/layouts/main.html.erb
+@@ -15,11 +15,11 @@
+ </body>
+ <script>
+     (function (){
+-      /*  <% if user_signed_in?%>
++        <% if user_signed_in?%>
+         $("#user_name").html("<%= current_user.email %>");
+         <%else%>
+         $("#MainContent").load("/users/sign_in");
+-        <%end%>*/
++        <%end%>
+     })();
+ </script>
+ </html>
+diff --git a/app/views/manage/_navigationbar.html.erb b/app/views/manage/_navigationbar.html.erb
+index 3e4eb45..3b1f42f 100644
+--- a/app/views/manage/_navigationbar.html.erb
++++ b/app/views/manage/_navigationbar.html.erb
+@@ -7,8 +7,8 @@
+       <ul class="nav navbar-nav pull-right">
+           <li class="user_msg"><a id="user_name">name</a></li>
+           <li class="user_msg">
+-              <a >Sign out</a>
+-            </li>
++            <%= link_to "Sign out",destroy_user_session_path , method: :delete %>
++          </li>
+       </ul>
+     </div>
+ </nav>
+diff --git a/app/views/test/index.html.erb b/app/views/test/index.html.erb
+index 2615388..7003cd9 100644
+--- a/app/views/test/index.html.erb
++++ b/app/views/test/index.html.erb
+@@ -1,2 +1,7 @@
+ 
+-<input class="btn-info" type="button" value="test"/>
+\ No newline at end of file
++<script>
++    (function (){
++    $.post('/manage/AddCourseToCurrentUser',{name: "ttt",description:"just  ttt"},
++    function(data){alert(data)});}
++    )();
++</script>
+\ No newline at end of file
+diff --git a/config/routes.rb b/config/routes.rb
+index b5bfd8a..07551c1 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -23,6 +23,7 @@ Rails.application.routes.draw do
+   get 'manage/ShowVideos' => 'manage#show_videos'
+ 
+   get 'manage/getUserCoursesById/:id' => 'manage#GetUserCoursesById'
++  post 'manage/AddCourseToCurrentUser' => 'manage#AddCourseToCurrentUser'
+   # Example of named route that can be invoked with purchase_url(id: product.id)
+   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
+ 
+-- 
+1.9.1
+

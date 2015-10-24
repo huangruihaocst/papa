@@ -1,0 +1,75 @@
+From a4574baeeea9f11d50764e8518e479fc45f9901e Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Fri, 23 Oct 2015 15:11:46 +0800
+Subject: [PATCH 120/150] PAPA-137 add lesson score to seed
+
+---
+ app/controllers/users_controller.rb                           | 2 --
+ db/init_data/db.rb                                            | 6 ++++++
+ db/migrate/20150930115150_add_lessons_studends_and_courses.rb | 1 +
+ db/schema.rb                                                  | 1 +
+ 4 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/app/controllers/users_controller.rb b/app/controllers/users_controller.rb
+index f1ac165..1c4cc15 100644
+--- a/app/controllers/users_controller.rb
++++ b/app/controllers/users_controller.rb
+@@ -15,6 +15,4 @@ class UsersController < ApplicationController
+       json_failed(REASON_RESOURCE_NOT_FOUND)
+     end
+   end
+-
+-
+ end
+\ No newline at end of file
+diff --git a/db/init_data/db.rb b/db/init_data/db.rb
+index 774d02f..8ba0781 100644
+--- a/db/init_data/db.rb
++++ b/db/init_data/db.rb
+@@ -1,6 +1,9 @@
+ s = Semester.create(name: '2015')
+ 
+ c1 = Course.create(name: 'os', description: '123', semester_id: s.id)
++l1 = c1.lessons.create(name: 'os-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
++
++
+ c2 = Course.create(name: 'ds', description: '中文', semester_id: s.id)
+ c3 = Course.create(name: '语文', description: 'fuck', semester_id: s.id)
+ 
+@@ -14,6 +17,9 @@ u3 = User.create(name:'ciara', phone:'333', email:'c@d.e', password:'123', passw
+ 
+ 
+ p11 = Participation.create(user_id: u1.id, course_id: c1.id, role: ROLE_STUDENT)
++lesson_status1 = LessonStatus.create(user_id: u1.id, lesson_id: c1.lessons.first.id, creator_id: u1.id, score: 123)
++
++
+ p12 = Participation.create(user_id: u1.id, course_id: c2.id, role: ROLE_ASSISTANT)
+ p21 = Participation.create(user_id: u2.id, course_id: c1.id, role: ROLE_STUDENT)
+ p22 = Participation.create(user_id: u2.id, course_id: c2.id, role: ROLE_STUDENT)
+diff --git a/db/migrate/20150930115150_add_lessons_studends_and_courses.rb b/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
+index 8c87186..e031bd2 100644
+--- a/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
++++ b/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
+@@ -60,6 +60,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
+       t.string :score
+       t.integer :user_id
+       t.integer :lesson_id
++      t.integer :creator_id
+       t.timestamps
+     end
+ 
+diff --git a/db/schema.rb b/db/schema.rb
+index b0bd27a..5f83071 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 20151008120334) do
+     t.string   "score"
+     t.integer  "user_id"
+     t.integer  "lesson_id"
++    t.integer  "creator_id"
+     t.datetime "created_at"
+     t.datetime "updated_at"
+   end
+-- 
+1.9.1
+

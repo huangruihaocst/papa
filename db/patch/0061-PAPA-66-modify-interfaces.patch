@@ -1,0 +1,1389 @@
+From 35e4ceb1a2e31e9cd4dfe78b273d7660c6155f01 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sun, 11 Oct 2015 20:20:58 +0800
+Subject: [PATCH 061/150] PAPA-66 modify interfaces
+
+---
+ README.md                                          | 27 +++++--
+ app/assets/javascripts/android_apps.coffee         |  3 +
+ app/assets/javascripts/files.coffee                |  3 +
+ app/assets/javascripts/lesson_comments.coffee      |  3 +
+ app/assets/javascripts/messages.coffee             |  3 +
+ app/assets/javascripts/semesters.coffee            |  3 +
+ app/assets/javascripts/student_comments.coffee     |  3 +
+ app/assets/javascripts/teachers.coffee             |  3 +
+ app/assets/stylesheets/android_apps.scss           |  3 +
+ app/assets/stylesheets/files.scss                  |  3 +
+ app/assets/stylesheets/lesson_comments.scss        |  3 +
+ app/assets/stylesheets/messages.scss               |  3 +
+ app/assets/stylesheets/semesters.scss              |  3 +
+ app/assets/stylesheets/student_comments.scss       |  3 +
+ app/assets/stylesheets/teachers.scss               |  3 +
+ app/controllers/android_apps_controller.rb         |  2 +
+ app/controllers/files_controller.rb                |  2 +
+ app/controllers/lesson_comments_controller.rb      |  2 +
+ app/controllers/messages_controller.rb             |  2 +
+ app/controllers/semesters_controller.rb            |  2 +
+ app/controllers/student_comments_controller.rb     |  2 +
+ app/controllers/teachers_controller.rb             |  2 +
+ app/helpers/android_apps_helper.rb                 |  2 +
+ app/helpers/files_helper.rb                        |  2 +
+ app/helpers/lesson_comments_helper.rb              |  2 +
+ app/helpers/messages_helper.rb                     |  2 +
+ app/helpers/semesters_helper.rb                    |  2 +
+ app/helpers/student_comments_helper.rb             |  2 +
+ app/helpers/teachers_helper.rb                     |  2 +
+ app/models/android_app.rb                          |  4 +
+ app/models/assisting_course.rb                     |  9 +++
+ app/models/course.rb                               | 11 ++-
+ app/models/file_resource.rb                        |  4 +
+ app/models/learning_course.rb                      |  9 +++
+ app/models/lesson.rb                               |  4 +
+ app/models/lesson_file.rb                          |  4 +
+ app/models/lesson_remark.rb                        |  6 ++
+ app/models/lesson_status.rb                        |  7 ++
+ app/models/message.rb                              |  6 ++
+ app/models/semester.rb                             |  4 +
+ app/models/student_remark.rb                       |  6 ++
+ app/models/teaching_course.rb                      |  9 +++
+ app/models/upload_file.rb                          | 14 ----
+ app/models/user.rb                                 |  8 ++
+ config/routes.rb                                   | 85 +++++++++++-----------
+ db/init_data/db.rb                                 |  8 +-
+ ...50930115150_add_lessons_studends_and_courses.rb | 20 +++--
+ db/schema.rb                                       | 27 +++++--
+ test/controllers/android_apps_controller_test.rb   |  7 ++
+ test/controllers/files_controller_test.rb          |  7 ++
+ .../controllers/lesson_comments_controller_test.rb |  7 ++
+ test/controllers/messages_controller_test.rb       |  7 ++
+ test/controllers/semesters_controller_test.rb      |  7 ++
+ .../student_comments_controller_test.rb            |  7 ++
+ test/controllers/teachers_controller_test.rb       |  7 ++
+ test/fixtures/android_apps.yml                     | 11 +++
+ test/fixtures/assisting_courses.yml                | 11 +++
+ test/fixtures/file_resources.yml                   | 11 +++
+ test/fixtures/learning_courses.yml                 | 11 +++
+ test/fixtures/lesson_files.yml                     | 11 +++
+ test/fixtures/lesson_remarks.yml                   | 11 +++
+ test/fixtures/lesson_statuses.yml                  | 11 +++
+ test/fixtures/messages.yml                         | 11 +++
+ test/fixtures/semesters.yml                        | 11 +++
+ test/fixtures/student_remarks.yml                  | 11 +++
+ test/fixtures/teaching_courses.yml                 | 11 +++
+ test/models/android_app_test.rb                    |  7 ++
+ test/models/assisting_course_test.rb               |  7 ++
+ test/models/file_resource_test.rb                  |  7 ++
+ test/models/learning_course_test.rb                |  7 ++
+ test/models/lesson_file_test.rb                    |  7 ++
+ test/models/lesson_remark_test.rb                  |  7 ++
+ test/models/lesson_status_test.rb                  |  7 ++
+ test/models/message_test.rb                        |  7 ++
+ test/models/semester_test.rb                       |  7 ++
+ test/models/student_remark_test.rb                 |  7 ++
+ test/models/teaching_course_test.rb                |  7 ++
+ 77 files changed, 508 insertions(+), 81 deletions(-)
+ create mode 100644 app/assets/javascripts/android_apps.coffee
+ create mode 100644 app/assets/javascripts/files.coffee
+ create mode 100644 app/assets/javascripts/lesson_comments.coffee
+ create mode 100644 app/assets/javascripts/messages.coffee
+ create mode 100644 app/assets/javascripts/semesters.coffee
+ create mode 100644 app/assets/javascripts/student_comments.coffee
+ create mode 100644 app/assets/javascripts/teachers.coffee
+ create mode 100644 app/assets/stylesheets/android_apps.scss
+ create mode 100644 app/assets/stylesheets/files.scss
+ create mode 100644 app/assets/stylesheets/lesson_comments.scss
+ create mode 100644 app/assets/stylesheets/messages.scss
+ create mode 100644 app/assets/stylesheets/semesters.scss
+ create mode 100644 app/assets/stylesheets/student_comments.scss
+ create mode 100644 app/assets/stylesheets/teachers.scss
+ create mode 100644 app/controllers/android_apps_controller.rb
+ create mode 100644 app/controllers/files_controller.rb
+ create mode 100644 app/controllers/lesson_comments_controller.rb
+ create mode 100644 app/controllers/messages_controller.rb
+ create mode 100644 app/controllers/semesters_controller.rb
+ create mode 100644 app/controllers/student_comments_controller.rb
+ create mode 100644 app/controllers/teachers_controller.rb
+ create mode 100644 app/helpers/android_apps_helper.rb
+ create mode 100644 app/helpers/files_helper.rb
+ create mode 100644 app/helpers/lesson_comments_helper.rb
+ create mode 100644 app/helpers/messages_helper.rb
+ create mode 100644 app/helpers/semesters_helper.rb
+ create mode 100644 app/helpers/student_comments_helper.rb
+ create mode 100644 app/helpers/teachers_helper.rb
+ create mode 100644 app/models/android_app.rb
+ create mode 100644 app/models/assisting_course.rb
+ create mode 100644 app/models/file_resource.rb
+ create mode 100644 app/models/learning_course.rb
+ create mode 100644 app/models/lesson_file.rb
+ create mode 100644 app/models/lesson_remark.rb
+ create mode 100644 app/models/lesson_status.rb
+ create mode 100644 app/models/message.rb
+ create mode 100644 app/models/semester.rb
+ create mode 100644 app/models/student_remark.rb
+ create mode 100644 app/models/teaching_course.rb
+ delete mode 100644 app/models/upload_file.rb
+ create mode 100644 test/controllers/android_apps_controller_test.rb
+ create mode 100644 test/controllers/files_controller_test.rb
+ create mode 100644 test/controllers/lesson_comments_controller_test.rb
+ create mode 100644 test/controllers/messages_controller_test.rb
+ create mode 100644 test/controllers/semesters_controller_test.rb
+ create mode 100644 test/controllers/student_comments_controller_test.rb
+ create mode 100644 test/controllers/teachers_controller_test.rb
+ create mode 100644 test/fixtures/android_apps.yml
+ create mode 100644 test/fixtures/assisting_courses.yml
+ create mode 100644 test/fixtures/file_resources.yml
+ create mode 100644 test/fixtures/learning_courses.yml
+ create mode 100644 test/fixtures/lesson_files.yml
+ create mode 100644 test/fixtures/lesson_remarks.yml
+ create mode 100644 test/fixtures/lesson_statuses.yml
+ create mode 100644 test/fixtures/messages.yml
+ create mode 100644 test/fixtures/semesters.yml
+ create mode 100644 test/fixtures/student_remarks.yml
+ create mode 100644 test/fixtures/teaching_courses.yml
+ create mode 100644 test/models/android_app_test.rb
+ create mode 100644 test/models/assisting_course_test.rb
+ create mode 100644 test/models/file_resource_test.rb
+ create mode 100644 test/models/learning_course_test.rb
+ create mode 100644 test/models/lesson_file_test.rb
+ create mode 100644 test/models/lesson_remark_test.rb
+ create mode 100644 test/models/lesson_status_test.rb
+ create mode 100644 test/models/message_test.rb
+ create mode 100644 test/models/semester_test.rb
+ create mode 100644 test/models/student_remark_test.rb
+ create mode 100644 test/models/teaching_course_test.rb
+
+diff --git a/README.md b/README.md
+index 02a6289..a1a283c 100644
+--- a/README.md
++++ b/README.md
+@@ -110,16 +110,22 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+     PUT    /courses/1.json           修改课程             course parameters                             Teacher
+     DELETE /courses/1.json           删除课程             id                                            Teacher
+     GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          Student
++    
++    # 与课程有关系的资源
+     GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                        Student
+     POST   /courses/1/teachers.json  添加老师             teacher parameters                            Teacher
+     PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
+     DELETE /courses/1/teachers/1.json 删除老师            id                                            Teacher
+     
+-    # 与课程有关系的资源
+     GET    /courses/1/students.json  获得id=1课的所有学生 "students": [student, ...]                    Assistant
++    POST   /courses/1/students.json  添加学生
++    DELETE /courses/1/students/1.json 删除学生
+     GET    /courses/1/assistants.json 类似上一个          "assistants": [assistant, ...]                Student
+     POST   /courses/1/assistants.json 添加助教            id                                            Teacher
++    DELETE /courses/1/assistants/1.json 删除助教
+     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            Student
++    POST   /courses/1/lessons.json   向课程中添加实验课
++    DELETE /courses/1/lessons/1.json 从课程中删除实验课
+     
+     # namespace lessons
+     GET    /lessons/1.json           获得某门实验课的信息  "lesson": lesson                             Student
+@@ -147,9 +153,10 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+     GET    /students/1/courses.json  获得所有课程           "courses": [course...]                       Student
+     PUT    /students/1/courses.json  修改学生课程列表                                                    Teacher
+     GET    /students/1/lessons/1.json       获得学生课程的信息，包括成绩     "course": course_score       Student
+-    POST   /students/1/lessons/1.json       修改学生课程信息                                             Assistant  
++    PUT    /students/1/lessons/1.json       修改学生课程信息                                             Assistant  
+     GET    /students/1/lessons/1/files.json 获得某门实验课某个学生的所有文件 "files": [file, ...]         Student
+-    POST   /students/1/lessons/files.json 在某门实验课上添加视频图片                                      Student
++    POST   /students/1/lessons/1/files.json 在某门实验课上添加视频图片                                      Student
++    DELETE /students/1/lessons/1/files/1.json 在某门实验课上删除视频照片
+     
+     GET    /assistants.json           获得所有助教信息      "assistant": [assistant, ...]                Student
+     GET    /assistants/1.json         获得某个助教信息      "assistant": assistant                       Assistant
+@@ -164,6 +171,10 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+     GET    /android/current_version.json 得到当前最新版本号  {"version": "xx", "apk_path": "xx"}         Student
+     POST   /android/current_version.json 上传apk            version=xx apk                              Admin
+     
++    # 文件相关
++    GET    /files/1.json             得到该文件的信息        "file": file
++    POST   /files.json               上传文件                file parameters
++    
+     
+ Http Parameters/JSON对象格式
+     
+@@ -180,7 +191,7 @@ Http Parameters/JSON对象格式
+             start_time=datetime
+             end_time=datetime
+             location=string
+-            attached_file_path=string
++            attached_file_id=string
+     
+     student id=int,
+             name=string,
+@@ -215,7 +226,7 @@ Http Parameters/JSON对象格式
+     file    id=int
+             type=string
+             name=string
+-            path=string
++            path=string(not required)
+             
+ ###reason的可能值和含义
+ REASON_TOKEN_INVALID = 'token_invalid'      // token没有指定或者无效，应该检查url参数
+@@ -243,6 +254,7 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
+             has_many lessons,
+             has_many participations,
+             has_many students, through: participation, as: :user
++            has_many teachers, through: teaching_course
+             has_many messages
+      
+     participation id=int,
+@@ -262,6 +274,9 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
+             has_many attached_files, as: :files
+             has_many lesson_remarks,
+             has_many student_remarks
++    lesson_files id=int
++            belongs_to lesson
++            belongs_to file_resource
+             
+     user    id=int,
+             name=string,
+@@ -280,7 +295,7 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
+             has_many assistant_to_student_remarks, as: student_remarks, foreign_key: :creator_id
+             has_many from_assistant_remarks, as: student_remarks, foreign_key: :student_id
+             has_many posted_messages, as: :message, foreign_key: :creator_id
+-            
++     
+     teaching_course id=int
+             belongs_to user
+             belongs_to course
+diff --git a/app/assets/javascripts/android_apps.coffee b/app/assets/javascripts/android_apps.coffee
+new file mode 100644
+index 0000000..24f83d1
+--- /dev/null
++++ b/app/assets/javascripts/android_apps.coffee
+@@ -0,0 +1,3 @@
++# Place all the behaviors and hooks related to the matching controller here.
++# All this logic will automatically be available in application.js.
++# You can use CoffeeScript in this file: http://coffeescript.org/
+diff --git a/app/assets/javascripts/files.coffee b/app/assets/javascripts/files.coffee
+new file mode 100644
+index 0000000..24f83d1
+--- /dev/null
++++ b/app/assets/javascripts/files.coffee
+@@ -0,0 +1,3 @@
++# Place all the behaviors and hooks related to the matching controller here.
++# All this logic will automatically be available in application.js.
++# You can use CoffeeScript in this file: http://coffeescript.org/
+diff --git a/app/assets/javascripts/lesson_comments.coffee b/app/assets/javascripts/lesson_comments.coffee
+new file mode 100644
+index 0000000..24f83d1
+--- /dev/null
++++ b/app/assets/javascripts/lesson_comments.coffee
+@@ -0,0 +1,3 @@
++# Place all the behaviors and hooks related to the matching controller here.
++# All this logic will automatically be available in application.js.
++# You can use CoffeeScript in this file: http://coffeescript.org/
+diff --git a/app/assets/javascripts/messages.coffee b/app/assets/javascripts/messages.coffee
+new file mode 100644
+index 0000000..24f83d1
+--- /dev/null
++++ b/app/assets/javascripts/messages.coffee
+@@ -0,0 +1,3 @@
++# Place all the behaviors and hooks related to the matching controller here.
++# All this logic will automatically be available in application.js.
++# You can use CoffeeScript in this file: http://coffeescript.org/
+diff --git a/app/assets/javascripts/semesters.coffee b/app/assets/javascripts/semesters.coffee
+new file mode 100644
+index 0000000..24f83d1
+--- /dev/null
++++ b/app/assets/javascripts/semesters.coffee
+@@ -0,0 +1,3 @@
++# Place all the behaviors and hooks related to the matching controller here.
++# All this logic will automatically be available in application.js.
++# You can use CoffeeScript in this file: http://coffeescript.org/
+diff --git a/app/assets/javascripts/student_comments.coffee b/app/assets/javascripts/student_comments.coffee
+new file mode 100644
+index 0000000..24f83d1
+--- /dev/null
++++ b/app/assets/javascripts/student_comments.coffee
+@@ -0,0 +1,3 @@
++# Place all the behaviors and hooks related to the matching controller here.
++# All this logic will automatically be available in application.js.
++# You can use CoffeeScript in this file: http://coffeescript.org/
+diff --git a/app/assets/javascripts/teachers.coffee b/app/assets/javascripts/teachers.coffee
+new file mode 100644
+index 0000000..24f83d1
+--- /dev/null
++++ b/app/assets/javascripts/teachers.coffee
+@@ -0,0 +1,3 @@
++# Place all the behaviors and hooks related to the matching controller here.
++# All this logic will automatically be available in application.js.
++# You can use CoffeeScript in this file: http://coffeescript.org/
+diff --git a/app/assets/stylesheets/android_apps.scss b/app/assets/stylesheets/android_apps.scss
+new file mode 100644
+index 0000000..c620c04
+--- /dev/null
++++ b/app/assets/stylesheets/android_apps.scss
+@@ -0,0 +1,3 @@
++// Place all the styles related to the android_apps controller here.
++// They will automatically be included in application.css.
++// You can use Sass (SCSS) here: http://sass-lang.com/
+diff --git a/app/assets/stylesheets/files.scss b/app/assets/stylesheets/files.scss
+new file mode 100644
+index 0000000..febd8a7
+--- /dev/null
++++ b/app/assets/stylesheets/files.scss
+@@ -0,0 +1,3 @@
++// Place all the styles related to the files controller here.
++// They will automatically be included in application.css.
++// You can use Sass (SCSS) here: http://sass-lang.com/
+diff --git a/app/assets/stylesheets/lesson_comments.scss b/app/assets/stylesheets/lesson_comments.scss
+new file mode 100644
+index 0000000..b6f07e7
+--- /dev/null
++++ b/app/assets/stylesheets/lesson_comments.scss
+@@ -0,0 +1,3 @@
++// Place all the styles related to the lesson_comments controller here.
++// They will automatically be included in application.css.
++// You can use Sass (SCSS) here: http://sass-lang.com/
+diff --git a/app/assets/stylesheets/messages.scss b/app/assets/stylesheets/messages.scss
+new file mode 100644
+index 0000000..830c7b3
+--- /dev/null
++++ b/app/assets/stylesheets/messages.scss
+@@ -0,0 +1,3 @@
++// Place all the styles related to the messages controller here.
++// They will automatically be included in application.css.
++// You can use Sass (SCSS) here: http://sass-lang.com/
+diff --git a/app/assets/stylesheets/semesters.scss b/app/assets/stylesheets/semesters.scss
+new file mode 100644
+index 0000000..e7f20cf
+--- /dev/null
++++ b/app/assets/stylesheets/semesters.scss
+@@ -0,0 +1,3 @@
++// Place all the styles related to the semesters controller here.
++// They will automatically be included in application.css.
++// You can use Sass (SCSS) here: http://sass-lang.com/
+diff --git a/app/assets/stylesheets/student_comments.scss b/app/assets/stylesheets/student_comments.scss
+new file mode 100644
+index 0000000..bf2dbbb
+--- /dev/null
++++ b/app/assets/stylesheets/student_comments.scss
+@@ -0,0 +1,3 @@
++// Place all the styles related to the student_comments controller here.
++// They will automatically be included in application.css.
++// You can use Sass (SCSS) here: http://sass-lang.com/
+diff --git a/app/assets/stylesheets/teachers.scss b/app/assets/stylesheets/teachers.scss
+new file mode 100644
+index 0000000..14a947b
+--- /dev/null
++++ b/app/assets/stylesheets/teachers.scss
+@@ -0,0 +1,3 @@
++// Place all the styles related to the teachers controller here.
++// They will automatically be included in application.css.
++// You can use Sass (SCSS) here: http://sass-lang.com/
+diff --git a/app/controllers/android_apps_controller.rb b/app/controllers/android_apps_controller.rb
+new file mode 100644
+index 0000000..381c61f
+--- /dev/null
++++ b/app/controllers/android_apps_controller.rb
+@@ -0,0 +1,2 @@
++class AndroidAppsController < ApplicationController
++end
+diff --git a/app/controllers/files_controller.rb b/app/controllers/files_controller.rb
+new file mode 100644
+index 0000000..4970192
+--- /dev/null
++++ b/app/controllers/files_controller.rb
+@@ -0,0 +1,2 @@
++class FilesController < ApplicationController
++end
+diff --git a/app/controllers/lesson_comments_controller.rb b/app/controllers/lesson_comments_controller.rb
+new file mode 100644
+index 0000000..6d73a91
+--- /dev/null
++++ b/app/controllers/lesson_comments_controller.rb
+@@ -0,0 +1,2 @@
++class LessonCommentsController < ApplicationController
++end
+diff --git a/app/controllers/messages_controller.rb b/app/controllers/messages_controller.rb
+new file mode 100644
+index 0000000..a502791
+--- /dev/null
++++ b/app/controllers/messages_controller.rb
+@@ -0,0 +1,2 @@
++class MessagesController < ApplicationController
++end
+diff --git a/app/controllers/semesters_controller.rb b/app/controllers/semesters_controller.rb
+new file mode 100644
+index 0000000..b1f0674
+--- /dev/null
++++ b/app/controllers/semesters_controller.rb
+@@ -0,0 +1,2 @@
++class SemestersController < ApplicationController
++end
+diff --git a/app/controllers/student_comments_controller.rb b/app/controllers/student_comments_controller.rb
+new file mode 100644
+index 0000000..741c8b8
+--- /dev/null
++++ b/app/controllers/student_comments_controller.rb
+@@ -0,0 +1,2 @@
++class StudentCommentsController < ApplicationController
++end
+diff --git a/app/controllers/teachers_controller.rb b/app/controllers/teachers_controller.rb
+new file mode 100644
+index 0000000..2ed69e9
+--- /dev/null
++++ b/app/controllers/teachers_controller.rb
+@@ -0,0 +1,2 @@
++class TeachersController < ApplicationController
++end
+diff --git a/app/helpers/android_apps_helper.rb b/app/helpers/android_apps_helper.rb
+new file mode 100644
+index 0000000..97a80aa
+--- /dev/null
++++ b/app/helpers/android_apps_helper.rb
+@@ -0,0 +1,2 @@
++module AndroidAppsHelper
++end
+diff --git a/app/helpers/files_helper.rb b/app/helpers/files_helper.rb
+new file mode 100644
+index 0000000..e9da4f6
+--- /dev/null
++++ b/app/helpers/files_helper.rb
+@@ -0,0 +1,2 @@
++module FilesHelper
++end
+diff --git a/app/helpers/lesson_comments_helper.rb b/app/helpers/lesson_comments_helper.rb
+new file mode 100644
+index 0000000..f78c413
+--- /dev/null
++++ b/app/helpers/lesson_comments_helper.rb
+@@ -0,0 +1,2 @@
++module LessonCommentsHelper
++end
+diff --git a/app/helpers/messages_helper.rb b/app/helpers/messages_helper.rb
+new file mode 100644
+index 0000000..f1bca9f
+--- /dev/null
++++ b/app/helpers/messages_helper.rb
+@@ -0,0 +1,2 @@
++module MessagesHelper
++end
+diff --git a/app/helpers/semesters_helper.rb b/app/helpers/semesters_helper.rb
+new file mode 100644
+index 0000000..ccb76f0
+--- /dev/null
++++ b/app/helpers/semesters_helper.rb
+@@ -0,0 +1,2 @@
++module SemestersHelper
++end
+diff --git a/app/helpers/student_comments_helper.rb b/app/helpers/student_comments_helper.rb
+new file mode 100644
+index 0000000..15d91db
+--- /dev/null
++++ b/app/helpers/student_comments_helper.rb
+@@ -0,0 +1,2 @@
++module StudentCommentsHelper
++end
+diff --git a/app/helpers/teachers_helper.rb b/app/helpers/teachers_helper.rb
+new file mode 100644
+index 0000000..1015c8c
+--- /dev/null
++++ b/app/helpers/teachers_helper.rb
+@@ -0,0 +1,2 @@
++module TeachersHelper
++end
+diff --git a/app/models/android_app.rb b/app/models/android_app.rb
+new file mode 100644
+index 0000000..3f108be
+--- /dev/null
++++ b/app/models/android_app.rb
+@@ -0,0 +1,4 @@
++class AndroidApp < ActiveRecord::Base
++  belongs_to :file_resource
++  # string version, timestamps
++end
+diff --git a/app/models/assisting_course.rb b/app/models/assisting_course.rb
+new file mode 100644
+index 0000000..4c43c5f
+--- /dev/null
++++ b/app/models/assisting_course.rb
+@@ -0,0 +1,9 @@
++class AssistingCourse < ActiveRecord::Base
++  # assistant
++  belongs_to :user
++  # the course you assist
++  belongs_to :course
++
++  validates_associated :user
++  validates_associated :course
++end
+diff --git a/app/models/course.rb b/app/models/course.rb
+index 5a3651e..ef29249 100644
+--- a/app/models/course.rb
++++ b/app/models/course.rb
+@@ -1,9 +1,16 @@
+ class Course < ActiveRecord::Base
+   validates :name, presence: true
+ 
++  belongs_to :semester
++
+   has_many :lessons
++
+   has_many :participations
++  has_many :students, through: :participations, foreign_key: :user, class_name: 'User'
++
++  has_many :teaching_courses
++  has_many :teachers, through: :teaching_courses, foreign_key: :user, class_name: 'User'
++
++  has_many :messages
+ 
+-  has_many :teacher_courses
+-  has_many :teachers, through: :teacher_courses
+ end
+diff --git a/app/models/file_resource.rb b/app/models/file_resource.rb
+new file mode 100644
+index 0000000..86de7d7
+--- /dev/null
++++ b/app/models/file_resource.rb
+@@ -0,0 +1,4 @@
++class FileResource < ActiveRecord::Base
++  belongs_to :creator, class_name: 'User'
++  # string type, string name, string path, timestamps
++end
+diff --git a/app/models/learning_course.rb b/app/models/learning_course.rb
+new file mode 100644
+index 0000000..9203c2b
+--- /dev/null
++++ b/app/models/learning_course.rb
+@@ -0,0 +1,9 @@
++class LearningCourse < ActiveRecord::Base
++  # student
++  belongs_to :user
++  # the course you learn
++  belongs_to :course
++
++  validates_associated :user
++  validates_associated :course
++end
+diff --git a/app/models/lesson.rb b/app/models/lesson.rb
+index 41afb78..8fe6480 100644
+--- a/app/models/lesson.rb
++++ b/app/models/lesson.rb
+@@ -6,4 +6,8 @@ class Lesson < ActiveRecord::Base
+   validates :location,    presence: true
+ 
+   belongs_to :course
++  has_many :lesson_files
++  has_many :attached_files, through: :lesson_files, class_name: 'FileResource', foreign_key: :file_resource_id
++  has_many :lesson_remarks
++  has_many :student_remarks
+ end
+diff --git a/app/models/lesson_file.rb b/app/models/lesson_file.rb
+new file mode 100644
+index 0000000..fdac1be
+--- /dev/null
++++ b/app/models/lesson_file.rb
+@@ -0,0 +1,4 @@
++class LessonFile < ActiveRecord::Base
++  belongs_to :lesson
++  belongs_to :file_resource
++end
+diff --git a/app/models/lesson_remark.rb b/app/models/lesson_remark.rb
+new file mode 100644
+index 0000000..c306364
+--- /dev/null
++++ b/app/models/lesson_remark.rb
+@@ -0,0 +1,6 @@
++class LessonRemark < ActiveRecord::Base
++  belongs_to :creator, class_name: 'User'
++  belongs_to :lesson
++
++  # int score, text content, timestamps
++end
+diff --git a/app/models/lesson_status.rb b/app/models/lesson_status.rb
+new file mode 100644
+index 0000000..98f9997
+--- /dev/null
++++ b/app/models/lesson_status.rb
+@@ -0,0 +1,7 @@
++class LessonStatus < ActiveRecord::Base
++  belongs_to :user
++  belongs_to :lesson
++  belongs_to :creator, class_name: 'User'
++
++  # string score, timestamps
++end
+diff --git a/app/models/message.rb b/app/models/message.rb
+new file mode 100644
+index 0000000..df11d99
+--- /dev/null
++++ b/app/models/message.rb
+@@ -0,0 +1,6 @@
++class Message < ActiveRecord::Base
++  belongs_to :creator, class_name: 'User'
++  belongs_to :course
++
++  # string type, string title, datetime deadline, text content, timestamps
++end
+diff --git a/app/models/semester.rb b/app/models/semester.rb
+new file mode 100644
+index 0000000..408509e
+--- /dev/null
++++ b/app/models/semester.rb
+@@ -0,0 +1,4 @@
++class Semester < ActiveRecord::Base
++  has_many :courses
++  # string name
++end
+diff --git a/app/models/student_remark.rb b/app/models/student_remark.rb
+new file mode 100644
+index 0000000..8b508ca
+--- /dev/null
++++ b/app/models/student_remark.rb
+@@ -0,0 +1,6 @@
++class StudentRemark < ActiveRecord::Base
++  belongs_to :creator, class_name: 'User'
++  belongs_to :student, class_name: 'User'
++  belongs_to :lesson
++  # string score, text content, timestamps
++end
+diff --git a/app/models/teaching_course.rb b/app/models/teaching_course.rb
+new file mode 100644
+index 0000000..a12def9
+--- /dev/null
++++ b/app/models/teaching_course.rb
+@@ -0,0 +1,9 @@
++class TeachingCourse < ActiveRecord::Base
++  # teacher
++  belongs_to :user
++  # the course you teach
++  belongs_to :course
++
++  validates_associated :user
++  validates_associated :course
++end
+diff --git a/app/models/upload_file.rb b/app/models/upload_file.rb
+deleted file mode 100644
+index 3e14cfa..0000000
+--- a/app/models/upload_file.rb
++++ /dev/null
+@@ -1,14 +0,0 @@
+-# require 'base64'
+-#
+-# class UploadFile < ActiveRecord::Base
+-#   validates :path, presence: true
+-#   validates_associated :user
+-#
+-#   belongs_to :user
+-#
+-#   def self.file_name_to_path(file_name)
+-#     suffix = file_name.split('.')[-1]
+-#     if ALLOWED_FILE_SUFFIXES.include?(suffix)
+-#
+-#     Base64.encode64(file_name)
+-# end
+diff --git a/app/models/user.rb b/app/models/user.rb
+index a681431..21c7b48 100644
+--- a/app/models/user.rb
++++ b/app/models/user.rb
+@@ -8,6 +8,14 @@ class User < ActiveRecord::Base
+   has_many :courses, through: :participations
+   has_many :tokens
+ 
++  has_many :teaching_courses
++  has_many :assisting_courses
++  has_many :learning_courses
++  has_many :lesson_statuses
++  has_many :assistant_to_student_remarks, class_name: 'StudentRemark', foreign_key: :creator_id
++  has_many :from_assistant_remarks, class_name: 'StudentRemark', foreign_key: :student_id
++  has_many :posted_message, class_name: 'Message', foreign_key: :creator_id
++
+   # the following 4 methods allow us to login with phone or email
+   def login=(login)
+     @login = login
+diff --git a/config/routes.rb b/config/routes.rb
+index 755a9c6..728168f 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -5,27 +5,55 @@ Rails.application.routes.draw do
+     registrations: 'users/registrations'
+   }
+ 
+-  resources :courses do
+-    resources :students
+-    resources :assistants
+-    resources :lessons
++  resources :semesters, only: [:index, :create, :update, :delete] do
++    resources :courses, only: [:index]
++    get 'default' => 'semesters#default'
+   end
+-  resources :students do
+-    resources :courses
++
++  resources :courses, only: [:index, :show, :create, :update, :delete] do
++    resources :students, only: [:index, :create, :delete]
++    resources :assistants, only: [:index, :create, :delete]
++    resources :lessons, only: [:index, :create, :delete]
++    resources :teachers, only: [:index, :create, :delete, :update]
++    resources :messages, only: [:create]
++  end
++
++  resources :lessons, only: [:show, :create, :index] do
++    # students' comments to the lesson
++    resources :comments, controller: 'lesson_comments', only: [:index, :create]
++
++    # for comment and score
++    resources :students, only: [:show] do
++      # assistants' comments to the student
++      resources :comments, controller: 'student_comments', only: [:index, :create]
++    end
++
++    # for attendence
++    resources :students, only: [:index, :create]
++  end
++
++  resources :students, only: [:index, :show, :create, :update, :delete] do
++    resources :courses, only: [:index, :update]
++    resources :files, only: [:index, :create, :delete]
++    resources :lessons, only: [:show, :update] do
++      resources :files, only: [:show, :create, :delete]
++    end
++    resources :messages, only: [:index]
+   end
++
+   resources :assistants do
+     resources :courses
++    resources :files
+   end
+ 
+-  resources :lessons
+-  # The priority is based upon order of creation: first created -> highest priority.
+-  # See how all your routes lay out with "rake routes".
++  resources :files, only: [:show, :create]
++
++  namespace :android do
++    get 'current_version.json' => 'android_apps#current_version'
++    post 'current_version.json' => 'android_apps#current_version'
++  end
+ 
+-  # You can have the root of your site routed with "root"
+-  # root 'welcome#index'
+ 
+-  # Example of regular route:
+-  #   get 'products/:id' => 'catalog#view'
+   get 'test' => 'test#index'
+   get 'manage' => 'manage#main_page'
+   get 'manage/MainPage' => 'manage#main_page'
+@@ -35,35 +63,4 @@ Rails.application.routes.draw do
+   get 'manage/ShowPhotos/:id' => 'manage#show_photos'
+   get 'manage/ShowVideos/:id' => 'manage#show_videos'
+   post 'manage/AddCourseToCurrentUser' => 'manage#AddCourseToCurrentUser'
+-  # Example of named route that can be invoked with purchase_url(id: product.id)
+-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
+-
+-  # Example resource route (maps HTTP verbs to controller actions automatically):
+-  #   resources :products
+-
+-  # Example resource route with options:
+-  #   resources :products do
+-  #     member do
+-  #       get 'short'
+-  #       post 'toggle'
+-  #     end
+-  #
+-  #     collection do
+-  #       get 'sold'
+-  #     end
+-  #   end
+-
+-  # Example resource route with sub-resources:
+-  #   resources :products do
+-  #     resources :comments, :sales
+-  #     resource :seller
+-  #   end
+-
+-  # Example resource route with more complex sub-resources:
+-  #   resources :products do
+-  #     resources :comments
+-  #     resources :sales do
+-  #       get 'recent', on: :collection
+-  #     end
+-  #   end
+ end
+diff --git a/db/init_data/db.rb b/db/init_data/db.rb
+index b227638..5a0be16 100644
+--- a/db/init_data/db.rb
++++ b/db/init_data/db.rb
+@@ -1,6 +1,8 @@
+-c1 = Course.create(name: 'os', description: '123')
+-c2 = Course.create(name: 'ds', description: '中文')
+-c3 = Course.create(name: '语文', description: 'fuck')
++s = Semester.create(name: '2015')
++
++c1 = Course.create(name: 'os', description: '123', semester_id: s.id)
++c2 = Course.create(name: 'ds', description: '中文', semester_id: s.id)
++c3 = Course.create(name: '语文', description: 'fuck', semester_id: s.id)
+ 
+ u1 = User.create(name:'alex', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123')
+ u2 = User.create(name:'betty', phone:'222', email:'b@c.d', password:'123', password_confirmation:'123')
+diff --git a/db/migrate/20150930115150_add_lessons_studends_and_courses.rb b/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
+index 554ffcc..d572d6a 100644
+--- a/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
++++ b/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
+@@ -1,11 +1,15 @@
+ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
+   def change
+ 
++    create_table :semesters do |t|
++      t.string :name
++    end
++
+     create_table :courses do |t|
+       t.string  :name,        null: false
+       t.text    :description
+-
+       t.integer :semester_id
++      t.timestamps
+     end
+ 
+     create_table :lessons do |t|
+@@ -15,6 +19,12 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
+       t.datetime  :end_time
+       t.string  :location
+       t.integer :course_id,   null: false
++      t.timestamps
++    end
++
++    create_table :lesson_files do |t|
++      t.integer :lesson_id
++      t.integer :file_resource_id
+     end
+ 
+     create_table :participations do |t|
+@@ -47,7 +57,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
+ 
+     create_table :lesson_remarks do |t|
+       t.text :content
+-      t.integer :score
++      t.string :score
+       t.integer :creator_id
+       t.integer :lesson_id
+       t.timestamps
+@@ -55,7 +65,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
+ 
+     create_table :student_remarks do |t|
+       t.text :content
+-      t.integer :score
++      t.string :score
+       t.integer :creator_id
+       t.integer :lesson_id
+       t.integer :student_id
+@@ -72,7 +82,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
+       t.timestamps
+     end
+ 
+-    create_table :files do |t|
++    create_table :file_resources do |t|
+       t.string :type
+       t.string :name
+       t.string :path
+@@ -82,7 +92,7 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
+ 
+     create_table :android_apps do |t|
+       t.string :version
+-      t.integer :file_id
++      t.integer :file_resource_id
+       t.timestamps
+     end
+ 
+diff --git a/db/schema.rb b/db/schema.rb
+index 904dc69..856fa3b 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20151008120334) do
+ 
+   create_table "android_apps", force: :cascade do |t|
+     t.string   "version"
+-    t.integer  "file_id"
++    t.integer  "file_resource_id"
+     t.datetime "created_at"
+     t.datetime "updated_at"
+   end
+@@ -26,12 +26,14 @@ ActiveRecord::Schema.define(version: 20151008120334) do
+   end
+ 
+   create_table "courses", force: :cascade do |t|
+-    t.string  "name",        null: false
+-    t.text    "description"
+-    t.integer "semester_id"
++    t.string   "name",        null: false
++    t.text     "description"
++    t.integer  "semester_id"
++    t.datetime "created_at"
++    t.datetime "updated_at"
+   end
+ 
+-  create_table "files", force: :cascade do |t|
++  create_table "file_resources", force: :cascade do |t|
+     t.string   "type"
+     t.string   "name"
+     t.string   "path"
+@@ -45,9 +47,14 @@ ActiveRecord::Schema.define(version: 20151008120334) do
+     t.integer "course_id"
+   end
+ 
++  create_table "lesson_files", force: :cascade do |t|
++    t.integer "lesson_id"
++    t.integer "file_resource_id"
++  end
++
+   create_table "lesson_remarks", force: :cascade do |t|
+     t.text     "content"
+-    t.integer  "score"
++    t.string   "score"
+     t.integer  "creator_id"
+     t.integer  "lesson_id"
+     t.datetime "created_at"
+@@ -69,6 +76,8 @@ ActiveRecord::Schema.define(version: 20151008120334) do
+     t.datetime "end_time"
+     t.string   "location"
+     t.integer  "course_id",   null: false
++    t.datetime "created_at"
++    t.datetime "updated_at"
+   end
+ 
+   create_table "messages", force: :cascade do |t|
+@@ -88,9 +97,13 @@ ActiveRecord::Schema.define(version: 20151008120334) do
+     t.string  "role",      default: "student"
+   end
+ 
++  create_table "semesters", force: :cascade do |t|
++    t.string "name"
++  end
++
+   create_table "student_remarks", force: :cascade do |t|
+     t.text     "content"
+-    t.integer  "score"
++    t.string   "score"
+     t.integer  "creator_id"
+     t.integer  "lesson_id"
+     t.integer  "student_id"
+diff --git a/test/controllers/android_apps_controller_test.rb b/test/controllers/android_apps_controller_test.rb
+new file mode 100644
+index 0000000..b0ce70d
+--- /dev/null
++++ b/test/controllers/android_apps_controller_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class AndroidAppsControllerTest < ActionController::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/controllers/files_controller_test.rb b/test/controllers/files_controller_test.rb
+new file mode 100644
+index 0000000..225ef92
+--- /dev/null
++++ b/test/controllers/files_controller_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class FilesControllerTest < ActionController::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/controllers/lesson_comments_controller_test.rb b/test/controllers/lesson_comments_controller_test.rb
+new file mode 100644
+index 0000000..4ce9b47
+--- /dev/null
++++ b/test/controllers/lesson_comments_controller_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class LessonCommentsControllerTest < ActionController::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/controllers/messages_controller_test.rb b/test/controllers/messages_controller_test.rb
+new file mode 100644
+index 0000000..47ce261
+--- /dev/null
++++ b/test/controllers/messages_controller_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class MessagesControllerTest < ActionController::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/controllers/semesters_controller_test.rb b/test/controllers/semesters_controller_test.rb
+new file mode 100644
+index 0000000..212257a
+--- /dev/null
++++ b/test/controllers/semesters_controller_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class SemestersControllerTest < ActionController::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/controllers/student_comments_controller_test.rb b/test/controllers/student_comments_controller_test.rb
+new file mode 100644
+index 0000000..3860d99
+--- /dev/null
++++ b/test/controllers/student_comments_controller_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class StudentCommentsControllerTest < ActionController::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/controllers/teachers_controller_test.rb b/test/controllers/teachers_controller_test.rb
+new file mode 100644
+index 0000000..29ac71e
+--- /dev/null
++++ b/test/controllers/teachers_controller_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class TeachersControllerTest < ActionController::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/fixtures/android_apps.yml b/test/fixtures/android_apps.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/android_apps.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/fixtures/assisting_courses.yml b/test/fixtures/assisting_courses.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/assisting_courses.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/fixtures/file_resources.yml b/test/fixtures/file_resources.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/file_resources.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/fixtures/learning_courses.yml b/test/fixtures/learning_courses.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/learning_courses.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/fixtures/lesson_files.yml b/test/fixtures/lesson_files.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/lesson_files.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/fixtures/lesson_remarks.yml b/test/fixtures/lesson_remarks.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/lesson_remarks.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/fixtures/lesson_statuses.yml b/test/fixtures/lesson_statuses.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/lesson_statuses.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/fixtures/messages.yml b/test/fixtures/messages.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/messages.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/fixtures/semesters.yml b/test/fixtures/semesters.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/semesters.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/fixtures/student_remarks.yml b/test/fixtures/student_remarks.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/student_remarks.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/fixtures/teaching_courses.yml b/test/fixtures/teaching_courses.yml
+new file mode 100644
+index 0000000..937a0c0
+--- /dev/null
++++ b/test/fixtures/teaching_courses.yml
+@@ -0,0 +1,11 @@
++# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
++
++# This model initially had no columns defined.  If you add columns to the
++# model remove the '{}' from the fixture names and add the columns immediately
++# below each fixture, per the syntax in the comments below
++#
++one: {}
++# column: value
++#
++two: {}
++#  column: value
+diff --git a/test/models/android_app_test.rb b/test/models/android_app_test.rb
+new file mode 100644
+index 0000000..cd0662a
+--- /dev/null
++++ b/test/models/android_app_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class AndroidAppTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/models/assisting_course_test.rb b/test/models/assisting_course_test.rb
+new file mode 100644
+index 0000000..9b12aef
+--- /dev/null
++++ b/test/models/assisting_course_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class AssistingCourseTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/models/file_resource_test.rb b/test/models/file_resource_test.rb
+new file mode 100644
+index 0000000..e712b28
+--- /dev/null
++++ b/test/models/file_resource_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class FileResourceTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/models/learning_course_test.rb b/test/models/learning_course_test.rb
+new file mode 100644
+index 0000000..3a27aae
+--- /dev/null
++++ b/test/models/learning_course_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class LearningCourseTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/models/lesson_file_test.rb b/test/models/lesson_file_test.rb
+new file mode 100644
+index 0000000..99b8dd2
+--- /dev/null
++++ b/test/models/lesson_file_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class LessonFileTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/models/lesson_remark_test.rb b/test/models/lesson_remark_test.rb
+new file mode 100644
+index 0000000..d71f4e7
+--- /dev/null
++++ b/test/models/lesson_remark_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class LessonRemarkTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/models/lesson_status_test.rb b/test/models/lesson_status_test.rb
+new file mode 100644
+index 0000000..66b501e
+--- /dev/null
++++ b/test/models/lesson_status_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class LessonStatusTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/models/message_test.rb b/test/models/message_test.rb
+new file mode 100644
+index 0000000..11e5db0
+--- /dev/null
++++ b/test/models/message_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class MessageTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/models/semester_test.rb b/test/models/semester_test.rb
+new file mode 100644
+index 0000000..eaa7c7d
+--- /dev/null
++++ b/test/models/semester_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class SemesterTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/models/student_remark_test.rb b/test/models/student_remark_test.rb
+new file mode 100644
+index 0000000..f650a5f
+--- /dev/null
++++ b/test/models/student_remark_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class StudentRemarkTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+diff --git a/test/models/teaching_course_test.rb b/test/models/teaching_course_test.rb
+new file mode 100644
+index 0000000..9850ba4
+--- /dev/null
++++ b/test/models/teaching_course_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class TeachingCourseTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+-- 
+1.9.1
+

@@ -1,0 +1,152 @@
+From 1ec44950886911e0e3c3664b7f51704406d37c95 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sat, 24 Oct 2015 01:51:50 +0800
+Subject: [PATCH 133/150] PAPA-147 fix teachers/assistants/students bugx
+
+---
+ app/controllers/assistants_controller.rb | 10 +++++-----
+ app/controllers/students_controller.rb   | 17 ++++++-----------
+ app/controllers/teachers_controller.rb   |  2 +-
+ app/views/assistants/index.json.jbuilder |  1 +
+ app/views/assistants/show.json.jbuilder  |  1 +
+ app/views/students/show.json.jbuilder    |  1 +
+ app/views/teachers/index.json.jbuilder   |  2 ++
+ app/views/teachers/show.json.jbuilder    |  7 +++++++
+ 8 files changed, 24 insertions(+), 17 deletions(-)
+ create mode 100644 app/views/teachers/show.json.jbuilder
+
+diff --git a/app/controllers/assistants_controller.rb b/app/controllers/assistants_controller.rb
+index 9d0e141..fce7c65 100644
+--- a/app/controllers/assistants_controller.rb
++++ b/app/controllers/assistants_controller.rb
+@@ -39,12 +39,12 @@ class AssistantsController < ApplicationController
+     begin
+       assistant = User.find(params[:id])
+       ### just for debug, default course_id is 1
+-      @participation = assistant.participations.where(course_id: params[:course_id] || 1).first
+-      if @participation.role == ROLE_ASSISTANT
++      #@participation = assistant.participations.where(course_id: params[:course_id]).first
++      #if @participation && @participation.role == ROLE_ASSISTANT
+         @assistant = assistant
+-      else
+-        @assistant = nil
+-      end
++      #else
++      #  @assistant = nil
++      #end
+     rescue ActiveRecord::RecordNotFound
+       @assistant = nil
+     end
+diff --git a/app/controllers/students_controller.rb b/app/controllers/students_controller.rb
+index 3e4c379..db3ba5a 100644
+--- a/app/controllers/students_controller.rb
++++ b/app/controllers/students_controller.rb
+@@ -30,11 +30,7 @@ class StudentsController < ApplicationController
+   # GET /students/1.json
+   def show
+     check_login
+-    begin
+-      @student = User.find(params[:id])
+-    rescue ActiveRecord::RecordNotFound
+-      json_failed(REASON_RESOURCE_NOT_FOUND)
+-    end
++    json_failed(REASON_RESOURCE_NOT_FOUND) unless @student
+   end
+ 
+   # POST /courses/1/students/1.json
+@@ -83,13 +79,12 @@ class StudentsController < ApplicationController
+   def set_student
+     begin
+       student = User.find(params[:id])
+-      ### just for debug, default course_id is 1
+-      @participation = student.participations.where(course_id: params[:course_id] || 1).first
+-      if @participation.role == ROLE_STUDENT
++      #@participation = student.participations.where(course_id: params[:course_id]).first
++      #if @participation.role == ROLE_STUDENT
+         @student = student
+-      else
+-        @student = nil
+-      end
++      #else
++      #  @student = nil
++      #end
+     rescue ActiveRecord::RecordNotFound
+       @student = nil
+     end
+diff --git a/app/controllers/teachers_controller.rb b/app/controllers/teachers_controller.rb
+index 4ff81fb..3b99e47 100644
+--- a/app/controllers/teachers_controller.rb
++++ b/app/controllers/teachers_controller.rb
+@@ -39,7 +39,7 @@ class TeachersController < ApplicationController
+   def show
+     if params[:id]
+       begin
+-        @teacher = User.find(param[:id])
++        @teacher = User.find(params[:id])
+         unless @teacher.is_teacher
+           json_failed(REASON_RESOURCE_NOT_FOUND)
+         end
+diff --git a/app/views/assistants/index.json.jbuilder b/app/views/assistants/index.json.jbuilder
+index 7ebd34e..e2a8dc0 100644
+--- a/app/views/assistants/index.json.jbuilder
++++ b/app/views/assistants/index.json.jbuilder
+@@ -5,6 +5,7 @@ json.assistants do
+     json.extract! assistant, :id
+     json.extract! assistant, :name
+     json.extract! assistant, :phone
++    json.extract! assistant, :email
+   end
+ end
+ 
+diff --git a/app/views/assistants/show.json.jbuilder b/app/views/assistants/show.json.jbuilder
+index 5b61040..3582481 100644
+--- a/app/views/assistants/show.json.jbuilder
++++ b/app/views/assistants/show.json.jbuilder
+@@ -4,4 +4,5 @@ json.assistant do
+   json.id     @assistant.id
+   json.name   @assistant.name
+   json.phone  @assistant.phone
++  json.email  @assistant.email
+ end
+\ No newline at end of file
+diff --git a/app/views/students/show.json.jbuilder b/app/views/students/show.json.jbuilder
+index f1895bb..cfeed48 100644
+--- a/app/views/students/show.json.jbuilder
++++ b/app/views/students/show.json.jbuilder
+@@ -3,4 +3,5 @@ json.student do
+   json.id     @student.id
+   json.name   @student.name
+   json.phone  @student.phone
++  json.email  @student.email
+ end
+\ No newline at end of file
+diff --git a/app/views/teachers/index.json.jbuilder b/app/views/teachers/index.json.jbuilder
+index 3f12b2f..358b33d 100644
+--- a/app/views/teachers/index.json.jbuilder
++++ b/app/views/teachers/index.json.jbuilder
+@@ -3,5 +3,7 @@ json.teachers do
+   json.array!(@teachers) do |teacher|
+     json.extract! teacher, :id
+     json.extract! teacher, :name
++    json.extract! teacher, :email
++    json.extract! teacher, :phone
+   end
+ end
+\ No newline at end of file
+diff --git a/app/views/teachers/show.json.jbuilder b/app/views/teachers/show.json.jbuilder
+new file mode 100644
+index 0000000..812dacf
+--- /dev/null
++++ b/app/views/teachers/show.json.jbuilder
+@@ -0,0 +1,7 @@
++json.status STATUS_SUCCESS
++json.teacher do
++  json.id     @teacher.id
++  json.name   @teacher.name
++  json.phone  @teacher.phone
++  json.phone  @teacher.email
++end
+\ No newline at end of file
+-- 
+1.9.1
+

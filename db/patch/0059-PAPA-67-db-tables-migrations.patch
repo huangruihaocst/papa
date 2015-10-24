@@ -1,0 +1,27 @@
+From 5f3c248c7a33454783f8f9f38e993248dfbc055f Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sun, 11 Oct 2015 01:01:50 +0800
+Subject: [PATCH 059/150] PAPA-67 db tables migrations
+
+---
+ db/migrate/20151009065201_add_upload_resource_manager.rb | 8 --------
+ 1 file changed, 8 deletions(-)
+ delete mode 100644 db/migrate/20151009065201_add_upload_resource_manager.rb
+
+diff --git a/db/migrate/20151009065201_add_upload_resource_manager.rb b/db/migrate/20151009065201_add_upload_resource_manager.rb
+deleted file mode 100644
+index bbcf965..0000000
+--- a/db/migrate/20151009065201_add_upload_resource_manager.rb
++++ /dev/null
+@@ -1,8 +0,0 @@
+-class AddUploadResourceManager < ActiveRecord::Migration
+-  def change
+-    create_table :upload_files do |t|
+-      t.string    :path
+-      t.integer   :user_id
+-    end
+-  end
+-end
+-- 
+1.9.1
+

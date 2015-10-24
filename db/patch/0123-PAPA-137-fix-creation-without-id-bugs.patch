@@ -1,0 +1,109 @@
+From 67eee6a6d3facd88411170c24d6defcbae811cfb Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Fri, 23 Oct 2015 16:37:54 +0800
+Subject: [PATCH 123/150] PAPA-137 fix creation without id bugs
+
+---
+ app/controllers/semesters_controller.rb       | 2 +-
+ test/controllers/courses_controller_test.rb   | 1 +
+ test/controllers/files_controller_test.rb     | 6 +++---
+ test/controllers/lessons_controller_test.rb   | 1 +
+ test/controllers/messages_controller_test.rb  | 1 +
+ test/controllers/semesters_controller_test.rb | 1 +
+ 6 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/app/controllers/semesters_controller.rb b/app/controllers/semesters_controller.rb
+index 41a7c13..e716aa2 100644
+--- a/app/controllers/semesters_controller.rb
++++ b/app/controllers/semesters_controller.rb
+@@ -17,7 +17,7 @@ class SemestersController < ApplicationController
+ 
+     semester = Semester.create(params.require(:semester).permit(:name))
+     if semester
+-        json_successful
++        json_successful(id: semester.id)
+     else
+       json_failed
+     end
+diff --git a/test/controllers/courses_controller_test.rb b/test/controllers/courses_controller_test.rb
+index cfa366e..082b17e 100644
+--- a/test/controllers/courses_controller_test.rb
++++ b/test/controllers/courses_controller_test.rb
+@@ -115,6 +115,7 @@ class CoursesControllerTest < ActionController::TestCase
+     end
+ 
+     assert_equal STATUS_SUCCESS, json['status']
++    assert_not_nil json['id']
+   end
+ 
+   # POST /assistants/1/courses/1.json
+diff --git a/test/controllers/files_controller_test.rb b/test/controllers/files_controller_test.rb
+index a9de175..2fefdaf 100644
+--- a/test/controllers/files_controller_test.rb
++++ b/test/controllers/files_controller_test.rb
+@@ -79,7 +79,7 @@ class FilesControllerTest < ActionController::TestCase
+ 
+     assert_json_success
+     assert_not_nil assigns(:file).path
+-    assert json['id']
++    assert_not_nil json['id']
+   end
+ 
+   # POST /files.json
+@@ -150,7 +150,7 @@ class FilesControllerTest < ActionController::TestCase
+ 
+     assert_json_success
+     assert_not_nil assigns(:file).path
+-    assert json['id']
++    assert_not_nil json['id']
+   end
+ 
+   # POST /courses/1/files.json
+@@ -186,7 +186,7 @@ class FilesControllerTest < ActionController::TestCase
+ 
+     assert_json_success
+     assert_not_nil assigns(:file).path
+-    assert json['id']
++    assert_not_nil json['id']
+   end
+ 
+   # POST /students/1/lessons/1/files.json
+diff --git a/test/controllers/lessons_controller_test.rb b/test/controllers/lessons_controller_test.rb
+index fb59777..e1fefba 100644
+--- a/test/controllers/lessons_controller_test.rb
++++ b/test/controllers/lessons_controller_test.rb
+@@ -38,6 +38,7 @@ class LessonsControllerTest < ActionController::TestCase
+                   }
+     end
+     assert_json_success
++    assert_not_nil json['id']
+   end
+ 
+   # POST /courses/1/lessons.json
+diff --git a/test/controllers/messages_controller_test.rb b/test/controllers/messages_controller_test.rb
+index 0fba348..f944f8b 100644
+--- a/test/controllers/messages_controller_test.rb
++++ b/test/controllers/messages_controller_test.rb
+@@ -52,6 +52,7 @@ class MessagesControllerTest < ActionController::TestCase
+     end
+ 
+     assert_json_success
++    assert_not_nil json['id']
+   end
+ 
+   test 'should not add message if parameters are invalid' do
+diff --git a/test/controllers/semesters_controller_test.rb b/test/controllers/semesters_controller_test.rb
+index 1631676..fab784b 100644
+--- a/test/controllers/semesters_controller_test.rb
++++ b/test/controllers/semesters_controller_test.rb
+@@ -24,6 +24,7 @@ class SemestersControllerTest < ActionController::TestCase
+     end
+ 
+     assert_json_success
++    assert_not_nil json['id']
+   end
+ 
+   # PUT /semesters/1.json
+-- 
+1.9.1
+

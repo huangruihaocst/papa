@@ -1,0 +1,51 @@
+From dd55fc8308987fc6263c3245d6a8f5e1ef0b83ec Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E7=BD=97=E5=B9=B2?= <luogan_62625686@126.com>
+Date: Sat, 24 Oct 2015 16:34:28 +0800
+Subject: [PATCH 143/150] PAPA-153
+
+---
+ app/views/manage/main_page.html.erb | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/app/views/manage/main_page.html.erb b/app/views/manage/main_page.html.erb
+index a21930a..b369515 100644
+--- a/app/views/manage/main_page.html.erb
++++ b/app/views/manage/main_page.html.erb
+@@ -205,7 +205,7 @@
+     			}
+     			if (data.status=="successful")
+     			{
+-    				for (i=++info.tot;i>0;--i)
++    				for (i=info.tot++;i>0;--i)
+     				{
+     					info.semesters[i]=info.semesters[i-1];
+     				}
+@@ -246,7 +246,7 @@
+     			if (data.status=="successful")
+     			{
+     				console.log(choosei);
+-    				for (i=++info.semesters[choosei].tot;i>0;--i)
++    				for (i=info.semesters[choosei].tot++;i>0;--i)
+     				{
+     					info.semesters[choosei].courses[i]=info.semesters[choosei].courses[i-1];
+     				}
+@@ -319,7 +319,7 @@
+     			if (data.status=="successful")
+     			{
+     				p.id=data.id;
+-    				for (i=++info.semesters[choosei].courses[choosej].tot;i>0;--i)
++    				for (i=info.semesters[choosei].courses[choosej].tot++;i>0;--i)
+     				{
+     					info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i-1];
+     				}
+@@ -483,6 +483,7 @@
+ 						info.semesters[j].clicked=false;
+ 					}
+ 					usersId=data2.id;
++					console.log(usersId);
+ 					
+ 					$.ajax({url:"/teachers/"+usersId+"/courses.json",data:{},async:false,type:"GET",success:function(data)    //#modify
+ 					{
+-- 
+1.9.1
+

@@ -1,0 +1,89 @@
+From 88a36d8bfb2444d401bfdb7855e2aa1e9b590fdb Mon Sep 17 00:00:00 2001
+From: sleepy_chord <sj702d5@foxmail.com>
+Date: Fri, 9 Oct 2015 15:48:17 +0800
+Subject: [PATCH 045/150] some api2
+
+---
+ app/controllers/manage_controller.rb   | 6 ++++++
+ app/views/layouts/application.html.erb | 3 ---
+ config/routes.rb                       | 5 +++--
+ db/schema.rb                           | 3 ++-
+ 4 files changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/app/controllers/manage_controller.rb b/app/controllers/manage_controller.rb
+index 2c35889..ac2fe0e 100644
+--- a/app/controllers/manage_controller.rb
++++ b/app/controllers/manage_controller.rb
+@@ -37,4 +37,10 @@ class ManageController < ApplicationController
+       render :text => "fail"
+     end
+   end
++  def GetCourseLessonsById
++    render :json => Course.find(params[:id]).lessons.to_json
++  end
++  def AddLessonToCourseById
++    #---need to modify routes.rb
++  end
+ end
+diff --git a/app/views/layouts/application.html.erb b/app/views/layouts/application.html.erb
+index 2da9fc3..05cdf31 100644
+--- a/app/views/layouts/application.html.erb
++++ b/app/views/layouts/application.html.erb
+@@ -7,9 +7,6 @@
+   <%= csrf_meta_tags %>
+ </head>
+ <body>
+-<p class="notice"><%=notice%></p>
+-<p class="alert"><%=alert%></p>
+ <%= yield %>
+-
+ </body>
+ </html>
+diff --git a/config/routes.rb b/config/routes.rb
+index 6980441..959c84a 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -14,7 +14,7 @@ Rails.application.routes.draw do
+   # Example of regular route:
+   #   get 'products/:id' => 'catalog#view'
+   get 'test' => 'test#index'
+-  get 'manage' => 'manage#index'
++  get 'manage' => 'manage#main_page'
+   get 'manage/MainPage' => 'manage#main_page'
+   get 'manage/CourseScore' => 'manage#course_score'
+   get 'manage/ClassScore' => 'manage#class_score'
+@@ -22,8 +22,9 @@ Rails.application.routes.draw do
+   get 'manage/ShowPhotos' => 'manage#show_photos'
+   get 'manage/ShowVideos' => 'manage#show_videos'
+ 
+-  get 'manage/getUserCoursesById/:id' => 'manage#GetUserCoursesById'
++  get 'manage/GetUserCoursesById/:id' => 'manage#GetUserCoursesById'
+   post 'manage/AddCourseToCurrentUser' => 'manage#AddCourseToCurrentUser'
++  get 'manage/GetCourseLessonsById/:id' => 'manage#GetCourseLessonsById'
+   # Example of named route that can be invoked with purchase_url(id: product.id)
+   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
+ 
+diff --git a/db/schema.rb b/db/schema.rb
+index feb8f36..41a9cef 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20150930115150) do
+     t.text     "description"
+     t.datetime "start_time"
+     t.datetime "end_time"
+-    t.string   "position"
++    t.string   "location"
+     t.integer  "course_id"
+   end
+ 
+@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20150930115150) do
+     t.datetime "last_sign_in_at"
+     t.string   "current_sign_in_ip"
+     t.string   "last_sign_in_ip"
++    t.boolean  "is_teacher"
+     t.datetime "created_at",                          null: false
+     t.datetime "updated_at",                          null: false
+   end
+-- 
+1.9.1
+

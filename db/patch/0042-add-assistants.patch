@@ -1,0 +1,703 @@
+From 38848b86f81caa8592ed33b0d28e0fd310201c52 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Fri, 9 Oct 2015 14:36:20 +0800
+Subject: [PATCH 042/150] add assistants
+
+---
+ README.md                                          |  12 ++-
+ app/controllers/application_controller.rb          |  35 ++++--
+ app/controllers/assistants_controller.rb           |  39 +++++++
+ app/controllers/courses_controller.rb              |  27 ++---
+ app/controllers/students_controller.rb             |  16 ++-
+ app/controllers/users/registrations_controller.rb  | 120 +++++++++++----------
+ app/controllers/users/sessions_controller.rb       |  71 ++++++------
+ app/helpers/application_helper.rb                  |  24 +++++
+ app/views/assistants/index.json.jbuilder           |  10 ++
+ app/views/assistants/show.json.jbuilder            |   7 ++
+ config/initializers/constants.rb                   |   3 +-
+ config/routes.rb                                   |   6 ++
+ test/controllers/assistants_controller_test.rb     |  10 ++
+ test/controllers/courses_controller_test.rb        |  16 +++
+ test/controllers/users/sessions_controller_test.rb |  54 +++++-----
+ test/fixtures/participations.yml                   |   5 +-
+ 16 files changed, 298 insertions(+), 157 deletions(-)
+
+diff --git a/README.md b/README.md
+index a7ce6fe..db08372 100644
+--- a/README.md
++++ b/README.md
+@@ -79,7 +79,8 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+ { 
+     status: 'successful'/'faild',
+     reason: 'invalid_password...', // 具体含义在后面介绍
+-    token: '123456777777777'
++    token: '123456777777777',
++    id: 123
+ }
+ 得到token字符串, 在以下url中会用到
+ 
+@@ -88,17 +89,21 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+     标记方法：
+     HTTP方法 URL                      功能                JSON格式(GET)/URL参数(POST/UPDATE/DELETE)     Token
+         
+-    
+     列表：
+     GET    /courses.json             获得所有课程         "courses": [{"id": 1, "name": "xxx"}, ...]    No
+     GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          No
+     GET    /courses/1/students.json  获得id=1课的所有学生 "students": [{"id": 1, "name": "xx"}, ...]    No
++    GET    /courses/1/assistants.json 类似上一个
+   
+     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]            No
+ 
+-    GET    /students.json            获得所有学生         "students": [{"id":1, "name": "xx"..]         No
++    GET    /students.json            获得（默认课程的）所有学生     "students": [{"id":1, "name": "xx"..]         No
+     GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]       Student Token
+     GET    /students/1/courses.json  获得id=1学生所有的课程 "courses": [{"id": 1, "name": "xxx"}, ..]   Student Token
++    
++    GET    /assistants.json          类似students
++    GET    /assistants/1.json        类似students
++    GET    /assistants/1/courses.json 类似students
+ 
+ 举例：得到一个课程id=1的所有学生列表
+    
+@@ -131,6 +136,7 @@ class Main {
+ ###reason的可能值和含义
+ REASON_TOKEN_INVALID = 'token_invalid'      // token没有指定或者无效，应该检查url参数
+ REASON_TOKEN_TIMEOUT = 'token_timeout'      // token过时了，应该重新登陆
++REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存在
+ 
+ ##TODO
+ 1.  Database Schema
+diff --git a/app/controllers/application_controller.rb b/app/controllers/application_controller.rb
+index 20ded08..0a74025 100644
+--- a/app/controllers/application_controller.rb
++++ b/app/controllers/application_controller.rb
+@@ -1,24 +1,39 @@
+ class ApplicationController < ActionController::Base
++  class TokenException < Exception
++    def initialize(msg)
++      @msg = msg
++    end
++    def message
++      @msg
++    end
++  end
++
+   # Prevent CSRF attacks by raising an exception.
+   # For APIs, you may want to use :null_session instead.
+   #protect_from_forgery with: :exception
+ 
+   before_action :configure_permitted_parameters, if: :devise_controller?
+ 
+-  def json_failed(reason = nil)
+-    if reason
+-      render json: { status: 'failed', reason: reason }
++  # the following class macro and two methods are token authentication helpers
++  rescue_from TokenException, with: :invalid_token
++  def invalid_token(except)
++    json_failed(except.message)
++  end
++  # raise TokenException if authentication failure occurs
++  def check_token(token_str, user_id)
++    raise TokenException.new(REASON_TOKEN_INVALID) unless token_str && user_id
++
++    token = Token.find_by_token(token_str)
++    if token && token.user_id == user_id.to_i
++      if Time.now > token.valid_until
++        raise TokenException.new(REASON_TOKEN_TIMEOUT)
++      end
+     else
+-      render json: { status: 'failed' }
++      raise TokenException.new(REASON_TOKEN_INVALID)
+     end
+   end
+-  def json_successful
+-    render json: { status: 'successful' }
+-  end
+ 
+-  def html_failed(reason = nil)
+-    redirect_to '/404.html'
+-  end
++  include ApplicationHelper::StatusRenderingHelpers
+ 
+   protected
+ 
+diff --git a/app/controllers/assistants_controller.rb b/app/controllers/assistants_controller.rb
+index e69de29..c9e04d8 100644
+--- a/app/controllers/assistants_controller.rb
++++ b/app/controllers/assistants_controller.rb
+@@ -0,0 +1,39 @@
++class AssistantsController < ApplicationController
++
++  before_action only: [:show] do
++    set_assistant
++
++    raise TokenException.new(REASON_TOKEN_INVALID) unless @assistant
++    check_token(params[:token], @assistant.id)
++  end
++
++  def index
++    course = Course.find(params[:course_id] || 1)
++    participations = course.participations.where(role: ROLE_ASSISTANT)
++    @assistants = User.none
++    participations.each do |p|
++      @assistants <<= p.user
++    end
++  end
++
++  def show
++  end
++
++  private
++
++  def set_assistant
++    begin
++      assistant = User.find(params[:id])
++      ### just for debug, default course_id is 1
++      @participation = assistant.participations.where(course_id: params[:course_id] || 1).first
++      if @participation.role == ROLE_ASSISTANT
++        @assistant = assistant
++      else
++        @assistant = nil
++      end
++    rescue ActiveRecord::RecordNotFound
++      @assistant = nil
++    end
++  end
++
++end
+diff --git a/app/controllers/courses_controller.rb b/app/controllers/courses_controller.rb
+index cfbe829..29a5461 100644
+--- a/app/controllers/courses_controller.rb
++++ b/app/controllers/courses_controller.rb
+@@ -1,20 +1,23 @@
+ class CoursesController < ApplicationController
+ 
+   before_action :set_course, only: [:show]
++  before_action only: [:index] do
++    if params[:student_id]
++      @id_key = :student_id
++      check_token(params[:token], params[@id_key])
++    elsif params[:assistant_id]
++      @id_key = :assistant_id
++      check_token(params[:token], params[@id_key])
++    end
++  end
+ 
+   # GET /courses
+   # GET /courses.json
+   def index
+-    # list courses of a student
+-    if params[:student_id]
+-      result = Token.check_token(params, params[:student_id])
+-      if result == STATUS_SUCCESS
+-          @courses = Course.none
+-          User.find(params[:student_id]).participations.each do |participation|
+-            @courses <<= participation.course
+-          end
+-      else
+-        json_failed(result)
++    if @id_key
++      @courses = Course.none
++      User.find(params[@id_key]).participations.each do |participation|
++        @courses <<= participation.course
+       end
+     else
+       @courses = Course.all
+@@ -34,7 +37,7 @@ class CoursesController < ApplicationController
+ 
+   # POST /courses
+   def create
+-    @course =  Course.create(params.require(:course).permit(:name))
++    @course = Course.create(params.require(:course).permit(:name))
+     respond_to do |format|
+       if @course.valid?
+         format.html { redirect_to @course }
+@@ -55,6 +58,4 @@ class CoursesController < ApplicationController
+     end
+   end
+ 
+-
+-
+ end
+diff --git a/app/controllers/students_controller.rb b/app/controllers/students_controller.rb
+index 4ca3a1f..eafe432 100644
+--- a/app/controllers/students_controller.rb
++++ b/app/controllers/students_controller.rb
+@@ -1,6 +1,11 @@
+ class StudentsController < ApplicationController
+ 
+-  before_action :set_student, only: [:show]
++  before_action only: [:show] do
++    set_student
++
++    raise TokenException.new(REASON_TOKEN_INVALID) unless @student
++    check_token(params[:token], @student.id)
++  end
+ 
+   def index
+     course = Course.find(params[:course_id] || 1)
+@@ -12,15 +17,6 @@ class StudentsController < ApplicationController
+   end
+ 
+   def show
+-    # invalid student id
+-    unless @student
+-      respond_to do |format|
+-        format.json { json_failed('not found') }
+-      end
+-    end
+-
+-    result = Token.check_token(params, @student.id)
+-    json_failed(result) unless result == STATUS_SUCCESS
+   end
+ 
+   private
+diff --git a/app/controllers/users/registrations_controller.rb b/app/controllers/users/registrations_controller.rb
+index ce6a407..ad35eea 100644
+--- a/app/controllers/users/registrations_controller.rb
++++ b/app/controllers/users/registrations_controller.rb
+@@ -1,60 +1,62 @@
+-class Users::RegistrationsController < Devise::RegistrationsController
+-# before_filter :configure_sign_up_params, only: [:create]
+-# before_filter :configure_account_update_params, only: [:update]
+-
+-  # GET /resource/sign_up
+-  # def new
+-  #   super
+-  # end
+-
+-  # # POST /resource
+-  # def create
+-  #    super
+-  # end
+-
+-  # GET /resource/edit
+-  # def edit
+-  #   super
+-  # end
+-
+-  # PUT /resource
+-  # def update
+-  #   super
+-  # end
+-
+-  # DELETE /resource
+-  # def destroy
+-  #   super
+-  # end
+-
+-  # GET /resource/cancel
+-  # Forces the session data which is usually expired after sign
+-  # in to be expired now. This is useful if the user wants to
+-  # cancel oauth signing in/up in the middle of the process,
+-  # removing all OAuth session data.
+-  # def cancel
+-  #   super
+-  # end
+-
+-  protected
+-
+-  #If you have extra params to permit, append them to the sanitizer.
+-  def configure_sign_up_params
+-    devise_parameter_sanitizer.for(:sign_up) << :phone << :email
++module Users
++  class RegistrationsController < Devise::RegistrationsController
++  # before_filter :configure_sign_up_params, only: [:create]
++  # before_filter :configure_account_update_params, only: [:update]
++
++    # GET /resource/sign_up
++    # def new
++    #   super
++    # end
++
++    # # POST /resource
++    # def create
++    #    super
++    # end
++
++    # GET /resource/edit
++    # def edit
++    #   super
++    # end
++
++    # PUT /resource
++    # def update
++    #   super
++    # end
++
++    # DELETE /resource
++    # def destroy
++    #   super
++    # end
++
++    # GET /resource/cancel
++    # Forces the session data which is usually expired after sign
++    # in to be expired now. This is useful if the user wants to
++    # cancel oauth signing in/up in the middle of the process,
++    # removing all OAuth session data.
++    # def cancel
++    #   super
++    # end
++
++    protected
++
++    #If you have extra params to permit, append them to the sanitizer.
++    def configure_sign_up_params
++      devise_parameter_sanitizer.for(:sign_up) << :phone << :email
++    end
++
++    # If you have extra params to permit, append them to the sanitizer.
++    # def configure_account_update_params
++    #   devise_parameter_sanitizer.for(:account_update) << :attribute
++    # end
++
++    # The path used after sign up.
++    # def after_sign_up_path_for(resource)
++    #   super(resource)
++    # end
++
++    # The path used after sign up for inactive accounts.
++    # def after_inactive_sign_up_path_for(resource)
++    #   super(resource)
++    # end
+   end
+-
+-  # If you have extra params to permit, append them to the sanitizer.
+-  # def configure_account_update_params
+-  #   devise_parameter_sanitizer.for(:account_update) << :attribute
+-  # end
+-
+-  # The path used after sign up.
+-  # def after_sign_up_path_for(resource)
+-  #   super(resource)
+-  # end
+-
+-  # The path used after sign up for inactive accounts.
+-  # def after_inactive_sign_up_path_for(resource)
+-  #   super(resource)
+-  # end
+-end
++end
+\ No newline at end of file
+diff --git a/app/controllers/users/sessions_controller.rb b/app/controllers/users/sessions_controller.rb
+index 00e3258..987800b 100644
+--- a/app/controllers/users/sessions_controller.rb
++++ b/app/controllers/users/sessions_controller.rb
+@@ -1,44 +1,47 @@
+-class Users::SessionsController < Devise::SessionsController
+-  # before_filter :configure_sign_in_params, only: [:create]
+-  #
+-  # #GET /resource/sign_in
+-  # def new
+-  #   super
+-  # end
+-  #
+-  # #POST /resource/sign_in
+-  def create
+-    respond_to do |format|
+-      format.html { super }
+-      format.json do
+-        self.resource = warden.authenticate!(auth_options)
+-        sign_in(resource_name, resource)
+-        token = resource.create_token
+-        render json: { status: STATUS_SUCCESS, token: token.token, id: resource.id }
++module Users
++  class SessionsController < Devise::SessionsController
++    before_filter :configure_sign_in_params, only: [:create]
++
++    # #GET /resource/sign_in
++    # def new
++    #   super
++    # end
++
++    #POST /resource/sign_in
++    def create
++      respond_to do |format|
++        format.html { super }
++        format.json do
++          @user = warden.authenticate!(auth_options)
++          sign_in(resource_name, @user)
++          token = @user.create_token
++          render json: { status: STATUS_SUCCESS, token: token.token, id: @user.id }
++        end
+       end
+     end
+-  end
+ 
+-  # DELETE /resource/sign_out
+-  def destroy
+-    respond_to do |format|
+-      format.html { super }
+-      format.json do
+-        begin
+-          token = Token.find_by_token(params[:token])
+-          token.destroy
+-          render json: { status: STATUS_SUCCESS }
+-        rescue
+-          render json: { status: STATUS_FAIL }
++    # DELETE /resource/sign_out
++    def destroy
++      respond_to do |format|
++        format.html { super }
++        format.json do
++          begin
++            token = Token.find_by_token(params[:token])
++            token.destroy
++            render json: { status: STATUS_SUCCESS }
++          rescue
++            render json: { status: STATUS_FAIL }
++          end
+         end
+       end
+     end
+-  end
+ 
+-  protected
++    protected
++
++    # allow other params
++    def configure_sign_in_params
++      devise_parameter_sanitizer.for(:sign_in) << :login << :token
++    end
+ 
+-  #If you have extra params to permit, append them to the sanitizer.
+-  def configure_sign_in_params
+-    devise_parameter_sanitizer.for(:sign_in) << :login << :token
+   end
+ end
+diff --git a/app/helpers/application_helper.rb b/app/helpers/application_helper.rb
+index de6be79..146f175 100644
+--- a/app/helpers/application_helper.rb
++++ b/app/helpers/application_helper.rb
+@@ -1,2 +1,26 @@
+ module ApplicationHelper
++
++  module TokenHelpers
++
++  end
++
++  module StatusRenderingHelpers
++
++    def json_failed(reason = nil)
++      if reason
++        render json: { status: 'failed', reason: reason }
++      else
++        render json: { status: 'failed' }
++      end
++    end
++    def json_successful
++      render json: { status: 'successful' }
++    end
++
++    def html_failed(reason = nil)
++      redirect_to '/404.html'
++    end
++
++  end
++
+ end
+diff --git a/app/views/assistants/index.json.jbuilder b/app/views/assistants/index.json.jbuilder
+index e69de29..7ebd34e 100644
+--- a/app/views/assistants/index.json.jbuilder
++++ b/app/views/assistants/index.json.jbuilder
+@@ -0,0 +1,10 @@
++
++json.status STATUS_SUCCESS
++json.assistants do
++  json.array!(@assistants) do |assistant|
++    json.extract! assistant, :id
++    json.extract! assistant, :name
++    json.extract! assistant, :phone
++  end
++end
++
+diff --git a/app/views/assistants/show.json.jbuilder b/app/views/assistants/show.json.jbuilder
+index e69de29..5b61040 100644
+--- a/app/views/assistants/show.json.jbuilder
++++ b/app/views/assistants/show.json.jbuilder
+@@ -0,0 +1,7 @@
++
++json.status STATUS_SUCCESS
++json.assistant do
++  json.id     @assistant.id
++  json.name   @assistant.name
++  json.phone  @assistant.phone
++end
+\ No newline at end of file
+diff --git a/config/initializers/constants.rb b/config/initializers/constants.rb
+index a6813ad..3fa6424 100644
+--- a/config/initializers/constants.rb
++++ b/config/initializers/constants.rb
+@@ -9,4 +9,5 @@ TOKEN_VALID_TIME_SEC = 2 * 60 * 60 # 2h
+ 
+ REASON_PERMISSION_DENIED = 'permission_denied'
+ REASON_TOKEN_INVALID = 'token_invalid'
+-REASON_TOKEN_TIMEOUT = 'token_timeout'
+\ No newline at end of file
++REASON_TOKEN_TIMEOUT = 'token_timeout'
++REASON_TOKEN_NOT_MATCH = 'token_not_match'
+\ No newline at end of file
+diff --git a/config/routes.rb b/config/routes.rb
+index 30810fe..25467d0 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -7,10 +7,16 @@ Rails.application.routes.draw do
+ 
+   resources :courses do
+     resources :students
++    resources :assistants
++    resources :lessons
+   end
+   resources :students do
+     resources :courses
+   end
++  resources :assistants do
++    resources :courses
++  end
++
+   resources :lessons
+   # The priority is based upon order of creation: first created -> highest priority.
+   # See how all your routes lay out with "rake routes".
+diff --git a/test/controllers/assistants_controller_test.rb b/test/controllers/assistants_controller_test.rb
+index e69de29..f94ed54 100644
+--- a/test/controllers/assistants_controller_test.rb
++++ b/test/controllers/assistants_controller_test.rb
+@@ -0,0 +1,10 @@
++require 'test_helper'
++
++class AssistantsControllerTest < ActionController::TestCase
++  test 'api should get assistants by course' do
++    get :index, { format: :json, course_id: Course.find_by_name('Operation System').id }
++    json = JSON.parse(@response.body)
++    assert_equal json['status'], STATUS_SUCCESS
++    assert json['assistants'].is_a? Array
++  end
++end
+diff --git a/test/controllers/courses_controller_test.rb b/test/controllers/courses_controller_test.rb
+index 25bb8b7..2f7e452 100644
+--- a/test/controllers/courses_controller_test.rb
++++ b/test/controllers/courses_controller_test.rb
+@@ -9,6 +9,16 @@ class CoursesControllerTest < ActionController::TestCase
+     assert json['courses'].count > 0
+   end
+ 
++  test 'api should get courses by assistant with token' do
++    u = User.find_by_name('betty')
++    token_str = u.create_token.token
++
++    get :index, format: :json, assistant_id: u.id, token: token_str
++    json = JSON.parse(@response.body)
++    assert_equal json['status'], STATUS_SUCCESS
++    assert_not_nil json['courses']
++  end
++
+   test 'api should get courses by student with token' do
+     u = User.first
+     token_str = u.create_token.token
+@@ -46,6 +56,12 @@ class CoursesControllerTest < ActionController::TestCase
+     assert_not_nil json['course']['name']
+   end
+ 
++  test 'api should not get course by invalid id' do
++    get :show, format: :json, id: -1
++    json = JSON.parse(@response.body)
++    assert_equal json['status'], STATUS_FAIL
++  end
++
+   test 'api should create course' do
+     assert_difference 'Course.count' do
+       post :create, course: { name: 'test course' }
+diff --git a/test/controllers/users/sessions_controller_test.rb b/test/controllers/users/sessions_controller_test.rb
+index 0b32ca6..709dd05 100644
+--- a/test/controllers/users/sessions_controller_test.rb
++++ b/test/controllers/users/sessions_controller_test.rb
+@@ -1,34 +1,36 @@
+ require 'test_helper'
+ 
+-class Users::SessionsControllerTest < ActionController::TestCase
+-  include Devise::TestHelpers
++module Users
++  class SessionsControllerTest < ActionController::TestCase
++    include Devise::TestHelpers
+ 
+-  def setup
+-    @request.env["devise.mapping"] = Devise.mappings[:user]
+-  end
++    def setup
++      @request.env['devise.mapping'] = Devise.mappings[:user]
++    end
+ 
+-  test 'should sign in with phone' do
+-    post :create, { format: :json, user: { login: '123', password: '123' } }
+-    assert_equal assigns[:user].phone, '123'
+-    json = JSON.parse(@response.body)
+-    assert_equal json['status'], STATUS_SUCCESS
+-  end
++    test 'should sign in with phone' do
++      post :create, { format: :json, user: { login: '123', password: '123' } }
++      assert_equal assigns[:user].phone, '123'
++      json = JSON.parse(@response.body)
++      assert_equal json['status'], STATUS_SUCCESS
++    end
+ 
+-  test 'should sign in with email' do
+-    post :create, { user: { login: 'alex@b.c', password: '123' } }
+-    assert_equal assigns[:user].email, 'alex@b.c'
+-  end
++    test 'should sign in with email' do
++      post :create, { user: { login: 'alex@b.c', password: '123' } }
++      assert_equal assigns[:user].email, 'alex@b.c'
++    end
+ 
+-  test 'should sign in and sign out with token' do
+-    post :create, { format: :json, user: { login: 'alex@b.c', password: '123' } }
+-    json = JSON.parse(@response.body)
+-    assert_equal json['status'], STATUS_SUCCESS
+-    assert_not_nil json['token']
+-    assert_not_nil json['id']
++    test 'should sign in and sign out with token' do
++      post :create, { format: :json, user: { login: 'alex@b.c', password: '123' } }
++      json = JSON.parse(@response.body)
++      assert_equal json['status'], STATUS_SUCCESS
++      assert_not_nil json['token']
++      assert_not_nil json['id']
+ 
+-    post :destroy, { format: :json, token: json['token'] }
+-    json = JSON.parse(@response.body)
+-    assert_equal json['status'], STATUS_SUCCESS
+-  end
++      post :destroy, { format: :json, token: json['token'] }
++      json = JSON.parse(@response.body)
++      assert_equal json['status'], STATUS_SUCCESS
++    end
+ 
+-end
+\ No newline at end of file
++  end
++end
+diff --git a/test/fixtures/participations.yml b/test/fixtures/participations.yml
+index 89a3668..9994761 100644
+--- a/test/fixtures/participations.yml
++++ b/test/fixtures/participations.yml
+@@ -1,11 +1,14 @@
+ alex_os:
+   user: alex
+   course: os
++  role: <%= ROLE_STUDENT %>
+ 
+ betty_os:
+   user: betty
+   course: cpp
++  role: <%= ROLE_ASSISTANT %>
+ 
+ alex_ds:
+   user: alex
+-  course: cpp
+\ No newline at end of file
++  course: cpp
++  role: <%= ROLE_STUDENT %>
+\ No newline at end of file
+-- 
+1.9.1
+

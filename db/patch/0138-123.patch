@@ -1,0 +1,23 @@
+From e44a70e6c6ede68f29af13642c77d12d0c48e222 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sat, 24 Oct 2015 13:15:27 +0800
+Subject: [PATCH 138/150] 123
+
+---
+ Gemfile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Gemfile b/Gemfile
+index 1e4476c..a9eb20c 100644
+--- a/Gemfile
++++ b/Gemfile
+@@ -1,5 +1,6 @@
+ source 'https://ruby.taobao.org'
+ 
++
+ # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+ gem 'rails', '4.2.4'
+ # Use sqlite3 as the database for Active Record
+-- 
+1.9.1
+

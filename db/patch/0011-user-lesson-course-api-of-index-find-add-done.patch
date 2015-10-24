@@ -1,0 +1,642 @@
+From 94f3151c48ae96c3240768cb2626ace6bfcd2c7a Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Wed, 30 Sep 2015 22:32:35 +0800
+Subject: [PATCH 011/150] user/lesson/course api of index/find/add done
+
+---
+ README.md                                          | 24 +++++------
+ app/assets/javascripts/courses.coffee              |  3 ++
+ app/assets/javascripts/lessons.coffee              |  3 ++
+ app/assets/stylesheets/courses.scss                |  3 ++
+ app/assets/stylesheets/lessons.scss                |  3 ++
+ app/controllers/courses_controller.rb              | 42 +++++++++++++++++++
+ app/controllers/lessons_controller.rb              | 45 +++++++++++++++++++++
+ app/controllers/users_controller.rb                | 47 ++++++++++++++++++++++
+ app/helpers/courses_helper.rb                      |  2 +
+ app/helpers/lessons_helper.rb                      |  2 +
+ app/models/course.rb                               |  6 +++
+ app/models/lesson.rb                               |  9 +++++
+ app/models/participation.rb                        | 10 +++++
+ app/models/user.rb                                 |  2 +
+ config/routes.rb                                   | 17 ++++++++
+ db/migrate/20150926114146_devise_create_users.rb   | 12 +-----
+ ...50930115150_add_lessons_studends_and_courses.rb | 25 ++++++++++++
+ db/schema.rb                                       | 31 +++++++++++++-
+ test/controllers/courses_controller_test.rb        | 30 ++++++++++++++
+ test/controllers/lessons_controller_test.rb        | 41 +++++++++++++++++++
+ test/controllers/users_controller_test.rb          |  5 +++
+ test/fixtures/courses.yml                          | 11 +++++
+ test/fixtures/lessons.yml                          |  7 ++++
+ test/models/course_test.rb                         |  8 ++++
+ test/models/lesson_test.rb                         |  7 ++++
+ 25 files changed, 371 insertions(+), 24 deletions(-)
+ create mode 100644 app/assets/javascripts/courses.coffee
+ create mode 100644 app/assets/javascripts/lessons.coffee
+ create mode 100644 app/assets/stylesheets/courses.scss
+ create mode 100644 app/assets/stylesheets/lessons.scss
+ create mode 100644 app/controllers/courses_controller.rb
+ create mode 100644 app/controllers/lessons_controller.rb
+ create mode 100644 app/controllers/users_controller.rb
+ create mode 100644 app/helpers/courses_helper.rb
+ create mode 100644 app/helpers/lessons_helper.rb
+ create mode 100644 app/models/course.rb
+ create mode 100644 app/models/lesson.rb
+ create mode 100644 app/models/participation.rb
+ create mode 100644 db/migrate/20150930115150_add_lessons_studends_and_courses.rb
+ create mode 100644 test/controllers/courses_controller_test.rb
+ create mode 100644 test/controllers/lessons_controller_test.rb
+ create mode 100644 test/controllers/users_controller_test.rb
+ create mode 100644 test/fixtures/courses.yml
+ create mode 100644 test/fixtures/lessons.yml
+ create mode 100644 test/models/course_test.rb
+ create mode 100644 test/models/lesson_test.rb
+
+diff --git a/README.md b/README.md
+index 70c4902..5c603c7 100644
+--- a/README.md
++++ b/README.md
+@@ -60,28 +60,26 @@ I'm busy...
+ Step1.  Token authentication
+     POST    xxx
+ 
+-Step2.  Get data from these URIs
++Step2.  Get data from these URLs
+ 
+     # for courses
+     GET /api/courses
+-    GET /api/courses/1/lessons/lesson_name
+-        returns lesson_id
++    GET /api/courses/1
++    GET /api/courses/name
++    POST /api/courses
++        
+     
+     # for lessons
+     GET /api/lessons
+     GET /api/lessons/1
+     GET /api/lessons/lesson_full_name
+-        return lesson_id
+-    GET /api/lessons/1/students
+-        return student_ids
++    POST /api/lessons
++        parameters: name, description, start_time, end_time, position, course_id
+     
+-    # for participants
+-    GET /api/participants
+-    GET /api/participants/1
+-    GET /api/participants/alex
+-        returns participant_id
+-    GET /api/participants/1/lessons
+-        returns lesson_ids
++    # for users(including students and assistants)
++    GET /api/users
++    GET /api/users/1
++    GET /api/users/name
+         
+ or in rails way
+     
+diff --git a/app/assets/javascripts/courses.coffee b/app/assets/javascripts/courses.coffee
+new file mode 100644
+index 0000000..24f83d1
+--- /dev/null
++++ b/app/assets/javascripts/courses.coffee
+@@ -0,0 +1,3 @@
++# Place all the behaviors and hooks related to the matching controller here.
++# All this logic will automatically be available in application.js.
++# You can use CoffeeScript in this file: http://coffeescript.org/
+diff --git a/app/assets/javascripts/lessons.coffee b/app/assets/javascripts/lessons.coffee
+new file mode 100644
+index 0000000..24f83d1
+--- /dev/null
++++ b/app/assets/javascripts/lessons.coffee
+@@ -0,0 +1,3 @@
++# Place all the behaviors and hooks related to the matching controller here.
++# All this logic will automatically be available in application.js.
++# You can use CoffeeScript in this file: http://coffeescript.org/
+diff --git a/app/assets/stylesheets/courses.scss b/app/assets/stylesheets/courses.scss
+new file mode 100644
+index 0000000..0cae8cc
+--- /dev/null
++++ b/app/assets/stylesheets/courses.scss
+@@ -0,0 +1,3 @@
++// Place all the styles related to the courses controller here.
++// They will automatically be included in application.css.
++// You can use Sass (SCSS) here: http://sass-lang.com/
+diff --git a/app/assets/stylesheets/lessons.scss b/app/assets/stylesheets/lessons.scss
+new file mode 100644
+index 0000000..e2cf8c0
+--- /dev/null
++++ b/app/assets/stylesheets/lessons.scss
+@@ -0,0 +1,3 @@
++// Place all the styles related to the lessons controller here.
++// They will automatically be included in application.css.
++// You can use Sass (SCSS) here: http://sass-lang.com/
+diff --git a/app/controllers/courses_controller.rb b/app/controllers/courses_controller.rb
+new file mode 100644
+index 0000000..afdfbe3
+--- /dev/null
++++ b/app/controllers/courses_controller.rb
+@@ -0,0 +1,42 @@
++class CoursesController < ApplicationController
++
++  # returns a json that:
++  #   { "status": "success"/"failed", "ids": [the IDs of all courses] }
++  def api_index
++    ids = []
++    Course.all.each do |course|
++      ids.push(course.id)
++    end
++    render json: {
++      status: 'success',
++      ids:    ids
++    }
++  end
++
++  def api_show
++    begin
++      course = Course.find(params[:id])
++      render json: {
++                 status: 'success',
++                 result: {
++                     id:          course.id,
++                     name:        course.name,
++                     exp_count:   course.lessons.count
++                 }
++             }
++    rescue ActiveRecord::RecordNotFound
++      render json: {
++                 status: 'not-found'
++             }
++    end
++  end
++
++  def api_add
++    course =  Course.create(params.require(:course).permit(:name))
++    if course.valid?
++      render json: { status: 'success' }
++    else
++      render json: { status: 'fail' }
++    end
++  end
++end
+diff --git a/app/controllers/lessons_controller.rb b/app/controllers/lessons_controller.rb
+new file mode 100644
+index 0000000..e6db15b
+--- /dev/null
++++ b/app/controllers/lessons_controller.rb
+@@ -0,0 +1,45 @@
++
++class LessonsController < ApplicationController
++
++  def api_index
++    ids = []
++    Lesson.all.each do |lesson|
++      ids.push(lesson.id)
++    end
++    render json: {
++               status: 'success',
++               ids: ids
++           }
++  end
++
++  def api_show
++    begin
++      lesson = Lesson.find(params[:id])
++      render json: {
++                 status: 'success',
++                 result: {
++                     id:          lesson.id,
++                     name:        lesson.name,
++                     start_time:  lesson.start_time,
++                     end_time:    lesson.end_time,
++                     position:    lesson.position
++                 }
++             }
++    rescue ActiveRecord::RecordNotFound
++      render json: {
++                 status: 'not-found'
++             }
++    end
++  end
++
++  def api_add
++    lesson =  Lesson.create(params.require(:lesson).permit(:name, :description, :start_time, :end_time, :position, :course_id))
++    puts lesson.name
++    if lesson.valid?
++      render json: { status: 'success' }
++    else
++      render json: { status: 'fail' }
++    end
++  end
++
++end
+\ No newline at end of file
+diff --git a/app/controllers/users_controller.rb b/app/controllers/users_controller.rb
+new file mode 100644
+index 0000000..ec573a7
+--- /dev/null
++++ b/app/controllers/users_controller.rb
+@@ -0,0 +1,47 @@
++class UsersController < ApplicationController
++  def api_index
++    ids = []
++    User.all.each do |user|
++      ids.push(user.id)
++    end
++    render json: {
++               status: 'success',
++               ids: ids
++           }
++  end
++
++  def api_show
++    begin
++      user = User.find(params[:id])
++      render json: {
++                 status: 'success',
++                 result: {
++                     id:          user.id,
++                     name:        user.name,
++                 }
++             }
++    rescue ActiveRecord::RecordNotFound
++      render json: {
++                 status: 'not-found'
++             }
++    end
++  end
++
++  def api_find
++    begin
++      user = User.find_by_name(params[:name])
++      render json: {
++                 status: 'success',
++                 result: {
++                     id:          user.id,
++                     name:        user.name,
++                 }
++             }
++    rescue ActiveRecord::RecordNotFound
++      render json: {
++                 status: 'not-found'
++             }
++    end
++  end
++
++end
+\ No newline at end of file
+diff --git a/app/helpers/courses_helper.rb b/app/helpers/courses_helper.rb
+new file mode 100644
+index 0000000..c159f1e
+--- /dev/null
++++ b/app/helpers/courses_helper.rb
+@@ -0,0 +1,2 @@
++module CoursesHelper
++end
+diff --git a/app/helpers/lessons_helper.rb b/app/helpers/lessons_helper.rb
+new file mode 100644
+index 0000000..1703883
+--- /dev/null
++++ b/app/helpers/lessons_helper.rb
+@@ -0,0 +1,2 @@
++module LessonsHelper
++end
+diff --git a/app/models/course.rb b/app/models/course.rb
+new file mode 100644
+index 0000000..d123652
+--- /dev/null
++++ b/app/models/course.rb
+@@ -0,0 +1,6 @@
++class Course < ActiveRecord::Base
++  validates :name, presence: true
++
++  has_many :lessons
++  has_many :participants
++end
+diff --git a/app/models/lesson.rb b/app/models/lesson.rb
+new file mode 100644
+index 0000000..1911a40
+--- /dev/null
++++ b/app/models/lesson.rb
+@@ -0,0 +1,9 @@
++class Lesson < ActiveRecord::Base
++  validates :name,        presence: true
++  # description, nullable
++  validates :start_time,  presence: true
++  validates :end_time,    presence: true
++  validates :position,    presence: true
++
++  belongs_to :courses
++end
+diff --git a/app/models/participation.rb b/app/models/participation.rb
+new file mode 100644
+index 0000000..439b74b
+--- /dev/null
++++ b/app/models/participation.rb
+@@ -0,0 +1,10 @@
++class Participation < ActiveRecord::Base
++
++  validates :role, presence: true
++  validates_associated :users
++  validates_associated :courses
++
++  belongs_to :users
++  belongs_to :courses
++
++end
+\ No newline at end of file
+diff --git a/app/models/user.rb b/app/models/user.rb
+index 004938e..b1020da 100644
+--- a/app/models/user.rb
++++ b/app/models/user.rb
+@@ -4,4 +4,6 @@ class User < ActiveRecord::Base
+   devise :database_authenticatable, :registerable,
+          :recoverable, :rememberable, :trackable, :validatable
+   # phone, name, email
++
++  has_many :courses, through: :participations
+ end
+diff --git a/config/routes.rb b/config/routes.rb
+index fc2791d..9167ad3 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -1,5 +1,22 @@
+ Rails.application.routes.draw do
+   devise_for :users
++
++  namespace :api do
++    namespace :courses do
++      root to: '/courses#api_index'
++      get 'index'   => '/courses#api_index'
++      get ':id'     => '/courses#api_show', constraints: { id: '[0-9]+' }
++      post '/'      => '/courses#api_add'
++    end
++
++    namespace :lessons do
++      root to: '/lessons#api_index'
++      get 'index' => '/lessons#api_index'
++      get ':id'   => '/lessons#api_show', constraints: { id: '[0-9]+' }
++      post '/'    => '/lessons#api_add'
++    end
++
++  end
+   # The priority is based upon order of creation: first created -> highest priority.
+   # See how all your routes lay out with "rake routes".
+ 
+diff --git a/db/migrate/20150926114146_devise_create_users.rb b/db/migrate/20150926114146_devise_create_users.rb
+index ef4ee17..7d11665 100644
+--- a/db/migrate/20150926114146_devise_create_users.rb
++++ b/db/migrate/20150926114146_devise_create_users.rb
+@@ -21,16 +21,8 @@ class DeviseCreateUsers < ActiveRecord::Migration
+       t.string   :current_sign_in_ip
+       t.string   :last_sign_in_ip
+ 
+-      ## Confirmable
+-      # t.string   :confirmation_token
+-      # t.datetime :confirmed_at
+-      # t.datetime :confirmation_sent_at
+-      # t.string   :unconfirmed_email # Only if using reconfirmable
+-
+-      ## Lockable
+-      # t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
+-      # t.string   :unlock_token # Only if unlock strategy is :email or :both
+-      # t.datetime :locked_at
++      ## student/assistant info
++      t.boolean   :is_student
+ 
+       t.timestamps null: false
+     end
+diff --git a/db/migrate/20150930115150_add_lessons_studends_and_courses.rb b/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
+new file mode 100644
+index 0000000..bdccad0
+--- /dev/null
++++ b/db/migrate/20150930115150_add_lessons_studends_and_courses.rb
+@@ -0,0 +1,25 @@
++class AddLessonsStudendsAndCourses < ActiveRecord::Migration
++  def change
++
++    create_table :courses do |t|
++      t.string  :name
++      t.text    :description
++    end
++
++    create_table :lessons do |t|
++      t.string  :name,        null: false
++      t.text    :description
++      t.datetime  :start_time
++      t.datetime  :end_time
++      t.string  :position
++      t.integer :course_id
++    end
++
++    create_table :participations do |t|
++      t.integer :course_id
++      t.integer :user_id
++      t.string  :role
++    end
++
++  end
++end
+diff --git a/db/schema.rb b/db/schema.rb
+index a0c384e..56695a1 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -11,7 +11,35 @@
+ #
+ # It's strongly recommended that you check this file into your version control system.
+ 
+-ActiveRecord::Schema.define(version: 20150926114146) do
++ActiveRecord::Schema.define(version: 20150930115150) do
++
++  create_table "courses", force: :cascade do |t|
++    t.string "name"
++    t.text   "description"
++  end
++
++  create_table "courses_assistants", force: :cascade do |t|
++    t.integer "course_id"
++    t.integer "user_id"
++  end
++
++  create_table "courses_students", force: :cascade do |t|
++    t.integer "course_id"
++    t.integer "user_id"
++  end
++
++  create_table "lessons", force: :cascade do |t|
++    t.string   "name",        null: false
++    t.text     "description"
++    t.datetime "start_time"
++    t.datetime "end_time"
++    t.string   "position"
++    t.integer  "course_id"
++  end
++
++  create_table "students", force: :cascade do |t|
++    t.string "name"
++  end
+ 
+   create_table "users", force: :cascade do |t|
+     t.string   "name",                   default: "", null: false
+@@ -26,6 +54,7 @@ ActiveRecord::Schema.define(version: 20150926114146) do
+     t.datetime "last_sign_in_at"
+     t.string   "current_sign_in_ip"
+     t.string   "last_sign_in_ip"
++    t.boolean  "is_student"
+     t.datetime "created_at",                          null: false
+     t.datetime "updated_at",                          null: false
+   end
+diff --git a/test/controllers/courses_controller_test.rb b/test/controllers/courses_controller_test.rb
+new file mode 100644
+index 0000000..b57535a
+--- /dev/null
++++ b/test/controllers/courses_controller_test.rb
+@@ -0,0 +1,30 @@
++require 'test_helper'
++
++class CoursesControllerTest < ActionController::TestCase
++
++  test 'api should get all courses' do
++    get :api_index
++    json = JSON.parse(@response.body)
++    assert_equal json['status'], 'success'
++    assert json['ids'].count > 0
++  end
++
++  test 'api should get course by id' do
++    get :api_show, { id: Course.first.id }
++    json = JSON.parse(@response.body)
++    assert_equal json['status'], 'success'
++    assert_not_nil json['result']['name']
++  end
++
++  test 'api should add course' do
++    assert_difference 'Course.count' do
++      post :api_add, course: { name: 'test course' }
++    end
++  end
++
++  test 'api should not add bad course' do
++    assert_no_difference 'Course.count' do
++      post :api_add, course: { name1: 'bad name' }
++    end
++  end
++end
+diff --git a/test/controllers/lessons_controller_test.rb b/test/controllers/lessons_controller_test.rb
+new file mode 100644
+index 0000000..35d77de
+--- /dev/null
++++ b/test/controllers/lessons_controller_test.rb
+@@ -0,0 +1,41 @@
++require 'test_helper'
++
++class LessonsControllerTest < ActionController::TestCase
++
++  test 'api should get all lessons' do
++    get :api_index
++    json = JSON.parse(@response.body)
++    assert_equal json['status'], 'success'
++    assert json['ids'].count > 0
++  end
++
++  test 'api should get lesson by id' do
++    get :api_show, { id: Lesson.first.id }
++    json = JSON.parse(@response.body)
++    assert_equal json['status'], 'success'
++    assert_not_nil json['result']['name']
++  end
++
++  test 'api should add lesson' do
++    assert_difference('Lesson.count') do
++      post :api_add, lesson: {
++                       name: 'test lesson',
++                       start_time: '2015/10/10 10:20:30',
++                       end_time: '2015/10/10 10:20:30',
++                       position: '"name": "here"',
++                       course_id: 1
++                   }
++    end
++    assert_equal JSON.parse(@response.body)['status'], 'success'
++  end
++
++  test 'api should not add bad lesson' do
++
++    assert_no_difference('Lesson.count') do
++      post :api_add, lesson: { bad_name: 'bad name' }
++    end
++    assert_equal JSON.parse(@response.body)['status'], 'fail'
++  end
++
++
++end
+diff --git a/test/controllers/users_controller_test.rb b/test/controllers/users_controller_test.rb
+new file mode 100644
+index 0000000..87d4874
+--- /dev/null
++++ b/test/controllers/users_controller_test.rb
+@@ -0,0 +1,5 @@
++require 'test_helper'
++
++class UsersControllerTest < ActionController::TestCase
++
++end
+diff --git a/test/fixtures/courses.yml b/test/fixtures/courses.yml
+new file mode 100644
+index 0000000..1a66aa8
+--- /dev/null
++++ b/test/fixtures/courses.yml
+@@ -0,0 +1,11 @@
++adv_physics:
++  name: Advanced Physics
++
++os:
++  name: Operation System
++
++compiler:
++  name: Modern Compiler Design and Practice
++
++cpp:
++  name: Programming C++
+diff --git a/test/fixtures/lessons.yml b/test/fixtures/lessons.yml
+new file mode 100644
+index 0000000..c3d75fd
+--- /dev/null
++++ b/test/fixtures/lessons.yml
+@@ -0,0 +1,7 @@
++
++exp1:
++  name: test lesson 1
++  start_time: 2015/10/10 10:20:30
++  end_time: 2015/10/10 10:20:30
++  position: here
++  course_id: 1
+diff --git a/test/models/course_test.rb b/test/models/course_test.rb
+new file mode 100644
+index 0000000..521f602
+--- /dev/null
++++ b/test/models/course_test.rb
+@@ -0,0 +1,8 @@
++require 'test_helper'
++
++class CourseTest < ActiveSupport::TestCase
++  test 'should have multiple courses' do
++    assert Course.count > 0
++  end
++
++end
+diff --git a/test/models/lesson_test.rb b/test/models/lesson_test.rb
+new file mode 100644
+index 0000000..2445a49
+--- /dev/null
++++ b/test/models/lesson_test.rb
+@@ -0,0 +1,7 @@
++require 'test_helper'
++
++class LessonTest < ActiveSupport::TestCase
++  # test "the truth" do
++  #   assert true
++  # end
++end
+-- 
+1.9.1
+

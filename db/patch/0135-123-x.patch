@@ -1,0 +1,32 @@
+From 1996d30d16678cf6bae91f6f113311a1f17ab6e2 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sat, 24 Oct 2015 12:29:40 +0800
+Subject: [PATCH 135/150] 123;:x
+
+---
+ Gemfile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Gemfile b/Gemfile
+index a46ef6b..09630d5 100644
+--- a/Gemfile
++++ b/Gemfile
+@@ -1,5 +1,4 @@
+ source 'https://ruby.taobao.org'
+-
+ ###
+ 
+ # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+@@ -37,7 +36,8 @@ gem 'rails-i18n'
+ # gem 'bcrypt', '~> 3.1.7'
+ 
+ # Use Unicorn as the app server
+-# gem 'unicorn'
++# GEM 'unicorn'
++
+ 
+ # Use Capistrano for deployment
+ # gem 'capistrano-rails', group: :development
+-- 
+1.9.1
+

@@ -1,0 +1,84 @@
+From 539b88cd345f6f518340f81437fabba2a0a466cd Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sat, 24 Oct 2015 01:15:37 +0800
+Subject: [PATCH 130/150] PAPA-147 fix course/lesson/semester
+
+---
+ app/views/lessons/index.json.jbuilder       | 6 ++++++
+ test/controllers/courses_controller_test.rb | 1 +
+ test/controllers/lessons_controller_test.rb | 9 +++++++++
+ 3 files changed, 16 insertions(+)
+
+diff --git a/app/views/lessons/index.json.jbuilder b/app/views/lessons/index.json.jbuilder
+index f52b977..5851b8d 100644
+--- a/app/views/lessons/index.json.jbuilder
++++ b/app/views/lessons/index.json.jbuilder
+@@ -3,6 +3,12 @@ json.status STATUS_SUCCESS
+ json.lessons do
+   json.array!(@lessons) do |lesson|
+     json.extract! lesson, :id
++    json.extract! lesson, :name
++    json.extract! lesson, :description
++    json.extract! lesson, :start_time
++    json.extract! lesson, :end_time
++    json.extract! lesson, :location
++    json.extract! lesson, :course_id
+   end
+ end
+ 
+diff --git a/test/controllers/courses_controller_test.rb b/test/controllers/courses_controller_test.rb
+index 3efc775..2555e48 100644
+--- a/test/controllers/courses_controller_test.rb
++++ b/test/controllers/courses_controller_test.rb
+@@ -85,6 +85,7 @@ class CoursesControllerTest < ActionController::TestCase
+ 
+     assert_equal json['status'], STATUS_SUCCESS
+     assert_not_nil json['course']['name']
++    assert_not_nil json['course']['semester_id']
+   end
+ 
+   # GET /courses/-1.json
+diff --git a/test/controllers/lessons_controller_test.rb b/test/controllers/lessons_controller_test.rb
+index e1fefba..fd67243 100644
+--- a/test/controllers/lessons_controller_test.rb
++++ b/test/controllers/lessons_controller_test.rb
+@@ -16,6 +16,10 @@ class LessonsControllerTest < ActionController::TestCase
+ 
+     assert_equal json['status'], STATUS_SUCCESS
+     assert json['lessons'].count > 0
++    assert_not_nil json['lessons'][0]['name']
++    assert_not_nil json['lessons'][0]['start_time']
++    assert_not_nil json['lessons'][0]['end_time']
++    assert_not_nil json['lessons'][0]['location']
+   end
+ 
+   # GET /lessons/1.json
+@@ -24,6 +28,9 @@ class LessonsControllerTest < ActionController::TestCase
+ 
+     assert_equal json['status'], STATUS_SUCCESS
+     assert_not_nil json['lesson']['name']
++    assert_not_nil json['lesson']['start_time']
++    assert_not_nil json['lesson']['end_time']
++    assert_not_nil json['lesson']['location']
+   end
+ 
+   # POST /course/1/lessons.json
+@@ -31,6 +38,7 @@ class LessonsControllerTest < ActionController::TestCase
+     sign_in @teacher
+     assert_difference('Lesson.count') do
+       post :create, format: :json, course_id: @course.id, lesson: {
++                      description: '123',
+                       name: 'test lesson',
+                       start_time: '2015/10/10 10:20:30',
+                       end_time: '2015/10/10 10:20:30',
+@@ -62,6 +70,7 @@ class LessonsControllerTest < ActionController::TestCase
+     assert_json_success
+   end
+ 
++  # DELETE /lessons/1.json
+   test 'should not delete lesson by id if he is not a teacher of the lesson' do
+     teacher = User.find_by_name('betty')
+     lesson = @course.lessons.first
+-- 
+1.9.1
+

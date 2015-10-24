@@ -1,0 +1,101 @@
+From 2619e5be37b91ed08fe65b6ad6ba7faeb1f0ad6f Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Fri, 9 Oct 2015 15:08:25 +0800
+Subject: [PATCH 044/150] pause
+
+---
+ app/models/upload_file.rb                                | 14 ++++++++++++++
+ config/initializers/constants.rb                         |  4 +++-
+ db/migrate/20151009065201_add_upload_resource_manager.rb |  8 ++++++++
+ db/schema.rb                                             |  7 ++++++-
+ public/uploads/ppt.txt                                   |  2 ++
+ 5 files changed, 33 insertions(+), 2 deletions(-)
+ create mode 100644 app/models/upload_file.rb
+ create mode 100644 db/migrate/20151009065201_add_upload_resource_manager.rb
+ create mode 100644 public/uploads/ppt.txt
+
+diff --git a/app/models/upload_file.rb b/app/models/upload_file.rb
+new file mode 100644
+index 0000000..3e14cfa
+--- /dev/null
++++ b/app/models/upload_file.rb
+@@ -0,0 +1,14 @@
++# require 'base64'
++#
++# class UploadFile < ActiveRecord::Base
++#   validates :path, presence: true
++#   validates_associated :user
++#
++#   belongs_to :user
++#
++#   def self.file_name_to_path(file_name)
++#     suffix = file_name.split('.')[-1]
++#     if ALLOWED_FILE_SUFFIXES.include?(suffix)
++#
++#     Base64.encode64(file_name)
++# end
+diff --git a/config/initializers/constants.rb b/config/initializers/constants.rb
+index 3fa6424..389a610 100644
+--- a/config/initializers/constants.rb
++++ b/config/initializers/constants.rb
+@@ -10,4 +10,6 @@ TOKEN_VALID_TIME_SEC = 2 * 60 * 60 # 2h
+ REASON_PERMISSION_DENIED = 'permission_denied'
+ REASON_TOKEN_INVALID = 'token_invalid'
+ REASON_TOKEN_TIMEOUT = 'token_timeout'
+-REASON_TOKEN_NOT_MATCH = 'token_not_match'
+\ No newline at end of file
++REASON_TOKEN_NOT_MATCH = 'token_not_match'
++
++ALLOWED_FILE_SUFFIXES = [ 'jpg', 'gif', 'png', 'mp4', 'mpg', 'avi' ]
+\ No newline at end of file
+diff --git a/db/migrate/20151009065201_add_upload_resource_manager.rb b/db/migrate/20151009065201_add_upload_resource_manager.rb
+new file mode 100644
+index 0000000..bbcf965
+--- /dev/null
++++ b/db/migrate/20151009065201_add_upload_resource_manager.rb
+@@ -0,0 +1,8 @@
++class AddUploadResourceManager < ActiveRecord::Migration
++  def change
++    create_table :upload_files do |t|
++      t.string    :path
++      t.integer   :user_id
++    end
++  end
++end
+diff --git a/db/schema.rb b/db/schema.rb
+index 19da888..7f05bfb 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -11,7 +11,7 @@
+ #
+ # It's strongly recommended that you check this file into your version control system.
+ 
+-ActiveRecord::Schema.define(version: 20151008120334) do
++ActiveRecord::Schema.define(version: 20151009065201) do
+ 
+   create_table "courses", force: :cascade do |t|
+     t.string "name"
+@@ -39,6 +39,11 @@ ActiveRecord::Schema.define(version: 20151008120334) do
+     t.datetime "valid_until", null: false
+   end
+ 
++  create_table "upload_files", force: :cascade do |t|
++    t.string  "path"
++    t.integer "user_id"
++  end
++
+   create_table "users", force: :cascade do |t|
+     t.string   "name",                   default: ""
+     t.string   "phone"
+diff --git a/public/uploads/ppt.txt b/public/uploads/ppt.txt
+new file mode 100644
+index 0000000..4e98420
+--- /dev/null
++++ b/public/uploads/ppt.txt
+@@ -0,0 +1,2 @@
++This is a ppt file with suffix txt.
++// for update test
+\ No newline at end of file
+-- 
+1.9.1
+

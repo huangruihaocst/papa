@@ -1,0 +1,49 @@
+From b1b90d67f10ac2b0c0a05060e823d508350d4f62 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E7=BD=97=E5=B9=B2?= <luogan_62625686@126.com>
+Date: Sat, 24 Oct 2015 18:04:02 +0800
+Subject: [PATCH 147/150] PAPA-158
+
+---
+ app/views/manage/main_page.html.erb | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/app/views/manage/main_page.html.erb b/app/views/manage/main_page.html.erb
+index c80d681..40a05dc 100644
+--- a/app/views/manage/main_page.html.erb
++++ b/app/views/manage/main_page.html.erb
+@@ -319,7 +319,7 @@
+     			}
+     			if (data.status=="successful")
+     			{
+-    				p.id=data.id;
++    				p.lesson.id=data.id;
+     				for (i=info.semesters[choosei].courses[choosej].tot++;i>0;--i)
+     				{
+     					info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i-1];
+@@ -389,7 +389,6 @@
+   							info.semesters[choosei].courses[i]=info.semesters[choosei].courses[i+1];
+   						}
+   						--info.semesters[choosei].tot;
+-    					info.semesters[choosei].courses[choosej].classes[choosek]=p;
+     					showInfo();
+     					return;
+     				}
+@@ -398,6 +397,7 @@
+     		}else   //删除实验
+     		{
+     			id=info.semesters[choosei].courses[choosej].classes[choosek].id;
++    			console.log(info.semesters[choosei].courses[choosej].classes[choosek]);
+     			$.ajax({url:'/lessons/'+id+'.json',data:{},type:"DELETE",success:function(data)
+ 				{
+ 					if (data.status=="failed")
+@@ -411,7 +411,6 @@
+   							info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i+1];
+   						}
+   						--info.semesters[choosei].courses[choosej].tot;
+-    					info.semesters[choosei].courses[choosej].classes[choosek]=p;
+     					showInfo();
+     					return;
+     				}
+-- 
+1.9.1
+

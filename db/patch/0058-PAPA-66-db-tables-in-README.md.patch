@@ -1,0 +1,71 @@
+From e0e97796df7c9474db594fb0d2f25b9e9e33b897 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sun, 11 Oct 2015 00:26:58 +0800
+Subject: [PATCH 058/150] PAPA-66 db tables in README.md
+
+---
+ README.md | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/README.md b/README.md
+index 20015ce..ddbac4c 100644
+--- a/README.md
++++ b/README.md
+@@ -241,8 +241,8 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
+             ,
+             belongs_to semester,
+             has_many lessons,
+-            
+-            has_many users, through: participation,
++            has_many participations,
++            has_many students, through: participation, as: :user
+             has_many messages
+      
+     participation id=int,
+@@ -258,8 +258,10 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
+             end_time=datetime,
+             location=string,
+             ,
+-            belongs_to file
+             belongs_to course
++            has_many attached_files, as: :files
++            has_many lesson_remarks,
++            has_many student_remarks
+             
+     user    id=int,
+             name=string,
+@@ -292,18 +294,18 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
+             belongs_to user
+             belongs_to lesson
+ 
+-    lesson_remark id=int,        // 学生对课程的评价
++    lesson_remark id=int,        // 学生对实验课的评价
+             content=string,
+             score=int
+             ,
+             belongs_to creator, as: :user,
+-            belongs_to lesson,
+-            has_many teachers, as: :user
++            belongs_to lesson
+ 
+-    student_remark id=int,      // 助教对学生的评价
++    student_remark id=int,       // 助教对学生的评价
+             content=string,
+             score=int(0-10)
+             ,
++            belongs_to lesson
+             belongs_to creator, as: :user,
+             belongs_to student, as: :user,
+             belongs_to lesson
+@@ -322,7 +324,7 @@ REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存
+             name=string,
+             path=string
+             ,
+-            belongs_to creator as: :user
++            belongs_to creator, as: :user
+     
+     android id=int
+             version=string
+-- 
+1.9.1
+

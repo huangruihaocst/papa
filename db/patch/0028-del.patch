@@ -1,0 +1,399 @@
+From 48ecce6f737506959ce99a1902e435a99566381a Mon Sep 17 00:00:00 2001
+From: sleepy_chord <sj702d5@foxmail.com>
+Date: Wed, 7 Oct 2015 10:38:41 +0800
+Subject: [PATCH 028/150] del ~
+
+---
+ app/views/manage/classScore.html.erb~  |  65 ----------------
+ app/views/manage/courseInfo.html.erb~  |  70 -----------------
+ app/views/manage/courseScore.html.erb~ |  65 ----------------
+ app/views/manage/courses.html.erb~     |   4 -
+ app/views/manage/index.html.erb~       |   2 -
+ app/views/manage/mainPage.html.erb~    | 134 ---------------------------------
+ 6 files changed, 340 deletions(-)
+ delete mode 100644 app/views/manage/classScore.html.erb~
+ delete mode 100644 app/views/manage/courseInfo.html.erb~
+ delete mode 100644 app/views/manage/courseScore.html.erb~
+ delete mode 100644 app/views/manage/courses.html.erb~
+ delete mode 100644 app/views/manage/index.html.erb~
+ delete mode 100644 app/views/manage/mainPage.html.erb~
+
+diff --git a/app/views/manage/classScore.html.erb~ b/app/views/manage/classScore.html.erb~
+deleted file mode 100644
+index 8e070cd..0000000
+--- a/app/views/manage/classScore.html.erb~
++++ /dev/null
+@@ -1,65 +0,0 @@
+-<head>
+-	<style type="text/css">
+-		#content
+-		{
+-			padding-left:20%;
+-			padding-right:20%;
+-			padding-up:3%:
+-		}
+-	</style>
+-</head>
+-<body>
+-	<div id="content">	
+-	</div>
+-	<script>
+-		var n,m,info,items,courseInfo;
+-		
+-		function loadInfo()
+-		{
+-			courseInfo="计算机组成原理实验1";
+-			var i;
+-			n=7;m=2;
+-			items=new Array();
+-			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="成绩";items[5]="评价";items[6]="图片";items[7]="视频";items[8]="打分助教";
+-			info=new Array();
+-			for (i=0;i<m;++i)
+-			{
+-				info[i]=new Array();
+-				info[i][0]="201401130"+i;
+-				info[i][1]="A"+i;
+-				info[i][2]="计算机系";
+-				info[i][3]="计xx";
+-				info[i][4]=10;
+-				info[i][5]="1";
+-				info[i][6]="1";
+-				info[i][7]="1";
+-				info[i][8]="XX";
+-			}
+-		}
+-		
+-		function showInfo()
+-		{
+-			var i,j,text="";
+-			text+='<table class="table table-bordered table-striped table-hover">';
+-			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
+-			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">实验情况</th></tr>';
+-			text+='<tr>';
+-			for (i=0;i<n;++i) text+='<th>'+items[i]+'</th>';
+-			text+='</thread><tbody>';
+-			for (i=0;i<m;++i)
+-			{
+-				text+='<tr>';
+-				for (j=0;j<n;++j)
+-				{
+-					text+='<td>'+info[i][j]+'</td>';
+-				}
+-				text+='</tr>';
+-			}
+-			text+='</tbody></table>';
+-			$("#content")[0].innerHTML=text;
+-		}
+-		
+-		loadInfo();
+-		showInfo();
+-	</script>
+-</body>
+diff --git a/app/views/manage/courseInfo.html.erb~ b/app/views/manage/courseInfo.html.erb~
+deleted file mode 100644
+index f7a112b..0000000
+--- a/app/views/manage/courseInfo.html.erb~
++++ /dev/null
+@@ -1,70 +0,0 @@
+-<head>
+-	<style type="text/css">
+-		#content
+-		{
+-			padding-left:20%;
+-			padding-right:20%;
+-			padding-up:3%:
+-		}
+-		.content
+-		{
+-			padding-left:3%;
+-			padding-right:3%;
+-			padding-top:3%;
+-			width:50%;
+-		}
+-	</style>
+-</head>
+-<body>
+-	<div id="content">
+-		<div id="content1" class="content">
+-		</div>
+-		<div id="content2" class="content">
+-		</div>
+-		<div id="content3">
+-		</div>
+-	</div>
+-	<script>
+-		var n,courseInfo,comments=new Array(),people=new Array(2),score=new Array(11);
+-		
+-		function loadInfo()
+-		{
+-			people[0]=100;people[1]=10;
+-			for (i=0;i<11;++i) score[i]=10;
+-			courseInfo="计算机组成原理";
+-			var i;
+-			n=10;
+-			for (i=0;i<m;++i)
+-			{
+-				comments[i]=new Object();
+-				comments[i].author="A"+i;
+-				comments[i].text="好课";
+-			}
+-		}
+-		
+-		function showInfo()
+-		{
+-			var i,j,text="";
+-			text+='<table class="table table-bordered table-striped table-hover">';
+-			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
+-			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">成绩</th></tr>';
+-			text+='<tr>';
+-			for (i=0;i<n;++i) text+='<th>'+items[i]+'</th>';
+-			text+='</thread><tbody>';
+-			for (i=0;i<m;++i)
+-			{
+-				text+='<tr>';
+-				for (j=0;j<n;++j)
+-				{
+-					text+='<td>'+info[i][j]+'</td>';
+-				}
+-				text+='</tr>';
+-			}
+-			text+='</tbody></table>';
+-			$("#content")[0].innerHTML=text;
+-		}
+-		
+-		loadInfo();
+-		showInfo();
+-	</script>
+-</body>
+diff --git a/app/views/manage/courseScore.html.erb~ b/app/views/manage/courseScore.html.erb~
+deleted file mode 100644
+index 6f3c0cf..0000000
+--- a/app/views/manage/courseScore.html.erb~
++++ /dev/null
+@@ -1,65 +0,0 @@
+-<head>
+-	<script type="text/javascript" src="chart.js"></script>
+-	<style type="text/css">
+-		#content
+-		{
+-			padding-left:20%;
+-			padding-right:20%;
+-			padding-up:3%:
+-		}
+-	</style>
+-</head>
+-<body>
+-	<div id="content">	
+-	</div>
+-	<script>
+-		var n,m,info,items,courseInfo;
+-		
+-		function loadInfo()
+-		{
+-			courseInfo="计算机组成原理";
+-			var i;
+-			n=7;m=2;
+-			items=new Array();
+-			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="1";items[5]="2";items[6]="3";
+-			info=new Array();
+-			for (i=0;i<m;++i)
+-			{
+-				info[i]=new Array();
+-				info[i][0]="201401130"+i;
+-				info[i][1]="A"+i;
+-				info[i][2]="计算机系";
+-				info[i][3]="计xx";
+-				info[i][4]=i;
+-				info[i][5]=i;
+-				info[i][6]=i;
+-			}
+-		}
+-		
+-		function showInfo()
+-		{
+-			var i,j,text="";
+-			text+='<h3>到课情况</h3>';
+-			text+='<table class="table table-bordered table-striped table-hover">';
+-			text+='<thread><tr><th colspan="'+(n-1)+'">'+courseInfo+'</th><th>导出'+'</th></tr>';
+-			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">成绩</th></tr>';
+-			text+='<tr>';
+-			for (i=0;i<n;++i) text+='<th>'+items[i]+'</th>';
+-			text+='</thread><tbody>';
+-			for (i=0;i<m;++i)
+-			{
+-				text+='<tr>';
+-				for (j=0;j<n;++j)
+-				{
+-					text+='<td>'+info[i][j]+'</td>';
+-				}
+-				text+='</tr>';
+-			}
+-			text+='</tbody></table>';
+-			$("#content")[0].innerHTML=text;
+-		}
+-		
+-		loadInfo();
+-		showInfo();
+-	</script>
+-</body>
+diff --git a/app/views/manage/courses.html.erb~ b/app/views/manage/courses.html.erb~
+deleted file mode 100644
+index 97645c2..0000000
+--- a/app/views/manage/courses.html.erb~
++++ /dev/null
+@@ -1,4 +0,0 @@
+-<head>
+-</head>
+-<body>
+-</body>
+diff --git a/app/views/manage/index.html.erb~ b/app/views/manage/index.html.erb~
+deleted file mode 100644
+index 028a615..0000000
+--- a/app/views/manage/index.html.erb~
++++ /dev/null
+@@ -1,2 +0,0 @@
+-
+-<input class="btn-info" type="button" value="test"/>
+diff --git a/app/views/manage/mainPage.html.erb~ b/app/views/manage/mainPage.html.erb~
+deleted file mode 100644
+index 5a5ecc3..0000000
+--- a/app/views/manage/mainPage.html.erb~
++++ /dev/null
+@@ -1,134 +0,0 @@
+-<head>
+-	<style type="text/css">
+-		#content
+-		{
+-			padding-left:20%;
+-			padding-right:20%;
+-			padding-up:3%:
+-		}
+-		.rectangleSemester
+-		{
+-			width:100%;
+-			height:50px;
+-			margin-top:15px;
+-		}
+-		.rectangleCourse
+-		{
+-			width:95%;
+-			height:50px;
+-			margin-left:4%;
+-			margin-right:1%;
+-			margin-top:6px;
+-		}
+-		.rectangleClass
+-		{
+-			width:90%;
+-			height:50px;
+-			margin-left:8%;
+-			margin-right:2%;
+-			margin-top:4px;
+-		}
+-		.rectangleCourseContent
+-		{
+-			width:95%;
+-			margin-left:4%;
+-			margin-right:1%;
+-			margin-top:6px;
+-		}
+-		.rectangleClassContent
+-		{
+-			width:90%;
+-			margin-left:8%;
+-			margin-right:2%;
+-			margin-top:4px;
+-		}
+-	</style>
+-</head>
+-<body>
+-	<div id="content">
+-	</div> 
+-	
+-	<script type="text/javascript">
+-	
+-		var semesters=new Array(),courses=new Array(),classes=new Array();
+-		var nowSemester=-1,nowCourse=-1,nowClass=-1;
+-		
+-		function loadCourse()
+-		{
+-			var i,j,k;
+-			for (i=0;i<=1;++i)
+-			{
+-				semesters[i]=new Object();
+-				semesters[i].name="2015年"+i;
+-				courses[i]=new Array();
+-				classes[i]=new Array();
+-				for (j=0;j<=1;++j)
+-				{
+-					courses[i][j]=new Object();
+-					courses[i][j].name="大学物理"+j;
+-					classes[i][j]=new Array();
+-					for (k=0;k<=1;++k)
+-					{
+-						classes[i][j][k]=new Object();
+-						classes[i][j][k].name="实验"+k;
+-					}
+-				}
+-			}
+-		}
+-		   
+-		function change(_semester,_course,_class)
+-		{
+-			if (nowSemester==_semester && (nowCourse==_course || _course==-1) && (nowClass==_class || _class==-1))
+-			{
+-				nowClass=-1;
+-				if (_class==-1) nowCourse=-1;
+-				if (_course==-1) nowSemester=-1;
+-			}else
+-			{
+-				nowSemester=_semester;
+-				nowCourse=_course;
+-				nowClass=_class;
+-			}
+-			showCourse();
+-		}
+-
+-		function showCourse()
+-		{
+-			var i,j,k,text="";i=j=k=-1;
+-			for (i=0;i<semesters.length;++i)
+-			{
+-				text+='<div class="rectangleSemester btn btn-default" onclick="change('+i+','+j+','+k+')">';
+-				text+=semesters[i].name;
+-				text+='</div>';
+-				j=k=-1;
+-				if (nowSemester==i)
+-				for (j=0;j<courses[i].length;++j)
+-				{
+-					text+='<div class="rectangleCourse btn btn-default" onclick="change('+i+','+j+','+k+')">';
+-					text+=courses[i][j].name;
+-					text+='</div>';
+-					k=-1;
+-					if (nowCourse==j)
+-					for (k=0;k<classes[i][j].length;++k)
+-					{
+-						text+='<div class="rectangleClass btn btn-default" onclick="change('+i+','+j+','+k+')">';
+-						text+=classes[i][j][k].name;
+-						text+='</div>';
+-						if (nowClass==k)
+-						{
+-							text+='<div class="retangleClassContent btn btn-default">';
+-							text+='ddd';
+-							text+='</div>';
+-						}
+-					}
+-				}
+-			}
+-			console.log(text);
+-			$("#content")[0].innerHTML=text;
+-		}
+-		
+-		loadCourse();
+-		showCourse();
+-
+-	</script>
+-</body>
+-- 
+1.9.1
+

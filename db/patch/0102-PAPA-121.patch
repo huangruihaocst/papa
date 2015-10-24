@@ -1,0 +1,294 @@
+From 939f0dc976014e5849a9cfb2fbbb8f4f69edce0b Mon Sep 17 00:00:00 2001
+From: luogan <luogan_62625686@126.com>
+Date: Sat, 17 Oct 2015 22:01:28 +0800
+Subject: [PATCH 102/150] PAPA-121
+
+---
+ app/views/manage/class_info.html.erb |  57 ++++++++++---
+ app/views/manage/main_page.html.erb  | 151 ++++++++++++++++++-----------------
+ 2 files changed, 124 insertions(+), 84 deletions(-)
+
+diff --git a/app/views/manage/class_info.html.erb b/app/views/manage/class_info.html.erb
+index b482e8c..4a5e987 100644
+--- a/app/views/manage/class_info.html.erb
++++ b/app/views/manage/class_info.html.erb
+@@ -68,7 +68,17 @@
+ 			$.get("/lessons/"+classId+".json",{},
+ 			function(data)
+ 			{
+-				courseInfo=data.name;
++				if (data.status=="failed")
++				{
++					alert("获取实验信息失败");
++					return;
++				}
++				if (data.status=="successful")
++				{
++					courseInfo=data.name;
++					return;
++				}
++				alert("unexpected: /lessons/id.json");
+ 			});
+ 			courseInfo="计算机组成原理";
+ 			var i;
+@@ -84,22 +94,49 @@
+ 			$.get("/courses/"+courseId+"/students.json",{},
+ 			function(data)
+ 			{
+-				people.tot=data.size();
++				if (data.status=="failed")
++				{
++					alert("获取课程人数失败");
++					return;
++				}
++				if (data.status=="successful")
++				{
++					people.tot=data.students.size();
++				}
++				alert("unexpected: /courses/id/students.json");
+ 			});
+ 			$.get("/lessons/"+classId+"/students.json",{},
+ 			function(data)
+ 			{
+-				people.attend=data.size();
+-				people.absense=people.tot-people.attend;
+-				var i;
+-				for (i=0;i<data.length;++i)
++				if (data.status=="failed")
++				{
++					alert("获取到课人数失败");
++					return;
++				}
++				if (data.status=="successful")
+ 				{
+-					$.get("/students/"+data[i].id+"/lessons/"+classId+".json",{},
+-					function(data)
++					people.attend=data.size();
++					people.absense=people.tot-people.attend;
++					var i;
++					for (i=0;i<data.id.length;++i)
+ 					{
+-						++score[data];
+-					});
++						$.get("/lessons/"+classId+"/students/"+data.id[i]+"/comments.json",{},
++						function(data2)
++						{
++							if (data2.status=="failed")
++							{
++								alert("获取实验信息失败");
++								return;
++							}
++							if (data2.status=="successful")
++							{
++								++score[data2.score];
++							}
++							alert("unexpected: /lessons/id/students/id/comments.json");
++						});
++					}
+ 				}
++				alert("unexpected: /lessons/id/students.json");
+ 			});
+ 			$.get("/lessons/"+classId+"/comments.json",{},
+ 			function(data)
+diff --git a/app/views/manage/main_page.html.erb b/app/views/manage/main_page.html.erb
+index 161b7fc..8695cb2 100644
+--- a/app/views/manage/main_page.html.erb
++++ b/app/views/manage/main_page.html.erb
+@@ -361,7 +361,7 @@
+ 			if (choosek==-1)    //删除课程
+ 			{
+ 				id=info.semesters[choosei].courses[choosej].id;
+-				$.ajax({url:'/courses/'+id+'.json',data:{},async:false,type:"DELETE",success:function(data)
++				$.ajax({url:'/courses/'+id+'.json',data:{},type:"DELETE",success:function(data)
+ 				{
+ 					console.log(data);
+ 					if (data.status=="failed")
+@@ -384,7 +384,7 @@
+     		}else   //删除实验
+     		{
+     			id=info.semesters[choosei].courses[choosej].classes[choosek].id;
+-    			$.ajax({url:'/lessons/'+id+'.json',data:{},async:false,type:"DELETE",success:function(data)
++    			$.ajax({url:'/lessons/'+id+'.json',data:{},type:"DELETE",success:function(data)
+ 				{
+ 					if (data.status=="failed")
+ 					{
+@@ -442,93 +442,97 @@
+ 					}
+ 				}
+ 			}
+-			$.get("/semesters.json",{},function(data)
++			showInfo();
++			$.ajax({url:"/semesters.json",data:{},type:"GET",success:function(data)
+ 			{
+ 				if (data.status=="failed")
+ 				{
+ 					alert("获取学期失败");
+ 					return;
+ 				}
+-				if (!data.semesters)
+-				{
+-					return;
+-				}
+-				data=data.semesters;
+-				for (i=0;i<data.length;++i)
+-				{
+-					j=info.tot++;
+-					info.semesters[j]=new Object();
+-					info.semesters[j].name=data[i].name;
+-					info.semesters[j].id=data[i].id;
+-					info.semesters[i].courses=new Array();
+-					info.semesters[i].clicked=false;
+-				}
+-			});
+-			$.get("/users/current.json",{},function(data)    //#modify
+-			{
+-				if (data.status=="failed")
+-				{
+-					alert("获取当前用户失败");
+-					return;
+-				}
+ 				if (data.status=="successful")
+ 				{
+-					usersId=data.id;
+-					return;
+-				}
+-				alert("unexpected: /users/current.json");
+-			});
+-			$.get("/teachers/"+usersId+"/course.json",{},function(data)    //#modify
+-			{
+-				if (data.status=="failed")
+-				{
+-					alert("获取课程失败");
+-					return;
+-				}
+-				if (data.status=="successful")
+-				{
+-					data=data.courses;
+-					var p1,p2;
+-					for (p1=0;p1<data.length();++p1)
++					data=data.semesters;
++					for (i=0;i<data.length;++i)
++					{
++						j=info.tot++;
++						info.semesters[j]=new Object();
++						info.semesters[j].name=data[i].name;
++						info.semesters[j].id=data[i].id;
++						info.semesters[i].courses=new Array();
++						info.semesters[i].clicked=false;
++					}
++					$.ajax({url:"/users/current.json",data:{},type:"GET",success:function(data)    //#modify
+ 					{
+-						i=-1;
+-						for (j=0;j<info.tot;++j)
+-						if (info.semesters[j].id==data[p1].semester)
++						if (data.status=="failed")
+ 						{
+-							i=j;break;
++							alert("获取当前用户失败");
++							return;
+ 						}
+-						if (i==-1)
++						if (data.status=="successful")
+ 						{
+-							alert("No such semester.");continue;
+-							}
+-						j=info.semesters[j].tot++;
+-						info.semesters[i].courses[j]=data[p1];
+-						info.semesters[i].courses[j].tot=0;
+-						info.semesters[i].courses[j].classes=new Array();
+-						info.semesters[i].courses[j].clicked=false;
+-						$.get("/courses/"+data[p1].id+"/lessons.json",{},function(data2)    //#modify
+-						{
+-							if (data2.status=="failed")
+-							{
+-								alert("无法获取课程的实验");
+-								return;
+-							}
+-							if (data2.status=="successful")
++							usersId=data.id;
++							$.ajax({url:"/teachers/"+usersId+"/course.json",data:{},type:"GET",success:function(data)    //#modify
+ 							{
+-								for (p2=0;p2<data2.length;++p2)
++								if (data.status=="failed")
+ 								{
+-									k=info.semesters[i].courses[j].tot++;
+-									info.semesters[i].courses[j].classes[k]=data2[p2];
+-									info.semesters[i].courses[j].classes[k].clicked=false;
++									alert("获取课程失败");
++									return;
+ 								}
+-								return;
+-							}
+-							alert("unexpected: courses/id/lessons.json");
+-						});
+-					}
++								if (data.status=="successful")
++								{
++									data=data.courses;
++									var p1,p2;
++									for (p1=0;p1<data.length();++p1)
++									{
++										i=-1;
++										for (j=0;j<info.tot;++j)
++										if (info.semesters[j].id==data[p1].semester)
++										{
++											i=j;break;
++										}
++										if (i==-1)
++										{
++											alert("No such semester.");continue;
++										}
++										j=info.semesters[j].tot++;
++										info.semesters[i].courses[j]=data[p1];
++										info.semesters[i].courses[j].tot=0;
++										info.semesters[i].courses[j].classes=new Array();
++										info.semesters[i].courses[j].clicked=false;
++										$.ajax({url:"/courses/"+data[p1].id+"/lessons.json",data:{},async:true,type:"GET",success:function(data2)   //#modify
++										{
++											if (data2.status=="failed")
++											{
++												alert("无法获取课程的实验");
++												return;
++											}
++											if (data2.status=="successful")
++											{
++												for (p2=0;p2<data2.length;++p2)
++												{
++													k=info.semesters[i].courses[j].tot++;
++													info.semesters[i].courses[j].classes[k]=data2[p2];
++													info.semesters[i].courses[j].classes[k].clicked=false;
++												}
++												return;
++											}
++											alert("unexpected: /courses/id/lessons.json");
++										}});
++									}
++									showInfo();
++									return;
++								}
++								alert("unexpected: /teachers/id/courses.json");
++							}});
++							return;
++						}
++						alert("unexpected: /users/current.json");
++					}});
++					return;
+ 				}
+-				alert("unexpected: /teachers/id/courses.json");
+-			});
++				alert("unexpected: /semesters.json");
++			}});
+ 		}
+ 		   
+ 		function change(i,j,k)  //i, j, k分别表示当前点击的学期，课程，实验
+@@ -678,7 +682,6 @@
+ 		}
+ 		
+ 		loadInfo();
+-		showInfo();
+ 
+ 	</script>
+ 	
+-- 
+1.9.1
+

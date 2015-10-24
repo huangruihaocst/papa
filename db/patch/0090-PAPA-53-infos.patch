@@ -1,0 +1,64 @@
+From e1f060e10523a9c5437ec299f0a8f8e782ce7bff Mon Sep 17 00:00:00 2001
+From: sleepy_chord <sj702d5@foxmail.com>
+Date: Fri, 16 Oct 2015 16:34:19 +0800
+Subject: [PATCH 090/150] PAPA-53 infos
+
+---
+ app/views/manage/student_lesson_info.html.erb | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
+
+diff --git a/app/views/manage/student_lesson_info.html.erb b/app/views/manage/student_lesson_info.html.erb
+index cb97af3..04b7c89 100644
+--- a/app/views/manage/student_lesson_info.html.erb
++++ b/app/views/manage/student_lesson_info.html.erb
+@@ -22,7 +22,7 @@
+             <div class="col-md-6">
+                 <div class="input-group">
+                     <span class="input-group-addon">实验评分</span>
+-                    <input type="text" class="form-control" value="hah" readonly="true">
++                    <input type="text" class="form-control" value="" readonly="true" id="lesson-score">
+                 </div>
+                 <br>
+                 <div class="panel panel-success">
+@@ -30,12 +30,24 @@
+                   <div class="panel-body" id="lesson-comment">实验做得不错</div>
+                 </div>
+             </div>
+-            <div class="col-md-6">
+-              <div class="input-group">
+-                <span class="input-group-addon">学生得分</span>
+-                <input type="text" class="form-control" value="hah">
+-              </div>
+-            </div>
++            <form method="post" name="student_comment" target=""
++                  action="/lessons/<%=@lesson.id %>/students/<%=@student.id %>/comments.json">
++                <div class="col-md-6">
++                  <div class="input-group">
++                    <span class="input-group-addon">学生得分</span>
++                    <input type="text" class="form-control"
++                           name="student_comment[score]" id="teacher-score">
++                  </div>
++                  <br>
++                  <div class="panel panel-success">
++                    <div class="panel-heading">教师评论：</div>
++                    <div class="panel-body">
++                      <textarea id="teacher-comment" name="student_comment[content]" style="width: 100%"></textarea>
++                    </div>
++                  </div>
++                  <button type="submit" class="btn btn-primary" onclick="event.preventDefault()">更改</button>
++                </div>
++            </form>
+           </div>
+         </div>
+       </div>
+@@ -67,6 +79,7 @@
+   </div>
+ <!-- End VideoJS -->
+   <script>
++      $.get("/lessons/<%=@lesson.id %>/comments.json",{},function(data){console.log(data.lesson_comments)});
+       // test case 
+       data=[{id:'1',path:"/test.mp4"},{id:'2',path:"/xxx.mp4"}];
+       (function(){
+-- 
+1.9.1
+

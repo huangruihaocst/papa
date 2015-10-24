@@ -1,0 +1,107 @@
+From 90fd64940fa24d254a241b5c7ce613bfcb171cc7 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Thu, 1 Oct 2015 20:48:39 +0800
+Subject: [PATCH 013/150] user/lesson/course api of index/find/add done
+
+---
+ app/models/course.rb                      |  3 +++
+ app/models/teacher.rb                     |  7 +++++++
+ app/models/teacher_course.rb              |  6 ++++++
+ db/migrate/20151001122224_add_teachers.rb | 13 +++++++++++++
+ db/schema.rb                              | 12 +++++++++++-
+ 5 files changed, 40 insertions(+), 1 deletion(-)
+ create mode 100644 app/models/teacher.rb
+ create mode 100644 app/models/teacher_course.rb
+ create mode 100644 db/migrate/20151001122224_add_teachers.rb
+
+diff --git a/app/models/course.rb b/app/models/course.rb
+index d123652..238af87 100644
+--- a/app/models/course.rb
++++ b/app/models/course.rb
+@@ -3,4 +3,7 @@ class Course < ActiveRecord::Base
+ 
+   has_many :lessons
+   has_many :participants
++
++  has_many :teacher_courses
++  has_many :teachers, through: :teacher_courses
+ end
+diff --git a/app/models/teacher.rb b/app/models/teacher.rb
+new file mode 100644
+index 0000000..3def56e
+--- /dev/null
++++ b/app/models/teacher.rb
+@@ -0,0 +1,7 @@
++class Teacher < ActiveRecord::Base
++  validates :name, presence: true
++  validates :encrypted_password, presence: true
++
++  has_many :teacher_courses
++  has_many :courses, through: :teacher_courses
++end
+\ No newline at end of file
+diff --git a/app/models/teacher_course.rb b/app/models/teacher_course.rb
+new file mode 100644
+index 0000000..ea48ecc
+--- /dev/null
++++ b/app/models/teacher_course.rb
+@@ -0,0 +1,6 @@
++class TeacherCourse < ActiveRecord::Base
++  self.table_name = 'teachers_courses'
++
++  belongs_to  :teacher
++  belongs_to  :course
++end
+\ No newline at end of file
+diff --git a/db/migrate/20151001122224_add_teachers.rb b/db/migrate/20151001122224_add_teachers.rb
+new file mode 100644
+index 0000000..929f276
+--- /dev/null
++++ b/db/migrate/20151001122224_add_teachers.rb
+@@ -0,0 +1,13 @@
++class AddTeachers < ActiveRecord::Migration
++  def change
++    create_table :teachers do |t|
++      t.string  :name, null: false
++      t.string  :encrypted_password
++    end
++
++    create_table :teachers_courses do |t|
++      t.integer :teacher_id
++      t.integer :course_id
++    end
++  end
++end
+diff --git a/db/schema.rb b/db/schema.rb
+index 56695a1..3f570f3 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -11,7 +11,7 @@
+ #
+ # It's strongly recommended that you check this file into your version control system.
+ 
+-ActiveRecord::Schema.define(version: 20150930115150) do
++ActiveRecord::Schema.define(version: 20151001122224) do
+ 
+   create_table "courses", force: :cascade do |t|
+     t.string "name"
+@@ -41,6 +41,16 @@ ActiveRecord::Schema.define(version: 20150930115150) do
+     t.string "name"
+   end
+ 
++  create_table "teachers", force: :cascade do |t|
++    t.string "name",               null: false
++    t.string "encrypted_password"
++  end
++
++  create_table "teachers_courses", force: :cascade do |t|
++    t.integer "teacher_id"
++    t.integer "course_id"
++  end
++
+   create_table "users", force: :cascade do |t|
+     t.string   "name",                   default: "", null: false
+     t.string   "phone",                  default: "", null: false
+-- 
+1.9.1
+

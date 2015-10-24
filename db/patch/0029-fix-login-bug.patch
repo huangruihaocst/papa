@@ -1,0 +1,16 @@
+From 12e35d7d72b7e1abfa3ef75dbe4b68029bf0b6bd Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Wed, 7 Oct 2015 14:26:19 +0800
+Subject: [PATCH 029/150] fix login bug
+
+---
+ db/init_data/db.rb | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 db/init_data/db.rb
+
+diff --git a/db/init_data/db.rb b/db/init_data/db.rb
+new file mode 100644
+index 0000000..e69de29
+-- 
+1.9.1
+

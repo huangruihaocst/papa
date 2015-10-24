@@ -1,0 +1,24 @@
+From 5921df1c293843ded1ac6dc5a26cd45ccbaf0327 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sat, 24 Oct 2015 13:17:17 +0800
+Subject: [PATCH 139/150] sdf
+
+---
+ Gemfile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Gemfile b/Gemfile
+index a9eb20c..3c891ed 100644
+--- a/Gemfile
++++ b/Gemfile
+@@ -1,6 +1,7 @@
+ source 'https://ruby.taobao.org'
+ 
+ 
++
+ # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+ gem 'rails', '4.2.4'
+ # Use sqlite3 as the database for Active Record
+-- 
+1.9.1
+

@@ -1,0 +1,268 @@
+From 366743cb2477039960e803c63d643f6c69354fb5 Mon Sep 17 00:00:00 2001
+From: Alex Wang <ice_b0und@hotmail.com>
+Date: Sun, 11 Oct 2015 20:58:49 +0800
+Subject: [PATCH 065/150] PAPA-66 add teacher interfaces
+
+---
+ README.md                                 | 12 +++++--
+ app/controllers/application_controller.rb |  7 ++--
+ app/controllers/courses_controller.rb     | 58 ++++++++++++++++++++++---------
+ app/controllers/semesters_controller.rb   | 10 ++++--
+ app/views/semesters/default.json.jbuilder |  5 +++
+ app/views/semesters/index.json.jbuilder   |  8 +++++
+ app/views/students/index.json.jbuilder    |  1 -
+ app/views/students/show.json.jbuilder     |  1 -
+ config/routes.rb                          | 10 ++++--
+ 9 files changed, 85 insertions(+), 27 deletions(-)
+
+diff --git a/README.md b/README.md
+index 059b7d9..8cfc2fb 100644
+--- a/README.md
++++ b/README.md
+@@ -100,7 +100,7 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+     POST   /semesters.json               添加一个学年     semester parameters                           Admin
+     PUT    /semesters/1.json             修改学年信息     semester parameters                           Admin
+     DELETE /semesters/1.json             删除某个学年     id                                            Admin
+-    GET    /semesters/courses.json       获得某个学年的所有课程 "courses": [course, ...]                 Student
++    GET    /semesters/1/courses.json     获得某个学年的所有课程 "courses": [course, ...]                 Student
+     GET    /semesters/default.json       获得默认学期     "semester": semester                          Student   
+     
+     # namespace courses
+@@ -163,6 +163,13 @@ POST /users/sign_in.json     utf8=✓&user[login]=xxx&user[password]=123&user[re
+     GET    /assistants/1/courses.json 获得某个助教的所有课程 "courses": [course, ...]                    Assistant
+     GET    /assistants/files.json     助教上传的所有文件    "files": [file, ...]                         Assistant
+     
++    GET    /teachers/1.json           获得某个老师的信息    "teacher": teacher                           Student
++    POST   /teachers.json             添加老师              teacher parameters                           Admin
++    DELETE /teachers/1.json           删除老师              id                                           Admin
++    UPDATE /teachers/1.json           修改老师信息          teacher parameters                           The Teacher
++    GET    /teachers/1/courses.json   获得老师的所有课程    "courses": [course, ...]                     Student
++    POST   /teachers/1/courses.json   给老师添加课程        course parameters                            Teacher
++    
+     # 消息推送
+     GET    /students/1/messages.json  查询学生的所有消息     "messages": [message_id, ...]               Student
+     POST   /courses/1/messages.json   发送消息到某门课的所有学生 "message": message                      Assistant
+@@ -181,7 +188,8 @@ Http Parameters/JSON对象格式
+     注意：奕semester举例,在URL中格式均为
+     semester[name]=2009
+     
+-    semester name=string
++    semester id=int
++            name=string
+     
+     course  id=int,
+             name=string,
+diff --git a/app/controllers/application_controller.rb b/app/controllers/application_controller.rb
+index e8fda65..ae937ad 100644
+--- a/app/controllers/application_controller.rb
++++ b/app/controllers/application_controller.rb
+@@ -20,12 +20,13 @@ class ApplicationController < ActionController::Base
+     json_failed(except.message)
+   end
+   # raise TokenException if authentication failure occurs
+-  def check_token(token_str, user_id)
++  def check_token(token_str, user_id, is_teacher = false)
+     raise TokenException.new(REASON_TOKEN_INVALID) unless user_id
+ 
+     if token_str
+       token = Token.find_by_token(token_str)
+-      if token && token.user_id == user_id.to_i
++      # deny when is_teacher is required but the token is not a teacher
++      if token && token.user_id == user_id.to_i && (!token.user.is_teacher && is_teacher)
+         if Time.now > token.valid_until
+           raise TokenException.new(REASON_TOKEN_TIMEOUT)
+         end
+@@ -39,7 +40,9 @@ class ApplicationController < ActionController::Base
+     else
+       raise TokenException.new(REASON_TOKEN_INVALID)
+     end
++  end
+ 
++  def check_token_type(token_str, type)
+ 
+   end
+ 
+diff --git a/app/controllers/courses_controller.rb b/app/controllers/courses_controller.rb
+index c5c945b..d1ac687 100644
+--- a/app/controllers/courses_controller.rb
++++ b/app/controllers/courses_controller.rb
+@@ -13,40 +13,66 @@ class CoursesController < ApplicationController
+     end
+   end
+ 
+-  # GET /courses
+-  # GET /courses.json
++  # GET /semesters/1/courses.json
++  # GET /students/1/courses.json
++  # GET /assistants/1/courses.json
++  # GET /teachers/1/courses.json
+   def index
+-    if @id_key
+-      @courses = Course.none
+-      User.find(params[@id_key]).participations.each do |participation|
+-        @courses <<= participation.course if @role == participation.role
+-      end
+-    else
+-      @courses = Course.all
++    case
++      when params[:semester_id]
++        @courses = Semester.find(params[:semester_id]).courses
++      when params[:student_id]
++        check_token(params[:token], params[:student_id])
++        @courses = Course.none
++        User.find(params[@id_key]).participations.each do |participation|
++          @courses <<= participation.course if ROLE_STUDENT == participation.role
++        end
++      when params[:assistant_id]
++        check_token(params[:token], params[:student_id])
++        @courses = Course.none
++        User.find(params[@id_key]).participations.each do |participation|
++          @courses <<= participation.course if ROLE_ASSISTANT == participation.role
++        end
++      when params[:teacher_id]
++        check_token(params[:token], params[:teacher_id], true)
++        @courses = User.find(params[:teacher_id]).teaching_courses
++      else
++        json_failed
+     end
++
+   end
+ 
+-  # GET /courses/1
+   # GET /courses/1.json
+   def show
+     unless @course
+       respond_to do |format|
+-        format.html { html_failed('not found') }
+         format.json { json_failed('not found') }
+       end
+     end
+   end
+ 
+-  # POST /courses
+-  # POST /courses.json
++  # POST /semesters/courses.json
++  # POST /teachers/courses.json
++  # POST /assistants/courses.json
++  # POST /students/courses.json
+   def create
+-    @course = Course.create(params.require(:course).permit(:name))
++    course_create_params = params.require(:course).permit(:name, :description)
++
++    case
++      when params[:semester_id]
++        Semester.find(params[:semester_id]).courses.create(course_create_params)
++      when params[:teacher_id]
++        check_token(params[:token], params[:teacher_id], true)
++
++      else
++        json_failed
++        return
++    end
++
+     respond_to do |format|
+       if @course.valid?
+-        format.html { redirect_to @course }
+         format.json { json_successful }
+       else
+-        format.html { html_failed }
+         format.json { json_failed('invalid params') }
+       end
+     end
+diff --git a/app/controllers/semesters_controller.rb b/app/controllers/semesters_controller.rb
+index 7c166e2..d17298b 100644
+--- a/app/controllers/semesters_controller.rb
++++ b/app/controllers/semesters_controller.rb
+@@ -5,11 +5,17 @@ class SemestersController < ApplicationController
+   end
+ 
+   def default
+-    Semester.all.order(:name).last
++    @semester = Semester.all.order(:name).last
+   end
+ 
+   def create
+-    Semester.create()
++    respond_to do |format|
++      if Semester.create(params.require(:semester).permit(:name))
++        format.json { json_successful }
++      else
++        format.json { json_failed }
++      end
++    end
+   end
+ 
+   def update
+diff --git a/app/views/semesters/default.json.jbuilder b/app/views/semesters/default.json.jbuilder
+index e69de29..a87daef 100644
+--- a/app/views/semesters/default.json.jbuilder
++++ b/app/views/semesters/default.json.jbuilder
+@@ -0,0 +1,5 @@
++json.status STATUS_SUCCESS
++json.semester do
++  json.id     @semester.id
++  json.name   @semester.name
++end
+\ No newline at end of file
+diff --git a/app/views/semesters/index.json.jbuilder b/app/views/semesters/index.json.jbuilder
+index e69de29..01c7a1d 100644
+--- a/app/views/semesters/index.json.jbuilder
++++ b/app/views/semesters/index.json.jbuilder
+@@ -0,0 +1,8 @@
++json.status STATUS_SUCCESS
++json.semesters do
++  json.array!(@semesters) do |semester|
++    json.extract! semester, :id
++    json.extract! semester, :name
++  end
++end
++
+diff --git a/app/views/students/index.json.jbuilder b/app/views/students/index.json.jbuilder
+index 2471e20..2bd04b6 100644
+--- a/app/views/students/index.json.jbuilder
++++ b/app/views/students/index.json.jbuilder
+@@ -1,4 +1,3 @@
+-
+ json.status STATUS_SUCCESS
+ json.students do
+   json.array!(@students) do |student|
+diff --git a/app/views/students/show.json.jbuilder b/app/views/students/show.json.jbuilder
+index e298307..f1895bb 100644
+--- a/app/views/students/show.json.jbuilder
++++ b/app/views/students/show.json.jbuilder
+@@ -1,4 +1,3 @@
+-
+ json.status STATUS_SUCCESS
+ json.student do
+   json.id     @student.id
+diff --git a/config/routes.rb b/config/routes.rb
+index 3a60f86..9acd08b 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -10,7 +10,7 @@ Rails.application.routes.draw do
+     get 'default' => 'semesters#default'
+   end
+ 
+-  resources :courses, only: [:index, :show, :create, :update, :delete] do
++  resources :courses, only: [:show, :update, :delete] do
+     resources :students, only: [:index, :create, :delete]
+     resources :assistants, only: [:index, :create, :delete]
+     resources :lessons, only: [:index, :create, :delete]
+@@ -42,8 +42,12 @@ Rails.application.routes.draw do
+   end
+ 
+   resources :assistants do
+-    resources :courses
+-    resources :files
++    resources :courses, only: [:index, :create]
++    resources :files, only: [:index, :create]
++  end
++
++  resources :teachers do
++    resources :courses, only: [:index]
+   end
+ 
+   resources :files, only: [:show, :create]
+-- 
+1.9.1
+
