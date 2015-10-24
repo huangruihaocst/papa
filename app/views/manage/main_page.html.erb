@@ -259,7 +259,7 @@
     				showInfo();
     				return;
     			}
-    			alert("unexpected: /confirmCourse");
+    			alert("unexpected: confirmCourse");
     		}
     		);
     	}
@@ -267,15 +267,15 @@
     	function modifyCourse()    //修改课程信息
     	{
     		var text1,text2,i,p;
-    		p=info.semesters[choosei].courses[choosej];
+    		p=new Object();
+    		p.course=info.semesters[choosei].courses[choosej];
     		text1=$("#input-modify-course-1")[0].value;
 			text2=$("#input-modify-course-2")[0].value;
-			p=new Object();
-			p.name=text1;
-			p.description=text2;
-			$.post('/courses/'+p.id+'.json',p,  //#modify
-    		function(data)
+			p.course.name=text1;
+			p.course.description=text2;
+			$.ajax({url:'/courses/'+p.course.id+'.json',data:p,type:"PUT",async:false,success:function(data)
     		{
+    			console.log(data);
     			if (data.status=="failed")
     			{
     				alert("修改失败");
@@ -283,13 +283,12 @@
     			}
     			if (data.status=="successful")
     			{
-    				info.semesters[choosei].courses[choosej]=p;
+    				info.semesters[choosei].courses[choosej]=p.course;
     				showInfo();
     				return;
     			}
     			alert("unexpected: modifyCourse");
-    		}
-    		);
+    		}});
     	}
 		
 		function confirmClass()  //新实验的信息
@@ -301,13 +300,15 @@
 			text3=$("#input-add-class-3")[0].value;
 			text4=$("#input-add-class-4")[0].value;
 			text5=$("#input-add-class-5")[0].value;
-			p.name=text1;
-			p.description=text2;
-			p.start_time=text3;
-			p.end_time=text4;
-			p.location=text5;
+			p.lesson=new Object();
+			p.lesson.name=text1;
+			p.lesson.description=text2;
+			p.lesson.start_time=text3;
+			p.lesson.end_time=text4;
+			p.lesson.location=text5;
 			
-			$.post('/courses/'+info.semesters[choosei].courses[choosej].id+'/lessons.json',p,  //#modify
+			
+			$.post('/courses/'+info.semesters[choosei].courses[choosej].id+'/lessons.json',p,
     		function(data)
     		{
     			console.log(data);
@@ -323,7 +324,7 @@
     				{
     					info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i-1];
     				}
-    				info.semesters[choosei].courses[choosej].classes[0]=p;
+    				info.semesters[choosei].courses[choosej].classes[0]=p.lesson;
     				info.semesters[choosei].courses[choosej].classes[0].clicked=false;
     				showInfo();
     				return;
@@ -336,22 +337,21 @@
 		function modifyClass()  //修改实验信息
 		{
 			var text1,text2,text3,text4,text5,i,p;
-			p=info.semesters[choosei].courses[choosej].classes[choosek];
+			p=new Object();
+			p.lesson=info.semesters[choosei].courses[choosej].classes[choosek];
 			text1=$("#input-modify-class-1")[0].value;
 			text2=$("#input-modify-class-2")[0].value;
 			text3=$("#input-modify-class-3")[0].value;
 			text4=$("#input-modify-class-4")[0].value;
 			text5=$("#input-modify-class-5")[0].value;
-			p=new Object();
-			p.name=text1;
-			p.description=text2;
-			p.start_time=text3;
-			p.end_time=text4;
-			p.location=text5;
+			p.lesson.name=text1;
+			p.lesson.description=text2;
+			p.lesson.start_time=text3;
+			p.lesson.end_time=text4;
+			p.lesson.location=text5;
 			console.log(p);
 			
-			$.post('/lessons/'+p.id+'.json',p,  //#modify
-    		function(data)
+			$.ajax({url:'/lessons/'+p.lesson.id+'.json',data:p,type:"PUT",async:false,success:function(data)
     		{
     			console.log(data);
     			if (data.status=="failed")
@@ -361,13 +361,12 @@
     			}
     			if (data.status=="successful")
     			{
-    				info.semesters[choosei].courses[choosej].classes[choosek]=p;
+    				info.semesters[choosei].courses[choosej].classes[choosek]=p.lesson;
     				showInfo();
     				return;
     			}
     			alert("unexpected: modifyClass");
-    		}
-    		);
+    		}});
 		}
 		
 		function deleteItem()
@@ -500,7 +499,7 @@
 							{
 								i=-1;
 								for (j=0;j<info.tot;++j)
-								if (info.semesters[j].id==data[p1].semester)
+								if (info.semesters[j].id==data[p1].semester_id)
 								{
 									i=j;break;
 								}
@@ -522,6 +521,7 @@
 									}
 									if (data.status=="successful")
 									{
+										data=data.lessons;
 										for (p2=0;p2<data.length;++p2)
 										{
 											k=info.semesters[i].courses[j].tot++;
