@@ -319,7 +319,7 @@
     			}
     			if (data.status=="successful")
     			{
-    				p.id=data.id;
+    				p.lesson.id=data.id;
     				for (i=info.semesters[choosei].courses[choosej].tot++;i>0;--i)
     				{
     					info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i-1];
@@ -389,7 +389,6 @@
   							info.semesters[choosei].courses[i]=info.semesters[choosei].courses[i+1];
   						}
   						--info.semesters[choosei].tot;
-    					info.semesters[choosei].courses[choosej].classes[choosek]=p;
     					showInfo();
     					return;
     				}
@@ -398,6 +397,7 @@
     		}else   //删除实验
     		{
     			id=info.semesters[choosei].courses[choosej].classes[choosek].id;
+    			console.log(info.semesters[choosei].courses[choosej].classes[choosek]);
     			$.ajax({url:'/lessons/'+id+'.json',data:{},type:"DELETE",success:function(data)
 				{
 					if (data.status=="failed")
@@ -411,7 +411,6 @@
   							info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i+1];
   						}
   						--info.semesters[choosei].courses[choosej].tot;
-    					info.semesters[choosei].courses[choosej].classes[choosek]=p;
     					showInfo();
     					return;
     				}
