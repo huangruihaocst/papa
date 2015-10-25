@@ -85,7 +85,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     
     # namespace user
     # 用户相关
-    ?GET    /users/1.json             得到用户的信息     "user": user
+    GET    /users/1.json             得到用户的信息     "user": user
     POST    /users/sign_in.json       登陆               utf8=✓&user[login]=xxx&user[password]=123&user[remember_me]=0
         返回:  token: '123456777777777', id: 123
         *上面对号的utf-8编码值为0xE2 0x9C 0x93                                                          Everyone
@@ -133,7 +133,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                        Student
         invalid_operation: course_id未指定
         resource_not_found: course_id不存在
-    ?POST   /courses/1/teachers/1.json 把老师添加到课程                                                  Admin
+    POST   /courses/1/teachers/1.json 把老师添加到课程                                                  Admin
         permission_denied: 不是管理员
         resource_not_found: course_id或teacher_id不存在
     DELETE /courses/1/teachers/1.json 从课程中删除老师       id                                          Admin
@@ -145,22 +145,18 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     GET    /courses/1/assistants.json 类似上一个          "assistants": [assistant, ...]                 Teacher(Student?)
         resource_not_found: course_id不存在
         permission_denied: 不是该课程的老师
-    ?POST   /courses/1/students/1.json 添加学生到指定课程                                                Teacher
+    POST   /courses/1/students/1.json 添加学生到指定课程                                                Teacher
         resource_not_found: course_id不存在
         permission_denied: 不是该课程的老师
         internal_error: 其他内部错误, 如果遇到请联系我
-    ?POST   /courses/1/assistants/1.json 添加助教到指定课程                                              Teacher
+    POST   /courses/1/assistants/1.json 添加助教到指定课程                                              Teacher
         not_implemented
     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]             Student
         resource_not_found: course_id不存在
     POST   /courses/1/lessons.json   向课程中添加实验课                                                  Teacher
         permission_denied: 不是该课程的老师
         invalid_fields: lesson参数无效
-    ?DELETE /lessons/1.json          删掉实验课
-        permisson_denied: 不是该课程的老师
-        resource_not_found: lesson_id不存在
-        internal_error: 其他内部错误, 如果遇到请联系我
-    ?GET    /courses/1/comments.json  得到某门课程所有学生的所有评论                                      Teacher
+    GET    /courses/1/comments.json  得到某门课程所有学生的所有评论                                      Teacher
         not_implemented(罗干要求)
     
     # namespace lessons
@@ -168,20 +164,17 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         resource_not_found: lesson_id不存在
     PUT     /lessons/1.json           修改实验课信息
         not_implemented
+    ?DELETE /lessons/1.json          删掉实验课
+        permission_denied: 不是该课程的老师
+        resource_not_found: lesson_id不存在
+        internal_error: 其他内部错误, 如果遇到请联系我
     ?GET    /lessons/1/comments.json  获得某门课程的评价    "lesson_comments": [lesson_comment, ...]     Teacher
         暂时不检查错误
-    POST   /lessons/1/comments.json  添加学生对课程的评价(当前登陆用户)  lesson comment parameters        Student
-        暂时不检查错误
+    #!POST   /lessons/1/comments.json  添加学生对课程的评价(当前登陆用户)  lesson comment parameters        Student
     ?GET   /lessons/1/students/1/comment.json  助教对学生的评价 "student_comment": student_comment
         暂时不检查错误
     POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant
         暂时不检查错误
-    #!GET    /students/1/lessons/1/comments.json 查看学生对课程的所有评价 "lesson_comments": [student_comment,...] Teacher
-        暂时不检查错误
-    ?GET     /students/1/lessons/1/comment.json
-        not_implemented
-    ?POST    /students/1/lessons/1/comments.json
-        not_implemented
     GET    /lessons/1/students.json  某门实验课的到课学生列表 students id                                Teacher
         not_implemented
     POST   /lessons/1/students/1.json 学生签到                                                          Student
@@ -197,7 +190,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     # namespace students
     # 学生相关
     GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]        Student
-        permisson_denied: 未登录
+        permission_denied: 未登录
         resource_not_found: student_id不存在
     GET    /students/1/files.json    获得学生所有文件列表   "files": [{"id":1, "type": "jpg", "path": "xx"}...]  Student 
         permission_denied: 当前用户不是student_id
@@ -211,7 +204,12 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         resource_not_found: file_id不存在
         permission_denied: 当前用户不是文件创建者
         **注意这里忽略student_id
-    
+    ?GET     /students/1/lessons/1/comment.json 某位学生对课程的评价
+        resource_not_found: student_id或者lesson_id不存在或者该学生不在该课程中
+    ?POST    /students/1/lessons/1/comments.json
+        resource_not_found: student_id或者lesson_id不存在或者该学生不在该课程中
+        
+        
     # 课程/实验课相关
     GET    /students/1/courses.json  获得所有课程           "courses": [course...]                       Student
         permission_denied: student_id和当前登陆用户不匹配
@@ -324,7 +322,8 @@ Deprecated APIs:
     #!DELETE /courses/1/lessons/1.json 从课程中删除实验课
     #!PUT    /courses/1/teachers.json  修改老师             teacher parameters                            Teacher
     #!POST   /courses/1/students.json  添加学生              
-    
+    #!GET    /students/1/lessons/1/comments.json 查看学生对课程的所有评价 "lesson_comments": [student_comment,...] Teacher
+
 API Status:
 
     Total History:      84

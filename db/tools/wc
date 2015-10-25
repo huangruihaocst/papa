@@ -8,7 +8,7 @@ function wc_tests {
   wc $(find . | grep '.*\.rb\|yml' | grep '.*test/.*')
 }
 function wc_views {
-  wc $(find . | grep '\.\(html\|css\|js\|coffee\|sass\|erb\)$' | grep 'views/\|public/' | grep -v '\(chart.js\)\|\([0-9]\+\.html\)' | grep -v 'video.*\.js\|css$')
+  wc $(find . | grep '\.\(html\|css\|js\|coffee\|sass\|erb\)$' | grep 'views/\|public/' | grep -v '\(chart\.js\)\|\([0-9]\+\.html\)\|\(jquery\)' | grep -v 'video.*\.js\|css$')
 }
 
 function wc_total {

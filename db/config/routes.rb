@@ -56,7 +56,8 @@ Rails.application.routes.draw do
 
     resources :files, only: [:index, :create, :destroy]
     resources :lessons, only: [:show, :update] do
-      get 'comments' => 'lesson_comments#from_student'
+      get 'comment' => 'lesson_comments#default'
+      post 'comments' => 'lesson_comments#create'
       resources :files, only: [:index, :show, :create, :destroy]
     end
     resources :messages, only: [:index]

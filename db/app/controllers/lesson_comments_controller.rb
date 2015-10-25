@@ -12,20 +12,28 @@ class LessonCommentsController < ApplicationController
 
   # POST /lessons/1/comments.json
   def create
-    if check_current_user_student_of_lesson(params[:lesson_id])
-      lesson = Lesson.find(params[:lesson_id])
-      comment = lesson.lesson_comments.create(params.require(:lesson_comment).permit(:content, :score))
-      if comment
-        json_successful(id: comment.id)
-      else
-        json_failed
-      end
+    user = check_login
+    lesson = Lesson.find(params[:lesson_id])
+    raise RequestException.new(REASON_PERMISSION_DENIED) unless lesson.course.students.include?(user)
+
+    comment = lesson.lesson_comments.create(params.require(:lesson_comment).permit(:content, :score))
+    if comment
+      json_successful(id: comment.id)
+    else
+      json_failed
     end
   end
 
-  protected
-  def check_current_user_student_of_lesson(lesson)
-    true
+  # GET /lessons/1/students/1/comment.json
+  def default
+    lesson = Lesson.find(params[:lesson_id])
+    student = User.find(params[:student_id])
+    raise RequestException.new(REASON_PERMISSION_DENIED) unless lesson.course.students.include?(student)
+
+    comments = lesson.lesson_comments.where(creator_id: student.id)
+    raise RequestException.new(REASON_RESOURCE_NOT_FOUND) unless comments.count > 0
+
+    @lesson_comment = comments.last
   end
 
 end

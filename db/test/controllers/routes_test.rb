@@ -68,14 +68,14 @@ class RoutesTest < ActionController::TestCase
                    { controller: 'lesson_comments', action: 'index', format: 'json', lesson_id: '1' })
     assert_routing({ method: 'post', path: '/lessons/1/comments.json' },
                    { controller: 'lesson_comments', action: 'create', format: 'json', lesson_id: '1' })
-    assert_routing({ method: 'get', path: '/lessons/1/students/2/comments.json' },
-                   { controller: 'student_comments', action: 'index', format: 'json', lesson_id: '1', student_id: '2' })
+
+    assert_routing({ method: 'get', path: '/lessons/1/students/2/comment.json' },
+                   { controller: 'student_comments', action: 'default', format: 'json', lesson_id: '1', student_id: '2' })
     assert_routing({ method: 'post', path: '/lessons/1/students/2/comments.json' },
                    { controller: 'student_comments', action: 'create', format: 'json', lesson_id: '1', student_id: '2' })
     assert_routing({ method: 'post', path: '/lessons/1/comments.json' },
                    { controller: 'lesson_comments', action: 'create', format: 'json', lesson_id: '1' })
-    assert_routing({ method: 'get', path: '/students/1/lessons/2/comments.json'},
-                   { controller: 'lesson_comments', action: 'from_student', format: 'json', student_id: '1', lesson_id: '2' })
+
     assert_routing({ method: 'get', path: '/lessons/1/students.json' },
                    { controller: 'students', action: 'index', format: 'json', lesson_id: '1' })
     assert_routing({ method: 'post', path: '/lessons/1/students/2.json' },
@@ -97,18 +97,26 @@ class RoutesTest < ActionController::TestCase
     assert_routing({ method: 'delete', path: '/students/1/files/2.json' },
                    { controller: 'files', action: 'destroy', format: 'json', student_id: '1', id: '2' })
 
+    # students/courses
     assert_routing({ method: 'get', path: '/students/1/courses.json' },
                    { controller: 'courses', action: 'index', format: 'json', student_id: '1' })
     assert_routing({ method: 'post', path: '/students/1/courses/2.json' },
                    { controller: 'courses', action: 'create', format: 'json', student_id: '1', id: '2' })
     assert_routing({ method: 'delete', path: '/students/1/courses/2.json' },
                    { controller: 'courses', action: 'destroy', format: 'json', student_id: '1', id: '2' })
+
+    # students/lessons
     assert_routing({ method: 'get', path: '/students/1/lessons/2/files.json' },
                    { controller: 'files', action: 'index', format: 'json', student_id: '1', lesson_id: '2'})
     assert_routing({ method: 'post', path: '/students/1/lessons/2/files.json' },
                    { controller: 'files', action: 'create', format: 'json', student_id: '1', lesson_id: '2'})
     assert_routing({ method: 'delete', path: '/students/1/lessons/2/files/3.json' },
                    { controller: 'files', action: 'destroy', format: 'json', student_id: '1', lesson_id: '2', id: '3' })
+    assert_routing({ method: 'get', path: '/students/1/lessons/2/comment.json'},
+                   { controller: 'lesson_comments', action: 'default', format: 'json', student_id: '1', lesson_id: '2' })
+    assert_routing({ method: 'post', path: '/students/1/lessons/2/comments.json'},
+                   { controller: 'lesson_comments', action: 'create', format: 'json', student_id: '1', lesson_id: '2' })
+
   end
 
   # /assistants/xx
