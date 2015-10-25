@@ -181,7 +181,6 @@
 			if (focusi!=-1&&focusj!=-1) return;
 			if (x!=lastChoose) lastChoose=x,p=0;
 			else p=1-p;
-			console.log(x,p);
 			qsort(0,m-1,x,p);
 			showInfo();
 		}
@@ -266,7 +265,7 @@
 			for (i=0;i<n1;++i)
 			text+='<th onclick="option('+i+')">'+items.peopleInfo[i]+'</th>';
 			for (i=0;i<n2;++i)
-			text+='<th onclick="option('+i+')">'+items.scoreInfo[i]+'</th>';
+			text+='<th onclick="option('+n1+i+')">'+items.scoreInfo[i]+'</th>';
 			text+='</thread><tbody>';
 			for (i=0;i<m;++i)
 			{
@@ -275,7 +274,7 @@
 				text+='<td>'+info[i].people.name+'</td>';
 				text+='<td>'+info[i].people.department+'</td>';
 				text+='<td>'+info[i].people.class_name+'</td>';
-				text+='<td ondblclick="change('+(i+3)+','+4+')">'+info[i].scoreInfo.score+'</td>';
+				text+='<td ondblclick="change('+(i+3)+','+n1+')">'+info[i].scoreInfo.score+'</td>';
 				text+='<td>'+info[i].scoreInfo.content+'</td>';
 				text+='<td>'+info[i].scoreInfo.picture_number+'</td>';
 				text+='<td>'+info[i].scoreInfo.video_number+'</td>';
