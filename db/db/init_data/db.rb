@@ -12,13 +12,20 @@ l2 = c1.lessons.create(name: 'os-l2', start_time: Time.now, end_time: Time.now +
 l3 = c1.lessons.create(name: 'os-l3', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 l4 = c2.lessons.create(name: 'ds-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 
-u0 = User.create(name:'admin', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123', is_admin: true)
-u1 = User.create(name:'alex', phone:'1234', email:'aa@b.c', password:'123', password_confirmation:'123', is_teacher: true)
-u2 = User.create(name:'betty', phone:'222', email:'b@c.d', password:'123', password_confirmation:'123')
-u3 = User.create(name:'ciara', phone:'333', email:'c@d.e', password:'123', password_confirmation:'123')
-u4 = User.create(name:'delta', phone:'444', email:'d@d.e', password:'123', password_confirmation:'123')
-u5 = User.create(name:'gamma', phone:'555', email:'e@d.e', password:'123', password_confirmation:'123')
-u6 = User.create(name:'yula', phone:'666', email:'f@d.e', password:'123', password_confirmation:'123')
+u0 = User.create(name:'admin', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123',
+                 student_number: '1230', class_name: '44', department: 'cst', description: '123', is_admin: true)
+u1 = User.create(name:'alex', phone:'1234', email:'aa@b.c', password:'123', password_confirmation:'123',
+                 student_number: '1231', class_name: '44', department: 'cst', description: '123', is_admin: false, is_teacher: true)
+u2 = User.create(name:'betty', phone:'222', email:'b@c.d', password:'123', password_confirmation:'123',
+                 student_number: '1232', class_name: '44', department: 'cst', description: '123', is_admin: false)
+u3 = User.create(name:'ciara', phone:'333', email:'c@d.e', password:'123', password_confirmation:'123',
+                 student_number: '1233', class_name: '44', department: 'cst', description: '123', is_admin: false)
+u4 = User.create(name:'delta', phone:'444', email:'d@d.e', password:'123', password_confirmation:'123',
+                 student_number: '1234', class_name: '44', department: 'cst', description: '123', is_admin: false)
+u5 = User.create(name:'gamma', phone:'555', email:'e@d.e', password:'123', password_confirmation:'123',
+                 student_number: '1235', class_name: '44', department: 'cst', description: '123', is_admin: false)
+u6 = User.create(name:'yula', phone:'666', email:'f@d.e', password:'123', password_confirmation:'123',
+                 student_number: '1236', class_name: '44', department: 'cst', description: '123', is_admin: false)
 
 TeachingCourse.create(user_id: u1.id, course_id: c1.id)
 Participation.create(user_id: u2.id, course_id: c1.id, role: ROLE_ASSISTANT)
