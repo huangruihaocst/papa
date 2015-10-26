@@ -29,36 +29,19 @@
 			getId();
 			courseInfo="计算机组成原理";
 			var i;
-			n1=4;n2=3;m=2;
+			info=new Array();
+			n1=4;n2=0;m=0;
 			items=new Object();
 			items.peopleInfo=new Array();
 			items.classNames=new Array();
 			items.peopleInfo[0]="学号";items.peopleInfo[1]="姓名";
 			items.peopleInfo[2]="系";items.peopleInfo[3]="班级";
-			items.classNames[0]="1";items.classNames[1]="2";items.classNames[2]="3";
-			info=new Array();
-			for (i=0;i<m;++i)
-			{
-				info[i]=new Object();
-				info[i].people=new Object();
-				info[i].classScore=new Array();
-				info[i].people.student_number="201401130"+i;
-				info[i].people.name="A"+i;
-				info[i].people.department="计算机系";
-				info[i].people.class_name="计xx";
-				info[i].people.id=0;
-				info[i].classScore[0]=i;
-				info[i].classScore[1]=i;
-				info[i].classScore[2]=i;
-			}
-			showInfo();
 			var p1=false,p2=false;
 			function deal()
 			{
 				$.get("/courses/"+courseId+"/students.json",{},
 				function(data)
 				{
-					console.log(data);
 					if (data.status=="failed")
 					{
 						alert("学生名单加载失败");
@@ -74,7 +57,6 @@
 							var p=true;
 							$.ajax({url:"/students/"+data[i].id+".json",data:{},type:"GET",async:false,success:function(data)
 							{
-								console.log(data);
 								if (data.status=="successful")
 								{
 									info[m].people=data.student;
@@ -83,18 +65,18 @@
 									p=false;
 								}
 							}});
-							for (j=0;j<tot;++j)
+							for (j=0;j<n2;++j)
 							{
-								$.ajax({url:"/students/"+data[i].id+"/lessons/"+classId[j]+".json",data:{},type:"GET",async:false,success:function(data)
+								$.ajax({url:"/lessons/"+data[i].id+"/students/"+classId[j]+"/comment.json",data:{},type:"GET",async:false,success:function(data)
 								{
 									console.log(data);
 									info[m].classScore[j]=j;
 									if (data.status=="successful")
 									{
-										info[m].classScore[j]=data.score; //#modify
+										info[m].classScore[j]=data.student_comment.score;
 									}else
 									{
-										p=false;
+										info[m].classScore[j]="未登记";
 									}
 								}});
 							}
@@ -107,7 +89,6 @@
 			$.get("/courses/"+courseId+".json",{},
 			function(data)
 			{
-				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("获取课程信息失败");
@@ -125,7 +106,6 @@
 			$.get("/courses/"+courseId+"/lessons.json",{},
 			function(data)
 			{
-				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("获取实验信息失败");
@@ -250,7 +230,6 @@
 		
 		function showInfo()
 		{
-			console.log(info);
 			var i,j,text="";
 			text+='<h3>课程成绩</h3>';
 			text+='<table id="table1" class="table table-bordered table-striped table-hover">';

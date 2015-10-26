@@ -67,14 +67,12 @@
 		
 		$("#chart1")[0].height=$("#chart1")[0].width;
 		$("#chart2")[0].height=$("#chart2")[0].width;
-		var totalPages,nowPage,numberPerPage=15;
+		var totalPages,nowPage,numberPerPage=10;
 		
 		function loadInfo()
 		{
 			getId();
-			people.attend=100;people.absense=10;
 			for (i=0;i<11;++i) score[i]=10;
-			classInfo="计算机组成原理";
 			var i;
 			n=100;
 			for (i=0;i<n;++i)
@@ -85,8 +83,8 @@
 			}
 			totalPages=Math.floor((n-1)/numberPerPage+1);
 			nowPage=1;
-			showInfo();
-			var p1=false,p2=false,p3=false,p4=false;
+			showComments();
+			var p1=false,p2=false,p3=false;
 			function deal()
 			{
 				people.absense=people.tot-people.attend;
@@ -95,7 +93,6 @@
 			$.get("/lessons/"+classId+".json",{},
 			function(data)
 			{
-				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("获取实验信息失败");
@@ -105,7 +102,7 @@
 				{
 					classInfo=data.lesson.name;
 					p1=true;
-					if (p1&&p2&&p3&&p4) deal();
+					if (p1&&p2&&p3) deal();
 					return;
 				}
 				alert("unexpected: /lessons/id.json");
@@ -113,7 +110,6 @@
 			$.get("/courses/"+courseId+"/students.json",{},
 			function(data)
 			{
-				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("获取课程人数失败");
@@ -123,33 +119,14 @@
 				{
 					people.tot=data.students.length;
 					p2=true;
-					if (p1&&p2&&p3&&p4) deal();
+					if (p1&&p2&&p3) deal();
 					return;
 				}
 				alert("unexpected: /courses/id/students.json");
 			});
-			$.get("/lessons/"+classId+"/students.json",{},
-			function(data)
-			{
-				console.log(data);
-				if (data.status=="failed")
-				{
-					alert("获取到课人数失败");
-					return;
-				}
-				if (data.status=="successful")
-				{
-					people.attend=data.students.length;
-					p3=true;
-					if (p1&&p2&&p3&&p4) deal();
-					return;
-				}
-				alert("unexpected: /lessons/id/students.json");
-			});
 			$.get("/lessons/"+classId+"/comments.json",{},
 			function(data)
 			{
-				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("获取评论失败");
@@ -159,13 +136,14 @@
 				{
 					var i;
 					data=data.lesson_comments;
+					people.attend=data.length;
 					for (i=0;i<data.length;++i)
 					{
 						if (data[i].content) comments[n++]=data[i];
 						score[data[i].score]++;
 					}
-					p4=true;
-					if (p1&&p2&&p3&&p4) deal();
+					p3=true;
+					if (p1&&p2&&p3) deal();
 					return;
 				}
 				alert("unexpected: /lessons/id/comments.json");

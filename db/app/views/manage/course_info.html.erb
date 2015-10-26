@@ -87,7 +87,6 @@
 			$.get("/courses/"+courseId+".json",{},
 			function(data)
 			{
-				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("获取课程信息失败");
@@ -150,7 +149,6 @@
 						}});
 						$.ajax({url:"/lessons/"+classId+"/comments.json",data:{},type:"GET",async:false,success:function(data)
 						{
-							console.log(data);
 							if (data.status=="failed")
 							{
 								alert("获取分数分布失败");
