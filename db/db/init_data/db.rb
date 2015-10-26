@@ -57,7 +57,15 @@ Participation.create(user_id: u4.id, course_id: c4.id, role: ROLE_STUDENT)
 Participation.create(user_id: u5.id, course_id: c1.id, role: ROLE_STUDENT)
 Participation.create(user_id: u6.id, course_id: c1.id, role: ROLE_STUDENT)
 
-LessonStatus.create(user_id: u4.id, lesson_id: l11.id, creator_id: u2.id, score: 123)
-LessonStatus.create(user_id: u5.id, lesson_id: l11.id, creator_id: u2.id, score: 111)
+f1 = FileResource.create(name: '1.jpg', file_type: 'jpg', path: '1.jpg', creator_id: u1.id)
+f2 = FileResource.create(name: '2.jpg', file_type: 'jpg', path: '2.jpg', creator_id: u1.id)
+
+l11.student_files.create(student_id: u3.id, file_resource_id: f1.id)
+
+l11.lesson_statuses.create(user_id: u4.id, creator_id: u2.id, score: 123)
+l11.lesson_statuses.create(user_id: u5.id, creator_id: u2.id, score: 111)
+l11.lesson_statuses.create(user_id: u6.id, creator_id: u1.id, score: 100)
+l31.lesson_statuses.create(user_id: u3.id, creator_id: u2.id, score: 0.5)
+
 
 puts '--- init_data created ---'
