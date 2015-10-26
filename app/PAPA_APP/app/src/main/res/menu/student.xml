@@ -4,9 +4,11 @@
     <item android:id="@+id/action_search"
         android:title="@string/action_search"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        android:icon="@drawable/search"
+        app:showAsAction="always" />
     <item android:id="@+id/action_experiment_information"
         android:title="@string/action_experiment_information"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_info_black_24dp"
+        app:showAsAction="ifRoom" />
 </menu>

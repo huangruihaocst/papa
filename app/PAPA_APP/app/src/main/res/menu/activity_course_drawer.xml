@@ -2,8 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group>
-        <item android:id="@+id/nav_favorite" android:icon="@drawable/ic_favorite_outline_black_24dp"
-            android:title="@string/favorite" />
+        <item android:id="@+id/nav_favorite"
+            android:icon="@drawable/ic_favorite_outline_black_24dp"
+            android:title="@string/favorite"
+            />
         <item android:id="@+id/nav_experiment_history" android:icon="@drawable/ic_history_black_24dp"
             android:title="@string/experiment_history" />
         <item android:id="@+id/nav_upload_history" android:icon="@drawable/ic_file_upload_black_24dp"
