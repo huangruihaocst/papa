@@ -7,10 +7,20 @@ c2 = Course.create(name: 'ds', description: '123', semester_id: s0.id)
 c3 = Course.create(name: 'as', description: '123', semester_id: s0.id)
 c4 = Course.create(name: 'cs', description: '123', semester_id: s1.id)
 
-l1 = c1.lessons.create(name: 'os-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
-l2 = c1.lessons.create(name: 'os-l2', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
-l3 = c1.lessons.create(name: 'os-l3', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
-l4 = c2.lessons.create(name: 'ds-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+l11 = c1.lessons.create(name: 'os-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+l12 = c1.lessons.create(name: 'os-l2', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+l13 = c1.lessons.create(name: 'os-l3', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+l14 = c1.lessons.create(name: 'os-l4', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+
+l21 = c2.lessons.create(name: 'ds-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+l22 = c2.lessons.create(name: 'ds-l2', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+l23 = c2.lessons.create(name: 'ds-l3', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+l24 = c2.lessons.create(name: 'ds-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+
+l31 = c3.lessons.create(name: 'as-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+l32 = c3.lessons.create(name: 'as-l2', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+l33 = c3.lessons.create(name: 'as-l3', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
+l34 = c3.lessons.create(name: 'as-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 
 u0 = User.create(name:'admin', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123',
                  student_number: '1230', class_name: '44', department: 'cst', description: '123', is_admin: true)
@@ -47,7 +57,7 @@ Participation.create(user_id: u4.id, course_id: c4.id, role: ROLE_STUDENT)
 Participation.create(user_id: u5.id, course_id: c1.id, role: ROLE_STUDENT)
 Participation.create(user_id: u6.id, course_id: c1.id, role: ROLE_STUDENT)
 
-LessonStatus.create(user_id: u4.id, lesson_id: l1.id, creator_id: u2.id, score: 123)
-LessonStatus.create(user_id: u5.id, lesson_id: l1.id, creator_id: u2.id, score: 111)
+LessonStatus.create(user_id: u4.id, lesson_id: l11.id, creator_id: u2.id, score: 123)
+LessonStatus.create(user_id: u5.id, lesson_id: l11.id, creator_id: u2.id, score: 111)
 
 puts '--- init_data created ---'
