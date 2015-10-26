@@ -39,7 +39,10 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
         try
         {
-            replyObj = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.post, "/users/sign_in.json", h);
+            replyObj = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.post,
+                    "/users/sign_in.json", h
+            );
 
             return new SignInReply(replyObj.getInt("id"), replyObj.getString("token"));
         }
@@ -55,7 +58,10 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         try
         {
             SemesterReply ans = new SemesterReply();
-            JSONObject reply = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.get, "/semesters.json", null);
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/semesters.json", null
+            );
 
             JSONArray array = reply.getJSONArray("semesters");
             Log.i(tag, "ret = " + array + " len = " + array.length());
@@ -80,12 +86,15 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public GetCourseReply getStuCourse(GetCourseRequest request) throws PapaHttpClientException {
         try
         {
-            HashMap<String, String> h = new HashMap<String, String>();
+            HashMap<String, String> h = new HashMap<>();
 
             h.put("token", request.token);
 
             GetCourseReply ans = new GetCourseReply();
-            JSONObject reply = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.get, "/students/" + request.id + "/courses.json", h);
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/students/" + request.id + "/courses.json", h
+            );
 
 
             JSONArray array = reply.getJSONArray("courses");
@@ -95,7 +104,9 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             {
                 JSONObject obj = array.getJSONObject(i);
 
-                ans.course.add(new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name")));
+                ans.course.add(
+                        new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
+                );
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
             };
@@ -117,7 +128,10 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             h.put("token", request.token);
 
             GetCourseReply ans = new GetCourseReply();
-            JSONObject reply = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.get, "/assistants/" + request.id + "/courses.json", h);
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/assistants/" + request.id + "/courses.json", h
+            );
 
 
             JSONArray array = reply.getJSONArray("courses");
@@ -127,7 +141,9 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             {
                 JSONObject obj = array.getJSONObject(i);
 
-                ans.course.add(new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name")));
+                ans.course.add(
+                        new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
+                );
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
             };
@@ -143,10 +159,13 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public GetLessonReply getLesson(GetLessonRequest request) throws PapaHttpClientException {
         try
         {
-            HashMap<String, String> h = new HashMap<String, String>();
+            HashMap<String, String> h = new HashMap<>();
 
             GetLessonReply ans = new GetLessonReply();
-            JSONObject reply = dbAccess.getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod.get, "/courses/" + request.courseId + "/lessons.json", h);
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/courses/" + request.courseId + "/lessons.json", h
+            );
 
 
             JSONArray array = reply.getJSONArray("lessons");
@@ -156,10 +175,36 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             {
                 JSONObject obj = array.getJSONObject(i);
 
-                ans.lesson.add(new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name")));
+                ans.lesson.add(
+                        new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
+                );
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
             };
+
+            return ans;
+        }
+        catch(org.json.JSONException e) {
+            throw new PapaDataBaseJsonError();
+        }
+    }
+
+
+    @Override
+    public GetUsrInfoReply getUsrInfo(GetUsrInfoRequest request) throws PapaHttpClientException {
+        try
+        {
+            HashMap<String, String> h = new HashMap<>();
+            h.put("token", request.token);
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get, "/users/" + request.id + ".json", h
+            );
+
+            JSONObject obj = reply.getJSONObject("user");
+            GetUsrInfoReply ans = new GetUsrInfoReply(
+                    obj.getInt("id"), obj.getString("name"),
+                    obj.getString("email"), obj.getString("phone")
+            );
 
             return ans;
         }

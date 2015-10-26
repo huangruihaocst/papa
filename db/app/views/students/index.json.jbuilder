@@ -9,6 +9,7 @@ json.students do
     json.extract! student, :department
     json.extract! student, :class_name
     json.extract! student, :avator_id
+    json.extract! student, :description
   end
 end
 

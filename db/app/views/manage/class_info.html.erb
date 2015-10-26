@@ -71,6 +71,7 @@
 		
 		function loadInfo()
 		{
+			getId();
 			people.attend=100;people.absense=10;
 			for (i=0;i<11;++i) score[i]=10;
 			classInfo="计算机组成原理";
@@ -102,7 +103,7 @@
 				}
 				if (data.status=="successful")
 				{
-					classInfo=data.name;
+					classInfo=data.lesson.name;
 					p1=true;
 					if (p1&&p2&&p3&&p4) deal();
 					return;

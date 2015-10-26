@@ -29,7 +29,7 @@
 			getId();
 			courseInfo="计算机组成原理";
 			var i;
-			n=4;m=2;tot=3;
+			n1=4;n2=3;m=2;
 			items=new Object();
 			items.peopleInfo=new Array();
 			items.classNames=new Array();
@@ -58,6 +58,7 @@
 				$.get("/courses/"+courseId+"/students.json",{},
 				function(data)
 				{
+					console.log(data);
 					if (data.status=="failed")
 					{
 						alert("学生名单加载失败");
@@ -65,16 +66,18 @@
 					}
 					if (data.status=="successful")
 					{
-						var i,j;
+						var i,j;data=data.students;
 						for (i=0;i<data.length;++i)
 						{
 							info[m]=new Object();
+							info[m].classScore=new Array();
 							var p=true;
 							$.ajax({url:"/students/"+data[i].id+".json",data:{},type:"GET",async:false,success:function(data)
 							{
+								console.log(data);
 								if (data.status=="successful")
 								{
-									info[i].people=data.student;
+									info[m].people=data.student;
 								}else
 								{
 									p=false;
@@ -84,9 +87,11 @@
 							{
 								$.ajax({url:"/students/"+data[i].id+"/lessons/"+classId[j]+".json",data:{},type:"GET",async:false,success:function(data)
 								{
+									console.log(data);
+									info[m].classScore[j]=j;
 									if (data.status=="successful")
 									{
-										info[i].classScore[j]=data.score;
+										info[m].classScore[j]=data.score; //#modify
 									}else
 									{
 										p=false;
@@ -110,7 +115,7 @@
 				}
 				if (data.status=="successful")
 				{
-					courseInfo=data.name;
+					courseInfo=data.course.name;
 					p1=true;
 					if (p1&&p2) deal();
 					return;
@@ -129,11 +134,11 @@
 				if (data.status=="successful")
 				{
 					data=data.lessons;
-					var i;tot=data.length;
+					var i;n2=data.length;
 					for (i=0;i<data.length;++i)
 					{
 						classId[i]=data[i].id;
-						items.classNames[i]=data.name;
+						items.classNames[i]=data[i].name;
 					}
 					p2=true;
 					if (p1&&p2) deal();
@@ -245,17 +250,18 @@
 		
 		function showInfo()
 		{
+			console.log(info);
 			var i,j,text="";
 			text+='<h3>课程成绩</h3>';
 			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
-			text+='<thread><tr><th colspan="'+n+'">'+courseInfo+'</th>';
-			text+='<th colspan="'+tot+'"><a id="export" onclick="clickDownload(this)" download="'+courseInfo+'.csv" href="#">导出</a>'+'</th></tr>';
-			text+='<tr><th colspan="'+n+'">学生信息</th><th colspan="'+tot+'">成绩</th></tr>';
+			text+='<thread><tr><th colspan="'+(n1+n2-1)+'">'+courseInfo+'</th>';
+			text+='<th><a id="export" onclick="clickDownload(this)" download="'+courseInfo+'.csv" href="#">导出</a>'+'</th></tr>';
+			text+='<tr><th colspan="'+n1+'">学生信息</th><th colspan="'+n2+'">成绩</th></tr>';
 			text+='<tr>';
-			for (i=0;i<n;++i)
+			for (i=0;i<n1;++i)
 			text+='<th onclick="option('+i+')">'+items.peopleInfo[i]+'</th>';
-			for (i=0;i<tot;++i)
-			text+='<th onclick="option('+i+')">'+items.classNames[i]+'</th>';
+			for (i=0;i<n2;++i)
+			text+='<th onclick="option('+n1+i+')">'+items.classNames[i]+'</th>';
 			text+='</thread><tbody>';
 			for (i=0;i<m;++i)
 			{
@@ -264,9 +270,9 @@
 				text+='<td>'+info[i].people.name+'</td>';
 				text+='<td>'+info[i].people.department+'</td>';
 				text+='<td>'+info[i].people.class_name+'</td>';
-				for (j=0;j<tot;++j)
+				for (j=0;j<n2;++j)
 				{
-					text+='<td ondblclick="change('+(i+3)+','+j+')">'+info[i].classScore[j]+'</td>';
+					text+='<td ondblclick="change('+(i+3)+','+(n1+j)+')">'+info[i].classScore[j]+'</td>';
 				}
 				text+='</tr>';
 			}

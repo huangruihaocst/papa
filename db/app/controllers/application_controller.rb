@@ -7,6 +7,14 @@ class ApplicationController < ActionController::Base
       @msg
     end
   end
+  class RequestException < Exception
+    def initialize(msg)
+      @msg = msg
+    end
+    def message
+      @msg
+    end
+  end
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -16,8 +24,13 @@ class ApplicationController < ActionController::Base
 
   # the following class macro and two methods are token authentication helpers
   rescue_from TokenException, with: :invalid_token
+  rescue_from RequestException, with: :request_error
   rescue_from ActiveRecord::RecordNotFound, with: :resource_not_found
+
   def invalid_token(except)
+    json_failed(except.message)
+  end
+  def request_error(except)
     json_failed(except.message)
   end
   def resource_not_found(except)

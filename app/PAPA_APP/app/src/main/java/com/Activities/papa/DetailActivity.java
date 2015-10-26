@@ -231,7 +231,7 @@ public class DetailActivity extends AppCompatActivity
         user_grade.setEnabled(false);
         user_comment.setEnabled(false);
     }
-
+    
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {

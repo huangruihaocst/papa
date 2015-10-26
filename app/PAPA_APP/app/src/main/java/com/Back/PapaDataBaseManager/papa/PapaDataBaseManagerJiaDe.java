@@ -1,5 +1,6 @@
 package com.Back.PapaDataBaseManager.papa;
 
+import com.Back.DataBaseAccess.papa.PapaDataBaseNotSuccessError;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.NetworkAccess.papa.PapaHttpClientIOErrorException;
 import com.Back.NetworkAccess.papa.PapaHttpClientNot200Exception;
@@ -29,11 +30,9 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
             }
             catch (InterruptedException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
-
     }
 
     @Override
@@ -96,5 +95,13 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
 
 
         throw new PapaHttpClientNot200Exception(401);
+    }
+
+    @Override
+    public GetUsrInfoReply getUsrInfo(GetUsrInfoRequest request) throws PapaHttpClientException {
+        kaSi();
+        if(request.token.equals("watashi"))
+            return new GetUsrInfoReply(1, "watashi", "watashi [at] gmail [dot] com", "0800092000");
+        throw new PapaDataBaseNotSuccessError();
     }
 }

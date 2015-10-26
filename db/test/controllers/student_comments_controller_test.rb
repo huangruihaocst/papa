@@ -1,20 +1,20 @@
 require 'test_helper'
 
 class StudentCommentsControllerTest < ActionController::TestCase
-
   include Devise::TestHelpers
 
+  # GET /lessons/1/students/1/comment.json
   test 'should get student comment on lesson' do
-    student = User.find_by_name('betty')
     lesson = Lesson.find_by_name('exp1')
+    student = User.find_by_name('betty')
 
-    get :index, format: :json, student_id: student.id, lesson_id: lesson.id
+    get :default, format: :json, student_id: student.id, lesson_id: lesson.id
 
     assert_json_success
-    assert_not_nil json['student_comments']
-    assert json['student_comments'].count
+    assert_not_nil json['student_comment']
   end
 
+  # POST /lessons/1/students/1/comments.json
   test 'should add student comment on lesson' do
     student = User.find_by_name('betty')
     lesson = Lesson.find_by_name('exp1')
@@ -23,12 +23,13 @@ class StudentCommentsControllerTest < ActionController::TestCase
 
     assert_difference 'StudentComment.count' do
       post :create, format: :json, student_id: student.id, lesson_id: lesson.id, student_comment: {
-               content: 'haha',
+               content: 'and',
                score: '123'
                   }
     end
 
     assert_json_success
+    assert_not_nil json['id']
   end
 
 end
