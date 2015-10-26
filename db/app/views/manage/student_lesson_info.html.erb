@@ -82,12 +82,12 @@
 <!-- End VideoJS -->
   <script>
 
-      $.get("/lessons/<%=@lesson.id %>/students/<%=@student.id %>/comments.json",{},function(data)
+      $.get("/lessons/<%=@lesson.id %>/students/<%=@student.id %>/comment.json",{},function(data)
       {
-          $("#teacher-score").val(data.student_comments[0].score);
-          $("#teacher-comment").val(data.student_comments[0].content);
+          $("#teacher-score").val(data.student_comment.score);
+          $("#teacher-comment").val(data.student_comment.content);
       });
-      $.get("/students/<%=@student.id %>/lessons/<%=@lesson.id %>/comments.json",{},function(data)
+      $.get("/students/<%=@student.id %>/lessons/<%=@lesson.id %>/comment.json",{},function(data)
       {
           console.log(data);
       });
