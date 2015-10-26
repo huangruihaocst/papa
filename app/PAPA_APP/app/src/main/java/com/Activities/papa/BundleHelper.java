@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
 /**
  * Created by huang on 15-10-10.
@@ -180,7 +181,7 @@ public class BundleHelper implements Parcelable{
 
     public PapaDataBaseManager getPapaDataBaseManager()
     {
-        return new PapaDataBaseManagerJiaDe();
+        return new PapaDataBaseManagerReal();
     }
 }
 

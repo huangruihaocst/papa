@@ -24,7 +24,7 @@ u4 = User.create(name:'delta', phone:'444', email:'d@d.e', password:'123', passw
                  student_number: '1234', class_name: '44', department: 'cst', description: '123', is_admin: false)
 u5 = User.create(name:'gamma', phone:'555', email:'e@d.e', password:'123', password_confirmation:'123',
                  student_number: '1235', class_name: '44', department: 'cst', description: '123', is_admin: false)
-u6 = User.create(name:'yula', phone:'666', email:'f@d.e', password:'123', password_confirmation:'123',
+u6 = User.create(name:'yura', phone:'666', email:'f@d.e', password:'123', password_confirmation:'123',
                  student_number: '1236', class_name: '44', department: 'cst', description: '123', is_admin: false)
 
 TeachingCourse.create(user_id: u1.id, course_id: c1.id)
