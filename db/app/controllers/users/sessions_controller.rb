@@ -15,7 +15,7 @@ module Users
           @user = warden.authenticate!(auth_options)
           sign_in(resource_name, @user)
           token = @user.create_token
-          render json: { status: STATUS_SUCCESS, token: token.token, id: @user.id }
+          render json: { status: STATUS_SUCCESS, token: token.token, id: @user.id, is_teacher: @user.is_teacher?, is_admin: @user.is_admin? }
         end
       end
     end
