@@ -28,9 +28,22 @@ u6 = User.create(name:'yura', phone:'666', email:'f@d.e', password:'123', passwo
                  student_number: '1236', class_name: '44', department: 'cst', description: '123', is_admin: false)
 
 TeachingCourse.create(user_id: u1.id, course_id: c1.id)
+
 Participation.create(user_id: u2.id, course_id: c1.id, role: ROLE_ASSISTANT)
+Participation.create(user_id: u2.id, course_id: c2.id, role: ROLE_ASSISTANT)
+Participation.create(user_id: u2.id, course_id: c3.id, role: ROLE_ASSISTANT)
+Participation.create(user_id: u2.id, course_id: c4.id, role: ROLE_ASSISTANT)
+
 Participation.create(user_id: u3.id, course_id: c1.id, role: ROLE_ASSISTANT)
+Participation.create(user_id: u3.id, course_id: c2.id, role: ROLE_ASSISTANT)
+Participation.create(user_id: u3.id, course_id: c3.id, role: ROLE_STUDENT)
+Participation.create(user_id: u3.id, course_id: c4.id, role: ROLE_STUDENT)
+
 Participation.create(user_id: u4.id, course_id: c1.id, role: ROLE_STUDENT)
+Participation.create(user_id: u4.id, course_id: c2.id, role: ROLE_STUDENT)
+Participation.create(user_id: u4.id, course_id: c3.id, role: ROLE_STUDENT)
+Participation.create(user_id: u4.id, course_id: c4.id, role: ROLE_STUDENT)
+
 Participation.create(user_id: u5.id, course_id: c1.id, role: ROLE_STUDENT)
 Participation.create(user_id: u6.id, course_id: c1.id, role: ROLE_STUDENT)
 
