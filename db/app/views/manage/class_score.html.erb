@@ -30,29 +30,37 @@
 			classId=p.split("&")[1];
 		}
 		
-		var n,m,info,items,classInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
+		var n1,n2,m,info,items,classInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
 		
 		function loadInfo()
 		{
-			
+			getId();
 			classInfo="计算机组成原理实验1";
 			var i;
-			n=9;m=2;
-			items=new Array();
-			items[0]="学号";items[1]="姓名";items[2]="系";items[3]="班级";items[4]="成绩";items[5]="评价";items[6]="图片数";items[7]="视频数";items[8]="打分助教";
+			n1=4;n2=5;m=2;
+			items=new Object();
+			items.peopleInfo=new Array();
+			items.scoreInfo=new Array();
+			items.peopleInfo[0]="学号";items.peopleInfo[1]="姓名";
+			items.peopleInfo[2]="系";items.peopleInfo[3]="班级";
+			items.scoreInfo[0]="成绩";items.scoreInfo[1]="评价";items.scoreInfo[2]="图片数";
+			items.scoreInfo[3]="视频数";items.scoreInfo[4]="打分助教";
 			info=new Array();
 			for (i=0;i<m;++i)
 			{
-				info[i]=new Array();
-				info[i][0]="201401130"+i;
-				info[i][1]="A"+i;
-				info[i][2]="计算机系";
-				info[i][3]="计xx";
-				info[i][4]=10;
-				info[i][5]="1";
-				info[i][6]="1";
-				info[i][7]="1";
-				info[i][8]="XX";
+				info[i]=new Object();
+				info[i].people=new Object();
+				info[i].scoreInfo=new Object();
+				info[i].people.student_number="201401130"+i;
+				info[i].people.name="A"+i;
+				info[i].people.department="计算机系";
+				info[i].people.class_name="计xx";
+				info[i].people.id=0;
+				info[i].scoreInfo.score=i;
+				info[i].scoreInfo.content="好";
+				info[i].scoreInfo.picture_number=i;
+				info[i].scoreInfo.video_number=i;
+				info[i].scoreInfo.creator_name="xx";
 			}
 			showInfo();
 			var p1=false,p2=false;
@@ -63,6 +71,7 @@
 			$.get("/lessons/"+classId+".json",{},
 			function(data)
 			{
+				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("实验信息加载失败");
@@ -70,15 +79,17 @@
 				}
 				if (data.status=="successful")
 				{
-					classInfo=data.name;
+					classInfo=data.lesson.name;
 					p1=true;
 					if (p1&&p2) deal();
+					return;
 				}
 				alert("unexpected: /lessons/id.json");
 			});
 			$.get("/courses/"+courseId+"/students.json",{},
 			function(data)
 			{
+				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("学生名单加载失败");
@@ -86,20 +97,19 @@
 				}
 				if (data.status=="successful")
 				{
-					var i;
-					for (i=0;i<data.length;++i)
+					var i;data=data.students;m=data.length;
+					for (i=0;i<m;++i)
 					{
-						info[m]=new Array();
+						info[i]=new Object();
+						info[i].scoreInfo=new Object();
+						info[i].people=new Object();
 						var p=true;
 						$.ajax({url:"/students/"+data[i].id+".json",data:{},async:false,type:"GET",success:function(data)
 						{
+							console.log(data);
 							if (data.status=="successful")
 							{
-								info[i][0]=data.student_number;
-								info[i][1]=data.name;
-								info[i][2]=data.department;
-								info[i][3]=data.class_name;
-								info[i][9]=data.id;
+								info[i].people=data.student;
 							}else
 							{
 								p=false;
@@ -107,11 +117,10 @@
 						}});
 						$.ajax({url:"/students/"+data[i].id+"/lessons/"+classId+".json",data:{},async:false,type:"GET",success:function(data)
 						{
+							console.log(data);
 							if (data.status=="successful")
 							{
-								info[i][4]=data.score;
-								info[i][5]=data.content;
-								info[i][8]=data.assistant;
+								info[i].scoreInfo=data.lesson;
 							}else
 							{
 								p=false;
@@ -119,14 +128,15 @@
 						}});
 						$.ajax({url:"/students/"+data[i].id+"/lesssons/"+classId+"/files.json",data:{},async:false,type:"GET",success:function(data)
 						{
+							console.log(data);
 							if (data.status=="successful")
 							{
-								info[i][7]=info[i][8]=0;
+								info[i].scoreInfo.picture_number=info[i].scoreInfo.video_number=0;
 								var j;
 								for (j=0;j<data.length;++j)
 								{
-									if (data[j].type=="jpg") ++info[i][6];
-									if (data[j].type=="mp4") ++info[i][7];
+									if (data[j].type=="jpg") ++info[i].scoreInfo.picture_number;
+									if (data[j].type=="mp4") ++info[i].scoreInfo.video_number;
 								}
 							}else
 							{
@@ -137,6 +147,7 @@
 					}
 					p2=true;
 					if (p1&&p2) deal();
+					return;
 				}
 				alert("unexpected: /courses/id/students.json");
 			});
@@ -170,7 +181,6 @@
 			if (focusi!=-1&&focusj!=-1) return;
 			if (x!=lastChoose) lastChoose=x,p=0;
 			else p=1-p;
-			console.log(x,p);
 			qsort(0,m-1,x,p);
 			showInfo();
 		}
@@ -248,25 +258,27 @@
 			var i,j,text="";
 			text+='<h3>实验成绩</h3>';
 			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
-			text+='<thread><tr><th colspan="'+(n-1)+'">'+classInfo+'</th>';
+			text+='<thread><tr><th colspan="'+(n1+n2-1)+'">'+classInfo+'</th>';
 			text+='<th><a id="export" onclick="clickDownload(this)" download="'+classInfo+'.csv" href="#">导出</a>'+'</th></tr>';
-			text+='<tr><th colspan="4">学生信息</th><th colspan="'+(n-4)+'">实验情况</th></tr>';
+			text+='<tr><th colspan="'+n1+'">学生信息</th><th colspan="'+n2+'">实验情况</th></tr>';
 			text+='<tr>';
-			for (i=0;i<n;++i) if (i!=5&&i!=6&&i!=7)
-			text+='<th onclick="option('+i+')">'+items[i]+'</th>';
-			else
-			text+='<th>'+items[i]+'</th>';
+			for (i=0;i<n1;++i)
+			text+='<th onclick="option('+i+')">'+items.peopleInfo[i]+'</th>';
+			for (i=0;i<n2;++i)
+			text+='<th onclick="option('+n1+i+')">'+items.scoreInfo[i]+'</th>';
 			text+='</thread><tbody>';
 			for (i=0;i<m;++i)
 			{
 				text+='<tr>';
-				for (j=0;j<n;++j) if (j!=4)
-				{
-					text+='<td>'+info[i][j]+'</td>';
-				}else
-				{
-					text+='<td ondblclick="change('+(i+3)+','+j+')">'+info[i][j]+'</td>';
-				}
+				text+='<td>'+info[i].people.student_number+'</td>';
+				text+='<td>'+info[i].people.name+'</td>';
+				text+='<td>'+info[i].people.department+'</td>';
+				text+='<td>'+info[i].people.class_name+'</td>';
+				text+='<td ondblclick="change('+(i+3)+','+n1+')">'+info[i].scoreInfo.score+'</td>';
+				text+='<td>'+info[i].scoreInfo.content+'</td>';
+				text+='<td>'+info[i].scoreInfo.picture_number+'</td>';
+				text+='<td>'+info[i].scoreInfo.video_number+'</td>';
+				text+='<td>'+info[i].scoreInfo.creator_name+'</td>';
 				text+='</tr>';
 			}
 			text+='</tbody></table>';

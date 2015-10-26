@@ -17,8 +17,9 @@
 /db/tmp
 # Ignore jetbrains ide info
 /.idea
-/app/idea
-/db/idea
+/app/.idea
+/app/PAPA_APP/.idea
+/db/.idea
 
 *~
 # ignore mp4
