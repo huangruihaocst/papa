@@ -49,6 +49,8 @@ public class CourseActivity extends AppCompatActivity
     int id;
     String token;
 
+    LinearLayout linearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +100,9 @@ public class CourseActivity extends AppCompatActivity
             MenuItem item = menu.findItem(R.id.nav_upload_history);
             item.setVisible(false);
         }
-        setHeaderView(navigationView);
+        linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
+
+        getHeaderView(navigationView);
 
         getStudentCourses();
         getTeacherCourses();
@@ -434,10 +438,63 @@ public class CourseActivity extends AppCompatActivity
     }
 
     //a function to change the profile in the navigation drawer, just call it in another thread
-    private void setHeaderView(NavigationView navigationView){
-        LinearLayout linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
+    private void getHeaderView(NavigationView navigationView){
+        Log.i(tag, id + " " + token + " = id, token ");
+        new GetUsrInfoTask(this).execute(new PapaDataBaseManager.GetUsrInfoRequest(id, token));
+    }
+
+    private void setHeaderView(PapaDataBaseManager.GetUsrInfoReply r){
         TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
         TextView mail_label = (TextView)findViewById(R.id.mail_label);
         ImageView image_label = (ImageView)findViewById(R.id.image_label);
+
+        username_label.setText(r.usrName);
+        mail_label.setText(r.mail);
     }
+
+    class GetUsrInfoTask extends
+            AsyncTask<PapaDataBaseManager.GetUsrInfoRequest, Exception, PapaDataBaseManager.GetUsrInfoReply> {
+        ProgressDialog proDialog;
+
+        public GetUsrInfoTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetUsrInfoReply doInBackground
+                (PapaDataBaseManager.GetUsrInfoRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getUsrInfo(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetUsrInfoReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setHeaderView(rlt);
+        }
+    }
+
 }
