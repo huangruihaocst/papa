@@ -7,7 +7,7 @@ class FilesController < ApplicationController
   def index
     case
       when params[:student_id] && params[:lesson_id]
-        check_token(params[:student_id], params[:token])
+        #check_token(params[:student_id], params[:token])
         @files = StudentFile.where(student_id: params[:student_id]).where(lesson_id: params[:lesson_id])
       when params[:assistant_id] && params[:lesson_id]
         check_token(params[:assistant_id], params[:token])
