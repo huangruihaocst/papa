@@ -63,7 +63,7 @@ public abstract class PapaDataBaseManager {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
-    // 获取学生课程
+    // 获取学生课程 Course
     static public class GetCourseRequest
     {
         public int id;
@@ -94,7 +94,7 @@ public abstract class PapaDataBaseManager {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
-    // 获取学生课程
+    // 获取学生课程 Lesson
     static public class GetLessonRequest
     {
         public int courseId;
@@ -119,4 +119,38 @@ public abstract class PapaDataBaseManager {
     public abstract GetLessonReply getLesson(GetLessonRequest request) throws PapaHttpClientException;
 
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    // 获取用户信息
+    static public class GetUsrInfoRequest
+    {
+        public int id;
+        public String token;
+
+        public GetUsrInfoRequest(int id, String token)
+        {
+            this.id = id;
+            this.token = token;
+        }
+    }
+
+    static public class GetUsrInfoReply
+    {
+        public int id;
+        public String usrName;
+        public String mail;
+        public String phone;
+
+        public GetUsrInfoReply(int id, String usrName, String mail, String phone)
+        {
+            this.id = id;
+            this.usrName = usrName;
+            this.mail = mail;
+            this.phone = phone;
+        }
+    }
+
+    // 使用 POST 方法登录 返回是否成功
+    public abstract GetUsrInfoReply getUsrInfo(GetUsrInfoRequest request) throws PapaHttpClientException;
 }
