@@ -7,11 +7,25 @@ class FilesController < ApplicationController
   def index
     case
       when params[:student_id] && params[:lesson_id]
-        #check_token(params[:student_id], params[:token])
-        @files = StudentFile.where(student_id: params[:student_id]).where(lesson_id: params[:lesson_id])
+        lesson = Lesson.find(params[:lesson_id])
+        student = User.find(params[:student_id])
+        unless lesson.course.students.include?(student)
+          check_token(params[:student_id], params[:token])
+        end
+
+        student_files = StudentFile.where(student_id: params[:student_id]).where(lesson_id: params[:lesson_id])
+        @files = FileResource.none
+        student_files.each do |file|
+          @files <<= file.file_resource
+        end
+
       when params[:assistant_id] && params[:lesson_id]
         check_token(params[:assistant_id], params[:token])
-        @files = AssistantFile.where(assistant_id: params[:assistant_id]).where(lesson_id: params[:lesson_id])
+        assistant_files = AssistantFile.where(assistant_id: params[:assistant_id]).where(lesson_id: params[:lesson_id])
+        @files = FileResource.none
+        assistant_files.each do |file|
+          @files <<= file.file_resource
+        end
       when params[:lesson_id]
         @files = Lesson.find(params[:lesson_id]).attached_files
       when params[:course_id]
