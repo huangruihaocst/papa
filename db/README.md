@@ -209,7 +209,6 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     ?POST    /students/1/lessons/1/comments.json
         resource_not_found: student_id或者lesson_id不存在或者该学生不在该课程中
         
-        
     # 课程/实验课相关
     GET    /students/1/courses.json  获得所有课程           "courses": [course...]                       Student
         permission_denied: student_id和当前登陆用户不匹配
