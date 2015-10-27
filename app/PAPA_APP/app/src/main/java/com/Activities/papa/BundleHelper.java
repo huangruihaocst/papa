@@ -181,7 +181,7 @@ public class BundleHelper implements Parcelable{
 
     public PapaDataBaseManager getPapaDataBaseManager()
     {
-        return new PapaDataBaseManagerJiaDe();
+        return new PapaDataBaseManagerReal();
     }
 }
 

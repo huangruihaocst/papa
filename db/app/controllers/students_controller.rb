@@ -10,7 +10,10 @@ class StudentsController < ApplicationController
     if params[:course_id]
       begin
         course = Course.find(params[:course_id])
-        must_be_a_teacher_of(params[:token], course)
+
+        user = check_login
+
+        raise TokenException.new(REASON_PERMISSION_DENIED) unless course.teachers.include?(user) || course.assistants.include?(user)
 
         participations = course.participations.where(role: ROLE_STUDENT)
         @students = User.none
