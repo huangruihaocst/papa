@@ -44,6 +44,10 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                     "/users/sign_in.json", h
             );
 
+
+            if(replyObj.getBoolean("is_admin") == true) throw new PapaDataBaseAdminError();
+            if(replyObj.getBoolean("is_teacher") == true) throw new PapaDataBaseTeacherError();
+
             return new SignInReply(replyObj.getInt("id"), replyObj.getString("token"));
         }
         catch(org.json.JSONException e)
