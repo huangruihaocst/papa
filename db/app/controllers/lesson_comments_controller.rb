@@ -26,6 +26,7 @@ class LessonCommentsController < ApplicationController
 
   # GET /lessons/1/students/1/comment.json
   def default
+    puts '123'
     lesson = Lesson.find(params[:lesson_id])
     student = User.find(params[:student_id])
     raise RequestException.new(REASON_PERMISSION_DENIED) unless lesson.course.students.include?(student)
