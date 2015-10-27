@@ -12,10 +12,14 @@ module Users
       respond_to do |format|
         format.html { super }
         format.json do
-          @user = warden.authenticate!(auth_options)
-          sign_in(resource_name, @user)
-          token = @user.create_token
-          render json: { status: STATUS_SUCCESS, token: token.token, id: @user.id, is_teacher: @user.is_teacher?, is_admin: @user.is_admin? }
+          @user = warden.authenticate(auth_options)
+          if @user
+            sign_in(resource_name, @user)
+            token = current_user.create_token
+            render json: { status: STATUS_SUCCESS, token: token.token, id: @user.id, is_teacher: @user.is_teacher?, is_admin: @user.is_admin? }
+          else
+            render json: { status: STATUS_FAIL, reason: REASON_INVALID_FIELD }
+          end
         end
       end
     end

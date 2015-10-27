@@ -1,10 +1,13 @@
 package com.Activities.papa;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -24,18 +27,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+
 public class DetailActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+    PapaDataBaseManager papaDataBaseManager;
 
     String experiment_name;
     String identity;
     BundleHelper bundleHelper = new BundleHelper();
     TextView user_id;
     TextView user_class;
-    EditText user_grade;
+    EditText user_grades;
     EditText user_comment;
     private static final int SELECT_PICTURE = 1;
     private String selectedImagePath;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +60,7 @@ public class DetailActivity extends AppCompatActivity
         bundleHelper = data.getParcelable(key_to_detail);
         experiment_name = bundleHelper.getExperimentName();
         identity = bundleHelper.getIdentity();
+        papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -56,7 +69,7 @@ public class DetailActivity extends AppCompatActivity
 
         user_id = (TextView)findViewById(R.id.user_id);
         user_class = (TextView)findViewById(R.id.user_class);
-        user_grade = (EditText)findViewById(R.id.user_grade);
+        user_grades = (EditText)findViewById(R.id.user_grade);
         user_comment = (EditText)findViewById(R.id.user_comment);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_edit_detail);
@@ -66,8 +79,8 @@ public class DetailActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                user_grade.setEnabled(true);
-                user_grade.setFocusable(true);
+                user_grades.setEnabled(true);
+                user_grades.setFocusable(true);
                 user_comment.setEnabled(true);
                 user_comment.setFocusable(true);
                 Snackbar.make(view,getString(R.string.now_editable), Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -89,7 +102,10 @@ public class DetailActivity extends AppCompatActivity
         }
         setHeaderView(navigationView);
 
-        getDetail();
+        getComment();
+
+        user_grades.setEnabled(false);
+        user_comment.setEnabled(false);
     }
 
     @Override
@@ -107,10 +123,8 @@ public class DetailActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.detail, menu);
         if(identity.equals("teacher_assistant")){
-            MenuItem item_qr_code = menu.findItem(R.id.action_generate_QR_code);
-            item_qr_code.setVisible(false);
-            MenuItem item_make_comments = menu.findItem(R.id.action_make_comments);
-            item_make_comments.setTitle(getString(R.string.action_view_comments));
+            MenuItem item = menu.findItem(R.id.action_generate_QR_code);
+            item.setVisible(false);
         }
         return true;
     }
@@ -146,14 +160,6 @@ public class DetailActivity extends AppCompatActivity
         }else if(id == R.id.action_student_information){
             return true;
         }else if(id == R.id.action_generate_QR_code){
-            return true;
-        }else if(id == R.id.action_make_comments){
-            Intent intent = new Intent(DetailActivity.this,CommentActivity.class);
-            Bundle data = new Bundle();
-            String key_detail_comment = getString(R.string.key_detail_comment);
-            data.putParcelable(key_detail_comment,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
             return true;
         }
 
@@ -230,16 +236,74 @@ public class DetailActivity extends AppCompatActivity
     }
 
     //call this in another thread
-    private void getDetail(){
-        user_id.setText("2014");
-        user_class.setText("计43");
-        String comment = "";
-        for(int i = 0;i < 100;i ++){
-            comment += "吼啊";
+    private void getComment(){
+        new GetCommentTask(this).execute(
+                new PapaDataBaseManager.GetCommentsRequest(
+                        bundleHelper.getExperiment_id(),
+                        bundleHelper.getStudentId(),
+                        bundleHelper.getToken()
+                )
+        );
+    }
+
+    private void setComment(PapaDataBaseManager.GetCommentsReply reply)
+    {
+        user_id.setText(reply.stuId);
+        user_class.setText(reply.className);
+
+        user_grades.setText(reply.score);
+        user_comment.setText(reply.comments);
+
+    }
+
+    class GetCommentTask extends
+            AsyncTask<PapaDataBaseManager.GetCommentsRequest, Exception, PapaDataBaseManager.GetCommentsReply> {
+        ProgressDialog proDialog;
+
+        public GetCommentTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
         }
-        user_comment.setText(comment);
-        user_grade.setEnabled(false);
-        user_comment.setEnabled(false);
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetCommentsReply doInBackground
+                (PapaDataBaseManager.GetCommentsRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getComments(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+
+            if(e[0] instanceof PapaDataBaseResourceNotFound)
+                onBackPressed();
+
+            // if(e)
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetCommentsReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setComment(rlt);
+        }
     }
     
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

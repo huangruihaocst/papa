@@ -121,26 +121,26 @@ public abstract class PapaDataBaseManager {
     /////////////////////////////////////////////////////////////////////////////////////////////
 
     // 获取用户信息
-    static public class GetUsrInfoRequest
+    static public class UsrInfoRequest
     {
         public int id;
         public String token;
 
-        public GetUsrInfoRequest(int id, String token)
+        public UsrInfoRequest(int id, String token)
         {
             this.id = id;
             this.token = token;
         }
     }
 
-    static public class GetUsrInfoReply
+    static public class UsrInfoReply
     {
         public int id;
         public String usrName;
         public String mail;
         public String phone;
 
-        public GetUsrInfoReply(int id, String usrName, String mail, String phone)
+        public UsrInfoReply(int id, String usrName, String mail, String phone)
         {
             this.id = id;
             this.usrName = usrName;
@@ -150,10 +150,11 @@ public abstract class PapaDataBaseManager {
     }
 
     // 使用 POST 方法登录 返回是否成功
-    public abstract GetUsrInfoReply getUsrInfo(GetUsrInfoRequest request) throws PapaHttpClientException;
+    public abstract UsrInfoReply getUsrInfo(UsrInfoRequest request) throws PapaHttpClientException;
 
 
     //////////////////////////////////////////////////////////////////////////
+
     // 助教获取学生列表
 
     static public class StudentsRequest
@@ -178,7 +179,44 @@ public abstract class PapaDataBaseManager {
         }
     }
 
-    // 使用 POST 方法登录 返回是否成功
-    public abstract StudentsReply getStudents(StudentsRequest request) throws PapaHttpClientException;
+    public abstract StudentsReply getStudents(StudentsRequest request)
+            throws PapaHttpClientException;
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // 获取助教对学生的评分
+
+    static public class GetCommentsRequest
+    {
+        public int lessonId;
+        public int personId;
+        public String token;
+
+        public GetCommentsRequest(int lessonId, int personId, String token)
+        {
+            this.lessonId = lessonId;
+            this.personId = personId;
+            this.token = token;
+        }
+    }
+
+    static public class GetCommentsReply
+    {
+        public String stuId;
+        public String className;
+        public String score;
+        public String comments;
+        public GetCommentsReply(String stuId, String className, String score, String comments)
+        {
+            this.stuId = stuId;
+            this.className = className;
+            this.score = score;
+            this.comments = comments;
+        }
+    }
+
+    public abstract GetCommentsReply getComments(GetCommentsRequest request)
+            throws PapaHttpClientException;
+
+
 
 }

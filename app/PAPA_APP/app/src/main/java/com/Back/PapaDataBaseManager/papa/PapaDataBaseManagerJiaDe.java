@@ -97,10 +97,10 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     }
 
     @Override
-    public GetUsrInfoReply getUsrInfo(GetUsrInfoRequest request) throws PapaHttpClientException {
+    public UsrInfoReply getUsrInfo(UsrInfoRequest request) throws PapaHttpClientException {
         kaSi();
         if(request.token.equals("watashi"))
-            return new GetUsrInfoReply(1, "watashi", "watashi [at] gmail [dot] com", "0800092000");
+            return new UsrInfoReply(1, "watashi", "watashi [at] gmail [dot] com", "0800092000");
         throw new PapaDataBaseNotSuccessError();
     }
 
@@ -113,5 +113,10 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
         r.students.add(new AbstractMap.SimpleEntry<>(3, "十六夜　咲夜"));
         r.students.add(new AbstractMap.SimpleEntry<>(4, "チルノ"));
         return r;
+    }
+
+    @Override
+    public GetCommentsReply getComments(GetCommentsRequest request) throws PapaHttpClientException {
+        return new GetCommentsReply("(stuId) 0800092000", "LaoBi's class", "0", "Oh, I remember you. You have got a zer~o~.");
     }
 }

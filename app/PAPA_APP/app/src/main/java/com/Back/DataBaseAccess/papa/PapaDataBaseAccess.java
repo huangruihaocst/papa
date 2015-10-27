@@ -51,6 +51,8 @@ public class PapaDataBaseAccess
             JSONObject replyObj = (JSONObject) jsonParser.nextValue();
 
             if (!replyObj.getString("status").equals("successful")) {
+                if(replyObj.getString("reason").equals("resource_not_found"))
+                    throw new PapaDataBaseResourceNotFound();
                 throw new PapaDataBaseNotSuccessError();
             }
 

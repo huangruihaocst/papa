@@ -199,8 +199,8 @@ public class ExperimentActivity extends AppCompatActivity
         }
 
         @Override
-        public Object getItem(int arg0) {
-            return arg0;
+        public Object getItem(int position) {
+            return lst.get(position);
         }
 
         @Override
@@ -220,12 +220,6 @@ public class ExperimentActivity extends AppCompatActivity
     }
 
     private void getExperiments(){
-        /*
-        experiment_list = new String[10];
-        for(int i = 0;i < 10;i ++){
-            experiment_list[i] = "实验" + i;
-        }
-        */
         new Task(this).execute(new PapaDataBaseManager.LessonRequest(courseId));
     }
 
@@ -283,8 +277,12 @@ public class ExperimentActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
                 Bundle data = new Bundle();
-                bundleHelper.setExperimentName(rlt.lesson.get(position).getValue());
-                bundleHelper.setExperiment_id(rlt.lesson.get(position).getKey());
+
+
+                Map.Entry<Integer, String> item = (Map.Entry<Integer, String>)parent.getItemAtPosition(position);
+
+                bundleHelper.setExperimentName(item.getValue());
+                bundleHelper.setExperiment_id(item.getKey());
 
                 if(identity.equals("teacher_assistant")){
                     String key_experiment_student = getString(R.string.key_experiment_student);

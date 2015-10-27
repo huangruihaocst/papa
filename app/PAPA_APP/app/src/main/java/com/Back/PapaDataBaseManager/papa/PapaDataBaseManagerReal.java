@@ -56,6 +56,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         }
     }
 
+
     @Override
     public SemesterReply getSemester() throws PapaHttpClientException
     {
@@ -195,7 +196,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
 
     @Override
-    public GetUsrInfoReply getUsrInfo(GetUsrInfoRequest request) throws PapaHttpClientException {
+    public UsrInfoReply getUsrInfo(UsrInfoRequest request) throws PapaHttpClientException {
         try
         {
             HashMap<String, String> h = new HashMap<>();
@@ -205,7 +206,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             );
 
             JSONObject obj = reply.getJSONObject("user");
-            GetUsrInfoReply ans = new GetUsrInfoReply(
+            UsrInfoReply ans = new UsrInfoReply(
                     obj.getInt("id"), obj.getString("name"),
                     obj.getString("email"), obj.getString("phone")
             );
@@ -252,6 +253,43 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         catch(org.json.JSONException e) {
             throw new PapaDataBaseJsonError();
         }
+    }
 
+    @Override
+    public GetCommentsReply getComments(GetCommentsRequest request) throws PapaHttpClientException {
+        try
+        {
+            HashMap<String, String> h = new HashMap<>();
+
+            JSONObject reply_1 = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/lessons/" + request.lessonId + "/students/" +
+                            request.personId + "/comment.json",
+                    null
+            );
+
+
+            h.put("token", request.token);
+
+            JSONObject reply_2 = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/students/" + request.personId + ".json",
+                    h
+            );
+
+            reply_1 = reply_1.getJSONObject("student_comment");
+            reply_2 = reply_2.getJSONObject("student");
+
+
+            return new GetCommentsReply(
+                    reply_2.getString("student_number"),
+                    reply_2.getString("department") + " " + reply_2.getString("class_name"),
+                    reply_1.getString("score"),
+                    reply_1.getString("content")
+            );
+        }
+        catch(org.json.JSONException e) {
+            throw new PapaDataBaseJsonError();
+        }
     }
 }
