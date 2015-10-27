@@ -70,6 +70,6 @@ l31.lesson_statuses.create(user_id: u3.id, creator_id: u2.id, score: 0.5)
 l11.lesson_comments.create(score: '123', content: 'haha', creator_id: u4.id)
 l11.lesson_comments.create(score: '123', content: 'hahaha', creator_id: u3.id)
 
-#FileResource.create(path: '')
+FileResource.create(path: 'default_avator.jpg', )
 
 puts '--- init_data created ---'
