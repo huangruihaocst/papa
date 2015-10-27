@@ -4,4 +4,5 @@ json.teacher do
   json.name   @teacher.name
   json.phone  @teacher.phone
   json.phone  @teacher.email
+  json.avator_id   @teacher.avator_id
 end
