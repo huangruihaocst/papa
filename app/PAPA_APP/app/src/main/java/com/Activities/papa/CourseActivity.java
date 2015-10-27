@@ -7,6 +7,11 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -66,14 +71,15 @@ public class CourseActivity extends AppCompatActivity
         toolbar.setTitle(getString(R.string.hint_select_course));
         setSupportActionBar(toolbar);
 
-        tabLayout = (TabLayout) findViewById(R.id.semester_tab);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-
+        final ViewPager viewPager = (ViewPager)findViewById(R.id.course_viewpager);
+        viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager()));
         this.papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
-
 
         getSemester();
 
+        tabLayout = (TabLayout) findViewById(R.id.semester_tab);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -101,8 +107,8 @@ public class CourseActivity extends AppCompatActivity
 
         getHeaderView(navigationView);
 
-        getStudentCourses();
-        getTeacherCourses();
+//        getStudentCourses();
+//        getTeacherCourses();
     }
 
 
@@ -494,4 +500,27 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
+    public class CourseViewPagerAdapter extends FragmentPagerAdapter{
+        int tabs_amount;
+        private String tabTitles[] = new String[] { "Tab1", "Tab2", "Tab3" };
+
+        public CourseViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return CourseFragment.newInstance("1","2");
+        }
+
+        @Override
+        public int getCount() {
+            return tabs_amount;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabTitles[position];
+        }
+    }
 }

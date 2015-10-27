@@ -17,41 +17,6 @@
         tools:context="com.example.huang.papa.CourseActivity"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/teacher_assistant"
-            android:textSize="40sp"
-            android:textColor="@color/colorAccent"
-            android:id="@+id/text_teacher_assistant"/>
-
-        <ListView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/course_teacher_assistant_list"
-            android:divider="#FFFFFF"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/text_teacher_assistant">
-        </ListView>
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/student"
-            android:textSize="40sp"
-            android:textColor="@color/colorAccent"
-            android:layout_below="@+id/course_teacher_assistant_list"
-            android:id="@+id/text_student"/>
-
-        <ListView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/course_student_list"
-            android:divider="#FFFFFF"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/text_student">
-        </ListView>
-
     </RelativeLayout>
 
 <!--</android.support.v4.widget.NestedScrollView>-->
