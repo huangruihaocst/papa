@@ -64,59 +64,57 @@ public abstract class PapaDataBaseManager {
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     // 获取学生课程 Course
-    static public class GetCourseRequest
+    static public class CourseRequest
     {
         public int id;
         public String token;
 
-        public GetCourseRequest(int id, String token)
+        public CourseRequest(int id, String token)
         {
             this.id = id;
             this.token = token;
         }
     }
 
-    static public class GetCourseReply
+    static public class CourseReply
     {
         public List<Map.Entry<Integer, String>> course;
 
-        public GetCourseReply()
+        public CourseReply()
         {
             course = new ArrayList<>();
         }
     }
 
-    // 使用 POST 方法登录 返回是否成功
-    public abstract GetCourseReply getStuCourse(GetCourseRequest request) throws PapaHttpClientException;
-    public abstract GetCourseReply getTACourse(GetCourseRequest request) throws PapaHttpClientException;
+    public abstract CourseReply getStuCourse(CourseRequest request) throws PapaHttpClientException;
+    public abstract CourseReply getTACourse(CourseRequest request) throws PapaHttpClientException;
 
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     // 获取学生课程 Lesson
-    static public class GetLessonRequest
+    static public class LessonRequest
     {
         public int courseId;
 
-        public GetLessonRequest(int courseId)
+        public LessonRequest(int courseId)
         {
             this.courseId = courseId;
         }
     }
 
-    static public class GetLessonReply
+    static public class LessonReply
     {
         public List<Map.Entry<Integer, String>> lesson;
 
-        public GetLessonReply()
+        public LessonReply()
         {
             lesson = new ArrayList<>();
         }
     }
 
-    // 使用 POST 方法登录 返回是否成功
-    public abstract GetLessonReply getLesson(GetLessonRequest request) throws PapaHttpClientException;
+    public abstract LessonReply getLesson(LessonRequest request) throws PapaHttpClientException;
 
 
 
@@ -153,4 +151,34 @@ public abstract class PapaDataBaseManager {
 
     // 使用 POST 方法登录 返回是否成功
     public abstract GetUsrInfoReply getUsrInfo(GetUsrInfoRequest request) throws PapaHttpClientException;
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // 助教获取学生列表
+
+    static public class StudentsRequest
+    {
+        public int courseId;
+        public String token;
+
+        public StudentsRequest(int courseId, String token)
+        {
+            this.courseId = courseId;
+            this.token = token;
+        }
+    }
+
+    static public class StudentsReply
+    {
+        public List<Map.Entry<Integer, String>> students;
+
+        public StudentsReply()
+        {
+            students = new ArrayList<>();
+        }
+    }
+
+    // 使用 POST 方法登录 返回是否成功
+    public abstract StudentsReply getStudents(StudentsRequest request) throws PapaHttpClientException;
+
 }

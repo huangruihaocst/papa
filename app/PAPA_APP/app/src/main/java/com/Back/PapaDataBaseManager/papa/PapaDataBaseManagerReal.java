@@ -83,14 +83,14 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     }
 
     @Override
-    public GetCourseReply getStuCourse(GetCourseRequest request) throws PapaHttpClientException {
+    public CourseReply getStuCourse(CourseRequest request) throws PapaHttpClientException {
         try
         {
             HashMap<String, String> h = new HashMap<>();
 
             h.put("token", request.token);
 
-            GetCourseReply ans = new GetCourseReply();
+            CourseReply ans = new CourseReply();
             JSONObject reply = dbAccess.getDataBaseReplyAsJson(
                     PapaAbstractHttpClient.HttpMethod.get,
                     "/students/" + request.id + "/courses.json", h
@@ -120,14 +120,14 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
 
     @Override
-    public GetCourseReply getTACourse(GetCourseRequest request) throws PapaHttpClientException {
+    public CourseReply getTACourse(CourseRequest request) throws PapaHttpClientException {
         try
         {
             HashMap<String, String> h = new HashMap<String, String>();
 
             h.put("token", request.token);
 
-            GetCourseReply ans = new GetCourseReply();
+            CourseReply ans = new CourseReply();
             JSONObject reply = dbAccess.getDataBaseReplyAsJson(
                     PapaAbstractHttpClient.HttpMethod.get,
                     "/assistants/" + request.id + "/courses.json", h
@@ -156,12 +156,12 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     }
 
     @Override
-    public GetLessonReply getLesson(GetLessonRequest request) throws PapaHttpClientException {
+    public LessonReply getLesson(LessonRequest request) throws PapaHttpClientException {
         try
         {
             HashMap<String, String> h = new HashMap<>();
 
-            GetLessonReply ans = new GetLessonReply();
+            LessonReply ans = new LessonReply();
             JSONObject reply = dbAccess.getDataBaseReplyAsJson(
                     PapaAbstractHttpClient.HttpMethod.get,
                     "/courses/" + request.courseId + "/lessons.json", h
@@ -211,5 +211,10 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         catch(org.json.JSONException e) {
             throw new PapaDataBaseJsonError();
         }
+    }
+
+    @Override
+    public StudentsReply getStudents(StudentsRequest request) throws PapaHttpClientException {
+        return null;
     }
 }

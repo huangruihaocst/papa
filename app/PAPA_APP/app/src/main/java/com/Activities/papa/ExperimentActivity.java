@@ -27,8 +27,6 @@ import android.widget.Toast;
 
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
-import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
 import java.util.List;
 import java.util.Map;
@@ -228,11 +226,11 @@ public class ExperimentActivity extends AppCompatActivity
             experiment_list[i] = "实验" + i;
         }
         */
-        new Task(this).execute(new PapaDataBaseManager.GetLessonRequest(courseId));
+        new Task(this).execute(new PapaDataBaseManager.LessonRequest(courseId));
     }
 
     class Task extends
-            AsyncTask<PapaDataBaseManager.GetLessonRequest, Exception,PapaDataBaseManager.GetLessonReply> {
+            AsyncTask<PapaDataBaseManager.LessonRequest, Exception,PapaDataBaseManager.LessonReply> {
         ProgressDialog proDialog;
 
         public Task(Context context) {
@@ -250,8 +248,8 @@ public class ExperimentActivity extends AppCompatActivity
         }
 
         @Override
-        protected PapaDataBaseManager.GetLessonReply doInBackground
-                (PapaDataBaseManager.GetLessonRequest... params) {
+        protected PapaDataBaseManager.LessonReply doInBackground
+                (PapaDataBaseManager.LessonRequest... params) {
             // 在后台
             try {
                 return papaDataBaseManager.getLesson(params[0]);
@@ -268,7 +266,7 @@ public class ExperimentActivity extends AppCompatActivity
         }
 
         @Override
-        protected void onPostExecute(PapaDataBaseManager.GetLessonReply rlt) {
+        protected void onPostExecute(PapaDataBaseManager.LessonReply rlt) {
             // UI
 
             proDialog.dismiss();
@@ -276,7 +274,7 @@ public class ExperimentActivity extends AppCompatActivity
         }
     }
 
-    void setExperiments(final PapaDataBaseManager.GetLessonReply rlt)
+    void setExperiments(final PapaDataBaseManager.LessonReply rlt)
     {
         ListView ExperimentListView = (ListView)findViewById(R.id.experiment_list);
         ExperimentListView.setAdapter(new MyAdapter(rlt.lesson));

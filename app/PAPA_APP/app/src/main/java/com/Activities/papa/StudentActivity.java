@@ -1,7 +1,10 @@
 package com.Activities.papa;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,12 +22,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+
+import java.util.List;
+import java.util.Map;
 
 public class StudentActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    String[] student_list;
     BundleHelper bundleHelper = new BundleHelper();
+
+    private PapaDataBaseManager papaDataBaseManager;
+    private int courseId;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +53,9 @@ public class StudentActivity extends AppCompatActivity
         toolbar.setTitle(experiment_name);
         setSupportActionBar(toolbar);
 
+        courseId = bundleHelper.getCourseId();
+        token = bundleHelper.getToken();
+
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -48,6 +64,8 @@ public class StudentActivity extends AppCompatActivity
 //                        .setAction("Action", null).show();
 //            }
 //        });
+
+        papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -62,24 +80,19 @@ public class StudentActivity extends AppCompatActivity
             MenuItem item = menu.findItem(R.id.nav_upload_history);
             item.setVisible(false);
         }
-        setHeaderView(navigationView);
+        // setHeaderView(navigationView);
 
-        getStudents(experiment_name);
-
-        final ListView StudentListView = (ListView)findViewById(R.id.student_list);
-        StudentListView.setAdapter(new MyAdapter());
-        StudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(StudentActivity.this,DetailActivity.class);
-                String key_to_detail = getString(R.string.key_to_detail);
-                Bundle data = new Bundle();
-                data.putParcelable(key_to_detail,bundleHelper);
-                intent.putExtras(data);
-                startActivity(intent);
-            }
-        });
+        getStudents();
     }
+
+
+    private void setHeaderView(NavigationView navigationView){
+        LinearLayout linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
+        TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
+        TextView mail_label = (TextView)findViewById(R.id.mail_label);
+        ImageView image_label = (ImageView)findViewById(R.id.image_label);
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -178,22 +191,31 @@ public class StudentActivity extends AppCompatActivity
     }
 
     private class MyAdapter extends BaseAdapter {
-        @Override
-        public int getCount(){
-            return student_list.length;
+        private List<Map.Entry<Integer, String>> lst;
+
+        public MyAdapter(List<Map.Entry<Integer, String>> lst) {
+            this.lst = lst;
         }
+
         @Override
-        public Object getItem(int arg0){
+        public int getCount() {
+            return lst.size();
+        }
+
+        @Override
+        public Object getItem(int arg0) {
             return arg0;
         }
+
         @Override
-        public long getItemId(int position){
+        public long getItemId(int position) {
             return position;
         }
+
         @Override
-        public View getView(int position, View convertView, ViewGroup parent){
+        public View getView(int position, View convertView, ViewGroup parent) {
             TextView mTextView = new TextView(getApplicationContext());
-            mTextView.setText(student_list[position]);
+            mTextView.setText(lst.get(position).getValue());
             mTextView.setTextSize(35);
 //            mTextView.setTextColor(getColor(R.color.colorPrimary));
             mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
@@ -201,17 +223,81 @@ public class StudentActivity extends AppCompatActivity
         }
     }
 
+    /*
     private void getStudents(String experiment_name){
         student_list = new String[10];
         for(int i = 0;i < 10;i ++){
             student_list[i] = "学生" + i;
         }
     }
+    */
 
-    private void setHeaderView(NavigationView navigationView){
-        LinearLayout linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
-        TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
-        TextView mail_label = (TextView)findViewById(R.id.mail_label);
-        ImageView image_label = (ImageView)findViewById(R.id.image_label);
+    void getStudents()
+    {
+        new GetStudentsTask(this).execute(new PapaDataBaseManager.StudentsRequest(courseId, token));
     }
+
+    void setStudents(PapaDataBaseManager.StudentsReply rlt)
+    {
+        final ListView StudentListView = (ListView)findViewById(R.id.student_list);
+        StudentListView.setAdapter(new MyAdapter(rlt.students));
+        StudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(StudentActivity.this, DetailActivity.class);
+                String key_to_detail = getString(R.string.key_to_detail);
+                Bundle data = new Bundle();
+                data.putParcelable(key_to_detail, bundleHelper);
+                intent.putExtras(data);
+                startActivity(intent);
+            }
+        });
+    }
+
+    class GetStudentsTask extends
+            AsyncTask<PapaDataBaseManager.StudentsRequest, Exception, PapaDataBaseManager.StudentsReply> {
+        ProgressDialog proDialog;
+
+        public GetStudentsTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.StudentsReply doInBackground
+                (PapaDataBaseManager.StudentsRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getStudents(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.StudentsReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setStudents(rlt);
+        }
+    }
+
+
 }

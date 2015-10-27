@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -29,8 +28,6 @@ import android.widget.Toast;
 
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
-import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -316,15 +313,15 @@ public class CourseActivity extends AppCompatActivity
 
     // Courses
     private void getStudentCourses() {
-        new GetStudentCourseTask(this).execute(new PapaDataBaseManager.GetCourseRequest(id, token));
+        new GetStudentCourseTask(this).execute(new PapaDataBaseManager.CourseRequest(id, token));
     }
 
     private void getTeacherCourses() {
-        new GetTeacherCourseTask(this).execute(new PapaDataBaseManager.GetCourseRequest(id, token));
+        new GetTeacherCourseTask(this).execute(new PapaDataBaseManager.CourseRequest(id, token));
     }
 
     class GetStudentCourseTask extends
-            AsyncTask<PapaDataBaseManager.GetCourseRequest, Exception, PapaDataBaseManager.GetCourseReply> {
+            AsyncTask<PapaDataBaseManager.CourseRequest, Exception, PapaDataBaseManager.CourseReply> {
         ProgressDialog proDialog;
 
         public GetStudentCourseTask(Context context) {
@@ -342,8 +339,8 @@ public class CourseActivity extends AppCompatActivity
         }
 
         @Override
-        protected PapaDataBaseManager.GetCourseReply doInBackground
-                (PapaDataBaseManager.GetCourseRequest... params) {
+        protected PapaDataBaseManager.CourseReply doInBackground
+                (PapaDataBaseManager.CourseRequest... params) {
             // 在后台
             try {
                 return papaDataBaseManager.getStuCourse(params[0]);
@@ -360,7 +357,7 @@ public class CourseActivity extends AppCompatActivity
         }
 
         @Override
-        protected void onPostExecute(PapaDataBaseManager.GetCourseReply rlt) {
+        protected void onPostExecute(PapaDataBaseManager.CourseReply rlt) {
             // UI
 
             proDialog.dismiss();
@@ -370,7 +367,7 @@ public class CourseActivity extends AppCompatActivity
 
 
     class GetTeacherCourseTask extends
-            AsyncTask<PapaDataBaseManager.GetCourseRequest, Exception, PapaDataBaseManager.GetCourseReply> {
+            AsyncTask<PapaDataBaseManager.CourseRequest, Exception, PapaDataBaseManager.CourseReply> {
         ProgressDialog proDialog;
 
         public GetTeacherCourseTask(Context context) {
@@ -388,8 +385,8 @@ public class CourseActivity extends AppCompatActivity
         }
 
         @Override
-        protected PapaDataBaseManager.GetCourseReply doInBackground
-                (PapaDataBaseManager.GetCourseRequest... params) {
+        protected PapaDataBaseManager.CourseReply doInBackground
+                (PapaDataBaseManager.CourseRequest... params) {
             // 在后台
             try {
                 return papaDataBaseManager.getTACourse(params[0]);
@@ -406,7 +403,7 @@ public class CourseActivity extends AppCompatActivity
         }
 
         @Override
-        protected void onPostExecute(PapaDataBaseManager.GetCourseReply rlt) {
+        protected void onPostExecute(PapaDataBaseManager.CourseReply rlt) {
             // UI
 
             proDialog.dismiss();
@@ -414,7 +411,7 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
-    private void setStudentCourses(final PapaDataBaseManager.GetCourseReply rlt) {
+    private void setStudentCourses(final PapaDataBaseManager.CourseReply rlt) {
         ListView CourseStudentListView = (ListView) findViewById(R.id.course_student_list);
         CourseStudentListView.setAdapter(new MyAdapter(rlt.course));
         CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -426,7 +423,7 @@ public class CourseActivity extends AppCompatActivity
     }
 
 
-    private void setTeacherCourses(final PapaDataBaseManager.GetCourseReply rlt) {
+    private void setTeacherCourses(final PapaDataBaseManager.CourseReply rlt) {
         ListView CourseTeacherAssistantListView = (ListView) findViewById(R.id.course_teacher_assistant_list);
         CourseTeacherAssistantListView.setAdapter(new MyAdapter(rlt.course));
         CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

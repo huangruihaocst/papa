@@ -7,7 +7,6 @@ import com.Back.NetworkAccess.papa.PapaHttpClientNot200Exception;
 
 import java.util.AbstractMap;
 import java.util.Calendar;
-import java.util.Random;
 
 /**
  * Created by shyo on 15-10-22.
@@ -56,30 +55,30 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     }
 
     @Override
-    public GetCourseReply getStuCourse(GetCourseRequest request) throws PapaHttpClientException {
+    public CourseReply getStuCourse(CourseRequest request) throws PapaHttpClientException {
         kaSi();
-        GetCourseReply r = new GetCourseReply();
+        CourseReply r = new CourseReply();
         r.course.add(new AbstractMap.SimpleEntry<>(2, "模拟电路实验"));
         return r;
     }
 
     @Override
-    public GetCourseReply getTACourse(GetCourseRequest request) throws PapaHttpClientException {
+    public CourseReply getTACourse(CourseRequest request) throws PapaHttpClientException {
         kaSi();
-        GetCourseReply r = new GetCourseReply();
+        CourseReply r = new CourseReply();
         r.course.add(new AbstractMap.SimpleEntry<>(1, "数字电路实验"));
         return r;
     }
 
     @Override
-    public GetLessonReply getLesson(GetLessonRequest request) throws PapaHttpClientException {
+    public LessonReply getLesson(LessonRequest request) throws PapaHttpClientException {
         kaSi();
 
         Calendar c = Calendar.getInstance();//可以对每个时间域单独修改
         if(c.get(Calendar.SECOND) % 2 == 1)
             throw new PapaHttpClientIOErrorException();
 
-        GetLessonReply r = new GetLessonReply();
+        LessonReply r = new LessonReply();
         if(request.courseId == 1)
         {
             r.lesson.add(new AbstractMap.SimpleEntry<>(1, "门电路实验"));
@@ -103,5 +102,16 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
         if(request.token.equals("watashi"))
             return new GetUsrInfoReply(1, "watashi", "watashi [at] gmail [dot] com", "0800092000");
         throw new PapaDataBaseNotSuccessError();
+    }
+
+    @Override
+    public StudentsReply getStudents(StudentsRequest request) throws PapaHttpClientException {
+        kaSi();
+        StudentsReply r = new StudentsReply();
+        r.students.add(new AbstractMap.SimpleEntry<>(1, "博麗 　霊夢"));
+        r.students.add(new AbstractMap.SimpleEntry<>(2, "霧雨　魔理沙"));
+        r.students.add(new AbstractMap.SimpleEntry<>(3, "十六夜　咲夜"));
+        r.students.add(new AbstractMap.SimpleEntry<>(4, "チルノ"));
+        return r;
     }
 }
