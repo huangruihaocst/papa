@@ -81,13 +81,14 @@ Rails.application.routes.draw do
   end
 
   get 'test' => 'test#index'
-  get 'manage' => 'manage#main_page'
-  get 'manage/MainPage' => 'manage#main_page'
-  get 'manage/CourseScore/:id' => 'manage#course_score'
-  get 'manage/ClassScore/:id' => 'manage#class_score'
-  get 'manage/CourseInfo/:id' => 'manage#course_info'
-  get 'manage/ClassInfo/:id' => 'manage#class_info'
-  get 'manage/ShowPhotos/:id' => 'manage#show_photos'
-  get 'manage/student/:id/lesson/:lessonId' => 'manage#student_lesson_info'
-  post 'manage/AddCourseToCurrentUser' => 'manage#AddCourseToCurrentUser'
+  namespace :manage do
+    get '' => 'manage#main_page'
+    get 'MainPage' => 'manage#main_page' ,as: :main_page
+    get 'CourseScore/:id' => 'manage#course_score'
+    get 'ClassScore/:id' => 'manage#class_score'
+    get 'CourseInfo/:id' => 'manage#course_info'
+    get 'ClassInfo/:id' => 'manage#class_info'
+    get 'ShowPhotos/:id' => 'manage#show_photos'
+    get 'student/:id/lesson/:lessonId' => 'manage#student_lesson_info'
+  end
 end

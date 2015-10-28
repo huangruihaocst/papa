@@ -13,6 +13,8 @@
       <div class="col-md-3">
         <div style="margin: 20px">
         <h2><%= @student.name%></h2>
+          <hr>
+          <img src="<%= @avator.path%>" width="80%">
         </div>
       </div>
       <div class="col-md-9">
@@ -27,7 +29,9 @@
                 <br>
                 <div class="panel panel-success">
                   <div class="panel-heading">实验评论：</div>
-                  <div class="panel-body" id="lesson-comment">实验做得不错</div>
+                  <div class="panel-body">
+                    <p id="lesson-comment"></p>
+                  </div>
                 </div>
             </div>
             <form method="post" name="student_comment" target="" id="teacher-form"
@@ -89,7 +93,8 @@
       });
       $.get("/students/<%=@student.id %>/lessons/<%=@lesson.id %>/comment.json",{},function(data)
       {
-          console.log(data);
+          $("#lesson-score").val(data.lesson_comment.score);
+          $("#lesson-comment").html(data.lesson_comment.content);
       });
       // test case
       data=[];
