@@ -15,6 +15,14 @@ class User < ActiveRecord::Base
   has_many :from_assistant_comments, class_name: 'StudentComment', foreign_key: :student_id
   has_many :posted_message, class_name: 'Message', foreign_key: :creator_id
 
+  # def self.create(params)
+  #   if params.keys.include?(:avator_id)
+  #     old_create(params)
+  #   else
+  #     old_create(params.merge({ avator_id: FileResource.find_by_name('default_avator.jpg').id }))
+  #   end
+  # end
+
   # the following 4 methods allow us to login with phone or email
   def login=(login)
     @login = login

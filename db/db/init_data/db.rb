@@ -22,6 +22,8 @@ l32 = c3.lessons.create(name: 'as-l2', start_time: Time.now, end_time: Time.now 
 l33 = c3.lessons.create(name: 'as-l3', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 l34 = c3.lessons.create(name: 'as-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 
+default_avator = FileResource.create(path: 'default_avator.jpg', name: 'default_avator.jpg', file_type: 'jpg')
+
 admin0 = User.create(name:'admin', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123',
                  student_number: '1230', class_name: '44', department: 'cst', description: '123', is_admin: true)
 teacher0 = User.create(name:'alex', phone:'1234', email:'aa@b.c', password:'123', password_confirmation:'123',
@@ -62,13 +64,15 @@ f2 = FileResource.create(name: '2.jpg', file_type: 'jpg', path: '2.jpg', creator
 
 l11.student_files.create(student_id: u3.id, file_resource_id: f1.id)
 
-l11.lesson_statuses.create(user_id: u4.id, creator_id: u2.id, score: 123)
-l11.lesson_statuses.create(user_id: u5.id, creator_id: u2.id, score: 111)
-l11.lesson_statuses.create(user_id: u6.id, creator_id: teacher0.id, score: 100)
-l31.lesson_statuses.create(user_id: u3.id, creator_id: u2.id, score: 0.5)
+l11.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '123', content: 'haha')
+l11.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: 'haha1')
+l11.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'haha2')
+l11.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'haha3')
 
 l11.lesson_comments.create(score: '123', content: 'haha', creator_id: u4.id)
 l11.lesson_comments.create(score: '123', content: 'hahaha', creator_id: u3.id)
+
+
 
 
 puts '--- init_data created ---'
