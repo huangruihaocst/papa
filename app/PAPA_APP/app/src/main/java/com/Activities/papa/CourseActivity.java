@@ -1,5 +1,6 @@
 package com.Activities.papa;
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -47,6 +48,7 @@ public class CourseActivity extends AppCompatActivity
     PapaDataBaseManager papaDataBaseManager;
 
     TabLayout tabLayout;
+    ViewPager viewPager;
 
     int id;
     String token;
@@ -71,15 +73,37 @@ public class CourseActivity extends AppCompatActivity
         toolbar.setTitle(getString(R.string.hint_select_course));
         setSupportActionBar(toolbar);
 
-        final ViewPager viewPager = (ViewPager)findViewById(R.id.course_viewpager);
-        viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager()));
         this.papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
 
         getSemester();
 
         tabLayout = (TabLayout) findViewById(R.id.semester_tab);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+//        tabLayout.addTab(tabLayout.newTab().setText("111"));
+//        tabLayout.addTab(tabLayout.newTab().setText("222"));
+//        tabLayout.addTab(tabLayout.newTab().setText("333"));
+
+        viewPager = (ViewPager)findViewById(R.id.course_viewpager);
+        //viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager()));
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        //tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        //tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -316,10 +340,13 @@ public class CourseActivity extends AppCompatActivity
 
     void setSemester(HashMap h) {
         Iterator iterator = h.keySet().iterator();
+        int count = 0;
         while (iterator.hasNext()) {
             Object key = iterator.next();
             tabLayout.addTab(tabLayout.newTab().setText((String) h.get(key)));
+            count++;
         }
+        viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager(), count));
     }
 
 
@@ -506,17 +533,21 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
-    public class CourseViewPagerAdapter extends FragmentPagerAdapter{
-        int tabs_amount;
+    public class CourseViewPagerAdapter extends FragmentStatePagerAdapter{
+        int tabs_amount = 3;
         private String tabTitles[] = new String[] { "Tab1", "Tab2", "Tab3" };
 
         public CourseViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
+        public CourseViewPagerAdapter(FragmentManager fm, int count) {
+            this(fm);
+            this.tabs_amount = count;
+        }
 
         @Override
         public Fragment getItem(int position) {
-            return CourseFragment.newInstance("1","2");
+            return CourseFragment.newInstance("1", String.valueOf(position));
         }
 
         @Override
