@@ -215,6 +215,39 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
     @Override
     public StudentsReply getStudents(StudentsRequest request) throws PapaHttpClientException {
-        return null;
+        try
+        {
+            HashMap<String, String> h = new HashMap<>();
+
+            h.put("token", request.token);
+
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/courses/" + request.courseId + "/students.json", h
+            );
+
+
+            StudentsReply ans = new StudentsReply();
+
+            JSONArray array = reply.getJSONArray("students");
+            Log.i(tag, "ret = " + array + " len = " + array.length());
+
+            for (int i = 0; i < array.length(); i++)
+            {
+                JSONObject obj = array.getJSONObject(i);
+
+                ans.students.add(
+                        new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
+                );
+
+                Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
+            };
+
+            return ans;
+        }
+        catch(org.json.JSONException e) {
+            throw new PapaDataBaseJsonError();
+        }
+
     }
 }
