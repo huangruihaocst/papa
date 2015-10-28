@@ -42,11 +42,15 @@ public class CourseFragment extends android.support.v4.app.Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "ARG_PARAM1";
     private static final String ARG_PARAM2 = "ARG_PARAM2";
+    private static final String ARG_PARAM3 = "ARG_PARAM3";
 
     // TODO: Rename and change types of parameters
     private int semester_id;
     private String token;
     private PapaDataBaseManager papaDataBaseManager;
+    BundleHelper bundleHelper;
+
+    View rootView;
 
 
 //    private OnFragmentInteractionListener mListener;
@@ -60,11 +64,12 @@ public class CourseFragment extends android.support.v4.app.Fragment {
      * @return A new instance of fragment CourseFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CourseFragment newInstance(int id, String token) {
+    public static CourseFragment newInstance(int id, String token, BundleHelper bundleHelper) {
         CourseFragment fragment = new CourseFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, id);
         args.putString(ARG_PARAM2, token);
+        args.putParcelable(ARG_PARAM3, bundleHelper);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,12 +84,10 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         if (getArguments() != null) {
             semester_id = getArguments().getInt(ARG_PARAM1);
             token = getArguments().getString(ARG_PARAM2);
+            bundleHelper = getArguments().getParcelable(ARG_PARAM3);
         }
 
         papaDataBaseManager = BundleHelper.getPapaDataBaseManager();
-
-        getStudentCourses();
-        getTeacherCourses();
     }
 
 
@@ -95,13 +98,17 @@ public class CourseFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view  = inflater.inflate(R.layout.fragment_course, container, false);
-        course_teacher_assistant_list =
-                (ListView)view.findViewById(R.id.course_teacher_assistant_list);
-        ListView course_student_list = (ListView)view.findViewById(R.id.course_student_list);
-        Toast.makeText(getContext(),"created",Toast.LENGTH_SHORT).show();
-        course_student_list = (ListView)view.findViewById(R.id.course_student_list);
-        return view;
+        if(rootView == null){
+            rootView  = inflater.inflate(R.layout.fragment_course, container, false);
+            course_teacher_assistant_list =
+                    (ListView)rootView.findViewById(R.id.course_teacher_assistant_list);
+            course_student_list = (ListView)rootView.findViewById(R.id.course_student_list);
+            getStudentCourses();
+            getTeacherCourses();
+        }else{
+            ((ViewGroup)rootView.getParent()).removeView(rootView);
+        }
+        return rootView;
     }
 
 //    // TODO: Rename method, update argument and hook method into UI event
@@ -239,24 +246,19 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
         Log.i(tag, courseName + "=" + courseId);
 
-        // TODO: CourseActivity に繋ぐ
-        
-        /*
-        Intent intent = new Intent(CourseActivity.this, ExperimentActivity.class)
+        Intent intent = new Intent(getActivity(), ExperimentActivity.class);
         Bundle data = new Bundle();
         String key_course_experiment = getString(R.string.key_course_experiment);
         bundleHelper.setCourseName(courseName);
         bundleHelper.setCourseId(courseId);
         bundleHelper.setIdentity(identity);
-        if(identity.equals("student"))
-        {
+        if(identity.equals("student")) {
             bundleHelper.setStudentId(bundleHelper.getId());
             bundleHelper.setStudentName(bundleHelper.getUsername());
         }
         data.putParcelable(key_course_experiment,bundleHelper);
         intent.putExtras(data);
         startActivity(intent);
-        */
     }
 
 
@@ -329,5 +331,4 @@ public class CourseFragment extends android.support.v4.app.Fragment {
             }
         });
     }
-
 }

@@ -58,7 +58,7 @@ public class BundleHelper implements Parcelable{
     public String getExperimentName(){
         return experiment_name;
     }
-    public int getExperiment_id(){
+    public int getExperimentId(){
         return experiment_id;
     }
     public String getStudentName(){

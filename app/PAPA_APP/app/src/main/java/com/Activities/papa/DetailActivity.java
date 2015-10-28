@@ -239,7 +239,7 @@ public class DetailActivity extends AppCompatActivity
     private void getComment(){
         new GetCommentTask(this).execute(
                 new PapaDataBaseManager.GetCommentsRequest(
-                        bundleHelper.getExperiment_id(),
+                        bundleHelper.getExperimentId(),
                         bundleHelper.getStudentId(),
                         bundleHelper.getToken()
                 )

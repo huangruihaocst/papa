@@ -10,4 +10,10 @@
     tools:showIn="@layout/app_bar_experiment_detail"
     tools:context="com.Activities.papa.ExperimentDetailActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="实验详情"
+        android:id="@+id/textView3" />
+
 </RelativeLayout>

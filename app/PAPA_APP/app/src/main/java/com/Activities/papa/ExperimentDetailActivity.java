@@ -17,11 +17,21 @@ import android.view.MenuItem;
 public class ExperimentDetailActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    BundleHelper bundleHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+        String key_experiment_experiment_detail = getString(R.string.key_experiment_experiment_detail);
+        bundleHelper = data.getParcelable(key_experiment_experiment_detail);
+
+
         setContentView(R.layout.activity_experiment_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(bundleHelper.getExperimentName());
         setSupportActionBar(toolbar);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

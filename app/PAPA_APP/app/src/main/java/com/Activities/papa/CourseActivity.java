@@ -287,6 +287,7 @@ public class CourseActivity extends AppCompatActivity
             count++;
         }
         viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager(), count, id, token));
+        viewPager.setOffscreenPageLimit(count);
     }
 
 
@@ -369,7 +370,7 @@ public class CourseActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
-            return CourseFragment.newInstance(semester_id, token);
+            return CourseFragment.newInstance(semester_id, token, bundleHelper);
         }
 
         @Override

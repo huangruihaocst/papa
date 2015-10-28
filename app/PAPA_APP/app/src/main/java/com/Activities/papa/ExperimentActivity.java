@@ -277,6 +277,8 @@ public class ExperimentActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(ExperimentActivity.this,ExperimentDetailActivity.class);
                 Bundle data = new Bundle();
+                String key_experiment_experiment_detail = getString(R.string.key_experiment_experiment_detail);
+                data.putParcelable(key_experiment_experiment_detail,bundleHelper);
 
                 Map.Entry<Integer, String> item = (Map.Entry<Integer, String>)parent.getItemAtPosition(position);
 
