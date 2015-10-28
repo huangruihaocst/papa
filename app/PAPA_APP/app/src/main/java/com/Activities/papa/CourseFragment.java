@@ -73,6 +73,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         ListView course_teacher_assistant_list =
                 (ListView)view.findViewById(R.id.course_teacher_assistant_list);
         ListView course_student_list = (ListView)view.findViewById(R.id.course_student_list);
+        Toast.makeText(getContext(),"created",Toast.LENGTH_SHORT).show();
         return view;
     }
 

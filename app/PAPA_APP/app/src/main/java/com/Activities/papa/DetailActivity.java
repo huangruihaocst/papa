@@ -56,8 +56,8 @@ public class DetailActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String key_to_detail = getString(R.string.key_to_detail);
-        bundleHelper = data.getParcelable(key_to_detail);
+//        String key_to_detail = getString(R.string.key_to_detail);
+//        bundleHelper = data.getParcelable(key_to_detail);
         experiment_name = bundleHelper.getExperimentName();
         identity = bundleHelper.getIdentity();
         papaDataBaseManager = bundleHelper.getPapaDataBaseManager();

@@ -82,6 +82,11 @@
             android:label="@string/title_activity_notification"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".ExperimentDetailActivity"
+            android:label="@string/title_activity_experiment_detail"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>
