@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -32,6 +33,8 @@ import java.util.Map;
 
 public class StudentActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    final static String tag = "StudentActivity";
 
     BundleHelper bundleHelper = new BundleHelper();
 
@@ -203,8 +206,8 @@ public class StudentActivity extends AppCompatActivity
         }
 
         @Override
-        public Object getItem(int arg0) {
-            return arg0;
+        public Map.Entry<Integer, String> getItem(int position) {
+            return lst.get(position);
         }
 
         @Override
@@ -244,9 +247,15 @@ public class StudentActivity extends AppCompatActivity
         StudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Map.Entry<Integer, String> item = (Map.Entry<Integer, String>) parent.getItemAtPosition(position);
+                Log.i(tag, item.getValue() + " " + item.getKey());
+
                 Intent intent = new Intent(StudentActivity.this, DetailActivity.class);
                 String key_to_detail = getString(R.string.key_to_detail);
                 Bundle data = new Bundle();
+                bundleHelper.setStudentId(item.getKey());
+                bundleHelper.setStudentName(item.getValue());
                 data.putParcelable(key_to_detail, bundleHelper);
                 intent.putExtras(data);
                 startActivity(intent);

@@ -93,6 +93,7 @@ public class BundleHelper implements Parcelable{
 //    }
 
 
+
     public void setUsername(String username){
         this.username = username;
     }
@@ -114,7 +115,7 @@ public class BundleHelper implements Parcelable{
     public void setStudentName(String student_name){
         this.student_name = student_name;
     }
-    public void getStudentId(int student_id){
+    public void setStudentId(int student_id){
         this.student_id = student_id;
     }
     public void setIdentity(String identity){
