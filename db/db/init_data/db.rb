@@ -69,6 +69,21 @@ l11.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', 
 l11.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'haha2')
 l11.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'haha3')
 
+l12.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '123', content: 'haha')
+l12.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: 'haha1')
+l12.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'haha2')
+l12.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'haha3')
+
+l21.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '123', content: 'haha')
+l21.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: 'haha1')
+l21.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'haha2')
+l21.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'haha3')
+
+l31.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '123', content: 'haha')
+l31.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: 'haha1')
+l31.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'haha2')
+l31.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'haha3')
+
 l11.lesson_comments.create(score: '123', content: 'haha', creator_id: u4.id)
 l11.lesson_comments.create(score: '123', content: 'hahaha', creator_id: u3.id)
 
