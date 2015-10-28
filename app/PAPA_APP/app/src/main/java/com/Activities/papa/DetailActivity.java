@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
@@ -287,6 +288,9 @@ public class DetailActivity extends AppCompatActivity
 
         @Override
         protected void onProgressUpdate(Exception... e) {
+
+            if(e[0] instanceof PapaDataBaseResourceNotFound)
+                onBackPressed();
 
             // if(e)
             // UI
