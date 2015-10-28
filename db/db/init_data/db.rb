@@ -72,7 +72,4 @@ l11.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', 
 l11.lesson_comments.create(score: '123', content: 'haha', creator_id: u4.id)
 l11.lesson_comments.create(score: '123', content: 'hahaha', creator_id: u3.id)
 
-
-
-
 puts '--- init_data created ---'

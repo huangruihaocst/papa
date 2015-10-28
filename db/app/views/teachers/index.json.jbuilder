@@ -5,5 +5,6 @@ json.teachers do
     json.extract! teacher, :name
     json.extract! teacher, :email
     json.extract! teacher, :phone
+    json.extract! teacher, :avator_id
   end
 end

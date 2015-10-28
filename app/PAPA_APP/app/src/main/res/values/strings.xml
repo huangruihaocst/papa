@@ -42,6 +42,9 @@
         <item name="video">录像</item>
         <item name="gallery">本地相册</item>
     </string-array>
+    <string name="for_course">评价课程</string>
+    <string name="view_comments_1">对课程</string>
+    <string name="view_comments_2">的评价</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -53,6 +56,8 @@
     <string name="action_edit_grades">编辑成绩</string>
     <string name="action_student_information">学生信息</string>
     <string name="action_generate_QR_code">生成二维码</string>
+    <string name="action_make_comments">评价该课程</string>
+    <string name="action_view_comments">对该课程的评价</string>
 
     <string name="title_semester">学期</string>
 
@@ -69,6 +74,7 @@
     <string name="key_to_edit_profile">key_to_edit_profile</string>
     <string name="key_enter_sign_in">key_enter_sign_in</string>
     <string name="key_to_notification">key_to_notification</string>
+    <string name="key_detail_comment">key_detail_comment</string>
 
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>

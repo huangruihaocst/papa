@@ -6,4 +6,5 @@ json.user do
   json.phone      @user.phone
   json.is_teacher @user.is_teacher
   json.is_admin   @user.is_admin
+  json.avator_id  @user.avator_id
 end
