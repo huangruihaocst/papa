@@ -1,45 +1,59 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.Activities.papa.CourseFragment"
-    android:background="#000000">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    tools:context="com.Activities.papa.CourseFragment"
+    android:background="#FAFAFA">
 
-    <TextView
+    <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/teacher_assistant"
-        android:textSize="40sp"
-        android:textColor="@color/colorAccent"
-        android:id="@+id/text_teacher_assistant"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="110dp" />
+        android:layout_height="wrap_content">
 
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/course_teacher_assistant_list"
-        android:divider="#FFFFFF"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/text_teacher_assistant">
-    </ListView>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/student"
-        android:textSize="40sp"
-        android:textColor="@color/colorAccent"
-        android:layout_below="@+id/course_teacher_assistant_list"
-        android:id="@+id/text_student"/>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/teacher_assistant"
+                android:textSize="40sp"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/text_teacher_assistant"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/course_student_list"
-        android:divider="#FFFFFF"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/text_student">
-    </ListView>
+            <ListView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/course_teacher_assistant_list"
+                android:divider="#FFFFFF"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/text_teacher_assistant">
+            </ListView>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/student"
+                android:textSize="40sp"
+                android:textColor="@color/colorAccent"
+                android:layout_below="@+id/course_teacher_assistant_list"
+                android:id="@+id/text_student"/>
+
+            <ListView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/course_student_list"
+                android:divider="#FFFFFF"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/text_student">
+            </ListView>
+
+        </RelativeLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

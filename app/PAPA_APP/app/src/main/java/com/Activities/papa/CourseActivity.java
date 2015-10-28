@@ -78,15 +78,11 @@ public class CourseActivity extends AppCompatActivity
         getSemester();
 
         tabLayout = (TabLayout) findViewById(R.id.semester_tab);
-//        tabLayout.addTab(tabLayout.newTab().setText("111"));
-//        tabLayout.addTab(tabLayout.newTab().setText("222"));
-//        tabLayout.addTab(tabLayout.newTab().setText("333"));
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         viewPager = (ViewPager)findViewById(R.id.course_viewpager);
-        //viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager()));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-        //tabLayout.setupWithViewPager(viewPager);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -103,7 +99,6 @@ public class CourseActivity extends AppCompatActivity
 
             }
         });
-        //tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -346,7 +341,7 @@ public class CourseActivity extends AppCompatActivity
             tabLayout.addTab(tabLayout.newTab().setText((String) h.get(key)));
             count++;
         }
-        viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager(), count));
+        viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager(), count, 1, "123"));
     }
 
 
@@ -534,20 +529,23 @@ public class CourseActivity extends AppCompatActivity
     }
 
     public class CourseViewPagerAdapter extends FragmentStatePagerAdapter{
-        int tabs_amount = 3;
-        private String tabTitles[] = new String[] { "Tab1", "Tab2", "Tab3" };
+        int tabs_amount;
+        int semester_id;
+        String token;
 
         public CourseViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-        public CourseViewPagerAdapter(FragmentManager fm, int count) {
+        public CourseViewPagerAdapter(FragmentManager fm, int count, int id, String token) {
             this(fm);
             this.tabs_amount = count;
+            semester_id = id;
+            this.token = token;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return CourseFragment.newInstance("1", String.valueOf(position));
+            return CourseFragment.newInstance(semester_id, token);
         }
 
         @Override
@@ -555,9 +553,5 @@ public class CourseActivity extends AppCompatActivity
             return tabs_amount;
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return tabTitles[position];
-        }
     }
 }
