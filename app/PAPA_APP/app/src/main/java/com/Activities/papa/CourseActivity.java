@@ -243,6 +243,12 @@ public class CourseActivity extends AppCompatActivity
         bundleHelper.setCourseId(courseId);
         Log.i(tag, courseName + "=" + courseId);
         bundleHelper.setIdentity(identity);
+        if(identity.equals("student"))
+        {
+            bundleHelper.setStudentId(bundleHelper.getId());
+            bundleHelper.setStudentName(bundleHelper.getUsername());
+
+        }
         data.putParcelable(key_course_experiment,bundleHelper);
         intent.putExtras(data);
         startActivity(intent);

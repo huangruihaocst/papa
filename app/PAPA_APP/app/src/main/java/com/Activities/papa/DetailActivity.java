@@ -122,10 +122,8 @@ public class DetailActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.detail, menu);
         if(identity.equals("teacher_assistant")){
-            MenuItem item_qr_code = menu.findItem(R.id.action_generate_QR_code);
-            item_qr_code.setVisible(false);
-            MenuItem item_make_comments = menu.findItem(R.id.action_make_comments);
-            item_make_comments.setTitle(getString(R.string.action_view_comments));
+            MenuItem item = menu.findItem(R.id.action_generate_QR_code);
+            item.setVisible(false);
         }
         return true;
     }
@@ -161,14 +159,6 @@ public class DetailActivity extends AppCompatActivity
         }else if(id == R.id.action_student_information){
             return true;
         }else if(id == R.id.action_generate_QR_code){
-            return true;
-        }else if(id == R.id.action_make_comments){
-            Intent intent = new Intent(DetailActivity.this,CommentActivity.class);
-            Bundle data = new Bundle();
-            String key_detail_comment = getString(R.string.key_detail_comment);
-            data.putParcelable(key_detail_comment,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
             return true;
         }
 
@@ -298,7 +288,7 @@ public class DetailActivity extends AppCompatActivity
         @Override
         protected void onProgressUpdate(Exception... e) {
 
-            if(e)
+            // if(e)
             // UI
             Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
         }
