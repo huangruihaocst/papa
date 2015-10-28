@@ -1,17 +1,31 @@
 package com.Activities.papa;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+
 import org.w3c.dom.Text;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -23,6 +37,7 @@ import org.w3c.dom.Text;
  * create an instance of this fragment.
  */
 public class CourseFragment extends android.support.v4.app.Fragment {
+    private static final String tag = "CourseFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "ARG_PARAM1";
@@ -31,6 +46,8 @@ public class CourseFragment extends android.support.v4.app.Fragment {
     // TODO: Rename and change types of parameters
     private int semester_id;
     private String token;
+    private PapaDataBaseManager papaDataBaseManager;
+
 
 //    private OnFragmentInteractionListener mListener;
 
@@ -63,17 +80,27 @@ public class CourseFragment extends android.support.v4.app.Fragment {
             semester_id = getArguments().getInt(ARG_PARAM1);
             token = getArguments().getString(ARG_PARAM2);
         }
+
+        papaDataBaseManager = BundleHelper.getPapaDataBaseManager();
+
+        getStudentCourses();
+        getTeacherCourses();
     }
+
+
+    ListView course_student_list;
+    ListView course_teacher_assistant_list;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view  = inflater.inflate(R.layout.fragment_course, container, false);
-        ListView course_teacher_assistant_list =
+        course_teacher_assistant_list =
                 (ListView)view.findViewById(R.id.course_teacher_assistant_list);
         ListView course_student_list = (ListView)view.findViewById(R.id.course_student_list);
         Toast.makeText(getContext(),"created",Toast.LENGTH_SHORT).show();
+        course_student_list = (ListView)view.findViewById(R.id.course_student_list);
         return view;
     }
 
@@ -114,6 +141,193 @@ public class CourseFragment extends android.support.v4.app.Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+
+
+    // Courses
+    private void getStudentCourses() {
+        new GetStudentCourseTask(getContext()).execute(new PapaDataBaseManager.CourseRequest(semester_id, token));
+    }
+
+    private void getTeacherCourses() {
+        new GetTeacherCourseTask(getContext()).execute(new PapaDataBaseManager.CourseRequest(semester_id, token));
+    }
+
+    class GetStudentCourseTask extends
+            AsyncTask<PapaDataBaseManager.CourseRequest, Exception, PapaDataBaseManager.CourseReply> {
+        ProgressDialog proDialog;
+
+        public GetStudentCourseTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.CourseReply doInBackground
+                (PapaDataBaseManager.CourseRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getStuCourse(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.CourseReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setStudentCourses(rlt);
+        }
+    }
+
+
+    private class MyAdapter extends BaseAdapter {
+        private List<Map.Entry<Integer, String>> lst;
+
+        public MyAdapter(List<Map.Entry<Integer, String>> lst) {
+            this.lst = lst;
+        }
+
+        @Override
+        public int getCount() {
+            return lst.size();
+        }
+
+        @Override
+        public Object getItem(int arg0) {
+            return arg0;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView mTextView = new TextView(getContext());
+            mTextView.setText(lst.get(position).getValue());
+            mTextView.setTextSize(35);
+//            mTextView.setTextColor(getColor(R.color.colorPrimary));
+            mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
+            return mTextView;
+        }
+    }
+
+
+
+    private void startExperimentActivity(String courseName, int courseId, String identity){
+
+        Log.i(tag, courseName + "=" + courseId);
+
+        // TODO: CourseActivity に繋ぐ
+        
+        /*
+        Intent intent = new Intent(CourseActivity.this, ExperimentActivity.class)
+        Bundle data = new Bundle();
+        String key_course_experiment = getString(R.string.key_course_experiment);
+        bundleHelper.setCourseName(courseName);
+        bundleHelper.setCourseId(courseId);
+        bundleHelper.setIdentity(identity);
+        if(identity.equals("student"))
+        {
+            bundleHelper.setStudentId(bundleHelper.getId());
+            bundleHelper.setStudentName(bundleHelper.getUsername());
+        }
+        data.putParcelable(key_course_experiment,bundleHelper);
+        intent.putExtras(data);
+        startActivity(intent);
+        */
+    }
+
+
+
+
+    class GetTeacherCourseTask extends
+            AsyncTask<PapaDataBaseManager.CourseRequest, Exception, PapaDataBaseManager.CourseReply> {
+        ProgressDialog proDialog;
+
+        public GetTeacherCourseTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.CourseReply doInBackground
+                (PapaDataBaseManager.CourseRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getTACourse(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.CourseReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setTeacherCourses(rlt);
+        }
+    }
+
+    private void setStudentCourses(final PapaDataBaseManager.CourseReply rlt) {
+        ListView CourseStudentListView = course_student_list;
+        CourseStudentListView.setAdapter(new MyAdapter(rlt.course));
+        CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "student");
+            }
+        });
+    }
+
+
+    private void setTeacherCourses(final PapaDataBaseManager.CourseReply rlt) {
+        ListView CourseTeacherAssistantListView = course_teacher_assistant_list;
+        CourseTeacherAssistantListView.setAdapter(new MyAdapter(rlt.course));
+        CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "teacher_assistant");
+            }
+        });
     }
 
 }

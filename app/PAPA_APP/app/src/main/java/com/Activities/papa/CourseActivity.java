@@ -126,8 +126,6 @@ public class CourseActivity extends AppCompatActivity
 
         getHeaderView(navigationView);
 
-//        getStudentCourses();
-//        getTeacherCourses();
     }
 
 
@@ -226,59 +224,6 @@ public class CourseActivity extends AppCompatActivity
     }
 
 
-    private class MyAdapter extends BaseAdapter {
-        private List<Map.Entry<Integer, String>> lst;
-
-        public MyAdapter(List<Map.Entry<Integer, String>> lst) {
-            this.lst = lst;
-        }
-
-        @Override
-        public int getCount() {
-            return lst.size();
-        }
-
-        @Override
-        public Object getItem(int arg0) {
-            return arg0;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView mTextView = new TextView(getApplicationContext());
-            mTextView.setText(lst.get(position).getValue());
-            mTextView.setTextSize(35);
-//            mTextView.setTextColor(getColor(R.color.colorPrimary));
-            mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
-            return mTextView;
-        }
-    }
-
-
-    private void startExperimentActivity(String courseName, int courseId, String identity){
-        Intent intent = new Intent(CourseActivity.this, ExperimentActivity.class);
-        Bundle data = new Bundle();
-        String key_course_experiment = getString(R.string.key_course_experiment);
-        bundleHelper.setCourseName(courseName);
-        bundleHelper.setCourseId(courseId);
-        Log.i(tag, courseName + "=" + courseId);
-        bundleHelper.setIdentity(identity);
-        if(identity.equals("student"))
-        {
-            bundleHelper.setStudentId(bundleHelper.getId());
-            bundleHelper.setStudentName(bundleHelper.getUsername());
-
-        }
-        data.putParcelable(key_course_experiment,bundleHelper);
-        intent.putExtras(data);
-        startActivity(intent);
-    }
-
 
 
     // Semester
@@ -341,132 +286,10 @@ public class CourseActivity extends AppCompatActivity
             tabLayout.addTab(tabLayout.newTab().setText((String) h.get(key)));
             count++;
         }
-        viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager(), count, 1, "123"));
+        viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager(), count, id, token));
     }
 
 
-    // Courses
-    private void getStudentCourses() {
-        new GetStudentCourseTask(this).execute(new PapaDataBaseManager.CourseRequest(id, token));
-    }
-
-    private void getTeacherCourses() {
-        new GetTeacherCourseTask(this).execute(new PapaDataBaseManager.CourseRequest(id, token));
-    }
-
-    class GetStudentCourseTask extends
-            AsyncTask<PapaDataBaseManager.CourseRequest, Exception, PapaDataBaseManager.CourseReply> {
-        ProgressDialog proDialog;
-
-        public GetStudentCourseTask(Context context) {
-            proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
-            proDialog.setCancelable(false);
-            proDialog.setCanceledOnTouchOutside(false);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // UI
-
-            proDialog.show();
-        }
-
-        @Override
-        protected PapaDataBaseManager.CourseReply doInBackground
-                (PapaDataBaseManager.CourseRequest... params) {
-            // 在后台
-            try {
-                return papaDataBaseManager.getStuCourse(params[0]);
-            } catch (PapaHttpClientException e) {
-                publishProgress(e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Exception... e) {
-            // UI
-            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        protected void onPostExecute(PapaDataBaseManager.CourseReply rlt) {
-            // UI
-
-            proDialog.dismiss();
-            if (rlt != null) setStudentCourses(rlt);
-        }
-    }
-
-
-    class GetTeacherCourseTask extends
-            AsyncTask<PapaDataBaseManager.CourseRequest, Exception, PapaDataBaseManager.CourseReply> {
-        ProgressDialog proDialog;
-
-        public GetTeacherCourseTask(Context context) {
-            proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
-            proDialog.setCancelable(false);
-            proDialog.setCanceledOnTouchOutside(false);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // UI
-
-            proDialog.show();
-        }
-
-        @Override
-        protected PapaDataBaseManager.CourseReply doInBackground
-                (PapaDataBaseManager.CourseRequest... params) {
-            // 在后台
-            try {
-                return papaDataBaseManager.getTACourse(params[0]);
-            } catch (PapaHttpClientException e) {
-                publishProgress(e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Exception... e) {
-            // UI
-            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        protected void onPostExecute(PapaDataBaseManager.CourseReply rlt) {
-            // UI
-
-            proDialog.dismiss();
-            if (rlt != null) setTeacherCourses(rlt);
-        }
-    }
-
-    private void setStudentCourses(final PapaDataBaseManager.CourseReply rlt) {
-        ListView CourseStudentListView = (ListView) findViewById(R.id.course_student_list);
-        CourseStudentListView.setAdapter(new MyAdapter(rlt.course));
-        CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "student");
-            }
-        });
-    }
-
-
-    private void setTeacherCourses(final PapaDataBaseManager.CourseReply rlt) {
-        ListView CourseTeacherAssistantListView = (ListView) findViewById(R.id.course_teacher_assistant_list);
-        CourseTeacherAssistantListView.setAdapter(new MyAdapter(rlt.course));
-        CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "teacher_assistant");
-            }
-        });
-    }
 
     //a function to change the profile in the navigation drawer, just call it in another thread
     private void getHeaderView(NavigationView navigationView){
@@ -482,6 +305,7 @@ public class CourseActivity extends AppCompatActivity
         username_label.setText(r.usrName);
         mail_label.setText(r.mail);
     }
+
 
     class GetUsrInfoTask extends
             AsyncTask<PapaDataBaseManager.UsrInfoRequest, Exception, PapaDataBaseManager.UsrInfoReply> {

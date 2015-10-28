@@ -180,7 +180,7 @@ public class BundleHelper implements Parcelable{
 //        getter_string = in.readString();
     }
 
-    public PapaDataBaseManager getPapaDataBaseManager()
+    static public PapaDataBaseManager getPapaDataBaseManager()
     {
         return new PapaDataBaseManagerReal();
     }
