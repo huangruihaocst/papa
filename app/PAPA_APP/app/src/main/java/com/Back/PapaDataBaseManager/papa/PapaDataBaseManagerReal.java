@@ -3,7 +3,9 @@ package com.Back.PapaDataBaseManager.papa;
 import android.util.Log;
 
 import com.Back.DataBaseAccess.papa.PapaDataBaseAccess;
+import com.Back.DataBaseAccess.papa.PapaDataBaseInvalidFieldError;
 import com.Back.DataBaseAccess.papa.PapaDataBaseJsonError;
+import com.Back.DataBaseAccess.papa.PapaDataBaseNotSuccessError;
 import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
@@ -39,11 +41,18 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
         try
         {
-            replyObj = dbAccess.getDataBaseReplyAsJson(
-                    PapaAbstractHttpClient.HttpMethod.post,
-                    "/users/sign_in.json", h
-            );
-
+            try {
+                replyObj = dbAccess.getDataBaseReplyAsJson(
+                        PapaAbstractHttpClient.HttpMethod.post,
+                        "/users/sign_in.json", h
+                );
+            }
+            catch (PapaDataBaseNotSuccessError e)
+            {
+                if(e.reason != null && e.reason.equals("invalid_field"))
+                     throw new PapaDataBaseInvalidFieldError();
+                throw e;
+            }
 
             if(replyObj.getBoolean("is_admin") == true) throw new PapaDataBaseAdminError();
             if(replyObj.getBoolean("is_teacher") == true) throw new PapaDataBaseTeacherError();

@@ -8,6 +8,6 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 public class PapaDataBaseTeacherError extends PapaHttpClientException {
     public PapaDataBaseTeacherError()
     {
-        super("管理员请从网页端登录喵 TwT");
+        super("老师请从网页端登录喵 TwT");
     }
 }
