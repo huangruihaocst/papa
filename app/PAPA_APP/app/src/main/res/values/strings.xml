@@ -45,6 +45,9 @@
     <string name="for_course">评价课程</string>
     <string name="view_comments_1">对课程</string>
     <string name="view_comments_2">的评价</string>
+    <string name="upload">上传实验结果</string>
+    <string name="view_students">查看本实验的学生</string>
+    <string name="view_grades">查看成绩</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

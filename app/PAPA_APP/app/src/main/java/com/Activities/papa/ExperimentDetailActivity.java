@@ -1,7 +1,12 @@
 package com.Activities.papa;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -13,11 +18,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.Toast;
 
 public class ExperimentDetailActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     BundleHelper bundleHelper;
+    String identity;
+
+    private static final int SELECT_PICTURE = 1;
+    private String selectedImagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +39,12 @@ public class ExperimentDetailActivity extends AppCompatActivity
         String key_experiment_experiment_detail = getString(R.string.key_experiment_experiment_detail);
         bundleHelper = data.getParcelable(key_experiment_experiment_detail);
 
-
         setContentView(R.layout.activity_experiment_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(bundleHelper.getExperimentName());
         setSupportActionBar(toolbar);
+
+        identity = bundleHelper.getIdentity();
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +63,40 @@ public class ExperimentDetailActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Button button_upload = (Button)findViewById(R.id.button_upload);
+        if(identity.equals("teacher_assistant")){
+            button_upload.setVisibility(View.GONE);
+        }
+        button_upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ExperimentDetailActivity.this);
+                builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == 0){//camera
+
+                        }else if(which == 1){//video
+
+                        }else if(which == 2){//gallery
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+                        }
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
+
+        Button button_custom = (Button)findViewById(R.id.button_custom);
+        if(identity.equals("student")){
+            button_custom.setText(getString(R.string.view_grades));
+        }
+
     }
 
     @Override
@@ -91,59 +137,87 @@ public class ExperimentDetailActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-//        if (id == R.id.nav_favorite) {
-//            Intent intent = new Intent(ExperimentActivity.this,FavoriteActivity.class);
-//            Bundle data = new Bundle();
-//            String key_to_favorite = getString(R.string.key_to_favorite);
-//            data.putParcelable(key_to_favorite,bundleHelper);
-//            intent.putExtras(data);
-//            startActivity(intent);
-//        } else if (id == R.id.nav_experiment_history) {
-//            Intent intent = new Intent(ExperimentActivity.this,ExperimentHistoryActivity.class);
-//            Bundle data = new Bundle();
-//            String key_to_experiment_history = getString(R.string.key_to_experiment_history);
-//            data.putParcelable(key_to_experiment_history,bundleHelper);
-//            intent.putExtras(data);
-//            startActivity(intent);
-//        } else if (id == R.id.nav_upload_history) {
-//            Intent intent = new Intent(ExperimentActivity.this,UploadHistoryActivity.class);
-//            Bundle data = new Bundle();
-//            String key_to_upload_history = getString(R.string.key_to_upload_history);
-//            data.putParcelable(key_to_upload_history,bundleHelper);
-//            intent.putExtras(data);
-//            startActivity(intent);
-//        } else if (id == R.id.nav_edit_profile) {
-//            Intent intent = new Intent(ExperimentActivity.this,EditProfileActivity.class);
-//            Bundle data = new Bundle();
-//            String key_to_edit_profile = getString(R.string.key_to_edit_profile);
-//            data.putParcelable(key_to_edit_profile,bundleHelper);
-//            intent.putExtras(data);
-//            startActivity(intent);
-//        } else if (id == R.id.nav_help) {
-//            Intent intent = new Intent(ExperimentActivity.this,HelpActivity.class);
-//            Bundle data = new Bundle();
-//            String key_to_help = getString(R.string.key_to_help);
-//            data.putParcelable(key_to_help,bundleHelper);
-//            intent.putExtras(data);
-//            startActivity(intent);
-//        } else if (id == R.id.nav_settings) {
-//            Intent intent = new Intent(ExperimentActivity.this,SettingsActivity.class);
-//            Bundle data = new Bundle();
-//            String key_to_settings = getString(R.string.key_to_settings);
-//            data.putParcelable(key_to_settings,bundleHelper);
-//            intent.putExtras(data);
-//            startActivity(intent);
-//        } else if(id == R.id.nav_notification){
-//            Intent intent = new Intent(ExperimentActivity.this,NotificationActivity.class);
-//            Bundle data = new Bundle();
-//            String key_to_notification = getString(R.string.key_to_notification);
-//            data.putParcelable(key_to_notification,bundleHelper);
-//            intent.putExtras(data);
-//            startActivity(intent);
-//        }
+        if (id == R.id.nav_favorite) {
+            Intent intent = new Intent(ExperimentDetailActivity.this,FavoriteActivity.class);
+            Bundle data = new Bundle();
+            String key_to_favorite = getString(R.string.key_to_favorite);
+            data.putParcelable(key_to_favorite,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
+        } else if (id == R.id.nav_experiment_history) {
+            Intent intent = new Intent(ExperimentDetailActivity.this,ExperimentHistoryActivity.class);
+            Bundle data = new Bundle();
+            String key_to_ExperimentDetail_history = getString(R.string.key_to_experiment_history);
+            data.putParcelable(key_to_ExperimentDetail_history,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
+        } else if (id == R.id.nav_upload_history) {
+            Intent intent = new Intent(ExperimentDetailActivity.this,UploadHistoryActivity.class);
+            Bundle data = new Bundle();
+            String key_to_upload_history = getString(R.string.key_to_upload_history);
+            data.putParcelable(key_to_upload_history,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
+        } else if (id == R.id.nav_edit_profile) {
+            Intent intent = new Intent(ExperimentDetailActivity.this,EditProfileActivity.class);
+            Bundle data = new Bundle();
+            String key_to_edit_profile = getString(R.string.key_to_edit_profile);
+            data.putParcelable(key_to_edit_profile,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
+        } else if (id == R.id.nav_help) {
+            Intent intent = new Intent(ExperimentDetailActivity.this,HelpActivity.class);
+            Bundle data = new Bundle();
+            String key_to_help = getString(R.string.key_to_help);
+            data.putParcelable(key_to_help,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
+        } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(ExperimentDetailActivity.this,SettingsActivity.class);
+            Bundle data = new Bundle();
+            String key_to_settings = getString(R.string.key_to_settings);
+            data.putParcelable(key_to_settings,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
+        } else if(id == R.id.nav_notification){
+            Intent intent = new Intent(ExperimentDetailActivity.this,NotificationActivity.class);
+            Bundle data = new Bundle();
+            String key_to_notification = getString(R.string.key_to_notification);
+            data.putParcelable(key_to_notification,bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+                selectedImagePath = getPath(selectedImageUri);
+            }
+        }
+    }
+
+    public String getPath(Uri uri) {
+        // just some safety built in
+        if (uri == null) {
+            // TODO: perform some logging or show user feedback
+            return null;
+        }
+        // try to retrieve the image from the media store first
+        // this will only work for images selected from gallery
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        // this is our fallback here
+        return uri.getPath();
     }
 }
