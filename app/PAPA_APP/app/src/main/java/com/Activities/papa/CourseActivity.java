@@ -437,10 +437,10 @@ public class CourseActivity extends AppCompatActivity
     //a function to change the profile in the navigation drawer, just call it in another thread
     private void getHeaderView(NavigationView navigationView){
         Log.i(tag, id + " " + token + " = id, token ");
-        new GetUsrInfoTask(this).execute(new PapaDataBaseManager.GetUsrInfoRequest(id, token));
+        new GetUsrInfoTask(this).execute(new PapaDataBaseManager.UsrInfoRequest(id, token));
     }
 
-    private void setHeaderView(PapaDataBaseManager.GetUsrInfoReply r){
+    private void setHeaderView(PapaDataBaseManager.UsrInfoReply r){
         TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
         TextView mail_label = (TextView)findViewById(R.id.mail_label);
         ImageView image_label = (ImageView)findViewById(R.id.image_label);
@@ -450,7 +450,7 @@ public class CourseActivity extends AppCompatActivity
     }
 
     class GetUsrInfoTask extends
-            AsyncTask<PapaDataBaseManager.GetUsrInfoRequest, Exception, PapaDataBaseManager.GetUsrInfoReply> {
+            AsyncTask<PapaDataBaseManager.UsrInfoRequest, Exception, PapaDataBaseManager.UsrInfoReply> {
         ProgressDialog proDialog;
 
         public GetUsrInfoTask(Context context) {
@@ -468,8 +468,8 @@ public class CourseActivity extends AppCompatActivity
         }
 
         @Override
-        protected PapaDataBaseManager.GetUsrInfoReply doInBackground
-                (PapaDataBaseManager.GetUsrInfoRequest... params) {
+        protected PapaDataBaseManager.UsrInfoReply doInBackground
+                (PapaDataBaseManager.UsrInfoRequest... params) {
             // 在后台
             try {
                 return papaDataBaseManager.getUsrInfo(params[0]);
@@ -486,7 +486,7 @@ public class CourseActivity extends AppCompatActivity
         }
 
         @Override
-        protected void onPostExecute(PapaDataBaseManager.GetUsrInfoReply rlt) {
+        protected void onPostExecute(PapaDataBaseManager.UsrInfoReply rlt) {
             // UI
 
             proDialog.dismiss();
