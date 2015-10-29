@@ -9,27 +9,17 @@
 		.texts
 		{
 			font-size:30px;
-			height:100px;
+			height:50px;
 			text-align:left;
-		}
-		.comment
-		{
-			font-size:25px;
-			margin-top:30px;
-		}
-		.author
-		{
-			font-size:15px;
-			margin-top:2px;
 		}
 		.chart
 		{
-			height:300px;
+			height:295px;
 			float:left;
 		}
 		#title
 		{
-			font-size:40px;
+			font-size:60px;
 		}
 	</style>
 </head>
@@ -38,14 +28,10 @@
 	<div id="content">
 		<div id="title">
 		</div>
-		<div class="lines">
-		</div>
 		<div id="content1" class="content">
 			<div id="text1" class="texts">
 			</div>
 			<canvas id="chart1" class="chart"></canvas>
-		</div>
-		<div class="lines">
 		</div>
 		<div id="content2" class="content">
 			<div id="text2" class="texts">
@@ -188,7 +174,6 @@
 			}
 			
 			$("#title")[0].innerHTML=courseInfo;
-			$(".lines").innerHTML='</br><hr style="height: 1px; border:none; border-top:1px solid;"></hr>';
 			data={labels:label1,datasets:[{
 					fillColor : "rgba(151,187,205,0.5)",
 					strokeColor : "rgba(151,187,205,1)",
