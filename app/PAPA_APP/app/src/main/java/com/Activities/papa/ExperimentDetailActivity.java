@@ -200,6 +200,7 @@ public class ExperimentDetailActivity extends AppCompatActivity
                 selectedImagePath = getPath(selectedImageUri);
             }
         }
+//        Toast.makeText(getApplicationContext(),selectedImagePath,Toast.LENGTH_LONG).show();
     }
 
     public String getPath(Uri uri) {
