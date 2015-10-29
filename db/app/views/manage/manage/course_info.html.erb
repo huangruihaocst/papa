@@ -3,9 +3,14 @@
 	<style type="text/css">
 		.content
 		{
-			width:50%;
+			width:100%;
 			height:400px;
+		}
+		.texts
+		{
 			font-size:30px;
+			height:100px;
+			text-align:left;
 		}
 		.comment
 		{
@@ -19,12 +24,8 @@
 		}
 		.chart
 		{
-			width:100%;
 			height:300px;
-		}
-		#content2
-		{
-			width:80%;
+			float:left;
 		}
 		#title
 		{
@@ -37,12 +38,18 @@
 	<div id="content">
 		<div id="title">
 		</div>
+		<div class="lines">
+		</div>
 		<div id="content1" class="content">
-			到课情况</br>
+			<div id="text1" class="texts">
+			</div>
 			<canvas id="chart1" class="chart"></canvas>
 		</div>
+		<div class="lines">
+		</div>
 		<div id="content2" class="content">
-			学生评分</br>
+			<div id="text2" class="texts">
+			</div>
 			<canvas id="chart2" class="chart"></canvas>
 		</div>
 	</div>
@@ -181,6 +188,7 @@
 			}
 			
 			$("#title")[0].innerHTML=courseInfo;
+			$(".lines").innerHTML='</br><hr style="height: 1px; border:none; border-top:1px solid;"></hr>';
 			data={labels:label1,datasets:[{
 					fillColor : "rgba(151,187,205,0.5)",
 					strokeColor : "rgba(151,187,205,1)",
@@ -198,6 +206,8 @@
 			mychart=new Chart(ctx).Bar(data);
 			ctx = $("#chart2")[0].getContext("2d");
 			mychart=new Chart(ctx).Bar(data2);
+			$("#text1")[0].innerHTML="到课情况";
+			$("#text2")[0].innerHTML="学生评分";
 		}
 		
 		loadInfo();
