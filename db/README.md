@@ -402,10 +402,17 @@ Http Parameters/JSON对象格式
             path=string(not required)
             
 ###reason的可能值和含义
-REASON_TOKEN_INVALID = 'token_invalid'      // token没有指定或者无效，请检查url参数
-REASON_TOKEN_TIMEOUT = 'token_timeout'      // token过时了，请重新登陆
-REASON_TOKEN_NOT_MATCH = 'token_not_match'  // id和token不匹配或者id不存在
-REASON_INVALID_OPERATION = 'invalid_operation' // 访问了不存在的url
+REASON_PERMISSION_DENIED = 'permission_denied'
+REASON_TOKEN_INVALID = 'token_invalid'
+REASON_TOKEN_TIMEOUT = 'token_timeout'
+REASON_TOKEN_NOT_MATCH = 'token_not_match'
+REASON_NOT_IMPLEMENTED = 'not_implemented'
+REASON_INVALID_OPERATION = 'invalid_operation'
+REASON_RESOURCE_NOT_FOUND = 'resource_not_found'
+REASON_INTERNAL_ERROR = 'internal_error'
+
+# json parameters when a user post an invalid json.
+REASON_INVALID_FIELD = 'invalid_field'
 ...其他值可以在相应的API处找到
 
 ##TODO

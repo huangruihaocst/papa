@@ -47,10 +47,10 @@ public class StudentActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
 
-        final String key_experiment_student = getString(R.string.key_experiment_student);
+//        final String key_experiment_student = getString(R.string.key_experiment_student);
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        bundleHelper = data.getParcelable(key_experiment_student);
+//        bundleHelper = data.getParcelable(key_experiment_student);
         final String experiment_name = bundleHelper.getExperimentName();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(experiment_name);
@@ -252,11 +252,11 @@ public class StudentActivity extends AppCompatActivity
                 Log.i(tag, item.getValue() + " " + item.getKey());
 
                 Intent intent = new Intent(StudentActivity.this, DetailActivity.class);
-                String key_to_detail = getString(R.string.key_to_detail);
+//                String key_to_detail = getString(R.string.key_to_detail);
                 Bundle data = new Bundle();
                 bundleHelper.setStudentId(item.getKey());
                 bundleHelper.setStudentName(item.getValue());
-                data.putParcelable(key_to_detail, bundleHelper);
+//                data.putParcelable(key_to_detail, bundleHelper);
                 intent.putExtras(data);
                 startActivity(intent);
             }

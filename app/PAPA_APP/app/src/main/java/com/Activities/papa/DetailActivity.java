@@ -56,8 +56,8 @@ public class DetailActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String key_to_detail = getString(R.string.key_to_detail);
-        bundleHelper = data.getParcelable(key_to_detail);
+//        String key_to_detail = getString(R.string.key_to_detail);
+//        bundleHelper = data.getParcelable(key_to_detail);
         experiment_name = bundleHelper.getExperimentName();
         identity = bundleHelper.getIdentity();
         papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
@@ -239,7 +239,7 @@ public class DetailActivity extends AppCompatActivity
     private void getComment(){
         new GetCommentTask(this).execute(
                 new PapaDataBaseManager.GetCommentsRequest(
-                        bundleHelper.getExperiment_id(),
+                        bundleHelper.getExperimentId(),
                         bundleHelper.getStudentId(),
                         bundleHelper.getToken()
                 )
