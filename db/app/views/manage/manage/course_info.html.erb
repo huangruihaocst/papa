@@ -3,36 +3,23 @@
 	<style type="text/css">
 		.content
 		{
-			width:50%;
+			width:100%;
 			height:400px;
-			font-size:40px;
 		}
-		#content3
+		.texts
 		{
 			font-size:30px;
-		}
-		.comment
-		{
-			font-size:25px;
-			margin-top:30px;
-		}
-		.author
-		{
-			font-size:15px;
-			margin-top:2px;
+			height:50px;
+			text-align:left;
 		}
 		.chart
 		{
-			width:100%;
-			height:300px;
-		}
-		#content2
-		{
-			width:80%;
+			height:295px;
+			float:left;
 		}
 		#title
 		{
-			font-size:40px;
+			font-size:60px;
 		}
 	</style>
 </head>
@@ -42,16 +29,14 @@
 		<div id="title">
 		</div>
 		<div id="content1" class="content">
-			到课情况</br>
+			<div id="text1" class="texts">
+			</div>
 			<canvas id="chart1" class="chart"></canvas>
 		</div>
 		<div id="content2" class="content">
-			学生评分</br>
+			<div id="text2" class="texts">
+			</div>
 			<canvas id="chart2" class="chart"></canvas>
-		</div>
-		<div id="content3">
-		</div>
-		<div id="contentbutton">
 		</div>
 	</div>
 	<script>
@@ -64,21 +49,12 @@
 			courseId=p;
 		}
 		
-		var n=3,m=5,courseInfo,lessons=new Array(),score=new Array();
+		var n,courseInfo,lessons=new Array(),score=new Array();
 		
 		function loadInfo()
 		{
 			getId();
 			var i,j;
-			lessons[0]=new Object();lessons[1]=new Object();lessons[2]=new Object();
-			lessons[0].attend=100;lessons[1].attend=10;lessons[2].attend=99;
-			for (i=0;i<n;++i)
-			{
-				score[i]=new Array();
-				for (j=0;j<m;++j) score[i][j]=(i+1)*(j+1);
-			}
-			courseInfo="计算机组成原理";
-			showInfo();
 			var p1=false,p2=false;
 			function deal()
 			{
@@ -112,32 +88,36 @@
 				if (data.status=="successful")
 				{
 					data=data.lessons;
-					var i,j;n=data.length;
-					for (i=0;i<n;++i)
+					var i,j,p;n=0;
+					for (i=0;i<data.length;++i)
 					{
-						lessons[i]=new Object();
-					//	score[i]=new Array();
-					//	for (j=0;j<m;++j) score[i][j]=0;
+						lessons[n]=new Object();
+						score[n]=0;
 						classId=data[i].id;
+						p=true;
 						$.ajax({url:"/lessons/"+classId+".json",data:{},type:"GET",async:false,success:function(data)
 						{
 							if (data.status=="failed")
 							{
-								alert("获取实验信息失败");
+								p=false;
 								return;
 							}
 							if (data.status=="successful")
 							{
-								lessons[i].name=data.lesson.name;
+								lessons[n].name=data.lesson.name;
 								return;
 							}
 							alert("unexpected: /lessons/id.json");
 						}});
+						if (!p)
+						{
+							continue;
+						}
 						$.ajax({url:"/lessons/"+classId+"/students.json",data:{},type:"GET",async:false,success:function(data)
 						{
 							if (data.status=="failed")
 							{
-						//		alert("获取到课人数失败");
+								lessons[i].attend=0;
 								return;
 							}
 							if (data.status=="successful")
@@ -151,41 +131,30 @@
 						{
 							if (data.status=="failed")
 							{
-								alert("获取分数分布失败");
+								score[i]=0;
 								return;
 							}
 							if (data.status=="successful")
 							{
-								var i,j;
+								var j;
 								data=data.lesson_comments;
-								for (i=0;i<data.length;++j)
+								for (j=0;j<data.length;++j)
 								{
-									j=data[i].score;
-									if (0<=j&&j<=5)
-									{
-										++score[i][0];
-									}
-									if (j==6||j==7)
-									{
-										++score[i][1];
-									}
-									if (j==8)
-									{
-										++score[i][2];
-									}
-									if (i==9)
-									{
-										++score[i][3];
-									}
-									if (i==10)
-									{
-										++score[i][4];
-									}
+									score[i]+=parseInt(data[j].score);
 								};
+								if (data.length>0)
+								{
+									score[i]=score[i]*1.0/data.length;
+								}
+								else
+								{
+									score[i]=0;
+								}
 								return;
 							}
 							alert("unexpected: /lessons/id/comments.json");
 						}});
+						++n;
 					}
 					p2=true;
 					if (p1&&p2) deal();
@@ -203,9 +172,6 @@
 				label1[i]=lessons[i].name;
 				data1[i]=lessons[i].attend;
 			}
-			console.log(label1);
-			console.log(data1);
-			label2=["0~5分","6~7分","8分","9分","10分"];
 			
 			$("#title")[0].innerHTML=courseInfo;
 			data={labels:label1,datasets:[{
@@ -214,30 +180,19 @@
 					pointColor : "rgba(151,187,205,1)",
 					pointStrokeColor : "#fff",
 					data : data1}]};
-			data2={labels:label2,datasets:[{
-					fillColor : "rgba(255,255,255,0)",
+			data2={labels:label1,datasets:[{
+					fillColor : "rgba(151,187,205,0.5)",
 					strokeColor : "rgba(151,187,205,1)",
 					pointColor : "rgba(151,187,205,1)",
 					pointStrokeColor : "#fff",
-					data : [score[0][0],score[0][1],score[0][2],score[0][3],score[0][4]]},
-					{
-					fillColor : "rgba(255,255,255,0)",
-					strokeColor : "rgba(151,187,205,1)",
-					pointColor : "rgba(151,187,205,1)",
-					pointStrokeColor : "#fff",
-					data : [score[1][0],score[1][1],score[1][2],score[1][3],score[1][4]]},
-					{
-					fillColor : "rgba(255,255,255,0)",
-					strokeColor : "rgba(151,187,205,1)",
-					pointColor : "rgba(151,187,205,1)",
-					pointStrokeColor : "#fff",
-					data : [score[2][0],score[2][1],score[2][2],score[2][3],score[2][4]]}
-					]};
+					data : score}]};
 			
 			var mychart,ctx = $("#chart1")[0].getContext("2d");
 			mychart=new Chart(ctx).Bar(data);
 			ctx = $("#chart2")[0].getContext("2d");
-			mychart=new Chart(ctx).Line(data2);
+			mychart=new Chart(ctx).Bar(data2);
+			$("#text1")[0].innerHTML="到课情况";
+			$("#text2")[0].innerHTML="学生评分";
 		}
 		
 		loadInfo();
