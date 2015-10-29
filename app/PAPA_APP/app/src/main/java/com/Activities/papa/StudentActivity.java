@@ -233,8 +233,7 @@ public class StudentActivity extends AppCompatActivity
     }
     */
 
-    void getStudents()
-    {
+    void getStudents() {
         new GetStudentsTask(this).execute(new PapaDataBaseManager.StudentsRequest(courseId, token));
     }
 

@@ -1,9 +1,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.Fragments.papa.StudentsFragment">
+    android:layout_height="match_parent" tools:context="com.Fragments.papa.StudentsFragment"
+    android:background="#FAFAFA">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:text="@string/view_students" />
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/student_list"
+        android:divider="#FFFFFF">
+    </ListView>
 
 </FrameLayout>

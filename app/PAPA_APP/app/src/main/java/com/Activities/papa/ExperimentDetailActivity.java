@@ -66,13 +66,14 @@ public class ExperimentDetailActivity extends AppCompatActivity
 //        });
 
         tabLayout = (TabLayout)findViewById(R.id.option_tabs);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.experiment_information)));
         if(identity.equals("teacher_assistant"))
             tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.view_students)));
         else if(identity.equals("student"))
             tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.view_grades)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.view_grades)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.experiment_result)));
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         viewPager = (ViewPager)findViewById(R.id.options_view_pager);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -282,14 +283,17 @@ public class ExperimentDetailActivity extends AppCompatActivity
             switch (position){
                 case 0:
                     fragment = ExperimentInformationFragment.newInstance("1","2");
+                    break;
                 case 1:
                     if (identity.equals("teacher_assistant")){
                         fragment = StudentsFragment.newInstance("1","2");
                     }else if(identity.equals("student")){
                         fragment = GradesFragment.newInstance("1","2");
                     }
+                    break;
                 case 2:
                     fragment = ExperimentResultFragment.newInstance("1","2");
+                    break;
             }
             return fragment;
         }
