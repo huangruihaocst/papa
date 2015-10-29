@@ -132,19 +132,55 @@
 			});
 		}
 		
-		function compare(x,y,p)
+		function compare(x,y,o,p)
 		{
+			switch (o)
+			{
+				case 0:
+					x=x.people.student_number;
+					y=y.people.student_number;
+					break;
+				case 1:
+					x=x.people.name;
+					y=y.people.name;
+					break;
+				case 2:
+					x=x.people.department;
+					y=y.people.department;
+					break;
+				case 3:
+					x=x.people.class_name;
+					y=y.people.class_name;
+					break;
+				case 4:
+					x=x.scoreInfo.score;
+					y=y.scoreInfo.score;
+					break;
+				case 5:
+					x=x.scoreInfo.picture_number;
+					y=y.scoreInfo.picture_number;
+					break;
+				case 6:
+					x=x.scoreInfo.video_number;
+					y=y.scoreInfo.video_number;
+					break;
+				case 7:
+					x=x.scoreInfo.creator_name;
+					y=y.scoreInfo.creator_name;
+					break;
+				default:
+			}
 			if (p==0&&x<y||p==1&&x>y) return true;
 			else return false;
 		}
 		
 		function qsort(l,r,x,p)
 		{
-			var i=l,j=r,m=info[Math.floor((i+j)/2)][x],t;
+			var i=l,j=r,m=info[Math.floor((i+j)/2)],t;
 			while (i<=j)
 			{
-				while (i<=j&&compare(info[i][x],m,p)) ++i;
-				while (i<=j&&compare(m,info[j][x],p)) --j;
+				while (i<=j&&compare(info[i],m,x,p)) ++i;
+				while (i<=j&&compare(m,info[j],x,p)) --j;
 				if (i<=j)
 				{
 					t=info[i];info[i]=info[j];info[j]=t;
@@ -160,11 +196,12 @@
 			if (focusi!=-1&&focusj!=-1) return;
 			if (x!=lastChoose) lastChoose=x,p=0;
 			else p=1-p;
+			console.log(x,p);
 			qsort(0,m-1,x,p);
 			showInfo();
 		}
 		
-		function enterPress(evt,i,j)
+/*		function enterPress(evt,i,j)
 		{
 			evt=evt?evt:(window.event?window.event:null);
 			if (evt.keyCode==KEYCODE_ENTER)
@@ -191,7 +228,7 @@
 				}
 			}
 		}
-		window.document.onkeydown=escPress;
+		window.document.onkeydown=escPress;*/
 		
 		function clickDownload(aLink)
 		{
@@ -217,7 +254,7 @@
     		$("#export")[0].href = csvUrl;
 		}
 		
-		function change(i,j)
+/*		function change(i,j)
 		{
 			var p,text;
 			if (focusi==i&&focusj==j) return;
@@ -230,11 +267,11 @@
 			p=$("#table1")[0].rows[i].cells[j];text=p.innerHTML;
 			text='<input type="text" class="form-control custominput" onkeydown="enterPress(event,'+i+','+j+')" placeholder="'+text+'">';
 			p.innerHTML=text;
-		}
+		}*/
 		
 		function showInfo()
 		{
-			var i,j,text="";
+			var i,j,text="",text2;
 			text+='<h3>实验成绩</h3>';
 			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
 			text+='<thread><tr><th colspan="'+(n1+n2-1)+'">'+classInfo+'</th>';
@@ -242,11 +279,50 @@
 			text+='<tr><th colspan="'+n1+'">学生信息</th><th colspan="'+n2+'">实验情况</th></tr>';
 			text+='<tr>';
 			for (i=0;i<n1;++i)
-			text+='<th onclick="option('+i+')">'+items.peopleInfo[i]+'</th>';
+			{
+				text2=items.peopleInfo[i];
+				if (lastChoose==i)
+				{
+					if (p==0)
+					{
+						text2+='▼';
+					}
+					else
+					{
+						text2+='▲';
+					}
+				}else
+				{
+					text2+='&#12288;';
+				}
+				text+='<th onclick="option('+i+')">'+text2+'</th>';
+			}
 			for (i=0;i<n2;++i)
-			if (i<n2-1)
-			text+='<th onclick="option('+n1+i+')">'+items.scoreInfo[i]+'</th>';
-			else text+='<th>'+items.scoreInfo[i]+'</th>';
+			{
+				text2=items.scoreInfo[i];
+				if (lastChoose==n1+i)
+				{
+					if (p==0)
+					{
+						text2+='▼';
+					}
+					else
+					{
+						text2+='▲';
+					}
+				}else
+				{
+					text2+='&#12288;';
+				}
+				if (i<n2-1)
+				{
+					text+='<th onclick="option('+(n1+i)+')">'+text2+'</th>';
+				}
+				else
+				{
+					text+='<th>'+text2+'</th>';
+				}
+			}
 			text+='</thread><tbody>';
 			for (i=0;i<m;++i)
 			{
@@ -255,7 +331,7 @@
 				text+='<td>'+info[i].people.name+'</td>';
 				text+='<td>'+info[i].people.department+'</td>';
 				text+='<td>'+info[i].people.class_name+'</td>';
-				text+='<td ondblclick="change('+(i+3)+','+n1+')">'+info[i].scoreInfo.score+'</td>';
+				text+='<td>'+info[i].scoreInfo.score+'</td>';
 				text+='<td>'+info[i].scoreInfo.picture_number+'</td>';
 				text+='<td>'+info[i].scoreInfo.video_number+'</td>';
 				text+='<td>'+info[i].scoreInfo.creator_name+'</td>';

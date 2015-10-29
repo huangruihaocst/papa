@@ -1,9 +1,8 @@
 <head>
 	<link href="/common.css" rel=stylesheet type="text/css">
+	<meta http-equiv="content-type" content="text/html; charset=gb2312">
+  	<meta name="author" content="oscar999">
 	<style type="text/css">
-		.custominput
-		{
-		}
 	</style>
 	<script>
 		var KEYCODE_ENTER=13,KEYCODE_ESC=27;
@@ -69,7 +68,6 @@
 							{
 								$.ajax({url:"/lessons/"+data[i].id+"/students/"+classId[j]+"/comment.json",data:{},type:"GET",async:false,success:function(data)
 								{
-									console.log(data);
 									info[m].classScore[j]=j;
 									if (data.status=="successful")
 									{
@@ -128,19 +126,41 @@
 			});
 		}
 		
-		function compare(x,y,p)
+		function compare(x,y,o,p)
 		{
+			switch (o)
+			{
+				case 0:
+					x=x.people.student_number;
+					y=y.people.student_number;
+					break;
+				case 1:
+					x=x.people.name;
+					y=y.people.name;
+					break;
+				case 2:
+					x=x.people.department;
+					y=y.people.department;
+					break;
+				case 3:
+					x=x.people.class_name;
+					y=y.people.class_name;
+					break;
+				default:
+					x=x.classScore[o-3];
+					y=y.classScore[o-3];
+			}
 			if (p==0&&x<y||p==1&&x>y) return true;
 			else return false;
 		}
 		
 		function qsort(l,r,x,p)
 		{
-			var i=l,j=r,m=info[Math.floor((i+j)/2)][x],t;
+			var i=l,j=r,m=info[Math.floor((i+j)/2)],t;
 			while (i<=j)
 			{
-				while (i<=j&&compare(info[i][x],m,p)) ++i;
-				while (i<=j&&compare(m,info[j][x],p)) --j;
+				while (i<=j&&compare(info[i],m,x,p)) ++i;
+				while (i<=j&&compare(m,info[j],x,p)) --j;
 				if (i<=j)
 				{
 					t=info[i];info[i]=info[j];info[j]=t;
@@ -160,7 +180,7 @@
 			showInfo();
 		}
 		
-		function enterPress(evt,i,j)
+/*		function enterPress(evt,i,j)
 		{
 			evt=evt?evt:(window.event?window.event:null);
 			if (evt.keyCode==KEYCODE_ENTER)
@@ -187,7 +207,7 @@
 				}
 			}
 		}
-		window.document.onkeydown=escPress;
+		window.document.onkeydown=escPress;*/
 		
 		function clickDownload(aLink)
 		{
@@ -213,7 +233,7 @@
     		$("#export")[0].href = csvUrl;
 		}
 		
-		function change(i,j)
+/*		function change(i,j)
 		{
 			var p,text;
 			if (focusi==i&&focusj==j) return;
@@ -226,11 +246,11 @@
 			p=$("#table1")[0].rows[i].cells[j];text=p.innerHTML;
 			text='<input type="text" class="form-control custominput" onkeydown="enterPress(event,'+i+','+j+')" placeholder="'+text+'">';
 			p.innerHTML=text;
-		}
+		}*/
 		
 		function showInfo()
 		{
-			var i,j,text="";
+			var i,j,text="",text2;
 			text+='<h3>课程成绩</h3>';
 			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
 			text+='<thread><tr><th colspan="'+(n1+n2-1)+'">'+courseInfo+'</th>';
@@ -238,9 +258,43 @@
 			text+='<tr><th colspan="'+n1+'">学生信息</th><th colspan="'+n2+'">成绩</th></tr>';
 			text+='<tr>';
 			for (i=0;i<n1;++i)
-			text+='<th onclick="option('+i+')">'+items.peopleInfo[i]+'</th>';
+			{
+				text2=items.peopleInfo[i];
+				if (lastChoose==i)
+				{
+					if (p==0)
+					{
+						text2+='▼';
+					}
+					else
+					{
+						text2+='▲';
+					}
+				}else
+				{
+					text2+='&#12288;';
+				}
+				text+='<th onclick="option('+i+')">'+text2+'</th>';
+			}
 			for (i=0;i<n2;++i)
-			text+='<th onclick="option('+n1+i+')">'+items.classNames[i]+'</th>';
+			{
+				text2=items.classNames[i];
+				if (lastChoose==n1+i)
+				{
+					if (p==0)
+					{
+						text2+='▼';
+					}
+					else
+					{
+						text2+='▲';
+					}
+				}else
+				{
+					text2+='&#12288;';
+				}
+				text+='<th onclick="option('+(n1+i)+')">'+text2+'</th>';
+			}
 			text+='</thread><tbody>';
 			for (i=0;i<m;++i)
 			{
@@ -251,7 +305,7 @@
 				text+='<td>'+info[i].people.class_name+'</td>';
 				for (j=0;j<n2;++j)
 				{
-					text+='<td ondblclick="change('+(i+3)+','+(n1+j)+')">'+info[i].classScore[j]+'</td>';
+					text+='<td><a href="/manage/student/'+info[i].people.id+'/lesson/'+classId[j]+'" target="_blank">'+info[i].classScore[j]+'</a></td>';
 				}
 				text+='</tr>';
 			}
