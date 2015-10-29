@@ -6,9 +6,4 @@
         android:orderInCategory="100"
         android:icon="@drawable/ic_search_white_48dp"
         app:showAsAction="always" />
-    <item android:id="@+id/action_experiment_information"
-        android:title="@string/action_experiment_information"
-        android:orderInCategory="100"
-        android:icon="@drawable/ic_info_white_36dp"
-        app:showAsAction="ifRoom" />
 </menu>

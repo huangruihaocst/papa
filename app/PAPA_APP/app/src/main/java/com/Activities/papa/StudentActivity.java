@@ -124,8 +124,6 @@ public class StudentActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             return true;
-        }else if (id == R.id.action_experiment_information) {
-            return true;
         }
 
         return super.onOptionsItemSelected(item);

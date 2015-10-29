@@ -7,8 +7,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,7 +22,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
+
+import com.Fragments.papa.ExperimentInformationFragment;
+import com.Fragments.papa.ExperimentResultFragment;
+import com.Fragments.papa.GradesFragment;
+import com.Fragments.papa.StudentsFragment;
 
 public class ExperimentDetailActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +36,9 @@ public class ExperimentDetailActivity extends AppCompatActivity
 
     private static final int SELECT_PICTURE = 1;
     private String selectedImagePath;
+
+    TabLayout tabLayout;
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,37 @@ public class ExperimentDetailActivity extends AppCompatActivity
 //                        .setAction("Action", null).show();
 //            }
 //        });
+
+        tabLayout = (TabLayout)findViewById(R.id.option_tabs);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.experiment_information)));
+        if(identity.equals("teacher_assistant"))
+            tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.view_students)));
+        else if(identity.equals("student"))
+            tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.view_grades)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.view_grades)));
+
+        viewPager = (ViewPager)findViewById(R.id.options_view_pager);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.setAdapter(new OptionsAdapter(getSupportFragmentManager(),3,identity));
+        viewPager.setOffscreenPageLimit(3);
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -220,5 +261,43 @@ public class ExperimentDetailActivity extends AppCompatActivity
         }
         // this is our fallback here
         return uri.getPath();
+    }
+
+    public class OptionsAdapter extends FragmentStatePagerAdapter{
+        int tabs_amount;
+        String identity;
+
+        public OptionsAdapter(FragmentManager fm) {
+            super(fm);
+        }
+        public OptionsAdapter(FragmentManager fm, int count, String identity) {
+            this(fm);
+            this.tabs_amount = count;
+            this.identity = identity;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = new Fragment();
+            switch (position){
+                case 0:
+                    fragment = ExperimentInformationFragment.newInstance("1","2");
+                case 1:
+                    if (identity.equals("teacher_assistant")){
+                        fragment = StudentsFragment.newInstance("1","2");
+                    }else if(identity.equals("student")){
+                        fragment = GradesFragment.newInstance("1","2");
+                    }
+                case 2:
+                    fragment = ExperimentResultFragment.newInstance("1","2");
+            }
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return tabs_amount;
+        }
+
     }
 }

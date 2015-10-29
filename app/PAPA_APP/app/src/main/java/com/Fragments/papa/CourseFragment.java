@@ -1,6 +1,5 @@
-package com.Activities.papa;
+package com.Fragments.papa;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,10 +18,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Activities.papa.BundleHelper;
+import com.Activities.papa.ExperimentActivity;
+import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.Map;
