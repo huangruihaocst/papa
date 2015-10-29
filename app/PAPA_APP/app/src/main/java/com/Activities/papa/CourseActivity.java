@@ -30,6 +30,8 @@ import com.Fragments.papa.CourseFragment;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -269,16 +271,19 @@ public class CourseActivity extends AppCompatActivity
     }
 
 
-    void setSemester(HashMap h) {
-        Iterator iterator = h.keySet().iterator();
-        int count = 0;
-        while (iterator.hasNext()) {
-            Object key = iterator.next();
-            tabLayout.addTab(tabLayout.newTab().setText((String) h.get(key)));
-            count++;
+    void setSemester(List<Map.Entry<Integer, String>> h) {
+        for(Iterator i = h.iterator(); i.hasNext();)
+        {
+            tabLayout.addTab(tabLayout.newTab().setText(
+                    ((Map.Entry<Integer, String>) (i.next())).getValue())
+            );
         }
-        viewPager.setAdapter(new CourseViewPagerAdapter(getSupportFragmentManager(), count, id, token));
-        viewPager.setOffscreenPageLimit(count);
+        viewPager.setAdapter(
+                new CourseViewPagerAdapter(
+                        getSupportFragmentManager(), h.size(), h, id, token
+                )
+        );
+        viewPager.setOffscreenPageLimit(h.size());
     }
 
 
@@ -346,22 +351,29 @@ public class CourseActivity extends AppCompatActivity
 
     public class CourseViewPagerAdapter extends FragmentStatePagerAdapter{
         int tabs_amount;
-        int semester_id;
+        int id;
         String token;
+        List<Map.Entry<Integer, String>> lst;
+
 
         public CourseViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-        public CourseViewPagerAdapter(FragmentManager fm, int count, int id, String token) {
+
+        public CourseViewPagerAdapter(
+                FragmentManager fm, int count, List<Map.Entry<Integer, String>> lst,
+                int id, String token
+        ) {
             this(fm);
             this.tabs_amount = count;
-            semester_id = id;
+            this.id = id;
             this.token = token;
+            this.lst = lst;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return CourseFragment.newInstance(semester_id, token, bundleHelper);
+            return CourseFragment.newInstance(id, lst.get(position).getKey(), token, bundleHelper);
         }
 
         @Override

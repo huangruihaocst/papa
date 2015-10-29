@@ -46,11 +46,11 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public SemesterReply getSemester() throws PapaHttpClientException {
         kaSi();
         SemesterReply r = new SemesterReply();
-        r.semester.put(1, "2015 Fall");
-        r.semester.put(2, "2014 Spring");
-        r.semester.put(3, "2014 Fall");
-        r.semester.put(4, "2013 Spring");
-        r.semester.put(100, "2013 Fall");
+        r.semester.add(new AbstractMap.SimpleEntry<>(0, "2015 Fall"));
+        r.semester.add(new AbstractMap.SimpleEntry<>(2, "2014 Spring"));
+        r.semester.add(new AbstractMap.SimpleEntry<>(4, "2014 Fall"));
+        r.semester.add(new AbstractMap.SimpleEntry<>(6, "2013 Spring"));
+        r.semester.add(new AbstractMap.SimpleEntry<>(100, "2013 Fall"));
         return r;
     }
 
@@ -66,7 +66,14 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public CourseReply getTACourse(CourseRequest request) throws PapaHttpClientException {
         kaSi();
         CourseReply r = new CourseReply();
-        r.course.add(new AbstractMap.SimpleEntry<>(1, "数字电路实验"));
+        if(request.semesterId == 2)
+            r.course.add(new AbstractMap.SimpleEntry<>(1, "数字电路实验"));
+        if(request.semesterId == 0)
+            r.course.add(new AbstractMap.SimpleEntry<>(10, "数字电路实验 2"));
+        if(request.semesterId == 4)
+            r.course.add(new AbstractMap.SimpleEntry<>(100, "数字电路实验 3"));
+        if(request.semesterId == 6)
+            r.course.add(new AbstractMap.SimpleEntry<>(1000, "数字电路实验 4"));
         return r;
     }
 
