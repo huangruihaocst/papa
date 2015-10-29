@@ -14,6 +14,8 @@ import org.json.JSONObject;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by shyo on 15-10-22.
@@ -54,8 +56,8 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 throw e;
             }
 
-            if(replyObj.getBoolean("is_admin") == true) throw new PapaDataBaseAdminError();
-            if(replyObj.getBoolean("is_teacher") == true) throw new PapaDataBaseTeacherError();
+            if(replyObj.getBoolean("is_admin")) throw new PapaDataBaseAdminError();
+            if(replyObj.getBoolean("is_teacher")) throw new PapaDataBaseTeacherError();
 
             return new SignInReply(replyObj.getInt("id"), replyObj.getString("token"));
         }
@@ -84,7 +86,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             {
                 JSONObject obj = array.getJSONObject(i);
 
-                ans.semester.put(obj.getInt("id"), obj.getString("name"));
+                ans.semester.add(new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name")));
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
             };
@@ -96,33 +98,60 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         }
     }
 
+    private Set<Integer> getSemesterCourse(CourseRequest request) throws
+            PapaHttpClientException, org.json.JSONException
+    {
+        HashMap<String, String> h = new HashMap<>();
+
+        h.put("token", request.token);
+
+        JSONObject replySemesterCourse = dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.get,
+                "/semesters/" + request.semesterId + "/courses.json", h
+        );
+
+        JSONArray semesterCourseArray = replySemesterCourse.getJSONArray("courses");
+        Log.i(tag, "ret = " + semesterCourseArray + " len = " + semesterCourseArray.length());
+
+        Set<Integer> semesterCourse = new HashSet<Integer>();
+        for (int i = 0; i < semesterCourseArray.length(); i++)
+        {
+            JSONObject obj = semesterCourseArray.getJSONObject(i);
+            semesterCourse.add(obj.getInt("id"));
+        }
+        return semesterCourse;
+    }
+
     @Override
     public CourseReply getStuCourse(CourseRequest request) throws PapaHttpClientException {
         try
         {
+            Set<Integer> semesterCourse = getSemesterCourse(request);
+
             HashMap<String, String> h = new HashMap<>();
 
             h.put("token", request.token);
 
             CourseReply ans = new CourseReply();
-            JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+            JSONObject replyMine = dbAccess.getDataBaseReplyAsJson(
                     PapaAbstractHttpClient.HttpMethod.get,
                     "/students/" + request.id + "/courses.json", h
             );
 
 
-            JSONArray array = reply.getJSONArray("courses");
+            JSONArray array = replyMine.getJSONArray("courses");
             Log.i(tag, "ret = " + array + " len = " + array.length());
 
-            for (int i = 0; i < array.length(); i++)
-            {
+            for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
 
-                ans.course.add(
-                        new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
-                );
+                if (semesterCourse.contains(obj.getInt("id"))) {
+                    ans.course.add(
+                            new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
+                    );
 
-                Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
+                    Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
+                }
             };
 
             return ans;
@@ -137,6 +166,8 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public CourseReply getTACourse(CourseRequest request) throws PapaHttpClientException {
         try
         {
+            Set<Integer> semesterCourse = getSemesterCourse(request);
+
             HashMap<String, String> h = new HashMap<String, String>();
 
             h.put("token", request.token);
@@ -155,11 +186,13 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             {
                 JSONObject obj = array.getJSONObject(i);
 
-                ans.course.add(
-                        new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
-                );
+                if (semesterCourse.contains(obj.getInt("id"))) {
+                    ans.course.add(
+                            new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
+                    );
 
-                Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
+                    Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
+                }
             };
 
             return ans;

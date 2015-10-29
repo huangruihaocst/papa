@@ -22,10 +22,15 @@ l32 = c3.lessons.create(name: 'as-l2', start_time: Time.now, end_time: Time.now 
 l33 = c3.lessons.create(name: 'as-l3', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 l34 = c3.lessons.create(name: 'as-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 
-default_avator = FileResource.create(path: 'default_avator.jpg', name: 'default_avator.jpg', file_type: 'jpg')
+
 
 admin0 = User.create(name:'admin', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123',
-                 student_number: '1230', class_name: '44', department: 'cst', description: '123', is_admin: true, avator_id: default_avator.id)
+                 student_number: '1230', class_name: '44', department: 'cst', description: '123', is_admin: true)
+default_avator = FileResource.create(path: 'default_avator.jpg', name: 'default_avator.jpg', file_type: 'jpg', creator_id: admin0.id)
+admin0.avator_id = default_avator.id
+puts default_avator.inspect
+admin0.save
+
 teacher0 = User.create(name:'alex', phone:'1234', email:'aa@b.c', password:'123', password_confirmation:'123',
                  student_number: '1231', class_name: '44', department: 'cst', description: '123', is_admin: false, is_teacher: true, avator_id: default_avator.id)
 u2 = User.create(name:'betty', phone:'222', email:'b@c.d', password:'123', password_confirmation:'123',

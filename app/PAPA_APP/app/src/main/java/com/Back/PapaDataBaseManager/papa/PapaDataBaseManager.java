@@ -51,11 +51,11 @@ public abstract class PapaDataBaseManager {
     // 获取学期
     static public class SemesterReply
     {
-        public HashMap semester;
+        public List<Map.Entry<Integer, String>> semester;
 
         public SemesterReply()
         {
-            semester = new HashMap();
+            semester = new ArrayList<>();
         }
     }
 
@@ -67,11 +67,13 @@ public abstract class PapaDataBaseManager {
     static public class CourseRequest
     {
         public int id;
+        public int semesterId;
         public String token;
 
-        public CourseRequest(int id, String token)
+        public CourseRequest(int id, int semesterId, String token)
         {
             this.id = id;
+            this.semesterId = semesterId;
             this.token = token;
         }
     }

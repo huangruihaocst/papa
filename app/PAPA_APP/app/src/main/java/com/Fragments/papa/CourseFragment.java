@@ -43,10 +43,12 @@ public class CourseFragment extends android.support.v4.app.Fragment {
     private static final String ARG_PARAM1 = "ARG_PARAM1";
     private static final String ARG_PARAM2 = "ARG_PARAM2";
     private static final String ARG_PARAM3 = "ARG_PARAM3";
+    private static final String ARG_PARAM4 = "ARG_PARAM4";
 
     // TODO: Rename and change types of parameters
-    private int semester_id;
+    private int semesterId;
     private String token;
+    private int id;
     private PapaDataBaseManager papaDataBaseManager;
     BundleHelper bundleHelper;
 
@@ -64,12 +66,13 @@ public class CourseFragment extends android.support.v4.app.Fragment {
      * @return A new instance of fragment CourseFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CourseFragment newInstance(int id, String token, BundleHelper bundleHelper) {
+    public static CourseFragment newInstance(int id, int semesterId, String token, BundleHelper bundleHelper) {
         CourseFragment fragment = new CourseFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, id);
         args.putString(ARG_PARAM2, token);
-        args.putParcelable(ARG_PARAM3, bundleHelper);
+        args.putInt(ARG_PARAM3, semesterId);
+        args.putParcelable(ARG_PARAM4, bundleHelper);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,11 +83,14 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(tag, "onCreate");
+
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            semester_id = getArguments().getInt(ARG_PARAM1);
+            id = getArguments().getInt(ARG_PARAM1);
             token = getArguments().getString(ARG_PARAM2);
-            bundleHelper = getArguments().getParcelable(ARG_PARAM3);
+            semesterId = getArguments().getInt(ARG_PARAM3);
+            bundleHelper = getArguments().getParcelable(ARG_PARAM4);
         }
 
         papaDataBaseManager = BundleHelper.getPapaDataBaseManager();
@@ -154,11 +160,11 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
     // Courses
     private void getStudentCourses() {
-        new GetStudentCourseTask(getContext()).execute(new PapaDataBaseManager.CourseRequest(semester_id, token));
+        new GetStudentCourseTask(getContext()).execute(new PapaDataBaseManager.CourseRequest(id, semesterId, token));
     }
 
     private void getTeacherCourses() {
-        new GetTeacherCourseTask(getContext()).execute(new PapaDataBaseManager.CourseRequest(semester_id, token));
+        new GetTeacherCourseTask(getContext()).execute(new PapaDataBaseManager.CourseRequest(id, semesterId, token));
     }
 
     class GetStudentCourseTask extends
