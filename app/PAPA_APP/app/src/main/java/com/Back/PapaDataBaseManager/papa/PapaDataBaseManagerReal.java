@@ -338,8 +338,8 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public void postComments(PostCommentsRequest request) throws PapaHttpClientException {
         HashMap<String, String> h = new HashMap<>();
         h.put("token", request.token);
-        h.put("lesson_comment[score]", request.score.toString());
-        h.put("lesson_comment[content]", request.comments);
+        h.put("student_comment[score]", request.score.toString());
+        h.put("student_comment[content]", request.comments);
 
         JSONObject reply_1 = dbAccess.getDataBaseReplyAsJson(
                 PapaAbstractHttpClient.HttpMethod.post,
