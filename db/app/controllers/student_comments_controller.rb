@@ -12,8 +12,9 @@ class StudentCommentsController < ApplicationController
   # POST /lessons/1/students/1/comments.json
   def create
     if params[:lesson_id] && params[:student_id]
+      user = check_login
       student_comment = StudentComment.create(
-          params.require(:student_comment).permit(:content, :score).merge({lesson_id: params[:lesson_id], student_id: params[:student_id], creator_id: current_user.id}))
+          params.require(:student_comment).permit(:content, :score).merge({lesson_id: params[:lesson_id], student_id: params[:student_id], creator_id: user.id}))
       if student_comment && student_comment.valid?
         json_successful(id: student_comment.id)
       else

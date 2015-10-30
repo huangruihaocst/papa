@@ -44,6 +44,7 @@ public class DetailActivity extends AppCompatActivity
     TextView user_class;
     EditText user_grades;
     EditText user_comment;
+    boolean editable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +76,23 @@ public class DetailActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                user_grades.setEnabled(true);
-                user_grades.setFocusable(true);
-                user_comment.setEnabled(true);
-                user_comment.setFocusable(true);
-                Snackbar.make(view,getString(R.string.now_editable), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                // 你打算什么时候保存修改?
+
+                if(!editable) {
+                    editable = true;
+                    user_grades.setEnabled(editable);
+                    user_grades.setFocusable(editable);
+                    user_comment.setEnabled(editable);
+                    user_comment.setFocusable(editable);
+                    Snackbar.make(
+                            view, getString(R.string.now_editable),
+                            Snackbar.LENGTH_LONG
+                    ).setAction("Action", null).show();
+                }
+                else
+                    postComment();
+
+
             }
         });
 
@@ -100,8 +113,9 @@ public class DetailActivity extends AppCompatActivity
 
         getComment();
 
-        user_grades.setEnabled(false);
-        user_comment.setEnabled(false);
+        editable = false;
+        user_grades.setEnabled(editable);
+        user_comment.setEnabled(editable);
     }
 
     @Override
@@ -278,6 +292,86 @@ public class DetailActivity extends AppCompatActivity
 
             proDialog.dismiss();
             if (rlt != null) setComment(rlt);
+        }
+    }
+
+    private void postComment(){
+        new PostCommentTask(this).execute(
+                new PapaDataBaseManager.PostCommentsRequest(
+                        bundleHelper.getExperimentId(),
+                        bundleHelper.getStudentId(),
+                        bundleHelper.getToken(),
+                        user_grades.getText().toString(),
+                        user_comment.getText().toString()
+                )
+        );
+    }
+
+    private void afterPostComment()
+    {
+        editable = false;
+        user_grades.setEnabled(editable);
+        user_grades.setFocusable(editable);
+        user_comment.setEnabled(editable);
+        user_comment.setFocusable(editable);
+
+        Toast.makeText(
+                getApplicationContext(),
+                getString(R.string.now_editdone),
+                Toast.LENGTH_SHORT
+        ).show();
+
+    }
+
+    class PostCommentTask extends
+            AsyncTask<PapaDataBaseManager.PostCommentsRequest, Exception, Boolean> {
+        ProgressDialog proDialog;
+
+        public PostCommentTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground
+                (PapaDataBaseManager.PostCommentsRequest... params) {
+            // 在后台
+            try {
+                papaDataBaseManager.postComments(params[0]);
+                return true;
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+
+            if(e[0] instanceof PapaDataBaseResourceNotFound)
+                onBackPressed();
+
+            // if(e)
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt)
+                afterPostComment();
         }
     }
 }

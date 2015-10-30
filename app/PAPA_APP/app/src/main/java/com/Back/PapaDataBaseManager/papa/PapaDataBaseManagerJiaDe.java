@@ -19,6 +19,10 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
 
     // Announcement: You should finish this class before the discussion section.
 
+    public PapaDataBaseManagerJiaDe()
+    {
+    }
+
     // @Mato_No1 卡死
     private void kaSi()
     {
@@ -122,13 +126,25 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
         return r;
     }
 
+    static String zero = "0";
+    static String zeroComment = "Oh, I remember you. You have got a zer~o~.";
+
     @Override
     public GetCommentsReply getComments(GetCommentsRequest request) throws
             PapaHttpClientException {
         return new GetCommentsReply(
                 "(stuId) 0800092000", "LaoBi's class",
-                "0", "Oh, I remember you. You have got a zer~o~."
+                zero, zeroComment
         );
+    }
+
+    @Override
+    public void postComments(PostCommentsRequest request) throws PapaHttpClientException {
+        Calendar c = Calendar.getInstance();//可以对每个时间域单独修改
+        if(c.get(Calendar.SECOND) % 2 == 1)
+            throw new PapaHttpClientIOErrorException();
+        zero = request.score;
+        zeroComment = request.comments;
     }
 
     @Override
@@ -136,4 +152,5 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
             PapaHttpClientException {
         return new GetLessonInfoReply("watashi", "kyou", "ashita", "koko");
     }
+
 }
