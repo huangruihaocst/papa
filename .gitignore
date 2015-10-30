@@ -24,5 +24,4 @@
 *~
 # ignore mp4
 /db/public/*.mp4
-/db/public/uploads/
 
