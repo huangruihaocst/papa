@@ -26,7 +26,7 @@
                 android:id="@+id/log_out"
                 android:background="#EEEEEE"
                 android:shadowDx="0"
-                android:shadowDy="0"/>
+                android:shadowDy="0" />
         </RelativeLayout>
     </ScrollView>
 
