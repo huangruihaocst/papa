@@ -26,7 +26,7 @@ l34 = c3.lessons.create(name: 'as-l1', start_time: Time.now, end_time: Time.now 
 
 admin0 = User.create(name:'admin', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123',
                  student_number: '1230', class_name: '44', department: 'cst', description: '123', is_admin: true)
-default_avator = FileResource.create(path: 'default_avator.jpg', name: 'default_avator.jpg', file_type: 'jpg', creator_id: admin0.id)
+default_avator = FileResource.create(path: '/uploads/default_avator.jpg', name: 'default_avator.jpg', file_type: 'jpg', creator_id: admin0.id)
 admin0.avator_id = default_avator.id
 puts default_avator.inspect
 admin0.save
@@ -64,8 +64,8 @@ Participation.create(user_id: u4.id, course_id: c4.id, role: ROLE_STUDENT)
 Participation.create(user_id: u5.id, course_id: c1.id, role: ROLE_STUDENT)
 Participation.create(user_id: u6.id, course_id: c1.id, role: ROLE_STUDENT)
 
-f1 = FileResource.create(name: '1.jpg', file_type: 'jpg', path: '1.jpg', creator_id: teacher0.id)
-f2 = FileResource.create(name: '2.jpg', file_type: 'jpg', path: '2.jpg', creator_id: teacher0.id)
+f1 = FileResource.create(name: '/uploads/1.jpg', file_type: 'jpg', path: '1.jpg', creator_id: teacher0.id)
+f2 = FileResource.create(name: '/uploads/2.jpg', file_type: 'jpg', path: '2.jpg', creator_id: teacher0.id)
 
 l11.student_files.create(student_id: u3.id, file_resource_id: f1.id)
 
