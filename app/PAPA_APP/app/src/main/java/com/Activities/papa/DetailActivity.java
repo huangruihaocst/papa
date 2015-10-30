@@ -52,8 +52,8 @@ public class DetailActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-//        String key_to_detail = getString(R.string.key_to_detail);
-//        bundleHelper = data.getParcelable(key_to_detail);
+        String key_to_detail = getString(R.string.key_to_detail);
+        bundleHelper = data.getParcelable(key_to_detail);
         experiment_name = bundleHelper.getExperimentName();
         identity = bundleHelper.getIdentity();
         papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
@@ -211,7 +211,6 @@ public class DetailActivity extends AppCompatActivity
         ImageView image_label = (ImageView)findViewById(R.id.image_label);
     }
 
-    //call this in another thread
     private void getComment(){
         new GetCommentTask(this).execute(
                 new PapaDataBaseManager.GetCommentsRequest(

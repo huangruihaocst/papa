@@ -56,6 +56,7 @@ public class ExperimentDetailActivity extends AppCompatActivity
 
         identity = bundleHelper.getIdentity();
 
+
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -282,13 +283,16 @@ public class ExperimentDetailActivity extends AppCompatActivity
             Fragment fragment = new Fragment();
             switch (position){
                 case 0:
-                    fragment = ExperimentInformationFragment.newInstance("1","2");
+                    // newInstance("1","2") 是搞毛阿!!!
+                    // 你这也搞得太简陋了吧
+
+                    fragment = ExperimentInformationFragment.newInstance(bundleHelper);
                     break;
                 case 1:
                     if (identity.equals("teacher_assistant")){
-                        fragment = StudentsFragment.newInstance("1","2");
+                        fragment = StudentsFragment.newInstance(bundleHelper);
                     }else if(identity.equals("student")){
-                        fragment = GradesFragment.newInstance("1","2");
+                        fragment = GradesFragment.newInstance(bundleHelper);
                     }
                     break;
                 case 2:

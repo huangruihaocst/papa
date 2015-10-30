@@ -160,11 +160,15 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
     // Courses
     private void getStudentCourses() {
-        new GetStudentCourseTask(getContext()).execute(new PapaDataBaseManager.CourseRequest(id, semesterId, token));
+        new GetStudentCourseTask(getContext()).execute(
+                new PapaDataBaseManager.CourseRequest(id, semesterId, token)
+        );
     }
 
     private void getTeacherCourses() {
-        new GetTeacherCourseTask(getContext()).execute(new PapaDataBaseManager.CourseRequest(id, semesterId, token));
+        new GetTeacherCourseTask(getContext()).execute(
+                new PapaDataBaseManager.CourseRequest(id, semesterId, token)
+        );
     }
 
     class GetStudentCourseTask extends
