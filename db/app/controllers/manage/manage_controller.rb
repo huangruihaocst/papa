@@ -5,6 +5,9 @@ class ManageController < ApplicationController
   def index
   end
   def main_page
+    if current_user.is_admin
+      render :template => "manage/manage/admin"
+    end
   end
   def course_score
     @id= params[:id]
