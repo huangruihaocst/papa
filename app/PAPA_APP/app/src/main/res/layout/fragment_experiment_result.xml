@@ -8,4 +8,17 @@
     <TextView android:layout_width="match_parent" android:layout_height="match_parent"
         android:text="@string/experiment_result" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_upload_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_white_36dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/selected_image"/>
+
 </FrameLayout>
