@@ -1,17 +1,21 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="com.Fragments.papa.StudentsFragment"
-    android:background="#FAFAFA">
+    android:background="#FAFAFA"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/view_students" />
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/student_list"
         android:divider="#FFFFFF"
-        tools:listitem="@android:layout/simple_list_item_2">
+        tools:listitem="@android:layout/simple_list_item_2"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="45dp">
     </ListView>
 
-</FrameLayout>
+</RelativeLayout>
