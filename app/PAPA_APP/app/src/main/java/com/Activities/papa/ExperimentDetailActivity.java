@@ -34,9 +34,6 @@ public class ExperimentDetailActivity extends AppCompatActivity
     BundleHelper bundleHelper;
     String identity;
 
-    private static final int SELECT_PICTURE = 1;
-    private String selectedImagePath;
-
     TabLayout tabLayout;
     ViewPager viewPager;
 
@@ -106,40 +103,6 @@ public class ExperimentDetailActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        Button button_upload = (Button)findViewById(R.id.button_upload);
-        if(identity.equals("teacher_assistant")){
-            button_upload.setVisibility(View.GONE);
-        }
-        button_upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ExperimentDetailActivity.this);
-                builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(which == 0){//camera
-
-                        }else if(which == 1){//video
-
-                        }else if(which == 2){//gallery
-                            Intent intent = new Intent();
-                            intent.setType("image/*");
-                            intent.setAction(Intent.ACTION_GET_CONTENT);
-                            startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
-                        }
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-
-        Button button_custom = (Button)findViewById(R.id.button_custom);
-        if(identity.equals("student")){
-            button_custom.setText(getString(R.string.view_grades));
-        }
-
     }
 
     @Override
@@ -234,35 +197,6 @@ public class ExperimentDetailActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == SELECT_PICTURE) {
-                Uri selectedImageUri = data.getData();
-                selectedImagePath = getPath(selectedImageUri);
-            }
-        }
-//        Toast.makeText(getApplicationContext(),selectedImagePath,Toast.LENGTH_LONG).show();
-    }
-
-    public String getPath(Uri uri) {
-        // just some safety built in
-        if (uri == null) {
-            // TODO: perform some logging or show user feedback
-            return null;
-        }
-        // try to retrieve the image from the media store first
-        // this will only work for images selected from gallery
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        }
-        // this is our fallback here
-        return uri.getPath();
     }
 
     public class OptionsAdapter extends FragmentStatePagerAdapter{

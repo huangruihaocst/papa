@@ -1,14 +1,30 @@
 package com.Fragments.papa;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.Activities.papa.R;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +45,13 @@ public class ExperimentResultFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    // Code for our image picker select action.
+    private static final int IMAGE_PICKER_SELECT = 999;
+
+    // Reference to our image view we will use
+    private ImageView selectedImage;
+    byte[] bytes;
 
     /**
      * Use this factory method to create a new instance of
@@ -65,7 +88,32 @@ public class ExperimentResultFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_experiment_result, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_experiment_result, container, false);
+        FloatingActionButton floatingActionButton = (FloatingActionButton)rootView.findViewById(R.id.fab_upload_result);
+        selectedImage = (ImageView)rootView.findViewById(R.id.selected_image);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == 0){//camera
+
+                        }else if(which == 1){//video
+
+                        }else if(which == 2){//gallery
+                            Intent intent = new Intent(Intent.ACTION_PICK,
+                                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(intent, IMAGE_PICKER_SELECT);
+                        }
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -107,4 +155,34 @@ public class ExperimentResultFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == IMAGE_PICKER_SELECT
+                && resultCode == Activity.RESULT_OK) {
+            String path = getPathFromCameraData(data, getActivity());
+            Log.i("PICTURE", "Path: " + path);
+            if (path != null) {
+                File file = new File(path);
+                if(file.exists()){
+                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    selectedImage.setImageBitmap(bitmap);
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                    bytes = byteArrayOutputStream.toByteArray();
+                }
+            }
+        }
+    }
+
+    public static String getPathFromCameraData(Intent data, Context context) {
+        Uri selectedImage = data.getData();
+        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+        Cursor cursor = context.getContentResolver().query(selectedImage,
+                filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+        return picturePath;
+    }
 }
