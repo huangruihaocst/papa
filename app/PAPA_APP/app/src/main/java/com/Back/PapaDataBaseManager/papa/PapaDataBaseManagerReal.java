@@ -33,7 +33,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
     @Override
     public SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException {
-        HashMap<String, String> h = new HashMap<String, String>();
+        HashMap<String, String> h = new HashMap<>();
 
         h.put("utf8", "✓");
         h.put("user[login]", signInRequest.id);
@@ -89,7 +89,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 ans.semester.add(new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name")));
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
-            };
+            }
 
             return ans;
         }
@@ -113,7 +113,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         JSONArray semesterCourseArray = replySemesterCourse.getJSONArray("courses");
         Log.i(tag, "ret = " + semesterCourseArray + " len = " + semesterCourseArray.length());
 
-        Set<Integer> semesterCourse = new HashSet<Integer>();
+        Set<Integer> semesterCourse = new HashSet<>();
         for (int i = 0; i < semesterCourseArray.length(); i++)
         {
             JSONObject obj = semesterCourseArray.getJSONObject(i);
@@ -152,7 +152,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
                     Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
                 }
-            };
+            }
 
             return ans;
         }
@@ -168,7 +168,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         {
             Set<Integer> semesterCourse = getSemesterCourse(request);
 
-            HashMap<String, String> h = new HashMap<String, String>();
+            HashMap<String, String> h = new HashMap<>();
 
             h.put("token", request.token);
 
@@ -193,7 +193,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
                     Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
                 }
-            };
+            }
 
             return ans;
         }
@@ -227,7 +227,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 );
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
-            };
+            }
 
             return ans;
         }
@@ -248,12 +248,11 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             );
 
             JSONObject obj = reply.getJSONObject("user");
-            UsrInfoReply ans = new UsrInfoReply(
+
+            return new UsrInfoReply(
                     obj.getInt("id"), obj.getString("name"),
                     obj.getString("email"), obj.getString("phone")
             );
-
-            return ans;
         }
         catch(org.json.JSONException e) {
             throw new PapaDataBaseJsonError();
@@ -288,7 +287,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 );
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
-            };
+            }
 
             return ans;
         }
@@ -335,11 +334,27 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         }
     }
 
+    @Override
+    public void postComments(PostCommentsRequest request) throws PapaHttpClientException {
+        HashMap<String, String> h = new HashMap<>();
+        h.put("token", request.token);
+        h.put("lesson_comment[score]", request.score.toString());
+        h.put("lesson_comment[content]", request.comments);
+
+        JSONObject reply_1 = dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.post,
+                "/lessons/" + request.lessonId + "/students/" +
+                        request.personId + "/comments.json",
+                h
+        );
+    }
+
     // どこまで叫べば位置を知れる　とどめもないまま息が切れる
     // 堂々さらした罪の群れと　後ろ向きにあらがう!!!
 
     @Override
-    public GetLessonInfoReply getLessonInfo(GetLessonInfoRequest request) throws PapaHttpClientException {
+    public GetLessonInfoReply getLessonInfo(GetLessonInfoRequest request) throws
+            PapaHttpClientException {
         try
         {
             HashMap<String, String> h = new HashMap<>();
@@ -364,4 +379,5 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             throw new PapaDataBaseJsonError();
         }
     }
+
 }

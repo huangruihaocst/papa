@@ -11,7 +11,6 @@ package com.Back.PapaDataBaseManager.papa;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -261,6 +260,29 @@ public abstract class PapaDataBaseManager {
     public abstract GetCommentsReply getComments(GetCommentsRequest request)
             throws PapaHttpClientException;
 
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // 获取助教对学生的评分
+
+    static public class PostCommentsRequest
+    {
+        public int lessonId;
+        public int personId;
+        public String score;
+        public String comments;
+        public String token;
+
+        public PostCommentsRequest(int lessonId, int personId, String token, String score, String comments)
+        {
+            this.lessonId = lessonId;
+            this.personId = personId;
+            this.token = token;
+            this.score = score;
+            this.comments = comments;
+        }
+    }
+
+    public abstract void postComments(PostCommentsRequest request)
+            throws PapaHttpClientException;
 
 
 }
