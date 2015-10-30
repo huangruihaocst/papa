@@ -10,7 +10,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/student_list"
-        android:divider="#FFFFFF">
+        android:divider="#FFFFFF"
+        tools:listitem="@android:layout/simple_list_item_2">
     </ListView>
 
 </FrameLayout>

@@ -69,6 +69,7 @@
     <string name="key_to_help">key_to_help</string>
     <string name="key_to_settings">key_to_settings</string>
     <string name="key_to_favorite">key_to_favorite</string>
+    <string name="key_to_detail">key_to_detail</string>
     <string name="key_to_experiment_history">key_to_experiment_history</string>
     <string name="key_to_upload_history">key_to_upload_history</string>
     <string name="key_to_edit_profile">key_to_edit_profile</string>
