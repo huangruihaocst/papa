@@ -292,7 +292,7 @@ public class ExperimentDetailActivity extends AppCompatActivity
                     if (identity.equals("teacher_assistant")){
                         fragment = StudentsFragment.newInstance(bundleHelper);
                     }else if(identity.equals("student")){
-                        fragment = GradesFragment.newInstance("1","2");
+                        fragment = GradesFragment.newInstance(bundleHelper);
                     }
                     break;
                 case 2:

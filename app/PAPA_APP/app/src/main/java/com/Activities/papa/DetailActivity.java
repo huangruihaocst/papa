@@ -211,7 +211,6 @@ public class DetailActivity extends AppCompatActivity
         ImageView image_label = (ImageView)findViewById(R.id.image_label);
     }
 
-    //call this in another thread
     private void getComment(){
         new GetCommentTask(this).execute(
                 new PapaDataBaseManager.GetCommentsRequest(

@@ -1,14 +1,23 @@
 package com.Fragments.papa;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
+import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,14 +28,10 @@ import com.Activities.papa.R;
  * create an instance of this fragment.
  */
 public class GradesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "GradesFragment";
+    private static final String ARG_BUNDLEHELPER = "bundleHelper";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private BundleHelper bundleHelper;
 
     private OnFragmentInteractionListener mListener;
 
@@ -34,16 +39,12 @@ public class GradesFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment GradesFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static GradesFragment newInstance(String param1, String param2) {
+    public static GradesFragment newInstance(BundleHelper bundleHelper) {
         GradesFragment fragment = new GradesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(ARG_BUNDLEHELPER, bundleHelper);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,12 +53,15 @@ public class GradesFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private PapaDataBaseManager papaDataBaseManager;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            bundleHelper = getArguments().getParcelable(ARG_BUNDLEHELPER);
+            papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
+            getComment();
         }
     }
 
@@ -107,4 +111,73 @@ public class GradesFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+
+    //call this in another thread
+    private void getComment(){
+        new GetCommentTask(getContext()).execute(
+                new PapaDataBaseManager.GetCommentsRequest(
+                        bundleHelper.getExperimentId(),
+                        bundleHelper.getStudentId(),
+                        bundleHelper.getToken()
+                )
+        );
+    }
+
+    private void setComment(PapaDataBaseManager.GetCommentsReply reply)
+    {final TextView textView = (TextView)getView().findViewById(R.id.view_grades);
+
+        String str = "stu Id = " + reply.stuId + "\n" +
+                "class = " + reply.className + "\n" +
+                "score = " + reply.score + "\n" +
+                "comments = " + reply.comments + "\n";
+
+        textView.setText(str);
+
+    }
+
+    class GetCommentTask extends
+            AsyncTask<PapaDataBaseManager.GetCommentsRequest, Exception, PapaDataBaseManager.GetCommentsReply> {
+        ProgressDialog proDialog;
+
+        public GetCommentTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetCommentsReply doInBackground
+                (PapaDataBaseManager.GetCommentsRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getComments(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // if(e)
+            // UI
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetCommentsReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setComment(rlt);
+        }
+    }
 }

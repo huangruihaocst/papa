@@ -5,6 +5,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/view_grades" />
+        android:text="@string/view_grades"
+        android:id="@+id/view_grades" />
 
 </FrameLayout>
