@@ -64,8 +64,8 @@ Participation.create(user_id: u4.id, course_id: c4.id, role: ROLE_STUDENT)
 Participation.create(user_id: u5.id, course_id: c1.id, role: ROLE_STUDENT)
 Participation.create(user_id: u6.id, course_id: c1.id, role: ROLE_STUDENT)
 
-f1 = FileResource.create(name: '/uploads/1.jpg', file_type: 'jpg', path: '1.jpg', creator_id: teacher0.id)
-f2 = FileResource.create(name: '/uploads/2.jpg', file_type: 'jpg', path: '2.jpg', creator_id: teacher0.id)
+f1 = FileResource.create(name: '1.jpg', file_type: 'jpg', path: '/uploads/1.jpg', creator_id: teacher0.id)
+f2 = FileResource.create(name: '2.jpg', file_type: 'jpg', path: '/uploads/2.jpg', creator_id: teacher0.id)
 
 l11.student_files.create(student_id: u3.id, file_resource_id: f1.id)
 
