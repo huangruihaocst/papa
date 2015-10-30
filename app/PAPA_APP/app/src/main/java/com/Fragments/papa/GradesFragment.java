@@ -1,6 +1,5 @@
 package com.Fragments.papa;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
@@ -10,12 +9,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
-import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
@@ -35,7 +34,10 @@ public class GradesFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    TextView textView_comments;
+    TextView user_id;
+    TextView user_class;
+    TextView user_grades;
+    TextView user_comment;
 
     /**
      * Use this factory method to create a new instance of
@@ -72,7 +74,10 @@ public class GradesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_grades, container, false);
-        textView_comments = (TextView)rootView.findViewById(R.id.view_grades);
+        user_id = (TextView)rootView.findViewById(R.id.user_id);
+        user_class = (TextView)rootView.findViewById(R.id.user_class);
+        user_grades = (TextView)rootView.findViewById(R.id.user_grade);
+        user_comment = (TextView)rootView.findViewById(R.id.user_comment);
         return rootView;
     }
 
@@ -127,13 +132,11 @@ public class GradesFragment extends Fragment {
         );
     }
 
-    private void setComment(PapaDataBaseManager.GetCommentsReply reply) {
-        String str = "stu Id = " + reply.stuId + "\n" +
-                "class = " + reply.className + "\n" +
-                "score = " + reply.score + "\n" +
-                "comments = " + reply.comments + "\n";
-
-        textView_comments.setText(str);
+    private void setGrades(PapaDataBaseManager.GetCommentsReply reply) {
+        user_id.setText(reply.stuId);
+        user_class.setText(reply.className);
+        user_grades.setText(reply.score);
+        user_comment.setText(reply.comments);
     }
 
     class GetCommentTask extends
@@ -178,7 +181,7 @@ public class GradesFragment extends Fragment {
             // UI
 
             proDialog.dismiss();
-            if (rlt != null) setComment(rlt);
+            if (rlt != null) setGrades(rlt);
         }
     }
 }
