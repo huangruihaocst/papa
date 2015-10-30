@@ -184,6 +184,48 @@ public abstract class PapaDataBaseManager {
     public abstract StudentsReply getStudents(StudentsRequest request)
             throws PapaHttpClientException;
 
+    /*
+        吐血推荐
+        http://www.bilibili.com/video/av2098846/#page=2
+
+        aLIEz + 霍元甲
+        良心作
+     */
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // 获取实验详细信息
+
+    static public class GetLessonInfoRequest
+    {
+        public int lessonId;
+        public String token;
+
+        public GetLessonInfoRequest(int lessonId, String token)
+        {
+            this.lessonId = lessonId;
+            this.token = token;
+        }
+    }
+
+    static public class GetLessonInfoReply
+    {
+        public String name;
+        public String startTime;
+        public String endTime;
+        public String location;
+        public GetLessonInfoReply(String name, String startTime, String endTime, String location)
+        {
+            this.name = name;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.location = location;
+        }
+    }
+
+    public abstract GetLessonInfoReply getLessonInfo(GetLessonInfoRequest request)
+            throws PapaHttpClientException;
+
     ////////////////////////////////////////////////////////////////////////////////////////
     // 获取助教对学生的评分
 

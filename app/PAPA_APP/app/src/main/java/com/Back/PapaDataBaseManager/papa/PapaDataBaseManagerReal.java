@@ -334,4 +334,34 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             throw new PapaDataBaseJsonError();
         }
     }
+
+    // どこまで叫べば位置を知れる　とどめもないまま息が切れる
+    // 堂々さらした罪の群れと　後ろ向きにあらがう!!!
+
+    @Override
+    public GetLessonInfoReply getLessonInfo(GetLessonInfoRequest request) throws PapaHttpClientException {
+        try
+        {
+            HashMap<String, String> h = new HashMap<>();
+
+            h.put("token", request.token);
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/lessons/" + request.lessonId + ".json",
+                    h
+            );
+            reply = reply.getJSONObject("lesson");
+
+
+            return new GetLessonInfoReply(
+                    reply.getString("name"),
+                    reply.getString("start_time"),
+                    reply.getString("end_time"),
+                    reply.getString("location")
+            );
+        }
+        catch(org.json.JSONException e) {
+            throw new PapaDataBaseJsonError();
+        }
+    }
 }

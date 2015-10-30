@@ -123,7 +123,17 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     }
 
     @Override
-    public GetCommentsReply getComments(GetCommentsRequest request) throws PapaHttpClientException {
-        return new GetCommentsReply("(stuId) 0800092000", "LaoBi's class", "0", "Oh, I remember you. You have got a zer~o~.");
+    public GetCommentsReply getComments(GetCommentsRequest request) throws
+            PapaHttpClientException {
+        return new GetCommentsReply(
+                "(stuId) 0800092000", "LaoBi's class",
+                "0", "Oh, I remember you. You have got a zer~o~."
+        );
+    }
+
+    @Override
+    public GetLessonInfoReply getLessonInfo(GetLessonInfoRequest request) throws
+            PapaHttpClientException {
+        return new GetLessonInfoReply("watashi", "kyou", "ashita", "koko");
     }
 }

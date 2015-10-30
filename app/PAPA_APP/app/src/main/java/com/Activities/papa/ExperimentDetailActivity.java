@@ -286,7 +286,7 @@ public class ExperimentDetailActivity extends AppCompatActivity
                     // newInstance("1","2") 是搞毛阿!!!
                     // 你这也搞得太简陋了吧
 
-                    fragment = ExperimentInformationFragment.newInstance("1","2");
+                    fragment = ExperimentInformationFragment.newInstance(bundleHelper);
                     break;
                 case 1:
                     if (identity.equals("teacher_assistant")){
