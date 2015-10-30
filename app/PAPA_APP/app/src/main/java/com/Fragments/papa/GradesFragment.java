@@ -35,6 +35,8 @@ public class GradesFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    TextView textView_comments;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -69,7 +71,9 @@ public class GradesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_grades, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_grades, container, false);
+        textView_comments = (TextView)rootView.findViewById(R.id.view_grades);
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -115,24 +119,21 @@ public class GradesFragment extends Fragment {
     //call this in another thread
     private void getComment(){
         new GetCommentTask(getContext()).execute(
-                new PapaDataBaseManager.GetCommentsRequest(
-                        bundleHelper.getExperimentId(),
-                        bundleHelper.getStudentId(),
-                        bundleHelper.getToken()
-                )
+            new PapaDataBaseManager.GetCommentsRequest(
+                    bundleHelper.getExperimentId(),
+                    bundleHelper.getStudentId(),
+                    bundleHelper.getToken()
+            )
         );
     }
 
-    private void setComment(PapaDataBaseManager.GetCommentsReply reply)
-    {final TextView textView = (TextView)getView().findViewById(R.id.view_grades);
-
+    private void setComment(PapaDataBaseManager.GetCommentsReply reply) {
         String str = "stu Id = " + reply.stuId + "\n" +
                 "class = " + reply.className + "\n" +
                 "score = " + reply.score + "\n" +
                 "comments = " + reply.comments + "\n";
 
-        textView.setText(str);
-
+        textView_comments.setText(str);
     }
 
     class GetCommentTask extends
