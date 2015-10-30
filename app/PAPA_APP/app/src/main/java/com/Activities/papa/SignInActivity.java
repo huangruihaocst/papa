@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
-import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
@@ -43,7 +41,7 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        String key_enter_sign_in = getString(R.string.key_enter_sign_in);
+        String key_enter_sign_in = getString(R.string.key_to_sign_in);
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         bundleHelper = data.getParcelable(key_enter_sign_in);

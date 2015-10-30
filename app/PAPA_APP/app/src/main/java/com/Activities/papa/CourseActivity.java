@@ -28,7 +28,6 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Fragments.papa.CourseFragment;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -181,8 +180,8 @@ public class CourseActivity extends AppCompatActivity
             data.putParcelable(key_to_upload_history, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
-        } else if (id == R.id.nav_edit_profile) {
-            Intent intent = new Intent(CourseActivity.this, EditProfileActivity.class);
+        } else if (id == R.id.nav_profile) {
+            Intent intent = new Intent(CourseActivity.this, ProfileActivity.class);
             Bundle data = new Bundle();
             String key_to_edit_profile = getString(R.string.key_to_edit_profile);
             data.putParcelable(key_to_edit_profile, bundleHelper);

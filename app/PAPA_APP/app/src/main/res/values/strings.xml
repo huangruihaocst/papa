@@ -27,7 +27,7 @@
     <string name="favorite">喜欢的实验</string>
     <string name="experiment_history">做过的实验</string>
     <string name="upload_history">我的上传</string>
-    <string name="edit_profile">编辑个人信息</string>
+    <string name="profile">个人中心</string>
     <string name="more">更多</string>
     <string name="notification">通知栏</string>
     <string name="get_telephone_number">获取手机号</string>
@@ -50,6 +50,10 @@
     <string name="view_grades">查看成绩</string>
     <string name="experiment_information">实验信息</string>
     <string name="experiment_result">实验结果</string>
+    <string name="log_out">注销</string>
+    <string name="confirm_log_out">真的要注销吗(·8·)</string>
+    <string name="confirm_log_out_yes">真的</string>
+    <string name="confirm_log_out_no">假的</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -73,7 +77,7 @@
     <string name="key_to_experiment_history">key_to_experiment_history</string>
     <string name="key_to_upload_history">key_to_upload_history</string>
     <string name="key_to_edit_profile">key_to_edit_profile</string>
-    <string name="key_enter_sign_in">key_enter_sign_in</string>
+    <string name="key_to_sign_in">key_to_sign_in</string>
     <string name="key_to_notification">key_to_notification</string>
     <string name="key_detail_comment">key_detail_comment</string>
     <string name="key_experiment_experiment_detail">key_experiment_experiment_detail</string>
