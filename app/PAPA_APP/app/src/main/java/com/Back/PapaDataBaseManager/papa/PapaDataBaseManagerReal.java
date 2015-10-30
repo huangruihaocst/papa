@@ -6,6 +6,7 @@ import com.Back.DataBaseAccess.papa.PapaDataBaseAccess;
 import com.Back.DataBaseAccess.papa.PapaDataBaseInvalidFieldError;
 import com.Back.DataBaseAccess.papa.PapaDataBaseJsonError;
 import com.Back.DataBaseAccess.papa.PapaDataBaseNotSuccessError;
+import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
 import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
@@ -301,25 +302,37 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         try
         {
             HashMap<String, String> h = new HashMap<>();
-
-            JSONObject reply_1 = dbAccess.getDataBaseReplyAsJson(
-                    PapaAbstractHttpClient.HttpMethod.get,
-                    "/lessons/" + request.lessonId + "/students/" +
-                            request.personId + "/comment.json",
-                    null
-            );
-
-
             h.put("token", request.token);
 
-            JSONObject reply_2 = dbAccess.getDataBaseReplyAsJson(
+            JSONObject reply_1;
+            JSONObject reply_2;
+            reply_2 = dbAccess.getDataBaseReplyAsJson(
                     PapaAbstractHttpClient.HttpMethod.get,
                     "/students/" + request.personId + ".json",
                     h
             );
+            reply_2 = reply_2.getJSONObject("student");
+
+            try {
+                reply_1 = dbAccess.getDataBaseReplyAsJson(
+                        PapaAbstractHttpClient.HttpMethod.get,
+                        "/lessons/" + request.lessonId + "/students/" +
+                                request.personId + "/comment.json",
+                        null
+                );
+            }
+            catch (PapaDataBaseResourceNotFound e)
+            {
+                return new GetCommentsReply(
+                        reply_2.getString("student_number"),
+                        reply_2.getString("department") + " " + reply_2.getString("class_name"),
+                        "未评",
+                        "未评 =w="
+                );
+            }
+
 
             reply_1 = reply_1.getJSONObject("student_comment");
-            reply_2 = reply_2.getJSONObject("student");
 
 
             return new GetCommentsReply(

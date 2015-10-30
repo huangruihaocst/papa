@@ -273,10 +273,6 @@ public class DetailActivity extends AppCompatActivity
         @Override
         protected void onProgressUpdate(Exception... e) {
 
-            if(e[0] instanceof PapaDataBaseResourceNotFound)
-                onBackPressed();
-
-            // if(e)
             // UI
             Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
         }
