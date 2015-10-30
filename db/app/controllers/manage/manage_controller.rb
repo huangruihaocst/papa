@@ -37,5 +37,9 @@ class ManageController < ApplicationController
       end
     end
   end
+  def course_students
+    @course_id = params[:id]
+    @course_name = Course.find(@course_id).name;
+  end
 end
 end

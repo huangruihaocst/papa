@@ -1,0 +1,51 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <div class="col-md-6">
+        <h1><%=@course_name%></h1>
+      </div>
+      <div class="col-md-6">
+        <p></p>
+        <p>目前已经有<span id="student-number">0</span>人在学这门课!</p>
+        <button class="btn btn-block btn-sm" onclick="">添加学生</button>
+      </div>
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>系别</th>
+            <th>班级</th>
+            <th>邮箱</th>
+            <th>电话</th>
+        </tr>
+        </thead>
+        <tbody id = "student-list">
+
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</div>
+
+<script>
+    (function(){
+        $.get("/courses/<%=@course_id%>/students.json",{},function(data){
+            console.log(data);
+            str = "";
+            for(var i in data.students)
+            {
+                str += "<tr>" +"<td>"+ data.students[i].student_number.toString()+"</td>"
+                        +"<td>"+ data.students[i].name.toString()+"</td>"
+                        +"<td>"+ data.students[i].department.toString()+"</td>"
+                        +"<td>"+ data.students[i].class_name.toString()+"</td>"
+                        +"<td>"+ data.students[i].email.toString()+"</td>"
+                        +"<td>"+ data.students[i].phone.toString()+"</td>";
+            }
+            $("#student-list").html(str);
+            $("#student-number").html(data.students.length);
+        });
+    })();
+</script>
