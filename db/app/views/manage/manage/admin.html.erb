@@ -1,3 +1,248 @@
-<p>
-  this is the management page of admin!
-</p>
+<head>
+	<link href="/common.css" rel=stylesheet type="text/css">
+	<style type="text/css">
+		.rectangleSemester
+		{
+			width:100%;
+			height:50px;
+			margin-top:15px;
+		}
+		.custombutton
+		{
+			float:right;
+			margin-left:3px;
+			margin-right:3px;
+		}
+		.names
+		{
+			float:left;
+		}
+	</style>
+</head>
+<body>
+
+	<div id="content">
+	</div>
+	
+	<div class="modal fade" id="modal-add-semester" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" type="button" data-dismiss="modal">×</button>
+					<h3>添加学期</h3>
+				</div>
+				<div class="modal-body">
+					<h4>学期名称</h4>
+					<input id="input-add-semester-1" type="text" class="form-control"></input>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" onclick="confirmSemester()" data-dismiss="modal">添加</button>
+					<button class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="modal-modify-semester" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" type="button" data-dismiss="modal">×</button>
+					<h3>修改学期</h3>
+				</div>
+				<div class="modal-body">
+					<h4>学期名称</h4>
+					<input id="input-modify-semester-1" type="text" class="form-control"></input>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" onclick="modifySemester()" data-dismiss="modal">添加</button>
+					<button class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" type="button" data-dismiss="modal">×</button>
+					<h3>确认删除？</h3>
+				</div>
+				<div class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" onclick="deleteItem()" data-dismiss="modal">确认</button>
+					<button class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+	
+		var info,choosei,usersId;
+		
+		function confirmSemester()  //向后台传输新学期的信息
+		{
+			var text1,i,p;
+			text1=$("#input-add-semester-1")[0].value;
+			p=new Object();
+			p.semester=new Object();
+			p.semester.name=text1;
+			$.post('/semesters.json', p,
+    		function(data)
+    		{
+    			if (data.status=="failed")
+    			{
+    				alert("添加失败");
+    				return;
+    			}
+    			if (data.status=="successful")
+    			{
+    				p.semester.id=data.id;
+    				info.semesters[info.tot++]=p.semester;
+    				showInfo();
+    				return;
+    			}
+    			alert("unexpected: /semesters.json");
+    		}
+    		);
+		}
+    	
+    	function modifySemester()    //修改学期信息
+    	{
+    		var text1,i,p;
+    		p=new Object();
+    		p.semester=new Object();
+    		p.semester=info.semesters[choosei];
+    		text1=$("#input-modify-semester-1")[0].value;
+			p.semester.name=text1;
+			$.ajax({url:'/semesters/'+p.semester.id+'.json',data:p,type:"PUT",async:false,success:function(data)
+    		{
+    			if (data.status=="failed")
+    			{
+    				alert("修改失败");
+    				return;
+    			}
+    			if (data.status=="successful")
+    			{
+    				info.semesters[choosei]=p.semester;
+    				showInfo();
+    				return;
+    			}
+    			alert("unexpected: modifyCourse");
+    		}});
+    	}
+		
+		function deleteItem()    //删除学期
+		{
+			var id=-1,i;
+			id=info.semesters[choosei].id;
+			$.ajax({url:'/semesters/'+id+'.json',data:{},type:"DELETE",success:function(data)
+			{
+				if (data.status=="failed")
+    			{
+    				alert("删除失败");return;
+    			}
+    			if (data.status=="successful")
+    			{
+    				for (i=choosei;i<info.tot-1;++i)
+    				{
+  						info.semesters[i]=info.semesters[i+1];
+  					}
+  					--info.tot;
+    				showInfo();
+    				return;
+    			}
+    			alert("unexpected: deleteItem");
+    		}});
+		}
+		
+		function loadInfo()  //从后台获取课程信息
+		{
+			info=new Object();
+			info.tot=0;
+			info.semesters=new Array();
+			var data1,data2;
+			
+			function deal()
+			{
+				if (data1.status=="failed"||data2.status=="failed")
+				{
+					alert("获取信息失败");
+					return;
+				}
+				if (data1.status=="successful"&&data2.status=="successful")
+				{
+					var data,i,j,k,p1,p2;
+					data=data1.semesters;
+					for (i=0;i<data.length;++i)
+					{
+						info.semesters[info.tot++]=data[i];
+					}
+					usersId=data2.id;
+					showInfo();
+					return;
+				}
+				alert("unexpected error");
+			}
+				
+			$.ajax({url:"/semesters.json",data:{},type:"GET",success:function(data)
+			{
+				data1=data;
+				if (data1&&data2) deal();
+			}});
+			
+			$.ajax({url:"/users/current.json",data:{},type:"GET",success:function(data)    //#modify
+			{
+				data2=data;
+				if (data1&&data2) deal();
+			}});
+			
+		}
+		
+		function addSemester(event)  //添加学期
+		{
+			$("#input-add-semester-1")[0].value="";
+			$('#modal-add-semester').modal('show');
+			event.stopPropagation();
+		}
+		
+		function changeSemester(event,i)  //修改学期
+		{
+			choosei=i;
+			$("#input-modify-semester-1")[0].value=info.semesters[i].name;
+			$('#modal-modify-semester').modal('show');
+			event.stopPropagation();
+		}
+
+		function deleteSemester(event,i)  //删除学期
+		{
+			choosei=i;
+			$('#modal-delete').modal('show');
+			event.stopPropagation();
+		}
+		
+		function showInfo()  //显示信息
+		{
+			var i,text="";
+			
+			for (i=0;i<info.tot;++i)
+			{
+				text+='<div class="rectangleSemester btn btn-default">';
+				text+='<div class="names">'+info.semesters[i].name+'</div>';
+				text+='<div class="custombutton" onclick="deleteSemester(event,'+i+')">×</div>';
+				text+='<div class="btn btn-info custombutton" onclick="addSemester(event)">添加学期</div>';
+				text+='<div class="btn btn-info custombutton" onclick="changeSemester(event,'+i+')">修改学期</div>';
+				text+='</div>';
+			}
+			
+			$("#content")[0].innerHTML=text;
+		}
+		
+		loadInfo();
+
+	</script>
+	
+</body>
