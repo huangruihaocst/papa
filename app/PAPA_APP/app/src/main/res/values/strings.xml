@@ -153,5 +153,16 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_experiment_detail">ExperimentDetailActivity</string>
+    <string name="title_activity_message">MessageActivity</string>
+    <string name="title_activity_message_detail">MessageDetailActivity</string>
+
+    <!-- Message -->
+    <string name="key_message_detail_activity_message_byte_array">key_message_detail_activity_message_byte_array</string>
+    <!-- Message Service -->
+    <string name="key_message_service_command">key_message_service_command</string>
+    <string name="key_message_service_command_get_all_messages">key_message_service_command_get_all_messages</string>
+    <string name="key_message_service_command_stop_listen">key_message_service_command_stop_listen</string>
+    <string name="key_message_service_command_start_listen">key_message_service_command_start_listen</string>
+    <string name="key_message_service_messages_file_name">messages.dat</string>
 
 </resources>
