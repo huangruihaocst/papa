@@ -17,7 +17,7 @@ import com.Activities.papa.R;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MessageListAdapter extends BaseAdapter {
     Context context;
@@ -74,7 +74,13 @@ public class MessageListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, final View convertView, ViewGroup parent) {
-        ViewGroup layout = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.message_list_item, null);
+        ViewGroup layout;
+        if (convertView == null) {
+            layout = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.message_list_item, null);
+        }
+        else {
+            layout = (ViewGroup) convertView;
+        }
 
         // set checkbox status
         final CheckBox checkBox = (CheckBox) layout.findViewById(R.id.check_box_message_delete_item);
@@ -118,6 +124,17 @@ public class MessageListAdapter extends BaseAdapter {
         title.setText(getValidMessages().get(position).getTitle());
         if (getValidMessages().get(position).getRead()) {
             title.setTextColor(Color.GREEN);
+        }
+
+        if (getValidMessages().get(position).getDeadline().compareTo(Calendar.getInstance()) > 0) {
+            if (getValidMessages().get(position).getRead()) {
+                title.setTextColor(Color.GREEN);
+            }
+            else {
+                title.setTextColor(Color.BLACK);
+            }
+        } else {
+            title.setTextColor(Color.YELLOW);
         }
 
         // content

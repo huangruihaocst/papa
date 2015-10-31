@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Calendar;
 
 /**
- * Created by alexwang on 10/31/15.
+ * This class represents a message pulled from the server.
+ * It is also serializable.
  */
 public class Message implements Serializable {
-    String id, title, type, content;
+    String id, title, type, content, creatorName;
+    Calendar deadline;
     boolean ignored = false;
     boolean read = false;
     boolean newMessage = true;
@@ -21,6 +24,8 @@ public class Message implements Serializable {
         this.title = title;
         this.type = type;
         this.content = content;
+        this.deadline = Calendar.getInstance();
+        this.deadline.add(Calendar.SECOND, 20);
     }
 
     public String getId() {
@@ -34,6 +39,9 @@ public class Message implements Serializable {
     }
     public String getContent() {
         return content;
+    }
+    public Calendar getDeadline() {
+        return deadline;
     }
     public boolean getIgnored() {
         return ignored;
