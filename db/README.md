@@ -149,6 +149,8 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         resource_not_found: course_id不存在
         permission_denied: 不是该课程的老师
         internal_error: 其他内部错误, 如果遇到请联系我
+    ?POST   /courses/1/students.json                 json: [{username: "", email: "", phone: "", student_no: ""}...]
+        not_implemented
     POST   /courses/1/assistants/1.json 添加助教到指定课程                                              Teacher
         not_implemented
     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]             Student
@@ -164,14 +166,14 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         resource_not_found: lesson_id不存在
     PUT     /lessons/1.json           修改实验课信息
         not_implemented
-    ?DELETE /lessons/1.json          删掉实验课
+    DELETE /lessons/1.json          删掉实验课
         permission_denied: 不是该课程的老师
         resource_not_found: lesson_id不存在
         internal_error: 其他内部错误, 如果遇到请联系我
-    ?GET    /lessons/1/comments.json  获得某门课程的评价    "lesson_comments": [lesson_comment, ...]     Teacher
+    GET    /lessons/1/comments.json  获得某门课程的评价    "lesson_comments": [lesson_comment, ...]     Teacher
         暂时不检查错误
-    #!POST   /lessons/1/comments.json  添加学生对课程的评价(当前登陆用户)  lesson comment parameters        Student
-    ?GET   /lessons/1/students/1/comment.json  助教对学生的评价 "student_comment": student_comment
+
+    GET   /lessons/1/students/1/comment.json  助教对学生的评价 "student_comment": student_comment
         暂时不检查错误
     POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant
         暂时不检查错误
@@ -204,9 +206,9 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         resource_not_found: file_id不存在
         permission_denied: 当前用户不是文件创建者
         **注意这里忽略student_id
-    ?GET     /students/1/lessons/1/comment.json 某位学生对课程的评价
+    GET     /students/1/lessons/1/comment.json 某位学生对课程的评价
         resource_not_found: student_id或者lesson_id不存在或者该学生不在该课程中
-    ?POST    /students/1/lessons/1/comments.json
+    POST    /students/1/lessons/1/comments.json
         resource_not_found: student_id或者lesson_id不存在或者该学生不在该课程中
         
     # 课程/实验课相关
@@ -249,7 +251,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         permission_denied: assistant_id和当前用户不匹配
         resource_not_found: assistant_id不存在
         internal_error: 其他内部错误, 如果遇到请联系我
-    ?POST  /assistants/1/courses/1.json 给某个助教添加某门课                                             Assistant
+    POST  /assistants/1/courses/1.json 给某个助教添加某门课                                             Assistant
         permission_denied: assistant_id和当前用户不匹配
         resource_not_found: assistant_id不存在
         internal_error: 其他内部错误, 如果遇到请联系我
@@ -303,6 +305,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         
 Deprecated APIs:
 
+    #!POST   /lessons/1/comments.json  添加学生对课程的评价(当前登陆用户)  lesson comment parameters        Student
     #!DELETE /courses/1/students/1.json 删除学生
     #!GET    /courses.json             获得所有课程(包含所有学年的) "courses": [course, ...]               Student
     #!POST   /courses.json             添加课程             course parameters                             Teacher

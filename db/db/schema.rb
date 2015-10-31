@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(version: 20151008120334) do
     t.boolean  "is_teacher",             default: false
     t.boolean  "is_admin",               default: false
     t.integer  "avator_id"
-    t.string   "student_number"
+    t.string   "student_number",                         null: false
     t.string   "class_name"
     t.string   "department"
     t.text     "description"
@@ -158,5 +158,6 @@ ActiveRecord::Schema.define(version: 20151008120334) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  add_index "users", ["student_number"], name: "index_users_on_student_number", unique: true
 
 end

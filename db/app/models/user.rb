@@ -15,6 +15,10 @@ class User < ActiveRecord::Base
   has_many :from_assistant_comments, class_name: 'StudentComment', foreign_key: :student_id
   has_many :posted_message, class_name: 'Message', foreign_key: :creator_id
 
+  validates :name, presence: true
+  validates :email, presence: true
+  validates :phone, presence: true
+
   # def self.create(params)
   #   if params.keys.include?(:avator_id)
   #     old_create(params)
@@ -22,6 +26,11 @@ class User < ActiveRecord::Base
   #     old_create(params.merge({ avator_id: FileResource.find_by_name('default_avator.jpg').id }))
   #   end
   # end
+  before_save :default_values
+  def default_values
+    self.avator_id ||= FileResource.find_by_name('default_avator.jpg').id
+    self.student_number ||= Random.rand(MAX_PASSWORD_LENGTH_ALLOWED)
+  end
 
   # the following 4 methods allow us to login with phone or email
   def login=(login)
