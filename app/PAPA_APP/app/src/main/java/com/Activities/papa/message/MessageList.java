@@ -18,6 +18,9 @@ public class MessageList implements Serializable {
     public void add(Message msg) {
         messages.add(msg);
     }
+    public void add(int pos, Message msg) {
+        messages.add(pos, msg);
+    }
     public Message get(int position) {
         return messages.get(position);
     }

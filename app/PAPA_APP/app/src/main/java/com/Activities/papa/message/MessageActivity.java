@@ -73,6 +73,7 @@ public class MessageActivity extends AppCompatActivity {
             flushMessages();
 
             messagePullService.startListen();
+            messagePullService.notifyMessagesNearingDeadline();
         }
 
         @Override

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.channels.FileChannel;
+import java.util.Calendar;
 import java.util.TimerTask;
 
 public class MessagePullService extends Service {
@@ -98,16 +99,22 @@ public class MessagePullService extends Service {
         }
 
         // get remote message list
+        Calendar deadline = Calendar.getInstance();
+        deadline.add(Calendar.SECOND, 20);
         com.Activities.papa.message.Message msg =
                 new com.Activities.papa.message.Message(
                         String.valueOf(messageCount),
                         String.valueOf(messageCount) + " days off!",
                         "notification",
-                        "It's real!");
+                        "It's real!",
+                        deadline,
+                        "Operating System",
+                        "Alex"
+                        );
         messageCount++;
 
         // merge
-        messageList.add(msg);
+        messageList.add(0, msg);
 
         // save
         try {
@@ -205,6 +212,35 @@ public class MessagePullService extends Service {
         }
     }
 
+    public void notifyMessagesNearingDeadline() {
+        MessageList messageList = syncMessages();
+        MessageList near = new MessageList();
+        for (int i = 0; i < messageList.size(); ++i) {
+            long delta = messageList.get(i).getDeadline().getTimeInMillis() - System.currentTimeMillis();
+            if (!messageList.get(i).getIgnored() && messageList.get(i).needNotifyDeadline() && delta > 0 && delta < getResources().getInteger(R.integer.min_deadline_warning_in_milliseconds)) {
+                near.add(messageList.get(i));
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < near.size(); ++i) {
+            sb.append(near.get(i).getTitle()).append(" ");
+        }
+
+        if (near.size() > 0) {
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setContentTitle(getString(R.string.string_message_notify_deadline_title, near.size()))
+                    .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                    .setContentText(sb.toString())
+                    .setContentIntent(PendingIntent.getActivity(
+                            this, 0, new Intent(this, MessageActivity.class), 0))
+                    .build();
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(getResources().getInteger(R.integer.key_message_nearing_deadline_notification_id), notification);
+        }
+    }
+
     // DONE
     public void onMessageReceived(MessageList messages) {
         StringBuilder builder = new StringBuilder();
@@ -220,7 +256,6 @@ public class MessagePullService extends Service {
                 .setContentIntent(PendingIntent.getActivity(
                         this, 0, new Intent(this, MessageActivity.class), 0))
                 .build();
-
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(getResources().getInteger(R.integer.key_message_pull_notification_id), notification);

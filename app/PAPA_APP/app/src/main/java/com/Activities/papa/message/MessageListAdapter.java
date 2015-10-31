@@ -2,7 +2,8 @@ package com.Activities.papa.message;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+//import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +97,8 @@ public class MessageListAdapter extends BaseAdapter {
             }
         });
 
+        final Message message = getValidMessages().get(position);
+
         // title
         TextView title = (TextView)layout.findViewById(R.id.text_view_message_list_view_item_title);
         title.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +112,7 @@ public class MessageListAdapter extends BaseAdapter {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 try {
                     ObjectOutputStream oos = new ObjectOutputStream(bos);
-                    oos.writeObject(getValidMessages().get(position));
+                    oos.writeObject(message);
                     oos.close();
                     byte[] bytes = bos.toByteArray();
                     bos.close();
@@ -121,25 +124,26 @@ public class MessageListAdapter extends BaseAdapter {
                 }
             }
         });
-        title.setText(getValidMessages().get(position).getTitle());
-        if (getValidMessages().get(position).getRead()) {
-            title.setTextColor(Color.GREEN);
-        }
+        title.setText(message.getTitle());
 
-        if (getValidMessages().get(position).getDeadline().compareTo(Calendar.getInstance()) > 0) {
-            if (getValidMessages().get(position).getRead()) {
-                title.setTextColor(Color.GREEN);
+        if (message.getDeadline().compareTo(Calendar.getInstance()) > 0) {
+            long delta = message.getDeadline().getTimeInMillis() - System.currentTimeMillis();
+            if (delta > 0 && delta < context.getResources().getInteger(R.integer.min_deadline_warning_in_milliseconds)) {
+                title.setTextColor(ContextCompat.getColor(context, R.color.color_message_nearing_deadline));
+            }
+            else if (message.getRead()) {
+                title.setTextColor(ContextCompat.getColor(context, R.color.color_message_read));
             }
             else {
-                title.setTextColor(Color.BLACK);
+                title.setTextColor(ContextCompat.getColor(context, R.color.color_message_normal));
             }
         } else {
-            title.setTextColor(Color.YELLOW);
+            title.setTextColor(ContextCompat.getColor(context, R.color.color_message_after_deadline));
         }
 
         // content
         TextView content = (TextView)layout.findViewById(R.id.text_view_message_list_view_item_content);
-        content.setText(getValidMessages().get(position).getContent());
+        content.setText(message.getContent());
 
         return layout;
     }

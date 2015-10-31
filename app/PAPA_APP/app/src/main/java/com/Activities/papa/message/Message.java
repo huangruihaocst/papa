@@ -11,23 +11,26 @@ import java.util.Calendar;
  * It is also serializable.
  */
 public class Message implements Serializable {
-    String id, title, type, content, creatorName;
+    String id, title, type, content, creatorName, courseName;
     Calendar deadline;
     boolean ignored = false;
     boolean read = false;
     boolean newMessage = true;
+    boolean notifyDeadline = true;
 
-    public final static Message InvalidMessage = new Message("-1", "InvalidMessage", "404", "404");
+    public final static Message InvalidMessage = new Message("-1", "InvalidMessage", "404", "404", Calendar.getInstance(), "Operating System", "Alex");
 
-    public Message(String id, String title, String type, String content) {
+    public Message(String id, String title, String type, String content, Calendar deadline, String courseName, String creatorName) {
         this.id = id;
         this.title = title;
         this.type = type;
         this.content = content;
-        this.deadline = Calendar.getInstance();
-        this.deadline.add(Calendar.SECOND, 20);
+        this.deadline = deadline;
+        this.courseName = courseName;
+        this.creatorName = creatorName;
     }
 
+    // getters
     public String getId() {
         return id;
     }
@@ -43,6 +46,12 @@ public class Message implements Serializable {
     public Calendar getDeadline() {
         return deadline;
     }
+    public String getCourseName() {
+        return courseName;
+    }
+    public String getCreatorName() {
+        return creatorName;
+    }
     public boolean getIgnored() {
         return ignored;
     }
@@ -52,11 +61,14 @@ public class Message implements Serializable {
     public boolean isNew() {
         return newMessage;
     }
+    public boolean needNotifyDeadline() {
+        return notifyDeadline;
+    }
 
+    // these functions will affect message contents.
     public void readMessage() {
         read = true;
     }
-
     public void ignoreMessage() {
         ignored = true;
     }
