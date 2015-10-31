@@ -16,6 +16,7 @@ import com.Activities.papa.R;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOError;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,6 +24,11 @@ import java.nio.channels.FileChannel;
 import java.util.TimerTask;
 
 public class MessagePullService extends Service {
+
+    /** This thread will poll messages from the server
+     *      and call the service function onMessageReceived
+     *      if new Message received.
+     */
     class PullingThread extends Thread {
         public Handler mHandler;
         public static final int Stop = 1;
@@ -53,9 +59,7 @@ public class MessagePullService extends Service {
                             break;
                         case Pull:
                             MessageList list = readNewMessages(syncMessages());
-                            Log.w("Message", "Pull");
                             if (list.size() > 0) {
-                                Log.w("Message", "Pull Success");
                                 onMessageReceived(list);
                             }
                             break;
@@ -81,7 +85,7 @@ public class MessagePullService extends Service {
         // get local message list
         MessageList messageList = new MessageList();
         try {
-            File file = new File(getFilesDir().getPath().toString() + "/" + getString(R.string.key_message_service_messages_file_name));
+            File file = new File(getFilesDir().getPath() + "/" + getString(R.string.key_message_service_messages_file_name));
             FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
 
@@ -107,7 +111,7 @@ public class MessagePullService extends Service {
 
         // save
         try {
-            File file = new File(getFilesDir().getPath().toString() + "/" + getString(R.string.key_message_service_messages_file_name));
+            File file = new File(getFilesDir().getPath() + "/" + getString(R.string.key_message_service_messages_file_name));
             FileOutputStream fos = new FileOutputStream(file, true);
             FileChannel channel = fos.getChannel();
             channel.lock();
@@ -127,9 +131,32 @@ public class MessagePullService extends Service {
             e.printStackTrace();
         }
 
-
         // return
         return messageList;
+    }
+
+    //
+    public void syncFromApp(MessageList list) {
+        try {
+            File file = new File(getFilesDir().getPath() + "/" + getString(R.string.key_message_service_messages_file_name));
+            FileOutputStream fos = new FileOutputStream(file, true);
+            FileChannel channel = fos.getChannel();
+            channel.lock();
+            channel.truncate(0);
+            channel.force(true);
+            fos.close();
+
+            fos = new FileOutputStream(file);
+
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+            oos.writeObject(list);
+
+            oos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // filter old messages
@@ -170,8 +197,12 @@ public class MessagePullService extends Service {
 
     // DONE
     public void clearMessageCache() {
-        File file = new File(getFilesDir().getPath().toString() + "/" + getString(R.string.key_message_service_messages_file_name));
-        file.delete();
+        File file = new File(getFilesDir().getPath() + "/" + getString(R.string.key_message_service_messages_file_name));
+        // just to make the IDE happy
+        boolean deleted = file.delete();
+        if (!deleted) {
+            throw new IOError(new IOException("Can't delete message cache file"));
+        }
     }
 
     // DONE
@@ -182,7 +213,7 @@ public class MessagePullService extends Service {
             builder.append("\n");
         }
 
-        Notification noti = new NotificationCompat.Builder(this)
+        Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle("New " + messages.size() + " Messages!")
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentText(builder.toString())
@@ -192,11 +223,12 @@ public class MessagePullService extends Service {
 
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(getResources().getInteger(R.integer.key_message_pull_notification_id), noti);
+        notificationManager.notify(getResources().getInteger(R.integer.key_message_pull_notification_id), notification);
     }
 
-    // Binder given to clients
-    // DONE to the end
+    /**
+     * Binder given to clients
+     */
     private final IBinder mBinder = new LocalBinder();
 
     /**

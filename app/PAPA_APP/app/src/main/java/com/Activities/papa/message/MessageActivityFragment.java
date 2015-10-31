@@ -11,14 +11,13 @@ import android.widget.Toast;
 
 import com.Activities.papa.R;
 
-import java.util.ArrayList;
-
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MessageActivityFragment extends Fragment {
     ListView messageListView;
     MessageListAdapter adapter;
+    MessagePullService service;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,15 +26,7 @@ public class MessageActivityFragment extends Fragment {
         View fragment = inflater.inflate(R.layout.fragment_message, container, false);
         messageListView = (ListView) fragment.findViewById(R.id.listViewMessageList);
 
-        // TODO
-        // get message list
-        // let the user wait
-//        ArrayList<Message> messages = new ArrayList<>();
-//        for (int i = 0  ; i < 20; ++i) {
-//            messages.add(new Message(String.valueOf(i), "Title " + String.valueOf(i), "notification", "Content"));
-//        }
-//        messageListView.setAdapter(new MessageListAdapter(getContext(), messages));
-
+        // set the empty adapter and update it later
         adapter = new MessageListAdapter(getContext(), new MessageList());
         messageListView.setAdapter(adapter);
 
@@ -44,8 +35,20 @@ public class MessageActivityFragment extends Fragment {
 
     public void updateMessages(MessageList list) {
         adapter.resetData(list);
-        //messageListView.setAdapter(new MessageListAdapter(getContext(), list));
-
-        Toast.makeText(getContext(), "update messages", Toast.LENGTH_SHORT).show();
     }
+
+    public void setMessageService(MessagePullService s) {
+        this.service = s;
+        if (this.adapter != null)
+            adapter.setMessageService(s);
+    }
+
+    public void enterEditMode() {
+        adapter.enterEditMode();
+    }
+
+    public void quitEditMode(boolean delete) {
+        adapter.quitEditMode(delete);
+    }
+
 }

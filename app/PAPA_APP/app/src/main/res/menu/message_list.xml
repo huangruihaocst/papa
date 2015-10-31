@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.Activities.papa.message.MessageActivity">
+
+    <item android:id="@+id/action_message_edit"
+        android:title="Edit"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+    <item android:id="@+id/action_message_delete"
+        android:title="Delete"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+    <item android:id="@+id/action_message_done"
+        android:title="Done"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+
+</menu>

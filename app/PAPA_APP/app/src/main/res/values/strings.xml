@@ -164,5 +164,6 @@
     <string name="key_message_service_command_stop_listen">key_message_service_command_stop_listen</string>
     <string name="key_message_service_command_start_listen">key_message_service_command_start_listen</string>
     <string name="key_message_service_messages_file_name">messages.dat</string>
+    <string name="string_message_title">Title: %s</string>
 
 </resources>

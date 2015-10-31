@@ -43,10 +43,10 @@ public class MessageDetailActivity extends AppCompatActivity {
 
         // set content
         View content_view = findViewById(R.id.layout_activity_message_detail_content);
-        TextView title = (TextView) content_view.findViewById(R.id.text_view_message_detail_content);
+        TextView title = (TextView) content_view.findViewById(R.id.text_view_message_detail_title);
         TextView type = (TextView) content_view.findViewById(R.id.text_view_message_detail_type);
         TextView message_content = (TextView) content_view.findViewById(R.id.text_view_message_detail_content);
-        title.setText(message.getTitle());
+        title.setText(getString(R.string.string_message_title, message.getTitle()));
         type.setText(message.getType());
         message_content.setText(message.getContent());
 
