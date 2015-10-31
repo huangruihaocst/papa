@@ -5,4 +5,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorToolBar">#E7790D</color>
     <color name="colorToolBarDark">#D06D0C</color>
+    <color name="color_message_nearing_deadline">#FF0000</color>
+    <color name="color_message_read">#333333</color>'
+    <color name="color_message_normal">#000000</color>
+    <color name="color_message_after_deadline">#CCCCCC</color>
 </resources>

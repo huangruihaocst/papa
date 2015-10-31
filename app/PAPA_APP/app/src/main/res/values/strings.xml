@@ -165,5 +165,6 @@
     <string name="key_message_service_command_start_listen">key_message_service_command_start_listen</string>
     <string name="key_message_service_messages_file_name">messages.dat</string>
     <string name="string_message_title">Title: %s</string>
+    <string name="string_message_notify_deadline_title">%d messages are nearing deadline.</string>
 
 </resources>

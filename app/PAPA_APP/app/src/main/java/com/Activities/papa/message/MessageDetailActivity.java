@@ -1,13 +1,14 @@
 package com.Activities.papa.message;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.Activities.papa.R;
@@ -15,6 +16,9 @@ import com.Activities.papa.R;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class MessageDetailActivity extends AppCompatActivity {
     Message message;
@@ -46,9 +50,24 @@ public class MessageDetailActivity extends AppCompatActivity {
         TextView title = (TextView) content_view.findViewById(R.id.text_view_message_detail_title);
         TextView type = (TextView) content_view.findViewById(R.id.text_view_message_detail_type);
         TextView message_content = (TextView) content_view.findViewById(R.id.text_view_message_detail_content);
+        TextView deadline = (TextView) content_view.findViewById(R.id.text_view_message_detail_deadline);
+        TextView courseName = (TextView) content_view.findViewById(R.id.text_view_message_detail_course_name);
+        TextView creatorName = (TextView) content_view.findViewById(R.id.text_view_message_detail_creator_name);
+
         title.setText(getString(R.string.string_message_title, message.getTitle()));
         type.setText(message.getType());
         message_content.setText(message.getContent());
+
+        // deadline format
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
+        deadline.setText(dateFormat.format(message.getDeadline().getTime()));
+        long delta = message.getDeadline().getTimeInMillis() - System.currentTimeMillis();
+        if (delta > 0 && delta < this.getResources().getInteger(R.integer.min_deadline_warning_in_milliseconds)) {
+            deadline.setTextColor(ContextCompat.getColor(this, R.color.color_message_nearing_deadline));
+        }
+
+        courseName.setText(message.getCourseName());
+        creatorName.setText(message.getCreatorName());
 
         // fab
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
