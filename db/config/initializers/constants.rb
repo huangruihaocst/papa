@@ -16,6 +16,7 @@ REASON_NOT_IMPLEMENTED = 'not_implemented'
 REASON_INVALID_OPERATION = 'invalid_operation'
 REASON_RESOURCE_NOT_FOUND = 'resource_not_found'
 REASON_INTERNAL_ERROR = 'internal_error'
+REASON_FORMAT_ERROR = 'format_error'
 
 # json parameters when a user post an invalid json.
 REASON_INVALID_FIELD = 'invalid_field'

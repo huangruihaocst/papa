@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
   # error handling
-  get "/404" => "errors#not_found"
+  get '/404' => 'errors#not_found'
 
   devise_for :users, controllers: {
     sessions: 'users/sessions',
@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resources :courses, only: [:show, :update, :destroy] do
     resources :students, only: [:index, :destroy]
     post 'students/:id' => 'students#create', as: :create_student
+    post 'students' => 'students#create_many', as: :create_many_student
 
     resources :assistants, only: [:index, :create, :destroy]
     post 'assistants/:id' => 'assistants#create', as: :create_assistant

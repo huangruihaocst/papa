@@ -149,8 +149,16 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         resource_not_found: course_id不存在
         permission_denied: 不是该课程的老师
         internal_error: 其他内部错误, 如果遇到请联系我
-    ?POST   /courses/1/students.json                 json: [{username: "", email: "", phone: "", student_no: ""}...]
-        not_implemented
+    ?POST   /courses/1/students.json                 json=[{username: "", email: "", phone: "", student_no: ""}...] Teacher
+        失败:
+            resource_not_found: course_id不存在
+            token_invalid: 未登录
+            permission_denied: 当前用户不是该门课程的老师
+            format_error: json格式错误
+            invalid_fields: student_number未指定
+        成功:
+            部分学生添加失败 invalid_fields: ["123", "111"...] 数字为student_number
+            
     POST   /courses/1/assistants/1.json 添加助教到指定课程                                              Teacher
         not_implemented
     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]             Student

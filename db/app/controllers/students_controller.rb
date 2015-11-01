@@ -54,6 +54,52 @@ class StudentsController < ApplicationController
     end
   end
 
+  # POST /courses/1/students.json
+  def create_many
+    if params[:course_id]
+      course = Course.find(params[:course_id])
+      must_be_a_teacher_of(params[:token], course)
+      json = params[:json]
+      if json
+        students = JSON.parse(json)
+        if students.is_a?(Array)
+          invalid_students = []
+          students.each do |student|
+            raise RequestException.new(REASON_INVALID_FIELD) unless student['student_number']
+            exist_user = User.find_by_student_number(student['student_number'])
+            if exist_user
+              course.students << exist_user
+            else
+              user = User.create(name: student['name'],
+                                 email: student['email'],
+                                 phone: student['phone'],
+                                 password: student['student_number'],
+                                 student_number: student['student_number'])
+              if user.valid?
+                course.students << user
+              else
+                if student['student_number']
+                  invalid_students.push(student['student_number'])
+                else
+                  raise RequestException.new(REASON_INVALID_FIELD)
+                end
+              end
+            end
+          end
+          if course.save
+            json_successful(INVALID_FIELDS_NAME => invalid_students)
+          else
+            json_failed
+          end
+        else
+          raise RequestException.new(REASON_FORMAT_ERROR)
+        end
+      end
+    else
+      json_failed
+    end
+  end
+
   # DELETE /courses/1/students/1.json
   def destroy
     if params[:course_id] && params[:id]
