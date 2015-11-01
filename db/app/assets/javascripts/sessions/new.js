@@ -1,4 +1,4 @@
 function checkFields() {
-    alert('123')
-    return false;
+    alert('123');
+    return true;
 }
