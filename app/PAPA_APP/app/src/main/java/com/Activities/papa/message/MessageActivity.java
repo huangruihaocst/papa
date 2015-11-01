@@ -1,11 +1,12 @@
 package com.Activities.papa.message;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Bundle;
-import android.os.IBinder;
+import android.os.*;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,32 @@ import android.view.View;
 import com.Activities.papa.R;
 
 public class MessageActivity extends AppCompatActivity {
+    class SyncMessageTask extends AsyncTask<String, String, String> {
+        ProgressDialog progressDialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(MessageActivity.this);
+            progressDialog.setMessage("Sync...");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+        @Override
+        protected String doInBackground(String... aurl) {
+            Message message = handler.obtainMessage();
+            message.what = Flush;
+            handler.dispatchMessage(message);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String unused) {
+            super.onPostExecute(unused);
+            progressDialog.dismiss();
+        }
+    }
+
     boolean bound;
     MessagePullService messagePullService;
     MessageActivityFragment fragment;
@@ -70,6 +97,7 @@ public class MessageActivity extends AppCompatActivity {
 
             fragment.setMessageService(messagePullService);
 
+            //new SyncMessageTask().execute();
             flushMessages();
 
             messagePullService.startListen();
@@ -80,6 +108,16 @@ public class MessageActivity extends AppCompatActivity {
         public void onServiceDisconnected(ComponentName arg0) {
             fragment.setMessageService(null);
             bound = false;
+        }
+    };
+
+    static final int Flush = 1;
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            if (msg.what == Flush) {
+               flushMessages();
+            }
         }
     };
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimerTask;
 
@@ -42,18 +43,19 @@ public class MessagePullService extends Service {
             Looper.prepare();
 
             final java.util.Timer timer = new java.util.Timer(true);
+            final TimerTask task = new TimerTask() {
+                public void run() {
+                    android.os.Message m = new Message();
+                    m.what = Pull;
+                    mHandler.dispatchMessage(m);
+                }
+            };
 
             mHandler = new Handler(getMainLooper()) {
                 public void handleMessage(android.os.Message msg) {
                     switch (msg.what) {
                         case Start:
-                            timer.schedule(new TimerTask() {
-                                public void run() {
-                                    android.os.Message m = new Message();
-                                    m.what = Pull;
-                                    dispatchMessage(m);
-                                }
-                            }, 0, PullIntervalMilliseconds);
+                            timer.schedule(task, 0, PullIntervalMilliseconds);
                             break;
                         case Stop:
                             timer.cancel();
@@ -99,6 +101,15 @@ public class MessagePullService extends Service {
         }
 
         // get remote message list
+        // get all message ids
+        ArrayList<String> allIds = new ArrayList<>();
+        allIds.add(String.valueOf(messageCount));
+
+        // filter those we have
+        ArrayList<String> dontHave = messageList.filterByMessageId(allIds);
+
+        // get those we do not have
+        // GET /messages/donthave.json
         Calendar deadline = Calendar.getInstance();
         deadline.add(Calendar.SECOND, 20);
         com.Activities.papa.message.Message msg =
@@ -111,10 +122,9 @@ public class MessagePullService extends Service {
                         "Operating System",
                         "Alex"
                         );
-        messageCount++;
-
-        // merge
         messageList.add(0, msg);
+
+        messageCount++;
 
         // save
         try {

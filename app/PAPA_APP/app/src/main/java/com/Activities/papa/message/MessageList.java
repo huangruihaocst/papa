@@ -36,5 +36,22 @@ public class MessageList implements Serializable {
     public Message[] toArray() {
         return messages.toArray(new Message[messages.size()]);
     }
+    public Message findById(String id) {
+        for (int i = 0; i < messages.size(); ++i) {
+            if (messages.get(i).getId().equals(id)) {
+                return messages.get(i);
+            }
+        }
+        return null;
+    }
+    public ArrayList<String> filterByMessageId(ArrayList<String> ids) {
+        ArrayList<String> newIds = new ArrayList<>();
+        for (int i = 0; i < ids.size(); ++i) {
+            if (findById(ids.get(i)) == null) {
+                newIds.add(ids.get(i));
+            }
+        }
+        return newIds;
+    }
 
 }
