@@ -106,6 +106,16 @@ class FilesController < ApplicationController
             json_failed(REASON_PERMISSION_DENIED)
             return
           end
+        elsif params[:lesson_id]
+          lesson = Lesson.find(params[:lesson_id])
+          af = LessonFile.create(file_resource_id: @file.id, lesson_id: lesson.id)
+          if af
+            json_successful(id: @file.id)
+            return
+          else
+            json_failed
+            return
+          end
         end
 
         json_successful(id: @file.id)
