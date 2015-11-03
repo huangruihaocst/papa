@@ -1,11 +1,14 @@
 package com.Back.PapaDataBaseManager.papa;
 
+import com.Activities.papa.message.Message;
+import com.Activities.papa.message.MessageList;
 import com.Back.DataBaseAccess.papa.PapaDataBaseNotSuccessError;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.NetworkAccess.papa.PapaHttpClientIOErrorException;
 import com.Back.NetworkAccess.papa.PapaHttpClientNot200Exception;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -153,4 +156,35 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
         return new GetLessonInfoReply("watashi", "kyou", "ashita", "koko");
     }
 
+    @Override
+    public GetMessagesIDReply getMessagesID(GetMessagesIDRequest request)
+            throws PapaHttpClientException
+    {
+        ArrayList<String> ans = new ArrayList();
+        ans.add("1");
+        ans.add("2");
+        ans.add("3");
+        ans.add("4");
+        ans.add("5");
+
+        return new GetMessagesIDReply(ans);
+    }
+
+    @Override
+    public GetMessageByIDReply getMessageByID(GetMessageByIDRequest request)
+            throws PapaHttpClientException
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 20);
+        return new GetMessageByIDReply(
+                new Message(
+                        request.msgId, "Homework Assignment #" + request.msgId, "homework",
+                        "You should finish homework" +
+                                "assignment #2 before the discussion section",
+                        calendar,
+                        "University Physics II",
+                        "Laobi"
+                )
+        );
+    }
 }

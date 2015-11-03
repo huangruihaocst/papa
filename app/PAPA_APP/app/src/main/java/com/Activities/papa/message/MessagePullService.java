@@ -12,6 +12,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.Activities.papa.R;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -83,6 +87,13 @@ public class MessagePullService extends Service {
 
     static int messageCount = 0;
 
+    PapaDataBaseManager papaDataBaseManager;
+
+    MessagePullService()
+    {
+        papaDataBaseManager = new PapaDataBaseManagerReal();
+    }
+
     // TODO get real messages
     public MessageList syncMessages() {
         // get local message list
@@ -103,7 +114,16 @@ public class MessagePullService extends Service {
         // get remote message list
         // get all message ids
         ArrayList<String> allIds = new ArrayList<>();
-        allIds.add(String.valueOf(messageCount));
+        allIds.add(Integer.toString(messageCount));
+
+        /// TODO: get token and personID.
+        /// plug token and personID into the following code,
+        /// solve the (differential) code equation, and you will get the answer.
+        /*
+        allIds = papaDataBaseManager.getMessagesID(
+                new PapaDataBaseManager.GetMessagesIDRequest(personId, token)
+        ).msgIdLst;
+        */
 
         // filter those we have
         ArrayList<String> dontHave = messageList.filterByMessageId(allIds);
@@ -123,6 +143,21 @@ public class MessagePullService extends Service {
                         "Alex"
                         );
         messageList.add(0, msg);
+
+        /// And also this code
+        /*
+        for (int i = 0; i < dontHave.size(); ++i)
+        {
+            messageList.add(dontHave.get(i),
+                    papaDataBaseManager.getMessageByID(
+                            new PapaDataBaseManager.GetMessageByIDRequest(dontHave.get(i), token)
+                    ).msg
+            );
+        }
+        */
+
+
+
 
         messageCount++;
 
