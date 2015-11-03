@@ -52,4 +52,10 @@ class MessagesController < ApplicationController
       json_failed(REASON_INVALID_FIELD)
     end
   end
+
+  # GET /messages/1.json
+  def show
+    @message = Message.find(params[:id])
+  end
+
 end
