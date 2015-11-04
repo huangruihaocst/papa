@@ -11,7 +11,7 @@
         <item android:id="@+id/nav_profile" android:icon="@android:drawable/ic_menu_edit"
             android:title="@string/profile" />
         <item android:id="@+id/nav_notification" android:icon="@drawable/ic_sms_grey600_24dp"
-            android:title="@string/notification" />
+            android:title="@string/message" />
     </group>
 
     <item android:title="@string/more">

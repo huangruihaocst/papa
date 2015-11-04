@@ -61,23 +61,28 @@ class StudentsController < ApplicationController
       must_be_a_teacher_of(params[:token], course)
       json = params[:json]
       if json
+        puts json
         students = JSON.parse(json)
-
         if students.is_a?(Array)
           invalid_students = []
           students.each do |student|
             raise RequestException.new(REASON_INVALID_FIELD) unless student['student_number']
             exist_user = User.find_by_student_number(student['student_number'])
             if exist_user
-              course.students << exist_user
+              course.add_student(exist_user)
             else
               user = User.create(name: student['name'],
                                  email: student['email'],
                                  phone: student['phone'],
                                  password: student['student_number'],
-                                 student_number: student['student_number'])
+                                 student_number: student['student_number'],
+                                 department: student['department'],
+                                 description: student['description'],
+                                 class_name: student['class_name']
+                                 )
               if user.valid?
-                course.students << user
+                course.add_student(user)
+                raise RequestException.new(REASON_INTERNAL_ERROR) unless course.save
               else
                 if student['student_number']
                   invalid_students.push(student['student_number'])

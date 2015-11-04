@@ -271,9 +271,6 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         startActivity(intent);
     }
 
-
-
-
     class GetTeacherCourseTask extends
             AsyncTask<PapaDataBaseManager.CourseRequest, Exception, PapaDataBaseManager.CourseReply> {
         ProgressDialog proDialog;

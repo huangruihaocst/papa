@@ -22,6 +22,11 @@ class Course < ActiveRecord::Base
     end
     users
   end
+
+  def add_student(student)
+    Participation.create(user_id: student.id, course_id: id, role: ROLE_STUDENT)
+  end
+
   def assistants
     users = User.none
     participations.each do |p|

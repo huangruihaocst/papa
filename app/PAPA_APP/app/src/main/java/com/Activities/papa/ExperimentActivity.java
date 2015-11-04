@@ -6,21 +6,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,10 +27,8 @@ import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import java.util.List;
 import java.util.Map;
 
-public class ExperimentActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class ExperimentActivity extends AppCompatActivity {
     final static String tag = "ExperimentActivity";
-
 
     String course_name;
     int courseId;
@@ -47,7 +41,6 @@ public class ExperimentActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_experiment);
-
 
         final String key_course_experiment = getString(R.string.key_course_experiment);
         Intent intent = getIntent();
@@ -62,8 +55,17 @@ public class ExperimentActivity extends AppCompatActivity
         this.papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.help));
         toolbar.setTitle(course_name);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -73,21 +75,6 @@ public class ExperimentActivity extends AppCompatActivity
 //                        .setAction("Action", null).show();
 //            }
 //        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        if(bundleHelper.getIdentity().equals("teacher_assistant")){
-            Menu menu = navigationView.getMenu();
-            MenuItem item = menu.findItem(R.id.nav_upload_history);
-            item.setVisible(false);
-        }
-        setHeaderView(navigationView);
 
         getExperiments();
     }
@@ -122,68 +109,6 @@ public class ExperimentActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_favorite) {
-            Intent intent = new Intent(ExperimentActivity.this,FavoriteActivity.class);
-            Bundle data = new Bundle();
-            String key_to_favorite = getString(R.string.key_to_favorite);
-            data.putParcelable(key_to_favorite,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_experiment_history) {
-            Intent intent = new Intent(ExperimentActivity.this,ExperimentHistoryActivity.class);
-            Bundle data = new Bundle();
-            String key_to_experiment_history = getString(R.string.key_to_experiment_history);
-            data.putParcelable(key_to_experiment_history,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_upload_history) {
-            Intent intent = new Intent(ExperimentActivity.this,UploadHistoryActivity.class);
-            Bundle data = new Bundle();
-            String key_to_upload_history = getString(R.string.key_to_upload_history);
-            data.putParcelable(key_to_upload_history,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_profile) {
-            Intent intent = new Intent(ExperimentActivity.this,ProfileActivity.class);
-            Bundle data = new Bundle();
-            String key_to_edit_profile = getString(R.string.key_to_edit_profile);
-            data.putParcelable(key_to_edit_profile,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_help) {
-            Intent intent = new Intent(ExperimentActivity.this,HelpActivity.class);
-            Bundle data = new Bundle();
-            String key_to_help = getString(R.string.key_to_help);
-            data.putParcelable(key_to_help,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_settings) {
-            Intent intent = new Intent(ExperimentActivity.this,SettingsActivity.class);
-            Bundle data = new Bundle();
-            String key_to_settings = getString(R.string.key_to_settings);
-            data.putParcelable(key_to_settings,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if(id == R.id.nav_notification){
-            Intent intent = new Intent(ExperimentActivity.this,NotificationActivity.class);
-            Bundle data = new Bundle();
-            String key_to_notification = getString(R.string.key_to_notification);
-            data.putParcelable(key_to_notification,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -291,10 +216,4 @@ public class ExperimentActivity extends AppCompatActivity
         });
     }
 
-    private void setHeaderView(NavigationView navigationView){
-        LinearLayout linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
-        TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
-        TextView mail_label = (TextView)findViewById(R.id.mail_label);
-        ImageView image_label = (ImageView)findViewById(R.id.image_label);
-    }
 }

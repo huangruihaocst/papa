@@ -202,7 +202,7 @@ public class DetailActivity extends AppCompatActivity
         } else if(id == R.id.nav_notification){
             Intent intent = new Intent(DetailActivity.this,NotificationActivity.class);
             Bundle data = new Bundle();
-            String key_to_notification = getString(R.string.key_to_notification);
+            String key_to_notification = getString(R.string.key_to_message);
             data.putParcelable(key_to_notification,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
@@ -308,7 +308,7 @@ public class DetailActivity extends AppCompatActivity
 
         Toast.makeText(
                 getApplicationContext(),
-                getString(R.string.now_editdone),
+                getString(R.string.now_edit_done),
                 Toast.LENGTH_SHORT
         ).show();
 

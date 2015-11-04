@@ -22,11 +22,6 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".ExperimentActivity"
-            android:label="@string/title_activity_experiment"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".StudentActivity"
             android:label="@string/title_activity_student"
             android:theme="@style/AppTheme.NoActionBar" >
@@ -102,8 +97,14 @@
         <service
             android:name=".message.MessagePullService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="true" >
         </service>
+
+        <activity
+            android:name=".ExperimentActivity"
+            android:label="@string/title_activity_experiment"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

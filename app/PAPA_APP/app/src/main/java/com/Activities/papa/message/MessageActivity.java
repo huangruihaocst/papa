@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
 
 public class MessageActivity extends AppCompatActivity {
@@ -48,13 +49,29 @@ public class MessageActivity extends AppCompatActivity {
     MessagePullService messagePullService;
     MessageActivityFragment fragment;
     Menu menu;
+    BundleHelper bundleHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+
+//        Intent intent = getIntent();
+//        String key_to_message = getString(R.string.key_to_message);
+//        Bundle data = intent.getExtras();
+//        bundleHelper = data.getParcelable(key_to_message);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_message_list);
+        toolbar.setTitle(getString(R.string.message));
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         fragment = (MessageActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_message_content);
 
