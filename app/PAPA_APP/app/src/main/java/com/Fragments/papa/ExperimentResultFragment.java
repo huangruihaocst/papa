@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,8 @@ import com.Activities.papa.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +51,13 @@ public class ExperimentResultFragment extends Fragment {
 
     // Code for our image picker select action.
     private static final int IMAGE_PICKER_SELECT = 999;
+    private static final int CAPTURE_IMAGE = 998;
+    private static final int CAPTURE_VIDEO = 997;
+
+    public static final int MEDIA_TYPE_IMAGE = 1;
+    public static final int MEDIA_TYPE_VIDEO = 2;
+
+    private Uri fileUri;
 
     // Reference to our image view we will use
     private ImageView selectedImage;
@@ -99,12 +109,26 @@ public class ExperimentResultFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(which == 0){//camera
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
+                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+
+                            // start the image capture Intent
+                            startActivityForResult(intent, CAPTURE_IMAGE);
                         }else if(which == 1){//video
+                            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
+                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to save the video
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
+
+                            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
+
+                            // start the Video Capture Intent
+                            startActivityForResult(intent, CAPTURE_VIDEO);
                         }else if(which == 2){//gallery
                             Intent intent = new Intent(Intent.ACTION_PICK,
-                                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             startActivityForResult(intent, IMAGE_PICKER_SELECT);
                         }
                     }
@@ -169,7 +193,40 @@ public class ExperimentResultFragment extends Fragment {
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                     bytes = byteArrayOutputStream.toByteArray();
+                    Toast.makeText(getContext(),path,Toast.LENGTH_LONG).show();
                 }
+            }
+        }else if(requestCode == CAPTURE_IMAGE){
+            if (resultCode == Activity.RESULT_OK) {
+                // Image captured and saved to fileUri specified in the Intent
+                Toast.makeText(getContext(), "Image saved to:\n" +
+                        fileUri.toString(), Toast.LENGTH_LONG).show();
+                String path = fileUri.toString();
+                if (path != null) {
+                    File file = new File(path);
+                    Toast.makeText(getContext(),String.valueOf(file.exists()),Toast.LENGTH_LONG).show();
+                    if(file.exists()){
+                        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                        selectedImage.setImageBitmap(bitmap);
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                        bytes = byteArrayOutputStream.toByteArray();
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // User cancelled the image capture
+            } else {
+                // Image capture failed, advise user
+            }
+        }else if(requestCode == CAPTURE_VIDEO){
+            if (resultCode == Activity.RESULT_OK) {
+                // Video captured and saved to fileUri specified in the Intent
+                Toast.makeText(getContext(), "Video saved to:\n" +
+                        data.getData(), Toast.LENGTH_LONG).show();
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // User cancelled the video capture
+            } else {
+                // Video capture failed, advise user
             }
         }
     }
@@ -184,5 +241,44 @@ public class ExperimentResultFragment extends Fragment {
         String picturePath = cursor.getString(columnIndex);
         cursor.close();
         return picturePath;
+    }
+
+    /** Create a file Uri for saving an image or video */
+    private static Uri getOutputMediaFileUri(int type){
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
+
+    /** Create a File for saving an image or video */
+    private static File getOutputMediaFile(int type){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "PAPA");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d("MyCameraApp", "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_"+ timeStamp + ".jpg");
+        } else if(type == MEDIA_TYPE_VIDEO) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "VID_"+ timeStamp + ".mp4");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
     }
 }
