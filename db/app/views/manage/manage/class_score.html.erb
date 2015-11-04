@@ -94,7 +94,7 @@
 								p=false;
 							}
 						}});
-						$.ajax({url:"/lessons/"+data[i].id+"/students/"+classId+"/comment.json",data:{},async:false,type:"GET",success:function(data)
+						$.ajax({url:"/lessons/"+classId+"/students/"+data[i].id+"/comment.json",data:{},async:false,type:"GET",success:function(data)
 						{
 							if (data.status=="successful")
 							{
@@ -109,9 +109,10 @@
 							}
 							alert("unexpected: /lessons/id/students/id/comment.json");
 						}});
-						$.ajax({url:"/students/"+data[i].id+"/lesssons/"+classId+"/files.json",data:{},async:false,type:"GET",success:function(data)
+						$.ajax({url:"/students/"+data[i].id+"/lessons/"+classId+"/files.json",data:{},async:false,type:"GET",success:function(data)
 						{
 							info[i].scoreInfo.picture_number=info[i].scoreInfo.video_number=0;
+							console.log(data);
 							if (data.status=="successful")
 							{
 								var j;data=data.files;

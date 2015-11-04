@@ -4,5 +4,6 @@ json.lesson_comments do
     json.extract! lesson_comment, :id
     json.extract! lesson_comment, :content
     json.extract! lesson_comment, :score
+    json.creator_name lesson_comment.creator.name
   end
 end

@@ -89,22 +89,16 @@
 		function loadInfo()
 		{
 			getId();
-			for (i=0;i<11;++i) score[i]=10;
+			for (i=0;i<11;++i) score[i]=0;
 			var i;
-			n=100;
-			for (i=0;i<n;++i)
-			{
-				comments[i]=new Object();
-				comments[i].creator_name="A"+i;
-				comments[i].content="aaa";
-			}
-			totalPages=Math.floor((n-1)/numberPerPage+1);
+			n=0;
 			nowPage=1;
 			showComments();
 			var p1=false,p2=false,p3=false;
 			function deal()
 			{
 				people.absense=people.tot-people.attend;
+				totalPages=Math.floor((n-1)/numberPerPage+1);
 				showInfo();
 			}
 			$.get("/lessons/"+classId+".json",{},
@@ -153,11 +147,11 @@
 				{
 					var i;
 					data=data.lesson_comments;
-					people.attend=data.length;
+					people.attend=data.length;console.log(data);
 					for (i=0;i<data.length;++i)
 					{
 						if (data[i].content) comments[n++]=data[i];
-						score[data[i].score]++;
+						score[parseInt(data[i].score)]++;
 					}
 					p3=true;
 					if (p1&&p2&&p3) deal();
@@ -203,7 +197,7 @@
 			data2={labels:["0分","1分","2分","3分","4分","5分","6分","7分","8分","9分","10分"],datasets:[{
 					fillColor : "rgba(151,187,205,0.5)",
 					strokeColor : "rgba(151,187,205,1)",
-					data : [score[0],score[1],score[2],score[3],score[4],score[5],score[6],score[7],score[8],score[9],score[10]]}]};
+					data : score}]};
 			var mychart,ctx = $("#chart1")[0].getContext("2d");
 			mychart=new Chart(ctx).Bar(data);
 			ctx = $("#chart2")[0].getContext("2d");

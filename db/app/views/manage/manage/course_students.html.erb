@@ -9,6 +9,9 @@
       <div class="modal-body">
         <h4>请选择csv文件</h4>
         <label><input id="csvfile" type="file"></label>
+        <h4>输入样例</h4>
+        <p>2014011001,张三,计算机系,计46,zhangsan@mails.tsinghua.edu.cn,17888888888</p>
+        <p>2014011002,李四,计算机系,计46,lisi@mails.tsinghua.edu.cn,17888888889</p>
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" onclick="parse_csv()" data-dismiss="modal">修改</button>
@@ -92,10 +95,28 @@
             var r = new FileReader();
             r.onload = function(){
                 var students_info = CSV.parse(r.result);
+                var students = [];
                 for(var i in students_info)
                 {
-                    var student = students_info[i];
+                    var student = {
+                        "student_number":students_info[i][0],
+                        "name":students_info[i][1],
+                        "department":students_info[i][2],
+                        "class_name":students_info[i][3],
+                        "email":students_info[i][4],
+                        "phone":students_info[i][5]
+                    };
+                    students.push(student);
                 }
+                console.log(JSON.stringify({"json":students}));
+                $.ajax({
+                    url:"/courses/<%=@course_id%>/students.json",
+                    method:"POST",
+                    data:"json="+JSON.stringify(students),
+                    dataType: "json",
+                    success:function(d){
+                    alert(d.status);}
+                })
             }
             r.readAsText($("#csvfile")[0].files[0]);
         }
