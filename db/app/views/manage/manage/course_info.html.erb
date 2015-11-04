@@ -113,31 +113,19 @@
 						{
 							continue;
 						}
-						$.ajax({url:"/lessons/"+classId+"/students.json",data:{},type:"GET",async:false,success:function(data)
-						{
-							if (data.status=="failed")
-							{
-								lessons[i].attend=0;
-								return;
-							}
-							if (data.status=="successful")
-							{
-								lessons[i].attend=data.students.length;
-								return;
-							}
-							alert("unexpected: /lessons/id/students.json");
-						}});
 						$.ajax({url:"/lessons/"+classId+"/comments.json",data:{},type:"GET",async:false,success:function(data)
 						{
 							if (data.status=="failed")
 							{
 								score[i]=0;
+								lessons[i].attend=0;
 								return;
 							}
 							if (data.status=="successful")
 							{
 								var j;
 								data=data.lesson_comments;
+								lessons[i].attend=data.length;
 								for (j=0;j<data.length;++j)
 								{
 									score[i]+=parseInt(data[j].score);
