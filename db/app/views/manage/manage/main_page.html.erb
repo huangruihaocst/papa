@@ -2,47 +2,81 @@
 	<link href="/common.css" rel=stylesheet type="text/css">
 	<script src="/jquery.form.js" type="text/javascript" charset="utf-8"></script>
 	<style type="text/css">
-		.rectangleSemester
+		.rectangle-semester
 		{
 			width:100%;
 			height:50px;
-			margin-top:40px;
 		}
-		.rectangleCourse
+		
+		.rectangle-course
 		{
 			width:97%;
 			height:50px;
 			margin-left:3%;
 			margin-top:15px;
 		}
-		.rectangleClass
+		
+		.rectangle-class
 		{
 			width:94%;
 			height:50px;
 			margin-left:6%;
 			margin-top:4px;
 		}
-		.rectangleCourseContent
+		
+		.rectangle-course-content
 		{
 			width:98%;
 			margin-left:2%;
 			margin-top:6px;
 		}
-		.rectangleClassContent
+		
+		.rectangle-class-content
 		{
 			width:97%;
 			margin-left:3%;
 			margin-top:4px;
 		}
-		.custombutton
+		
+		.custom-button
 		{
 			float:right;
 			margin-left:3px;
 			margin-right:3px;
+			display:none;
 		}
+		
+		.custom-font-size
+		{
+			font-size:16px;
+		}
+		
+		.custom-div
+		{
+			float:left;
+			height:20px;
+		}
+		
 		.names
 		{
 			float:left;
+			font-size:20px;
+		}
+		
+		h4
+		{
+			text-align:left;
+		}
+		
+		hr
+		{
+			margin-top:30px;
+			margin-bottom:10px;
+			float:left;
+			width:200px;
+			height:1px;
+			border:none;
+			border-top:1px solid #222222;
 		}
 
 		.animation1
@@ -272,15 +306,12 @@
     			}
     			if (data.status=="successful")
     			{
-    				for (i=info.semesters[choosei].tot++;i>0;--i)
-    				{
-    					info.semesters[choosei].courses[i]=info.semesters[choosei].courses[i-1];
-    				}
+    				i=info.semesters[choosei].tot++;
     				p.course.id=data.id;
-    				info.semesters[choosei].courses[0]=p.course;
-    				info.semesters[choosei].courses[0].tot=0;
-    				info.semesters[choosei].courses[0].clicked=false;
-    				info.semesters[choosei].courses[0].lessons=new Array();
+    				info.semesters[choosei].courses[i]=p.course;
+    				info.semesters[choosei].courses[i].tot=0;
+    				info.semesters[choosei].courses[i].clicked=false;
+    				info.semesters[choosei].courses[i].lessons=new Array();
     				showInfo();
     				return;
     			}
@@ -342,12 +373,9 @@
     			if (data.status=="successful")
     			{
     				p.lesson.id=data.id;
-    				for (i=info.semesters[choosei].courses[choosej].tot++;i>0;--i)
-    				{
-    					info.semesters[choosei].courses[choosej].lessons[i]=info.semesters[choosei].courses[choosej].lessons[i-1];
-    				}
-    				info.semesters[choosei].courses[choosej].lessons[0]=p.lesson;
-    				info.semesters[choosei].courses[choosej].lessons[0].clicked=false;
+    				i=info.semesters[choosei].courses[choosej].tot++;
+    				info.semesters[choosei].courses[choosej].lessons[i]=p.lesson;
+    				info.semesters[choosei].courses[choosej].lessons[i].clicked=false;
     				showInfo();
     				return;
     			}
@@ -525,8 +553,8 @@
 					
 					for (i=0;i<data.length;++i)
 					{
-						text+='<div><a target="_top" href="'+data[i].path+'">'+data[i].name+'</a>';
-						text+='<button onclick="deleteFiles('+data[i].id+')">×</button></div>';
+						text+='<div class="custom-div"><a target="_top" href="'+data[i].path+'">'+data[i].name+'</a>';
+						text+='<div class="custom-button custom-font-size" onclick="deleteFiles('+data[i].id+')">×</div></div>';
 					}
 					$("#input-files-2")[0].innerHTML=text;
 				}
@@ -717,6 +745,12 @@
 			event.stopPropagation();
 		}
 		
+		function showStudentList(event,i,j)  //显示第i学期第j门课的学生名单
+		{
+		//	window.open("/manage/courses/"+info.semesters[i].courses[j].id);
+			event.stopPropagation();
+		}
+		
 		function showClassScore(event,i,j,k)  //显示第i学期第j门课的第k个实验的学生成绩
 		{
 			window.open("/manage/ClassScore/"+info.semesters[i].courses[j].id+"&"+info.semesters[i].courses[j].lessons[k].id);
@@ -745,70 +779,118 @@
 		
 		function showInfo()  //显示课程信息
 		{
-			var i,j=-1,k=-1,text="",text2,p=false;j=k=-1;
+			var i,j=-1,k=-1,text="",text2,text3,p=0;j=k=-1;
 			
 			for (i=0;i<info.tot;++i)
 			{
-				text2='rectangleSemester btn btn-default';
+				if (i>0)
+				{
+					text+='<hr>';
+				}
+				text2='rectangle-semester btn btn-default';
+				text3='semester-'+i;
 				if (p)
 				{
 					text2+=' animation1';
 				}
-				text+='<div class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
+				text+='<div id="'+text3+'" class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
 				text+='<div class="names">'+info.semesters[i].name+'</div>';
-				text+='<div class="btn btn-info custombutton" onclick="addCourse(event,'+i+')">添加课程</div>';
+				text+='<div class="btn btn-info custom-button '+text3+'" onclick="addCourse(event,'+i+')">添加课程</div>';
 				text+='</div>';
 				k=-1;
 				if (i==focusi&&j==focusj&&k==focusk)
 				{
-					p=true;
+					p=1;
 				}
 				if (info.semesters[i].clicked)
 				for (j=0;j<info.semesters[i].tot;++j)
 				{
-					text2='rectangleCourse btn btn-default';
+					text2='rectangle-course btn btn-default';
+					text3='course-'+i+'-'+j;
 					if (p)
 					{
 						text2+=' animation1';
 					}
-					text+='<div class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
+					text+='<div id="'+text3+'" class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
 					text+='<div class="names">'+info.semesters[i].courses[j].name+'</div>';
-					text+='<div class="custombutton" onclick="deleteCourse(event,'+i+','+j+')">×</div>';
-					text+='<div class="btn btn-info custombutton" onclick="changeCourseInfo(event,'+i+','+j+')">查看|修改信息</div>';
-					text+='<div class="btn btn-info custombutton" onclick="addClass(event,'+i+','+j+')">添加实验</div>';
-					text+='<div class="btn btn-info custombutton" onclick="showCourseScore(event,'+i+','+j+')">查看成绩</div>';
-					text+='<div class="btn btn-info custombutton" onclick="showCourseInfo(event,'+i+','+j+')">课程情况</div>';
-					text+='<div class="btn btn-info custombutton" onclick="addMessages(event,'+i+','+j+')">推送消息</div>';
+					text+='<div class="custom-button custom-font-size '+text3+'" onclick="deleteCourse(event,'+i+','+j+')">×</div>';
+					text+='<div class="btn btn-info custom-button '+text3+'" onclick="addClass(event,'+i+','+j+')">添加实验</div>';
+					text+='<div class="btn btn-info custom-button '+text3+'" onclick="changeCourseInfo(event,'+i+','+j+')">编辑</div>';
+					text+='<div class="btn btn-info custom-button '+text3+'" onclick="showCourseScore(event,'+i+','+j+')">成绩</div>';
+					text+='<div class="btn btn-info custom-button '+text3+'" onclick="showCourseInfo(event,'+i+','+j+')">反馈</div>';
+					text+='<div class="btn btn-info custom-button '+text3+'" onclick="addMessages(event,'+i+','+j+')">推送</div>';
+					text+='<div class="btn btn-info custom-button '+text3+'" onclick="showStudentList(event,'+i+','+j+')">名单</div>';
 					text+='</div>';
 					if (i==focusi&&j==focusj&&k==focusk)
 					{
-						p=true;
+						p=2;
 					}
 					if (info.semesters[i].courses[j].clicked)
 					{
 						for (k=0;k<info.semesters[i].courses[j].tot;++k)
 						{
-							text2='rectangleClass btn btn-default';
+							text2='rectangle-class btn btn-default';
+							text3='lesson-'+i+'-'+j+'-'+k;
 							if (p)
 							{
 								text2+=' animation1';
 							}
-							text+='<div class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
+							text+='<div id="'+text3+'" class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
 							text+='<div class="names">'+info.semesters[i].courses[j].lessons[k].name+'</div>';
-							text+='<div class="custombutton" onclick="deleteClass(event,'+i+','+j+','+k+')">×</div>';
-							text+='<div class="btn btn-info custombutton" onclick="changeClassInfo(event,'+i+','+j+','+k+')">查看|修改信息</div>';
-							text+='<div class="btn btn-info custombutton" onclick="showClassScore(event,'+i+','+j+','+k+')">查看成绩</div>';
-							text+='<div class="btn btn-info custombutton" onclick="showClassInfo(event,'+i+','+j+','+k+')">实验情况</div>';
-							text+='<div class="btn btn-info custombutton" onclick="modifyFiles(event,'+i+','+j+','+k+')">文件</div>';
+							text+='<div class="custom-button custom-font-size '+text3+'" onclick="deleteClass(event,'+i+','+j+','+k+')">×</div>';
+							text+='<div class="btn btn-info custom-button '+text3+'" onclick="changeClassInfo(event,'+i+','+j+','+k+')">编辑</div>';
+							text+='<div class="btn btn-info custom-button '+text3+'" onclick="showClassScore(event,'+i+','+j+','+k+')">成绩</div>';
+							text+='<div class="btn btn-info custom-button '+text3+'" onclick="showClassInfo(event,'+i+','+j+','+k+')">反馈</div>';
+							text+='<div class="btn btn-info custom-button '+text3+'" onclick="modifyFiles(event,'+i+','+j+','+k+')">文件</div>';
 							text+='</div>';
 						}
 					}
-					k=-1;p=false;
+					k=-1;
+					if (p==2)
+					{
+						p=0;
+					}
 				}
-				j=-1;p=false;
+				j=-1;p=0;
 			}
 			
 			$("#content")[0].innerHTML=text;
+			function deal(text)
+			{
+				$("#"+text).hover(
+				function()
+				{
+					var p=$("."+text),i;
+					for (i=0;i<p.length;++i)
+					{
+						p[i].style.display="block";
+					}
+				},function()
+				{
+					var p=$("."+text),i;
+					for (i=0;i<p.length;++i)
+					{
+						p[i].style.display="none";
+					}
+				});
+			}
+			for (i=0;i<info.tot;++i)
+			{
+				deal('semester-'+i);
+				if (info.semesters[i].clicked)
+				for (j=0;j<info.semesters[i].tot;++j)
+				{
+					deal('course-'+i+'-'+j);
+					if (info.semesters[i].courses[j].clicked)
+					{
+						for (k=0;k<info.semesters[i].courses[j].tot;++k)
+						{
+							deal('lesson-'+i+'-'+j+'-'+k);
+						}
+					}
+				}
+			}
+			
 		}
 		
 		loadInfo();
