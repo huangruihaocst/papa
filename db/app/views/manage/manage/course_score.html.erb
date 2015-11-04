@@ -66,7 +66,7 @@
 							}});
 							for (j=0;j<n2;++j)
 							{
-								$.ajax({url:"/lessons/"+data[i].id+"/students/"+classId[j]+"/comment.json",data:{},type:"GET",async:false,success:function(data)
+								$.ajax({url:"/lessons/"+classId[j]+"/students/"+data[i].id+"/comment.json",data:{},type:"GET",async:false,success:function(data)
 								{
 									info[m].classScore[j]=j;
 									if (data.status=="successful")
