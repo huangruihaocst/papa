@@ -22,11 +22,6 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".CommentActivity"
-            android:label="@string/title_activity_comment"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".HelpActivity"
             android:label="@string/title_activity_help_activity"
             android:theme="@style/AppTheme.NoActionBar" >
@@ -98,6 +93,11 @@
         <activity
             android:name=".DetailActivity"
             android:label="@string/title_activity_detail_temp"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".CommentActivity"
+            android:label="@string/title_activity_comment_temp"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
