@@ -94,8 +94,6 @@ public class ExperimentDetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.experiment_detail, menu);
-        MenuItem item = menu.getItem(0);
-        if(identity.equals("teacher_assistant"))item.setVisible(false);
         return true;
     }
 

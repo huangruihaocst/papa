@@ -43,8 +43,7 @@
         <item name="gallery">本地相册</item>
     </string-array>
     <string name="for_course">评价课程</string>
-    <string name="view_comments_1">对课程</string>
-    <string name="view_comments_2">的评价</string>
+    <string name="view_comment">对课程%s的评价</string>
     <string name="upload">上传实验结果</string>
     <string name="view_students">查看本实验的学生</string>
     <string name="view_grades">查看成绩</string>
@@ -54,6 +53,8 @@
     <string name="confirm_log_out">真的要注销吗(·8·)</string>
     <string name="confirm_log_out_yes">真的</string>
     <string name="confirm_log_out_no">假的</string>
+    <string name="no_comment">暂时还没有评价(·8·)</string>
+    <string name="hint_comment">轻点星来评分>_&lt;</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -65,6 +66,7 @@
     <string name="action_generate_QR_code">生成二维码</string>
     <string name="action_make_comments">评价该课程</string>
     <string name="action_view_comments">对该课程的评价</string>
+    <string name="action_save">保存</string>
 
     <string name="title_semester">学期</string>
 
