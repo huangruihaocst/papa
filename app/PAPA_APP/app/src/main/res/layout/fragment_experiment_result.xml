@@ -22,4 +22,10 @@
         android:id="@+id/selected_image"
         android:contentDescription="test"/>
 
+    <VideoView
+        android:layout_width="230dp"
+        android:layout_height="161dp"
+        android:id="@+id/selected_video"
+        android:layout_gravity="center_horizontal|top" />
+
 </FrameLayout>

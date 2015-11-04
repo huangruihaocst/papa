@@ -21,11 +21,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.Activities.papa.R;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -61,6 +66,7 @@ public class ExperimentResultFragment extends Fragment {
 
     // Reference to our image view we will use
     private ImageView selectedImage;
+    private VideoView selectedVideo;
     byte[] bytes;
 
     /**
@@ -101,6 +107,7 @@ public class ExperimentResultFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_experiment_result, container, false);
         FloatingActionButton floatingActionButton = (FloatingActionButton)rootView.findViewById(R.id.fab_upload_result);
         selectedImage = (ImageView)rootView.findViewById(R.id.selected_image);
+        selectedVideo = (VideoView)rootView.findViewById(R.id.selected_video);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,8 +134,8 @@ public class ExperimentResultFragment extends Fragment {
                             // start the Video Capture Intent
                             startActivityForResult(intent, CAPTURE_VIDEO);
                         }else if(which == 2){//gallery
-                            Intent intent = new Intent(Intent.ACTION_PICK,
-                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            Intent intent = new Intent(Intent.ACTION_PICK);
+                            intent.setType("image/*,video/*");
                             startActivityForResult(intent, IMAGE_PICKER_SELECT);
                         }
                     }
@@ -190,10 +197,7 @@ public class ExperimentResultFragment extends Fragment {
                 if(file.exists()){
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                     selectedImage.setImageBitmap(bitmap);
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                    bytes = byteArrayOutputStream.toByteArray();
-                    Toast.makeText(getContext(),path,Toast.LENGTH_LONG).show();
+                    byte[] bytes = toByteArray(file);
                 }
             }
         }else if(requestCode == CAPTURE_IMAGE){
@@ -201,16 +205,13 @@ public class ExperimentResultFragment extends Fragment {
                 // Image captured and saved to fileUri specified in the Intent
                 Toast.makeText(getContext(), "Image saved to:\n" +
                         fileUri.toString(), Toast.LENGTH_LONG).show();
-                String path = fileUri.toString();
+                String path = fileUri.getPath();
                 if (path != null) {
                     File file = new File(path);
-                    Toast.makeText(getContext(),String.valueOf(file.exists()),Toast.LENGTH_LONG).show();
                     if(file.exists()){
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                         selectedImage.setImageBitmap(bitmap);
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                        bytes = byteArrayOutputStream.toByteArray();
+                        byte[] bytes = toByteArray(file);
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -223,6 +224,15 @@ public class ExperimentResultFragment extends Fragment {
                 // Video captured and saved to fileUri specified in the Intent
                 Toast.makeText(getContext(), "Video saved to:\n" +
                         data.getData(), Toast.LENGTH_LONG).show();
+                String path = fileUri.getPath();
+                if (path != null) {
+                    File file = new File(path);
+                    if(file.exists()){
+                        selectedVideo.setVideoPath(path);
+                        selectedVideo.start();
+                        byte[] bytes = toByteArray(file);
+                    }
+                }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // User cancelled the video capture
             } else {
@@ -280,5 +290,22 @@ public class ExperimentResultFragment extends Fragment {
         }
 
         return mediaFile;
+    }
+
+    public byte[] toByteArray(File file){
+        int size = (int) file.length();
+        byte[] bytes = new byte[size];
+        try {
+            BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+            buf.read(bytes, 0, bytes.length);
+            buf.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return bytes;
     }
 }
