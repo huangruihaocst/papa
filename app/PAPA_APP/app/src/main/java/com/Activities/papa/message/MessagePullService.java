@@ -8,13 +8,9 @@ import android.content.Intent;
 import android.os.*;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.Activities.papa.R;
-import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
 import java.io.File;
@@ -89,7 +85,7 @@ public class MessagePullService extends Service {
 
     PapaDataBaseManager papaDataBaseManager;
 
-    MessagePullService()
+    public MessagePullService()
     {
         papaDataBaseManager = new PapaDataBaseManagerReal();
     }

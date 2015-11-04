@@ -63,7 +63,6 @@ class StudentsController < ApplicationController
       if json
         puts json
         students = JSON.parse(json)
-        puts json
         if students.is_a?(Array)
           invalid_students = []
           students.each do |student|

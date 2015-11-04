@@ -152,7 +152,7 @@ public class StudentsFragment extends Fragment {
             mTextView.setText(lst.get(position).getValue());
             mTextView.setTextSize(35);
 //            mTextView.setTextColor(getColor(R.color.colorPrimary));
-            mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
+            mTextView.setTextColor(Color.parseColor(getString(R.color.colorPrimary)));
             return mTextView;
         }
     }

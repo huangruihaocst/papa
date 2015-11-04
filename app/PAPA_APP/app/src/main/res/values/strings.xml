@@ -17,7 +17,6 @@
     <string name="cannot_get_telephone_num">获取不了手机号喵 QAQ</string>
     <string name="hint_sign_in_1">登录</string>
     <string name="hint_sign_in_2">您可以使用学号、手机号或者邮箱进行登录</string>
-    <string name="hint_select_course">请选择课程</string>
     <string name="portrait">头像</string>
     <string name="comment_area">请在此输入您的评论</string>
     <string name="teacher_assistant">助教课程</string>
@@ -29,14 +28,14 @@
     <string name="upload_history">我的上传</string>
     <string name="profile">个人中心</string>
     <string name="more">更多</string>
-    <string name="notification">通知栏</string>
+    <string name="message">通知</string>
     <string name="get_telephone_number">获取手机号</string>
     <string name="user_id">学号</string>
     <string name="user_class">班级</string>
     <string name="user_grade">成绩</string>
     <string name="user_comment">评价</string>
     <string name="now_editable">现在可以编辑成绩和评价了</string>
-    <string name="now_editdone">成绩和评价保存好了喵 =w=</string>
+    <string name="now_edit_done">成绩和评价保存好了喵 =w=</string>
     <string name="select_type">请选择上传的内容</string>
     <string-array name="upload_type">
         <item name="camera">照相</item>
@@ -79,15 +78,15 @@
     <string name="key_to_upload_history">key_to_upload_history</string>
     <string name="key_to_edit_profile">key_to_edit_profile</string>
     <string name="key_to_sign_in">key_to_sign_in</string>
-    <string name="key_to_notification">key_to_notification</string>
+    <string name="key_to_message">key_to_message</string>
     <string name="key_detail_comment">key_detail_comment</string>
     <string name="key_experiment_experiment_detail">key_experiment_experiment_detail</string>
 
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
 
-    <string name="color_primary">#3F51B5</string>
-    <string name="color_primary_dark">#303F9F</string>
+    <string name="color_primary">#2196F3</string>
+    <string name="color_primary_dark">#1976D2</string>
     <string name="title_activity_help_activity">HelpActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
 

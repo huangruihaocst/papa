@@ -8,4 +8,3 @@ json.message do
   json.message_type @message.message_type
   json.course_id @message.course_id
 end
-

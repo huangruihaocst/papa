@@ -180,7 +180,7 @@ public class StudentActivity extends AppCompatActivity
         } else if(id == R.id.nav_notification){
             Intent intent = new Intent(StudentActivity.this,NotificationActivity.class);
             Bundle data = new Bundle();
-            String key_to_notification = getString(R.string.key_to_notification);
+            String key_to_notification = getString(R.string.key_to_message);
             data.putParcelable(key_to_notification,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
