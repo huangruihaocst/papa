@@ -8,10 +8,10 @@
       </div>
       <div class="modal-body">
         <h4>请选择csv文件</h4>
-        <label><input type="file"></label>
+        <label><input id="csvfile" type="file"></label>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" onclick="" data-dismiss="modal">修改</button>
+        <button class="btn btn-primary" onclick="parse_csv()" data-dismiss="modal">修改</button>
         <button class="btn btn-default" data-dismiss="modal">取消</button>
       </div>
     </div>
@@ -62,10 +62,21 @@
                         +"<td>"+ data.students[i].department.toString()+"</td>"
                         +"<td>"+ data.students[i].class_name.toString()+"</td>"
                         +"<td>"+ data.students[i].email.toString()+"</td>"
-                        +"<td>"+ data.students[i].phone.toString()+"</td>";
+                        +"<td>"+ data.students[i].phone.toString()+"</td>"+"</tr>";
             }
             $("#student-list").html(str);
             $("#student-number").html(data.students.length);
         });
     })();
+        function parse_csv(){
+            var r = new FileReader();
+            r.onload = function(){
+                var students_info = CSV.parse(r.result);
+                for(var i in students_info)
+                {
+                    var student = students_info[i];
+                }
+            }
+            r.readAsText($("#csvfile")[0].files[0]);
+        }
 </script>
