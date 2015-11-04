@@ -2,6 +2,7 @@ package com.Back.PapaDataBaseManager.papa;
 
 import android.util.Log;
 
+import com.Activities.papa.message.Message;
 import com.Back.DataBaseAccess.papa.PapaDataBaseAccess;
 import com.Back.DataBaseAccess.papa.PapaDataBaseInvalidFieldError;
 import com.Back.DataBaseAccess.papa.PapaDataBaseJsonError;
@@ -13,14 +14,23 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 /**
  * Created by shyo on 15-10-22.
+ *
+ * This is the Zhende PapaDataBaseManager, instead of Jiade.
+ *
+ * Interact with Database and App
  */
+
 public class PapaDataBaseManagerReal extends PapaDataBaseManager
 {
     final static String tag = "PapaDataBaseManagerReal";
@@ -351,10 +361,10 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public void postComments(PostCommentsRequest request) throws PapaHttpClientException {
         HashMap<String, String> h = new HashMap<>();
         h.put("token", request.token);
-        h.put("student_comment[score]", request.score.toString());
+        h.put("student_comment[score]", request.score);
         h.put("student_comment[content]", request.comments);
 
-        JSONObject reply_1 = dbAccess.getDataBaseReplyAsJson(
+        dbAccess.getDataBaseReplyAsJson(
                 PapaAbstractHttpClient.HttpMethod.post,
                 "/lessons/" + request.lessonId + "/students/" +
                         request.personId + "/comments.json",
@@ -393,4 +403,95 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         }
     }
 
+    @Override
+    public GetMessagesIDReply getMessagesID(GetMessagesIDRequest request) throws PapaHttpClientException {
+        try
+        {
+            HashMap<String, String> h = new HashMap<>();
+
+            h.put("token", request.token);
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/students/" + request.personId + "/messages.json",
+                    h
+            );
+            JSONArray array = reply.getJSONArray("messages");
+
+            ArrayList<String> ans = new ArrayList<>();
+
+            for (int i = 0; i < array.length(); i++)
+            {
+                JSONObject obj = array.getJSONObject(i);
+
+                ans.add(obj.getString("id"));
+
+                Log.i(tag, "get msg where id = " +  obj.getString("id"));
+            }
+
+            return new GetMessagesIDReply(ans);
+        }
+        catch(org.json.JSONException e) {
+            throw new PapaDataBaseJsonError();
+        }
+    }
+
+    @Override
+    public GetMessageByIDReply getMessageByID(GetMessageByIDRequest request) throws PapaHttpClientException {
+        try
+        {
+            HashMap<String, String> h = new HashMap<>();
+
+            h.put("token", request.token);
+            JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/messages/" + request.msgId + ".json",
+                    h
+            );
+
+            reply = reply.getJSONObject("message");
+
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat(
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH);
+            cal.setTime(sdf.parse(reply.getString("deadline")));
+
+
+            JSONObject reply_creator = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/users/" + reply.getString("creator_id") + ".json",
+                    h
+            );
+            reply_creator = reply_creator.getJSONObject("user");
+
+
+            JSONObject reply_course = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/courses/" + reply.getString("course_id") + ".json",
+                    h
+            );
+            reply_course = reply_course.getJSONObject("course");
+
+
+            Message msg = new Message(
+                    reply.getString("id"),
+                    reply.getString("title"),
+                    reply.getString("message_type"),
+                    reply.getString("content"),
+                    cal,
+                    reply_course.getString("name"),
+                    reply_creator.getString("name")
+            );
+
+            return new GetMessageByIDReply(msg);
+        }
+        catch(org.json.JSONException e) {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+        }
+        catch(java.text.ParseException e) {
+            e.printStackTrace();
+            Log.e(tag, "Wrong date time format");
+            throw new PapaDataBaseJsonError();
+        }
+    }
 }

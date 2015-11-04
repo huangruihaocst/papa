@@ -2,10 +2,10 @@ s0 = Semester.create(name: '2015')
 s1 = Semester.create(name: '2014')
 s2 = Semester.create(name: '2013')
 
-c1 = Course.create(name: 'os', description: '123', semester_id: s0.id)
-c2 = Course.create(name: 'ds', description: '123', semester_id: s0.id)
-c3 = Course.create(name: 'as', description: '123', semester_id: s0.id)
-c4 = Course.create(name: 'cs', description: '123', semester_id: s1.id)
+c1 = Course.create(name: 'os', description: '操作系统', semester_id: s0.id)
+c2 = Course.create(name: 'ds', description: '数据结构', semester_id: s0.id)
+c3 = Course.create(name: 'as', description: 'Android Studio', semester_id: s0.id)
+c4 = Course.create(name: 'cs', description: '计算机科学与技术', semester_id: s1.id)
 
 l11 = c1.lessons.create(name: 'os-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 l12 = c1.lessons.create(name: 'os-l2', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
@@ -21,8 +21,6 @@ l31 = c3.lessons.create(name: 'as-l1', start_time: Time.now, end_time: Time.now 
 l32 = c3.lessons.create(name: 'as-l2', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 l33 = c3.lessons.create(name: 'as-l3', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
 l34 = c3.lessons.create(name: 'as-l1', start_time: Time.now, end_time: Time.now + 100.years, location: '5201')
-
-
 
 admin0 = User.create(name:'admin', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123',
                  student_number: '1230', class_name: '44', department: 'cst', description: '123', is_admin: true, avator_id: 1)
@@ -90,5 +88,11 @@ l31.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', 
 
 l11.lesson_comments.create(score: '123', content: 'haha', creator_id: u4.id)
 l11.lesson_comments.create(score: '123', content: 'hahaha', creator_id: u3.id)
+
+c1.messages.create(title: 'Midterm exam', content: '5201', deadline: Time.now, creator: teacher0, message_type: :notification)
+c1.messages.create(title: 'Final exam', content: '5202', deadline: Time.now + 3.days, creator: teacher0, message_type: :notification)
+c1.messages.create(title: 'Lesson canceled', content: '5203', deadline: Time.now + 3.days, creator: teacher0, message_type: :notification)
+c1.messages.create(title: 'Homework 1', content: '选作', deadline: Time.now, creator: teacher0, message_type: :homework)
+c1.messages.create(title: 'Homework 2', content: '必做', deadline: Time.now + 1.days, creator: teacher0, message_type: :homework)
 
 puts '--- init_data created ---'

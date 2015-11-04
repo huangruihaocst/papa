@@ -1,5 +1,6 @@
 <head>
 	<link href="/common.css" rel=stylesheet type="text/css">
+	<script src="/jquery.form.js" type="text/javascript" charset="utf-8"></script>
 	<style type="text/css">
 		.rectangleSemester
 		{
@@ -203,6 +204,32 @@
 		</div>
 	</div>
 	
+	<div class="modal fade" id="modal-files" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" type="button" data-dismiss="modal">×</button>
+					<h3>文件操作</h3>
+				</div>
+				<div class="modal-body">
+					<h4>文件列表</h4>
+					<form id="up-load-file" action="" method="post" enctype="multipart/form-data" onsubmit="return upLoadFiles()">
+ 						<input id="file-file" type="file" name="file[file]">
+  						<input hidden="hidden" id="file-name" type="text" name="file[name]">
+ 						<input hidden="hidden" id="file-type" type="text" name="file[type]">
+ 						<button type="submit" class="btn btn-primary">提交</button>
+					</form>
+					
+					<h4>已有文件</h4>
+					<div id="input-files-2"></div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	<div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -253,7 +280,7 @@
     				info.semesters[choosei].courses[0]=p.course;
     				info.semesters[choosei].courses[0].tot=0;
     				info.semesters[choosei].courses[0].clicked=false;
-    				info.semesters[choosei].courses[0].classes=new Array();
+    				info.semesters[choosei].courses[0].lessons=new Array();
     				showInfo();
     				return;
     			}
@@ -317,10 +344,10 @@
     				p.lesson.id=data.id;
     				for (i=info.semesters[choosei].courses[choosej].tot++;i>0;--i)
     				{
-    					info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i-1];
+    					info.semesters[choosei].courses[choosej].lessons[i]=info.semesters[choosei].courses[choosej].lessons[i-1];
     				}
-    				info.semesters[choosei].courses[choosej].classes[0]=p.lesson;
-    				info.semesters[choosei].courses[choosej].classes[0].clicked=false;
+    				info.semesters[choosei].courses[choosej].lessons[0]=p.lesson;
+    				info.semesters[choosei].courses[choosej].lessons[0].clicked=false;
     				showInfo();
     				return;
     			}
@@ -333,7 +360,7 @@
 		{
 			var text1,text2,text3,text4,text5,i,p;
 			p=new Object();
-			p.lesson=info.semesters[choosei].courses[choosej].classes[choosek];
+			p.lesson=info.semesters[choosei].courses[choosej].lessons[choosek];
 			text1=$("#input-modify-class-1")[0].value;
 			text2=$("#input-modify-class-2")[0].value;
 			text3=$("#input-modify-class-3")[0].value;
@@ -354,7 +381,7 @@
     			}
     			if (data.status=="successful")
     			{
-    				info.semesters[choosei].courses[choosej].classes[choosek]=p.lesson;
+    				info.semesters[choosei].courses[choosej].lessons[choosek]=p.lesson;
     				showInfo();
     				return;
     			}
@@ -388,7 +415,7 @@
     			}});
     		}else   //删除实验
     		{
-    			id=info.semesters[choosei].courses[choosej].classes[choosek].id;
+    			id=info.semesters[choosei].courses[choosej].lessons[choosek].id;
     			$.ajax({url:'/lessons/'+id+'.json',data:{},type:"DELETE",success:function(data)
 				{
 					if (data.status=="failed")
@@ -399,7 +426,7 @@
     				{
     					for (i=choosek;i<info.semesters[choosei].courses[choosej].tot-1;++i)
     					{
-  							info.semesters[choosei].courses[choosej].classes[i]=info.semesters[choosei].courses[choosej].classes[i+1];
+  							info.semesters[choosei].courses[choosej].lessons[i]=info.semesters[choosei].courses[choosej].lessons[i+1];
   						}
   						--info.semesters[choosei].courses[choosej].tot;
     					showInfo();
@@ -439,6 +466,68 @@
     			}
     			alert("unexpected: pushMessages");
     		}});
+		}
+		
+		function getFileName(o)
+		{
+   			var pos=o.lastIndexOf("\\");
+   			return o.substring(pos+1);  
+		}
+		
+		function upLoadFiles()
+		{
+			var text=getFileName($("#file-file").val());
+			$("#file-name")[0].value=text;
+			$("#file-type")[0].value=text.substring(text.lastIndexOf(".")+1);
+			$("#up-load-file").ajaxSubmit(function(data)
+			{
+				if (data.status=="failed")
+				{
+					alert("上传失败");
+				}
+				if (data.status=="successful")
+				{
+					showFiles();
+				}
+			});
+			return false;
+		}
+		
+		function deleteFiles(i)
+		{
+			$.ajax({url:'/files/'+i+'.json',data:{},async:false,type:"DELETE",success:function(data)
+			{
+				if (data.status=="failed")
+				{
+					alert("删除失败");
+				}
+				if (data.status=="successful")
+				{
+					showFiles();
+				}
+			}});
+		}
+		
+		function showFiles()
+		{
+			$.get('/lessons/'+info.semesters[choosei].courses[choosej].lessons[choosek].id+'/files.json',{},
+			function(data)
+			{
+				if (data.status=="failed")
+				{
+					alert("获取文件失败");
+				}
+				if (data.status=="successful")
+				{
+					data=data.files;
+					var text="";
+					for (i=0;i<data.length;++i)
+					{
+						text+='<button href="'+data[i].path+'">'+data[i].name+'</button><button onclick="deleteFiles('+data[i].id+')">×</button>';
+					}
+					$("#input-files-2")[0].innerHTML=text;
+				}
+			});
 		}
 		
 		function loadInfo()  //从后台获取课程信息
@@ -496,7 +585,7 @@
 								j=info.semesters[j].tot++;
 								info.semesters[i].courses[j]=data[p1];
 								info.semesters[i].courses[j].tot=0;
-								info.semesters[i].courses[j].classes=new Array();
+								info.semesters[i].courses[j].lessons=new Array();
 								info.semesters[i].courses[j].clicked=false;
 								$.ajax({url:"/courses/"+data[p1].id+"/lessons.json",data:{},async:false,type:"GET",success:function(data)   //#modify
 								{
@@ -511,8 +600,8 @@
 										for (p2=0;p2<data.length;++p2)
 										{
 											k=info.semesters[i].courses[j].tot++;
-											info.semesters[i].courses[j].classes[k]=data[p2];
-											info.semesters[i].courses[j].classes[k].clicked=false;
+											info.semesters[i].courses[j].lessons[k]=data[p2];
+											info.semesters[i].courses[j].lessons[k].clicked=false;
 										}
 										return;
 									}
@@ -548,7 +637,7 @@
 		function change(i,j,k)  //i, j, k分别表示当前点击的学期，课程，实验
 		{
 			if (k!=-1)
-			info.semesters[i].courses[j].classes[k].clicked=!info.semesters[i].courses[j].classes[k].clicked;
+			info.semesters[i].courses[j].lessons[k].clicked=!info.semesters[i].courses[j].lessons[k].clicked;
 			else if (j!=-1)
 			info.semesters[i].courses[j].clicked=!info.semesters[i].courses[j].clicked;
 			else if (i!=-1)
@@ -568,11 +657,11 @@
 		
 		function changeClassInfo(event,i,j,k)  //修改第i学期第j门课的第k次实验的信息
 		{
-			$("#input-modify-class-1")[0].value=info.semesters[i].courses[j].classes[k].name;
-			$("#input-modify-class-2")[0].value=info.semesters[i].courses[j].classes[k].description;
-			$("#input-modify-class-3")[0].value=info.semesters[i].courses[j].classes[k].start_time;
-			$("#input-modify-class-4")[0].value=info.semesters[i].courses[j].classes[k].end_time;
-			$("#input-modify-class-5")[0].value=info.semesters[i].courses[j].classes[k].location;
+			$("#input-modify-class-1")[0].value=info.semesters[i].courses[j].lessons[k].name;
+			$("#input-modify-class-2")[0].value=info.semesters[i].courses[j].lessons[k].description;
+			$("#input-modify-class-3")[0].value=info.semesters[i].courses[j].lessons[k].start_time;
+			$("#input-modify-class-4")[0].value=info.semesters[i].courses[j].lessons[k].end_time;
+			$("#input-modify-class-5")[0].value=info.semesters[i].courses[j].lessons[k].location;
 			choosei=i;choosej=j;choosek=k;
 			$('#modal-modify-class').modal('show');
 			event.stopPropagation();
@@ -604,6 +693,15 @@
 			event.stopPropagation();
 		}
 		
+		function modifyFiles(event,i,j,k)
+		{
+			choosei=i;choosej=j;choosek=k;
+			$("#up-load-file")[0].action="/lessons/"+info.semesters[i].courses[j].lessons[k].id+"/files.json";
+			showFiles();
+			$('#modal-files').modal('show');
+			event.stopPropagation();
+		}
+		
 		function showCourseScore(event,i,j)  //显示第i学期第j门课的学生成绩
 		{
 			window.open("/manage/CourseScore/"+info.semesters[i].courses[j].id);
@@ -618,13 +716,13 @@
 		
 		function showClassScore(event,i,j,k)  //显示第i学期第j门课的第k个实验的学生成绩
 		{
-			window.open("/manage/ClassScore/"+info.semesters[i].courses[j].id+"&"+info.semesters[i].courses[j].classes[k].id);
+			window.open("/manage/ClassScore/"+info.semesters[i].courses[j].id+"&"+info.semesters[i].courses[j].lessons[k].id);
 			event.stopPropagation();
 		}
 		
 		function showClassInfo(event,i,j,k)  //显示第i学期第j门课的第k个实验的课程信息
 		{
-			window.open("/manage/ClassInfo/"+info.semesters[i].courses[j].id+"&"+info.semesters[i].courses[j].classes[k].id);
+			window.open("/manage/ClassInfo/"+info.semesters[i].courses[j].id+"&"+info.semesters[i].courses[j].lessons[k].id);
 			event.stopPropagation();
 		}
 		
@@ -693,11 +791,12 @@
 								text2+=' animation1';
 							}
 							text+='<div class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
-							text+='<div class="names">'+info.semesters[i].courses[j].classes[k].name+'</div>';
+							text+='<div class="names">'+info.semesters[i].courses[j].lessons[k].name+'</div>';
 							text+='<div class="custombutton" onclick="deleteClass(event,'+i+','+j+','+k+')">×</div>';
 							text+='<div class="btn btn-info custombutton" onclick="changeClassInfo(event,'+i+','+j+','+k+')">查看|修改信息</div>';
 							text+='<div class="btn btn-info custombutton" onclick="showClassScore(event,'+i+','+j+','+k+')">查看成绩</div>';
 							text+='<div class="btn btn-info custombutton" onclick="showClassInfo(event,'+i+','+j+','+k+')">实验情况</div>';
+							text+='<div class="btn btn-info custombutton" onclick="modifyFiles(event,'+i+','+j+','+k+')">文件</div>';
 							text+='</div>';
 						}
 					}

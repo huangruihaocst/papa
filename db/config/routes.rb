@@ -76,6 +76,8 @@ Rails.application.routes.draw do
 
   resources :files, only: [:show, :create, :destroy]
 
+  resources :messages, only: [:show]
+
   namespace :apps do
     get 'current_version' => 'android_apps#current_version'
     post 'current_version' => 'android_apps#create'
