@@ -519,11 +519,14 @@
 				}
 				if (data.status=="successful")
 				{
+					console.log(data);
 					data=data.files;
 					var text="";
+					
 					for (i=0;i<data.length;++i)
 					{
-						text+='<button href="'+data[i].path+'">'+data[i].name+'</button><button onclick="deleteFiles('+data[i].id+')">×</button>';
+						text+='<div><a target="_top" href="'+data[i].path+'">'+data[i].name+'</a>';
+						text+='<button onclick="deleteFiles('+data[i].id+')">×</button></div>';
 					}
 					$("#input-files-2")[0].innerHTML=text;
 				}

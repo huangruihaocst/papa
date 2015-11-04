@@ -62,6 +62,7 @@ class StudentsController < ApplicationController
       json = params[:json]
       if json
         students = JSON.parse(json)
+
         if students.is_a?(Array)
           invalid_students = []
           students.each do |student|
