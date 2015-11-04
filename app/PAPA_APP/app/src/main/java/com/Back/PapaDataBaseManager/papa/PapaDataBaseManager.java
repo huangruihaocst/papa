@@ -8,6 +8,7 @@
 package com.Back.PapaDataBaseManager.papa;
 
 
+import com.Activities.papa.message.Message;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
 import java.util.ArrayList;
@@ -284,5 +285,63 @@ public abstract class PapaDataBaseManager {
     public abstract void postComments(PostCommentsRequest request)
             throws PapaHttpClientException;
 
+    //////////////////////////////////////////////////////////
+    // 获取推送列表
 
+
+    static public class GetMessagesIDRequest
+    {
+        public int personId;
+        public String token;
+
+        public GetMessagesIDRequest(int personId, String token)
+        {
+            this.personId = personId;
+            this.token = token;
+        }
+    }
+
+    static public class GetMessagesIDReply
+    {
+        public List<String> msgIdLst;
+
+        public GetMessagesIDReply(List<String> msgIdLst)
+        {
+            this.msgIdLst = msgIdLst;
+        }
+    }
+
+    public abstract GetMessagesIDReply getMessagesID(GetMessagesIDRequest request)
+            throws PapaHttpClientException;
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // 根据推送 id 找详细信息
+
+    static public class GetMessageByIDRequest
+    {
+        public String msgId;
+        public String token;
+
+        public GetMessageByIDRequest(String msgId, String token)
+        {
+            this.msgId = msgId;
+            this.token = token;
+        }
+    }
+
+    static public class GetMessageByIDReply
+    {
+        public Message msg;
+
+        public GetMessageByIDReply(Message msg)
+        {
+            this.msg = msg;
+        }
+    }
+
+    public abstract GetMessageByIDReply getMessageByID(GetMessageByIDRequest request)
+            throws PapaHttpClientException;
+
+    // どこまで叫べば位置を知れる
 }

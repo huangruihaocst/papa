@@ -1,10 +1,10 @@
 json.status STATUS_SUCCESS
-
 json.message do
-  json.id       @message.id
-  json.title    @message.title
-  json.content  @message.content
-  json.type     @message.message_type
+  json.id @message.id
+  json.title @message.title
   json.deadline @message.deadline
-  json.creator_name @message.creator.name
+  json.content @message.content
+  json.creator_id @message.creator_id
+  json.message_type @message.message_type
+  json.course_id @message.course_id
 end
