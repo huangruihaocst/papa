@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Activities.papa.message.MessageActivity;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Fragments.papa.CourseFragment;
@@ -62,7 +63,7 @@ public class CourseActivity extends AppCompatActivity
         token = bundleHelper.getToken();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.hint_select_course));
+        toolbar.setTitle(getString(R.string.main_title));
         setSupportActionBar(toolbar);
 
         this.papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
@@ -202,9 +203,9 @@ public class CourseActivity extends AppCompatActivity
             intent.putExtras(data);
             startActivity(intent);
         } else if (id == R.id.nav_notification) {
-            Intent intent = new Intent(CourseActivity.this, NotificationActivity.class);
+            Intent intent = new Intent(CourseActivity.this, MessageActivity.class);
             Bundle data = new Bundle();
-            String key_to_notification = getString(R.string.key_to_notification);
+            String key_to_notification = getString(R.string.key_to_message);
             data.putParcelable(key_to_notification, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
@@ -214,9 +215,6 @@ public class CourseActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
-
 
     // Semester
 

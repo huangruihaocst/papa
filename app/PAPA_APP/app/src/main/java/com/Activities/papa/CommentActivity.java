@@ -49,14 +49,14 @@ public class CommentActivity extends AppCompatActivity
 //            }
 //        });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.setDrawerListener(toggle);
+//        toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
 
         RatingBar ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         EditText editText = (EditText)findViewById(R.id.editText);
@@ -149,7 +149,7 @@ public class CommentActivity extends AppCompatActivity
         } else if(id == R.id.nav_notification){
             Intent intent = new Intent(CommentActivity.this,NotificationActivity.class);
             Bundle data = new Bundle();
-            String key_to_notification = getString(R.string.key_to_notification);
+            String key_to_notification = getString(R.string.key_to_message);
             data.putParcelable(key_to_notification,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
