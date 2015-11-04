@@ -3,11 +3,11 @@ package com.Fragments.papa;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -150,7 +150,7 @@ public class StudentsFragment extends Fragment {
             mTextView.setText(lst.get(position).getValue());
             mTextView.setTextSize(35);
 //            mTextView.setTextColor(getColor(R.color.colorPrimary));
-            mTextView.setTextColor(Color.parseColor(getString(R.color.colorPrimary)));
+            mTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.colorPrimary));
             return mTextView;
         }
     }

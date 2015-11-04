@@ -22,11 +22,6 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".DetailActivity"
-            android:label="@string/title_activity_detail"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".CommentActivity"
             android:label="@string/title_activity_comment"
             android:theme="@style/AppTheme.NoActionBar" >
@@ -98,6 +93,11 @@
         <activity
             android:name=".ExperimentDetailActivity"
             android:label="@string/title_activity_experiment_detail_temp"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".DetailActivity"
+            android:label="@string/title_activity_detail_temp"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>

@@ -3,34 +3,28 @@ package com.Activities.papa;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Icon;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Activities.papa.R;
 import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
-public class DetailActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
+public class DetailActivity extends AppCompatActivity {
 
     PapaDataBaseManager papaDataBaseManager;
 
@@ -59,16 +53,24 @@ public class DetailActivity extends AppCompatActivity
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(experiment_name);
+        toolbar.setTitle(bundleHelper.getStudentName());
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
-        user_id = (TextView)findViewById(R.id.user_id);
-        user_class = (TextView)findViewById(R.id.user_class);
-        user_grades = (EditText)findViewById(R.id.user_grade);
-        user_comment = (EditText)findViewById(R.id.user_comment);
+        user_id = (TextView) findViewById(R.id.user_id);
+        user_class = (TextView) findViewById(R.id.user_class);
+        user_grades = (EditText) findViewById(R.id.user_grade);
+        user_comment = (EditText) findViewById(R.id.user_comment);
 
         fab = (FloatingActionButton) findViewById(R.id.fab_edit_detail);
-        if(identity.equals("student")){
+        if (identity.equals("student")) {
             fab.setVisibility(View.GONE);
         }
         fab.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +78,7 @@ public class DetailActivity extends AppCompatActivity
             public void onClick(View view) {
                 // 你打算什么时候保存修改?
 
-                if(!editable) {
+                if (!editable) {
                     editable = true;
                     user_grades.setEnabled(true);
                     user_grades.setFocusable(true);
@@ -87,8 +89,7 @@ public class DetailActivity extends AppCompatActivity
                             Snackbar.LENGTH_LONG
                     ).setAction("Action", null).show();
                     fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_save_white_36dp));
-                }
-                else{
+                } else {
                     postComment();
                     Snackbar.make(
                             view, getString(R.string.now_edit_done),
@@ -96,24 +97,9 @@ public class DetailActivity extends AppCompatActivity
                     ).setAction("Action", null).show();
                     fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_36dp));
                 }
-                
+
             }
         });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        if(bundleHelper.getIdentity().equals("teacher_assistant")){
-            Menu menu = navigationView.getMenu();
-            MenuItem item = menu.findItem(R.id.nav_upload_history);
-            item.setVisible(false);
-        }
-        setHeaderView(navigationView);
 
         getComment();
 
@@ -124,22 +110,17 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.detail, menu);
-        if(identity.equals("teacher_assistant")){
-            MenuItem item = menu.findItem(R.id.action_generate_QR_code);
-            item.setVisible(false);
-        }
+//        if(identity.equals("teacher_assistant")){
+//            MenuItem item = menu.findItem(R.id.action_generate_QR_code);
+//            item.setVisible(false);
+//        }
         return true;
     }
 
@@ -151,82 +132,13 @@ public class DetailActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.action_student_information){
-            return true;
-        }else if(id == R.id.action_generate_QR_code){
-            return true;
-        }
+//        if(id == R.id.action_student_information){
+//            return true;
+//        }else if(id == R.id.action_generate_QR_code){
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_favorite) {
-            Intent intent = new Intent(DetailActivity.this,FavoriteActivity.class);
-            Bundle data = new Bundle();
-            String key_to_favorite = getString(R.string.key_to_favorite);
-            data.putParcelable(key_to_favorite,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_experiment_history) {
-            Intent intent = new Intent(DetailActivity.this,ExperimentHistoryActivity.class);
-            Bundle data = new Bundle();
-            String key_to_experiment_history = getString(R.string.key_to_experiment_history);
-            data.putParcelable(key_to_experiment_history,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_upload_history) {
-            Intent intent = new Intent(DetailActivity.this,UploadHistoryActivity.class);
-            Bundle data = new Bundle();
-            String key_to_upload_history = getString(R.string.key_to_upload_history);
-            data.putParcelable(key_to_upload_history,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_profile) {
-            Intent intent = new Intent(DetailActivity.this,ProfileActivity.class);
-            Bundle data = new Bundle();
-            String key_to_edit_profile = getString(R.string.key_to_edit_profile);
-            data.putParcelable(key_to_edit_profile,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_help) {
-            Intent intent = new Intent(DetailActivity.this,HelpActivity.class);
-            Bundle data = new Bundle();
-            String key_to_help = getString(R.string.key_to_help);
-            data.putParcelable(key_to_help,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_settings) {
-            Intent intent = new Intent(DetailActivity.this,SettingsActivity.class);
-            Bundle data = new Bundle();
-            String key_to_settings = getString(R.string.key_to_settings);
-            data.putParcelable(key_to_settings,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if(id == R.id.nav_notification){
-            Intent intent = new Intent(DetailActivity.this,NotificationActivity.class);
-            Bundle data = new Bundle();
-            String key_to_notification = getString(R.string.key_to_message);
-            data.putParcelable(key_to_notification,bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private void setHeaderView(NavigationView navigationView){
-        LinearLayout linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
-        TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
-        TextView mail_label = (TextView)findViewById(R.id.mail_label);
-        ImageView image_label = (ImageView)findViewById(R.id.image_label);
     }
 
     private void getComment(){
@@ -366,4 +278,5 @@ public class DetailActivity extends AppCompatActivity
                 afterPostComment();
         }
     }
+
 }

@@ -166,5 +166,6 @@
     <string name="string_message_title">Title: %s</string>
     <string name="string_message_notify_deadline_title">%d messages are nearing deadline.</string>
     <string name="title_activity_experiment_detail_temp">ExperimentDetailTempActivity</string>
+    <string name="title_activity_detail_temp">DetailTempActivity</string>
 
 </resources>
