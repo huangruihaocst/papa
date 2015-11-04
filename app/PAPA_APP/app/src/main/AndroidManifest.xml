@@ -22,11 +22,6 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".StudentActivity"
-            android:label="@string/title_activity_student"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".DetailActivity"
             android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar" >
@@ -79,11 +74,6 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".ExperimentDetailActivity"
-            android:label="@string/title_activity_experiment_detail"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".message.MessageActivity"
             android:label="@string/title_activity_message"
             android:theme="@style/AppTheme.NoActionBar" >
@@ -103,6 +93,11 @@
         <activity
             android:name=".ExperimentActivity"
             android:label="@string/title_activity_experiment"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".ExperimentDetailActivity"
+            android:label="@string/title_activity_experiment_detail_temp"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>

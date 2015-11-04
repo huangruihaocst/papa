@@ -34,7 +34,7 @@
     <string name="user_class">班级</string>
     <string name="user_grade">成绩</string>
     <string name="user_comment">评价</string>
-    <string name="now_editable">现在可以编辑成绩和评价了</string>
+    <string name="now_editable">现在可以编辑成绩和评价了,再次点击保存</string>
     <string name="now_edit_done">成绩和评价保存好了喵 =w=</string>
     <string name="select_type">请选择上传的内容</string>
     <string-array name="upload_type">
@@ -85,8 +85,8 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
 
-    <string name="color_primary">#2196F3</string>
-    <string name="color_primary_dark">#1976D2</string>
+    <!--<string name="color_primary">#2196F3</string>-->
+    <!--<string name="color_primary_dark">#1976D2</string>-->
     <string name="title_activity_help_activity">HelpActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
@@ -165,5 +165,6 @@
     <string name="key_message_service_messages_file_name">messages.dat</string>
     <string name="string_message_title">Title: %s</string>
     <string name="string_message_notify_deadline_title">%d messages are nearing deadline.</string>
+    <string name="title_activity_experiment_detail_temp">ExperimentDetailTempActivity</string>
 
 </resources>

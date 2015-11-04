@@ -3,10 +3,12 @@ package com.Activities.papa;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Icon;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -40,6 +42,7 @@ public class DetailActivity extends AppCompatActivity
     EditText user_grades;
     EditText user_comment;
     boolean editable;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,7 @@ public class DetailActivity extends AppCompatActivity
         user_grades = (EditText)findViewById(R.id.user_grade);
         user_comment = (EditText)findViewById(R.id.user_comment);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_edit_detail);
+        fab = (FloatingActionButton) findViewById(R.id.fab_edit_detail);
         if(identity.equals("student")){
             fab.setVisibility(View.GONE);
         }
@@ -75,19 +78,25 @@ public class DetailActivity extends AppCompatActivity
 
                 if(!editable) {
                     editable = true;
-                    user_grades.setEnabled(editable);
-                    user_grades.setFocusable(editable);
-                    user_comment.setEnabled(editable);
-                    user_comment.setFocusable(editable);
+                    user_grades.setEnabled(true);
+                    user_grades.setFocusable(true);
+                    user_comment.setEnabled(true);
+                    user_comment.setFocusable(true);
                     Snackbar.make(
                             view, getString(R.string.now_editable),
                             Snackbar.LENGTH_LONG
                     ).setAction("Action", null).show();
+                    fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_save_white_36dp));
                 }
-                else
+                else{
                     postComment();
-
-
+                    Snackbar.make(
+                            view, getString(R.string.now_edit_done),
+                            Snackbar.LENGTH_LONG
+                    ).setAction("Action", null).show();
+                    fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_36dp));
+                }
+                
             }
         });
 
@@ -109,8 +118,8 @@ public class DetailActivity extends AppCompatActivity
         getComment();
 
         editable = false;
-        user_grades.setEnabled(editable);
-        user_comment.setEnabled(editable);
+        user_grades.setEnabled(false);
+        user_comment.setEnabled(false);
     }
 
     @Override
@@ -298,20 +307,12 @@ public class DetailActivity extends AppCompatActivity
         );
     }
 
-    private void afterPostComment()
-    {
+    private void afterPostComment() {
         editable = false;
-        user_grades.setEnabled(editable);
-        user_grades.setFocusable(editable);
-        user_comment.setEnabled(editable);
-        user_comment.setFocusable(editable);
-
-        Toast.makeText(
-                getApplicationContext(),
-                getString(R.string.now_edit_done),
-                Toast.LENGTH_SHORT
-        ).show();
-
+        user_grades.setEnabled(false);
+        user_grades.setFocusable(false);
+        user_comment.setEnabled(false);
+        user_comment.setFocusable(false);
     }
 
     class PostCommentTask extends

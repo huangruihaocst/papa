@@ -3,9 +3,9 @@ package com.Activities.papa;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -139,7 +139,7 @@ public class ExperimentActivity extends AppCompatActivity {
             mTextView.setText(lst.get(position).getValue());
             mTextView.setTextSize(35);
 //            mTextView.setTextColor(getColor(R.color.colorPrimary));
-            mTextView.setTextColor(Color.parseColor(getString(R.string.color_primary)));
+            mTextView.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorPrimary));
             return mTextView;
         }
     }
