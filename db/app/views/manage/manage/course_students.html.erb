@@ -112,7 +112,7 @@
                 $.ajax({
                     url:"/courses/<%=@course_id%>/students.json",
                     method:"POST",
-                    data:JSON.stringify({"json":students}),
+                    data:"json="+JSON.stringify(students),
                     dataType: "json",
                     success:function(d){
                     alert(d.status);}
