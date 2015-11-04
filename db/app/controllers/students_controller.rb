@@ -61,7 +61,9 @@ class StudentsController < ApplicationController
       must_be_a_teacher_of(params[:token], course)
       json = params[:json]
       if json
+        puts json
         students = JSON.parse(json)
+        puts json
         if students.is_a?(Array)
           invalid_students = []
           students.each do |student|
