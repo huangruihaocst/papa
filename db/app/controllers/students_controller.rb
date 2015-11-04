@@ -78,6 +78,7 @@ class StudentsController < ApplicationController
                                  student_number: student['student_number'])
               if user.valid?
                 course.students << user
+                raise RequestException.new(REASON_INTERNAL_ERROR) unless course.save
               else
                 if student['student_number']
                   invalid_students.push(student['student_number'])
