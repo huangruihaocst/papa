@@ -66,22 +66,22 @@ f2 = FileResource.create(name: '2.jpg', file_type: 'jpg', path: '/uploads/2.jpg'
 
 l11.student_files.create(student_id: u3.id, file_resource_id: f1.id)
 
-l11.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '123', content: 'haha')
+l11.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '8', content: 'haha')
 l11.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: 'haha1')
 l11.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'haha2')
 l11.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'haha3')
 
-l12.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '123', content: 'haha')
+l12.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '7', content: 'haha')
 l12.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: 'haha1')
 l12.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'haha2')
 l12.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'haha3')
 
-l21.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '123', content: 'haha')
+l21.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '6', content: 'haha')
 l21.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: 'haha1')
 l21.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'haha2')
 l21.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'haha3')
 
-l31.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '123', content: 'haha')
+l31.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '5', content: 'haha')
 l31.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: 'haha1')
 l31.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'haha2')
 l31.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'haha3')
