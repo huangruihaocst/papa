@@ -85,8 +85,8 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
 
-    <string name="color_primary">#3F51B5</string>
-    <string name="color_primary_dark">#303F9F</string>
+    <string name="color_primary">#2196F3</string>
+    <string name="color_primary_dark">#1976D2</string>
     <string name="title_activity_help_activity">HelpActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
