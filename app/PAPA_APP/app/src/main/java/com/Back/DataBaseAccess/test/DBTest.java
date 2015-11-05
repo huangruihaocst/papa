@@ -9,6 +9,7 @@ import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Created by shyo on 15-10-16.
@@ -28,7 +29,7 @@ public class DBTest extends InstrumentationTestCase
     public void test2() throws Exception {
         PapaDataBaseAccess dbAccess = new PapaDataBaseAccess();
 
-        HashMap<String, String> h = new HashMap<String, String>();
+        HashMap<String, Object> h = new HashMap<>();
 
         h.put("utf8", "✓");
         h.put("user[login]", "123");

@@ -39,6 +39,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
+
+// 赤より紅い夢！！！！！
+// 比赤色更加鲜红的梦想!!!!!!!
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
