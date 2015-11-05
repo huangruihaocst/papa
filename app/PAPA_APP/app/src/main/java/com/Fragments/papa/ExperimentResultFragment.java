@@ -361,7 +361,7 @@ public class ExperimentResultFragment extends Fragment {
             ImageView imageView;
             if(convertView == null){
                 imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams(115, 115));
+                imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
                 imageView.setScaleType(ImageView.ScaleType.CENTER);
                 imageView.setPadding(8, 8, 8, 8);
             }else{
