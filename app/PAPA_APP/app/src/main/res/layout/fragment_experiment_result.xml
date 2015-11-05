@@ -2,12 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.Fragments.papa.ExperimentResultFragment"
-    android:background="#FAFAFA">
+    android:background="#FAFAFA"
+    android:layout_marginTop="@dimen/activity_horizontal_margin">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/experiment_result" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_upload_result"
@@ -18,14 +16,15 @@
         android:src="@drawable/ic_add_white_36dp" />
 
     <GridView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/gridView_image"
         android:layout_gravity="center"
         android:columnWidth="120dp"
+        android:numColumns="auto_fit"
         android:horizontalSpacing="10dp"
         android:verticalSpacing="10dp"
-        android:gravity="start"
+        android:gravity="center"
         android:stretchMode="columnWidth"/>
 
     <!--<ImageView-->

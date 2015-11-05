@@ -8,14 +8,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,21 +21,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.Activities.papa.R;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,6 +68,14 @@ public class ExperimentResultFragment extends Fragment {
 //    private VideoView selectedVideo;
     GridView gridView_image;
     byte[] bytes;
+
+    private int[] ImageId = {
+            R.drawable.ic_file_upload_black_24dp,
+            R.drawable.ic_history_black_24dp,
+            R.drawable.ic_info_black_24dp,
+            R.drawable.ic_notifications_black_24dp,
+    };
+    private Bitmap[] imageBitmap;
 
     /**
      * Use this factory method to create a new instance of
@@ -117,6 +119,9 @@ public class ExperimentResultFragment extends Fragment {
         gridView_image = (GridView)rootView.findViewById(R.id.gridView_image);
         gridView_image.setAdapter(new ImageAdapter(getContext()));
 
+        imageBitmap = new Bitmap[ImageId.length];
+        for(int i = 0;i < imageBitmap.length;i ++) imageBitmap[i] = BitmapFactory.decodeResource(getResources(),ImageId[i]);
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +142,6 @@ public class ExperimentResultFragment extends Fragment {
 
                             fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to save the video
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
-
                             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
 
                             // start the Video Capture Intent
@@ -220,6 +224,7 @@ public class ExperimentResultFragment extends Fragment {
                     if(file.exists()){
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                        selectedImage.setImageBitmap(bitmap);
+
                         byte[] bytes = toByteArray(file);
                     }
                 }
@@ -342,24 +347,18 @@ public class ExperimentResultFragment extends Fragment {
             ImageView imageView;
             if(convertView == null){
                 imageView = new ImageView(context);
+                imageView.setLayoutParams(new GridView.LayoutParams(115,115));
+                imageView.setScaleType(ImageView.ScaleType.CENTER);
+                imageView.setPadding(8,8,8,8);
             }else{
                 imageView = (ImageView)convertView;
             }
-            imageView.setImageResource(ImageId[position]);
-            Toast.makeText(getContext(),ImageId[position],Toast.LENGTH_LONG).show();
+            imageView.setImageBitmap(imageBitmap[position]);
             return imageView;
         }
 
         public ImageAdapter(Context context){
-            Toast.makeText(getContext(),"created",Toast.LENGTH_LONG).show();
             this.context = context;
         }
-
-        private int[] ImageId = {
-                R.drawable.ic_file_upload_black_24dp,
-                R.drawable.ic_history_black_24dp,
-                R.drawable.ic_info_black_24dp,
-                R.drawable.ic_notifications_black_24dp
-        };
     }
 }
