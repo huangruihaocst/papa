@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -78,6 +79,8 @@ public class ExperimentResultFragment extends Fragment {
             R.drawable.ic_notifications_black_24dp,
     };
     private ArrayList<Bitmap> bitmapArrayList;
+    private ArrayList<String> pathArrayList;
+    private ArrayList<Integer> isImageArrayList;//1 for image, 0 for video
     private ImageAdapter imageAdapter;
 
     /**
@@ -110,6 +113,8 @@ public class ExperimentResultFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         bitmapArrayList = new ArrayList<>();
+        pathArrayList = new ArrayList<>();
+        isImageArrayList = new ArrayList<>();
     }
 
     @Override
@@ -126,8 +131,24 @@ public class ExperimentResultFragment extends Fragment {
 
         for(int i = 0;i < imageId.length;i ++){
             bitmapArrayList.add(BitmapFactory.decodeResource(getResources(), imageId[i]));
+            pathArrayList.add("");
+            isImageArrayList.add(1);
         }
 
+        gridView_image.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                File file = new File(pathArrayList.get(position));
+                if(isImageArrayList.get(position) == 1){
+                    intent.setDataAndType(Uri.fromFile(file), "image/*");
+                }else{
+                    intent.setDataAndType(Uri.fromFile(file), "video/*");
+                }
+                startActivity(intent);
+            }
+        });
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,6 +239,8 @@ public class ExperimentResultFragment extends Fragment {
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
                     bitmapArrayList.add(bitmap);
+                    pathArrayList.add(path);
+                    isImageArrayList.add(1);
                     imageAdapter.notifyDataSetChanged();
                     byte[] bytes = toByteArray(file);
                 }
@@ -234,6 +257,8 @@ public class ExperimentResultFragment extends Fragment {
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                        selectedImage.setImageBitmap(bitmap);
                         bitmapArrayList.add(bitmap);
+                        pathArrayList.add(path);
+                        isImageArrayList.add(1);
                         imageAdapter.notifyDataSetChanged();
                         byte[] bytes = toByteArray(file);
                     }
@@ -256,8 +281,10 @@ public class ExperimentResultFragment extends Fragment {
 //                        selectedVideo.start();
                         byte[] bytes = toByteArray(file);
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
-                                (path,MediaStore.Video.Thumbnails.MICRO_KIND);
+                                (path,MediaStore.Video.Thumbnails.MINI_KIND);
                         bitmapArrayList.add(thumbnail);
+                        pathArrayList.add(path);
+                        isImageArrayList.add(0);
                         imageAdapter.notifyDataSetChanged();
                     }
                 }
@@ -362,8 +389,8 @@ public class ExperimentResultFragment extends Fragment {
             if(convertView == null){
                 imageView = new ImageView(context);
                 imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
-                imageView.setScaleType(ImageView.ScaleType.CENTER);
-                imageView.setPadding(8, 8, 8, 8);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setPadding(4, 4, 4, 4);
             }else{
                 imageView = (ImageView)convertView;
             }
