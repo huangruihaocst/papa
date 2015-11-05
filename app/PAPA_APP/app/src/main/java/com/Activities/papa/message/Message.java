@@ -11,6 +11,13 @@ import java.util.Calendar;
  * It is also serializable.
  */
 public class Message implements Serializable {
+    public enum Status {
+        Normal,
+        Outdated,
+        Ignored,
+        Read
+    }
+
     String id, title, type, content, creatorName, courseName;
     Calendar deadline;
     boolean ignored = false;
@@ -43,6 +50,15 @@ public class Message implements Serializable {
     public String getContent() {
         return content;
     }
+    public String getTruncatedContent(int length) {
+        if (content.length() > length) {
+            return content.substring(0, length);
+        }
+        else {
+            return content;
+        }
+    }
+
     public Calendar getDeadline() {
         return deadline;
     }
@@ -63,6 +79,17 @@ public class Message implements Serializable {
     }
     public boolean needNotifyDeadline() {
         return notifyDeadline;
+    }
+
+    public Status getStatus() {
+        if (ignored)
+            return Status.Ignored;
+        long delta = getDeadline().getTimeInMillis() - System.currentTimeMillis();
+        if (delta <= 0)
+            return Status.Outdated;
+        if (read)
+            return Status.Read;
+        return Status.Normal;
     }
 
     // these functions will affect message contents.

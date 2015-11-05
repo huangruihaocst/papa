@@ -70,7 +70,9 @@
         <activity
             android:name=".message.MessageActivity"
             android:label="@string/title_activity_message"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop"
+            >
         </activity>
         <activity
             android:name=".message.MessageDetailActivity"
@@ -81,7 +83,8 @@
         <service
             android:name=".message.MessagePullService"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true"
+            >
         </service>
 
         <activity

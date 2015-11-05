@@ -50,5 +50,4 @@ public class MessageActivityFragment extends Fragment {
     public void quitEditMode(boolean delete) {
         adapter.quitEditMode(delete);
     }
-
 }
