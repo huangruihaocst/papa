@@ -29,7 +29,6 @@
             android:name=".HelpActivity"
             android:label="@string/title_activity_help_activity"
             android:theme="@style/AppTheme.NoActionBar" >
->
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -95,7 +94,8 @@
         <activity
             android:name=".ExperimentDetailActivity"
             android:label="@string/title_activity_experiment_detail_temp"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".DetailActivity"

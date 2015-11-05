@@ -2,31 +2,26 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.Fragments.papa.ExperimentResultFragment"
-    android:background="#FAFAFA">
+    android:background="#FAFAFA"
+    android:layout_marginTop="@dimen/activity_horizontal_margin">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/experiment_result" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_upload_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_white_36dp" />
 
     <GridView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/gridView_image"
-        android:layout_gravity="center"
-        android:columnWidth="120dp"
-        android:horizontalSpacing="10dp"
-        android:verticalSpacing="10dp"
-        android:gravity="start"
-        android:stretchMode="columnWidth"/>
+        android:layout_gravity="start"
+        android:columnWidth="80dp"
+        android:numColumns="auto_fit"
+        android:horizontalSpacing="2dp"
+        android:verticalSpacing="2dp"
+        android:gravity="center"
+        android:stretchMode="columnWidth"
+        android:scrollbars="vertical"
+        android:scrollingCache="true"
+        android:smoothScrollbar="true"
+        android:alwaysDrawnWithCache="true"/>
 
     <!--<ImageView-->
         <!--android:layout_width="wrap_content"-->
@@ -39,5 +34,13 @@
         <!--android:layout_height="161dp"-->
         <!--android:id="@+id/selected_video"-->
         <!--android:layout_gravity="center_horizontal|top" />-->
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_upload_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_white_36dp" />
 
 </FrameLayout>

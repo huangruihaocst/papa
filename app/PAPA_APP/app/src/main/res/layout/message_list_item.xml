@@ -27,7 +27,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
         android:id="@+id/text_view_message_list_view_item_content"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:layout_alignBottom="@+id/text_view_message_list_view_item_title"
         android:layout_toLeftOf="@+id/check_box_message_delete_item"
         android:layout_toStartOf="@+id/check_box_message_delete_item" />

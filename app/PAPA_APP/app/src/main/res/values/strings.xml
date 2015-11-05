@@ -55,6 +55,10 @@
     <string name="confirm_log_out_no">假的</string>
     <string name="no_comment">暂时还没有评价(·8·)</string>
     <string name="hint_comment">轻点星来评分>_&lt;</string>
+    <string name="notification_clear_all">通知已清空</string>
+    <string name="edit">编辑</string>
+    <string name="delete">删除</string>
+    <string name="done">完成</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

@@ -1,5 +1,6 @@
 package com.Fragments.papa;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -195,6 +196,16 @@ public class StudentsFragment extends Fragment {
                 data.putParcelable(key_to_detail, bundleHelper);
                 intent.putExtras(data);
                 startActivity(intent);
+            }
+        });
+        StudentListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("shortcut to edit grades here");
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                return true;
             }
         });
     }
