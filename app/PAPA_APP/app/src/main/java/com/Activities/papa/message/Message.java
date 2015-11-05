@@ -24,10 +24,10 @@ public class Message implements Serializable {
 
     String id, title, type, content, creatorName, courseName;
     Calendar deadline;
-    boolean ignored = false;
-    boolean read = false;
-    boolean newMessage = true;
-    boolean notifyDeadline = true;
+    boolean ignored;
+    boolean read;
+    boolean newMessage;
+    boolean notifyDeadline;
 
     public final static Message InvalidMessage = new Message("-1", "InvalidMessage", "404", "404", Calendar.getInstance(), "Operating System", "Alex");
 
@@ -39,6 +39,10 @@ public class Message implements Serializable {
         this.deadline = deadline;
         this.courseName = courseName;
         this.creatorName = creatorName;
+        ignored = false;
+        read = false;
+        newMessage = true;
+        notifyDeadline = true;
     }
 
     // getters

@@ -4,12 +4,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.*;
-import android.os.Message;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
@@ -24,15 +21,12 @@ import java.io.IOError;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MessagePullService extends Service {
-
-    public static final int PullIntervalMilliseconds = 5000;
     Timer pullingTimer;
 
     String userId;
@@ -88,10 +82,10 @@ public class MessagePullService extends Service {
 
         // get remote message list
         // get all message ids
-        List<String> allIds;
+        List<String> messageIds;
 
         try {
-            allIds = papaDataBaseManager.getMessagesID(
+            messageIds = papaDataBaseManager.getMessagesID(
                     new PapaDataBaseManager.GetMessagesIDRequest(Integer.parseInt(userId), token)
             ).msgIdLst;
         } catch (PapaHttpClientException e) {
@@ -101,28 +95,28 @@ public class MessagePullService extends Service {
         }
 
         // filter those we have
-        ArrayList<String> newMessageIds = messageList.filterByMessageId(allIds);
+        ArrayList<String> newMessageIds = messageList.filterByMessageId(messageIds);
 
         // get the messages that we do not have
-        for (int i = 0; i < newMessageIds.size(); ++i) {
+        for (String id : newMessageIds) {
             try {
-                messageList.add(0,
-                        papaDataBaseManager.getMessageByID(
-                                new PapaDataBaseManager.GetMessageByIDRequest(newMessageIds.get(i), token)
-                        ).msg
-                );
-            } catch (PapaHttpClientException e) {
-                e.printStackTrace();
-                // ignore the messages that we can not download
+                Message message = papaDataBaseManager.getMessageByID(new PapaDataBaseManager.GetMessageByIDRequest(id, token)).msg;
+                messageList.addFront(message);
             }
+            catch (PapaHttpClientException e) {
+                e.printStackTrace();
+                // ignore the messages we can not download
+            }
+        }
+
+        // mark all new messages as new
+        MessageList list = filterNewMessages(messageList);
+        if (list.size() > 0) {
+            notifyMessageReceived(list);
         }
 
         // save to the file
         saveMessages(messageList);
-
-        // further operations to the messages
-        /****** TODO what else? ^_^ *******/
-
         // return
         return messageList;
     }
@@ -157,12 +151,9 @@ public class MessagePullService extends Service {
         pullingTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                MessageList list = readNewMessages(syncMessages());
-                if (list.size() > 0) {
-                    notifyMessageReceived(list);
-                }
+                syncMessages();
             }
-        }, 0, PullIntervalMilliseconds);
+        }, 0, getResources().getInteger(R.integer.message_pull_service_polling_interval_milliseconds));
     }
 
     /**
@@ -209,7 +200,7 @@ public class MessagePullService extends Service {
                     .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                     .setContentText(sb.toString())
                     .setContentIntent(PendingIntent.getActivity(
-                            this, 0, createIntentStartMessageActivity(), PendingIntent.FLAG_UPDATE_CURRENT))
+                            this, 0, createIntentForStartMessageActivity(), PendingIntent.FLAG_UPDATE_CURRENT))
                     .build();
 
             NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -217,7 +208,10 @@ public class MessagePullService extends Service {
         }
     }
 
-    // DONE
+    /**
+     * Create a android Notification with messages.
+     * @param messages the new messages.
+     */
     public void notifyMessageReceived(MessageList messages) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < messages.size(); ++i) {
@@ -230,14 +224,14 @@ public class MessagePullService extends Service {
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentText(builder.toString())
                 .setContentIntent(PendingIntent.getActivity(
-                        this, 0, createIntentStartMessageActivity(), PendingIntent.FLAG_UPDATE_CURRENT))
+                        this, 0, createIntentForStartMessageActivity(), PendingIntent.FLAG_UPDATE_CURRENT))
                 .build();
 
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         nm.notify(getResources().getInteger(R.integer.key_message_pull_notification_id), notification);
     }
 
-    private Intent createIntentStartMessageActivity() {
+    private Intent createIntentForStartMessageActivity() {
         Intent intent = new Intent(this, MessageActivity.class);
         BundleHelper bundleHelper = new BundleHelper();
         bundleHelper.setId(Integer.parseInt(userId));
@@ -248,7 +242,7 @@ public class MessagePullService extends Service {
         return intent;
     }
     // filter old messages
-    public static MessageList readNewMessages(MessageList list) {
+    public static MessageList filterNewMessages(MessageList list) {
         MessageList newList = new MessageList();
         for (int i = 0; i < list.size(); ++i) {
             if (list.get(i).isNew()) {

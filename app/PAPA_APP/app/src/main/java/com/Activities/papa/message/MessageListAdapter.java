@@ -60,12 +60,39 @@ public class MessageListAdapter extends BaseAdapter {
         if (delete) {
             for (int i = 0; i < getCount(); ++i) {
                 if (messageCheck[i]) {
-                    validMessages.get(i).ignoreMessage();
+                    getValidMessages().get(i).ignoreMessage();
                 }
             }
             service.syncFromApp(messages);
+            // valid messages should be recalculated
             validMessages = null;
+            resetData(messages);
         }
+        notifyDataSetChanged();
+    }
+
+    public void setMessageService(MessagePullService s) {
+        this.service = s;
+    }
+
+    public void markAllAsRead() {
+        for (Message message : messages) {
+            message.readMessage();
+        }
+        resetData(messages);
+        if (service != null)
+            service.syncFromApp(messages);
+    }
+
+    public void selectAll() {
+        for (int i = 0; i < this.messageCheck.length; ++i)
+            this.messageCheck[i] = true;
+        notifyDataSetChanged();
+    }
+
+    public void reverseSelect() {
+        for (int i = 0; i < this.messageCheck.length; ++i)
+            this.messageCheck[i] = !this.messageCheck[i];
         notifyDataSetChanged();
     }
 
@@ -136,6 +163,7 @@ public class MessageListAdapter extends BaseAdapter {
         final CheckBox checkBox = (CheckBox) layout.findViewById(R.id.check_box_message_delete_item);
         if (!editMode) {
             checkBox.setVisibility(View.INVISIBLE);
+            checkBox.setChecked(messageCheck[position]);
         }
         else {
             checkBox.setVisibility(View.VISIBLE);
@@ -174,10 +202,6 @@ public class MessageListAdapter extends BaseAdapter {
         content.setText(message.getTruncatedContent(context.getResources().getInteger(R.integer.max_displayed_content_length)));
 
         return layout;
-    }
-
-    public void setMessageService(MessagePullService s) {
-        this.service = s;
     }
 
     /**
@@ -255,10 +279,4 @@ public class MessageListAdapter extends BaseAdapter {
         return new MessageList(newMessages);
     }
 
-    void markAllAsRead() {
-        for (Message message : messages) {
-            message.readMessage();
-        }
-        resetData(messages);
-    }
 }

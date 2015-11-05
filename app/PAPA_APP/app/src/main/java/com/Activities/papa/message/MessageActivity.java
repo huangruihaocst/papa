@@ -8,12 +8,16 @@ import android.os.*;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
@@ -23,9 +27,11 @@ public class MessageActivity extends AppCompatActivity {
 
     boolean bound;
     MessagePullService messagePullService;
-    MessageActivityFragment fragment;
+
     Menu menu;
-    BundleHelper bundleHelper;
+    ListView messageListView;
+    MessageListAdapter adapter;
+    SwipeRefreshLayout layout;
 
     String userId;
     String token;
@@ -37,7 +43,7 @@ public class MessageActivity extends AppCompatActivity {
             return;
         }
 
-        bundleHelper = bundle.getParcelable(getString(R.string.key_to_message));
+        BundleHelper bundleHelper = bundle.getParcelable(getString(R.string.key_to_message));
 
         if (bundleHelper != null) {
             this.userId = String.valueOf(bundleHelper.getId());
@@ -56,6 +62,7 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
+        // id and token
         setUserData(getIntent());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_message_list);
@@ -70,8 +77,28 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        fragment = (MessageActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_message_content);
+        /**
+         * SwipeRefreshLayout
+         * */
+        layout = (SwipeRefreshLayout) findViewById(R.id.layout_content_message_list);
+        layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                flushMessages();
+            }
+        });
+        layout.setColorSchemeColors(ContextCompat.getColor(MessageActivity.this, R.color.colorPrimary));
 
+        /**
+         * ListView
+         */
+        messageListView = (ListView) layout.findViewById(R.id.listViewMessageList);
+        adapter = new MessageListAdapter(MessageActivity.this, new MessageList());
+        messageListView.setAdapter(adapter);
+
+        /**
+         * Floating Action Button
+         */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_message_clear_all);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,8 +137,7 @@ public class MessageActivity extends AppCompatActivity {
             messagePullService = binder.getService();
             messagePullService.setUserInfo(userId, token);
             bound = true;
-
-            fragment.setMessageService(messagePullService);
+            adapter.setMessageService(messagePullService);
 
             flushMessages();
             startListen();
@@ -119,7 +145,6 @@ public class MessageActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            fragment.setMessageService(null);
             bound = false;
         }
     };
@@ -155,7 +180,8 @@ public class MessageActivity extends AppCompatActivity {
         public void handleMessage(android.os.Message msg) {
             if (msg.what == Flush) {
                 MessageList messageList = (MessageList) msg.obj;
-                fragment.updateMessages(messageList);
+                adapter.resetData(messageList);
+                layout.setRefreshing(false);
             }
         }
     }
@@ -164,6 +190,8 @@ public class MessageActivity extends AppCompatActivity {
     static final int MenuEditAction = 0;
     static final int MenuDeleteAction = 1;
     static final int MenuDoneAction = 2;
+    static final int MenuSelectUnselectAll = 3;
+    static final int MenuMarkAllAsRead = 4;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -174,15 +202,31 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     void enterEditMode(Menu menu) {
-        fragment.enterEditMode();
+        adapter.enterEditMode();
         menu.getItem(MenuDeleteAction).setVisible(true);
         menu.getItem(MenuDoneAction).setVisible(true);
         menu.getItem(MenuEditAction).setVisible(false);
+        menu.getItem(MenuSelectUnselectAll).setVisible(true);
+        menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.select_all));
     }
     void quitEditMode(Menu menu) {
         menu.getItem(MenuDeleteAction).setVisible(false);
         menu.getItem(MenuDoneAction).setVisible(false);
         menu.getItem(MenuEditAction).setVisible(true);
+        menu.getItem(MenuSelectUnselectAll).setVisible(false);
+        menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.reverse_select));
+    }
+    boolean selectAllMode = true;
+    void toggleSelectAll() {
+        if (selectAllMode) {
+            menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.reverse_select));
+            adapter.selectAll();
+        }
+        else {
+            menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.select_all));
+            adapter.reverseSelect();
+        }
+        selectAllMode = !selectAllMode;
     }
 
     @Override
@@ -194,15 +238,18 @@ public class MessageActivity extends AppCompatActivity {
             enterEditMode(menu);
         }
         else if (id == R.id.action_message_delete) {
-            fragment.quitEditMode(true);
+            adapter.quitEditMode(true);
             quitEditMode(menu);
         }
         else if (id == R.id.action_message_done) {
-            fragment.quitEditMode(false);
+            adapter.quitEditMode(false);
             quitEditMode(menu);
         }
         else if (id == R.id.action_message_mark_all_as_read) {
-            fragment.markAllAsRead();
+            adapter.markAllAsRead();
+        }
+        else if (id == R.id.action_message_select_unselect_all) {
+            toggleSelectAll();
         }
         else {
             return super.onOptionsItemSelected(item);
