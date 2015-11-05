@@ -27,7 +27,7 @@ public class PapaDataBaseAccess
         client = PapaApacheHttpClient.getInstance();
     }
 
-    public String getDataBaseReplyAsString(PapaAbstractHttpClient.HttpMethod method, String url, HashMap<String, String> parameters)
+    public String getDataBaseReplyAsString(PapaAbstractHttpClient.HttpMethod method, String url, HashMap<String, Object> parameters)
             throws PapaHttpClientException
     {
         url = "http://" + host + ":" + port + url;
@@ -38,10 +38,10 @@ public class PapaDataBaseAccess
             throws PapaHttpClientException
     {
         url = "http://" + host + ":" + port + url;
-        return client.getHttpReply(method, url, new HashMap<String, String>());
+        return client.getHttpReply(method, url, new HashMap<String, Object>());
     }
 
-    public JSONObject getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod method, String url, HashMap<String, String> parameters)
+    public JSONObject getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod method, String url, HashMap<String, Object> parameters)
             throws PapaHttpClientException
     {
         String s = getDataBaseReplyAsString(method, url, parameters);
@@ -81,6 +81,6 @@ public class PapaDataBaseAccess
     public JSONObject getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod method, String url)
             throws PapaHttpClientException
     {
-        return getDataBaseReplyAsJson(method, url, new HashMap<String, String>());
+        return getDataBaseReplyAsJson(method, url, new HashMap<String, Object>());
     }
 }

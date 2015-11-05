@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class ApacheTest extends InstrumentationTestCase
 {
     public void testHttp1() throws Exception {
-        String s = PapaApacheHttpClient.getInstance().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://www.baidu.com", new HashMap<String, String>());
+        String s = PapaApacheHttpClient.getInstance().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://www.baidu.com", new HashMap<String, Object>());
 
         assertFalse(s == null || s == "");
 
@@ -38,7 +38,7 @@ public class ApacheTest extends InstrumentationTestCase
 
 
     public void testHttp3() throws Exception {
-        String s = PapaApacheHttpClient.getInstance().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://info.tsinghua.edu.cn", new HashMap<String, String>());
+        String s = PapaApacheHttpClient.getInstance().getHttpReply(PapaApacheHttpClient.HttpMethod.get, "http://info.tsinghua.edu.cn", new HashMap<String, Object>());
 
         assertFalse(s == null || s == "");
 

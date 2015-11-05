@@ -44,7 +44,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
     @Override
     public SignInReply signIn(SignInRequest signInRequest) throws PapaHttpClientException {
-        HashMap<String, String> h = new HashMap<>();
+        HashMap<String, Object> h = new HashMap<>();
 
         h.put("utf8", "✓");
         h.put("user[login]", signInRequest.id);
@@ -112,7 +112,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     private Set<Integer> getSemesterCourse(CourseRequest request) throws
             PapaHttpClientException, org.json.JSONException
     {
-        HashMap<String, String> h = new HashMap<>();
+        HashMap<String, Object> h = new HashMap<>();
 
         h.put("token", request.token);
 
@@ -139,7 +139,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         {
             Set<Integer> semesterCourse = getSemesterCourse(request);
 
-            HashMap<String, String> h = new HashMap<>();
+            HashMap<String, Object> h = new HashMap<>();
 
             h.put("token", request.token);
 
@@ -179,7 +179,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         {
             Set<Integer> semesterCourse = getSemesterCourse(request);
 
-            HashMap<String, String> h = new HashMap<>();
+            HashMap<String, Object> h = new HashMap<>();
 
             h.put("token", request.token);
 
@@ -217,7 +217,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public LessonReply getLesson(LessonRequest request) throws PapaHttpClientException {
         try
         {
-            HashMap<String, String> h = new HashMap<>();
+            HashMap<String, Object> h = new HashMap<>();
 
             LessonReply ans = new LessonReply();
             JSONObject reply = dbAccess.getDataBaseReplyAsJson(
@@ -252,7 +252,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public UsrInfoReply getUsrInfo(UsrInfoRequest request) throws PapaHttpClientException {
         try
         {
-            HashMap<String, String> h = new HashMap<>();
+            HashMap<String, Object> h = new HashMap<>();
             h.put("token", request.token);
             JSONObject reply = dbAccess.getDataBaseReplyAsJson(
                     PapaAbstractHttpClient.HttpMethod.get, "/users/" + request.id + ".json", h
@@ -274,7 +274,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public StudentsReply getStudents(StudentsRequest request) throws PapaHttpClientException {
         try
         {
-            HashMap<String, String> h = new HashMap<>();
+            HashMap<String, Object> h = new HashMap<>();
 
             h.put("token", request.token);
 
@@ -311,7 +311,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public GetCommentsReply getComments(GetCommentsRequest request) throws PapaHttpClientException {
         try
         {
-            HashMap<String, String> h = new HashMap<>();
+            HashMap<String, Object> h = new HashMap<>();
             h.put("token", request.token);
 
             JSONObject reply_1;
@@ -359,7 +359,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
     @Override
     public void postTAComments(PostTACommentsRequest request) throws PapaHttpClientException {
-        HashMap<String, String> h = new HashMap<>();
+        HashMap<String, Object> h = new HashMap<>();
         h.put("token", request.token);
         h.put("student_comment[score]", request.score);
         h.put("student_comment[content]", request.comments);
@@ -380,7 +380,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             PapaHttpClientException {
         try
         {
-            HashMap<String, String> h = new HashMap<>();
+            HashMap<String, Object> h = new HashMap<>();
 
             h.put("token", request.token);
             JSONObject reply = dbAccess.getDataBaseReplyAsJson(
@@ -407,7 +407,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public GetMessagesIDReply getMessagesID(GetMessagesIDRequest request) throws PapaHttpClientException {
         try
         {
-            HashMap<String, String> h = new HashMap<>();
+            HashMap<String, Object> h = new HashMap<>();
 
             h.put("token", request.token);
             JSONObject reply = dbAccess.getDataBaseReplyAsJson(
@@ -439,7 +439,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public GetMessageByIDReply getMessageByID(GetMessageByIDRequest request) throws PapaHttpClientException {
         try
         {
-            HashMap<String, String> h = new HashMap<>();
+            HashMap<String, Object> h = new HashMap<>();
 
             h.put("token", request.token);
             JSONObject reply = dbAccess.getDataBaseReplyAsJson(
@@ -497,7 +497,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
     @Override
     public void postStudentComments(PostStudentCommentsRequest request) throws PapaHttpClientException {
-        HashMap<String, String> h = new HashMap<>();
+        HashMap<String, Object> h = new HashMap<>();
         h.put("token", request.token);
         h.put("lesson_comment[score]", request.score);
         h.put("lesson_comment[content]", request.comments);
