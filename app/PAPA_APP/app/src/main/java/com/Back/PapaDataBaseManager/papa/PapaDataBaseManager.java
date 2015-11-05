@@ -264,7 +264,7 @@ public abstract class PapaDataBaseManager {
     ////////////////////////////////////////////////////////////////////////////////////////
     // 获取助教对学生的评分
 
-    static public class PostCommentsRequest
+    static public class PostTACommentsRequest
     {
         public int lessonId;
         public int personId;
@@ -272,7 +272,7 @@ public abstract class PapaDataBaseManager {
         public String comments;
         public String token;
 
-        public PostCommentsRequest(int lessonId, int personId, String token, String score, String comments)
+        public PostTACommentsRequest(int lessonId, int personId, String token, String score, String comments)
         {
             this.lessonId = lessonId;
             this.personId = personId;
@@ -282,7 +282,7 @@ public abstract class PapaDataBaseManager {
         }
     }
 
-    public abstract void postComments(PostCommentsRequest request)
+    public abstract void postTAComments(PostTACommentsRequest request)
             throws PapaHttpClientException;
 
     //////////////////////////////////////////////////////////
@@ -344,4 +344,29 @@ public abstract class PapaDataBaseManager {
             throws PapaHttpClientException;
 
     // どこまで叫べば位置を知れる
+
+    //////////////////////////////////////////////////////////////////////////
+    // 根据推送 id 找详细信息
+
+    static public class PostStudentCommentsRequest
+    {
+        public int lessonId;
+        public int personId;
+        public String score;
+        public String comments;
+        public String token;
+
+        public PostStudentCommentsRequest(int lessonId, int personId, String token, String score, String comments)
+        {
+            this.lessonId = lessonId;
+            this.personId = personId;
+            this.token = token;
+            this.score = score;
+            this.comments = comments;
+        }
+    }
+
+    public abstract void postStudentComments(PostStudentCommentsRequest request)
+            throws PapaHttpClientException;
+
 }

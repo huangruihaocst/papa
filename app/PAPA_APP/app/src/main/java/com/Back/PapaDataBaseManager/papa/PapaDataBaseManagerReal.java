@@ -358,7 +358,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     }
 
     @Override
-    public void postComments(PostCommentsRequest request) throws PapaHttpClientException {
+    public void postTAComments(PostTACommentsRequest request) throws PapaHttpClientException {
         HashMap<String, String> h = new HashMap<>();
         h.put("token", request.token);
         h.put("student_comment[score]", request.score);
@@ -493,5 +493,20 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             Log.e(tag, "Wrong date time format");
             throw new PapaDataBaseJsonError();
         }
+    }
+
+    @Override
+    public void postStudentComments(PostStudentCommentsRequest request) throws PapaHttpClientException {
+        HashMap<String, String> h = new HashMap<>();
+        h.put("token", request.token);
+        h.put("lesson_comment[score]", request.score);
+        h.put("lesson_comment[content]", request.comments);
+
+        dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.post,
+                "/students/" + request.personId + "/lessons/" +
+                        request.lessonId + "/comments.json",
+                h
+        );
     }
 }

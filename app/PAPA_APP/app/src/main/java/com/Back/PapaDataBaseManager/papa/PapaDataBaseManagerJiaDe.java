@@ -1,7 +1,6 @@
 package com.Back.PapaDataBaseManager.papa;
 
 import com.Activities.papa.message.Message;
-import com.Activities.papa.message.MessageList;
 import com.Back.DataBaseAccess.papa.PapaDataBaseNotSuccessError;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.NetworkAccess.papa.PapaHttpClientIOErrorException;
@@ -142,7 +141,7 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     }
 
     @Override
-    public void postComments(PostCommentsRequest request) throws PapaHttpClientException {
+    public void postTAComments(PostTACommentsRequest request) throws PapaHttpClientException {
         Calendar c = Calendar.getInstance();//可以对每个时间域单独修改
         if(c.get(Calendar.SECOND) % 2 == 1)
             throw new PapaHttpClientIOErrorException();
@@ -186,5 +185,10 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
                         "Laobi"
                 )
         );
+    }
+
+    @Override
+    public void postStudentComments(PostStudentCommentsRequest request) throws PapaHttpClientException {
+
     }
 }
