@@ -78,6 +78,7 @@ public class ExperimentResultFragment extends Fragment {
             R.drawable.ic_notifications_black_24dp,
     };
     private ArrayList<Bitmap> bitmapArrayList;
+    private ImageAdapter imageAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -108,6 +109,7 @@ public class ExperimentResultFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        bitmapArrayList = new ArrayList<>();
     }
 
     @Override
@@ -119,9 +121,9 @@ public class ExperimentResultFragment extends Fragment {
 //        selectedImage = (ImageView)rootView.findViewById(R.id.selected_image);
 //        selectedVideo = (VideoView)rootView.findViewById(R.id.selected_video);
         gridView_image = (GridView)rootView.findViewById(R.id.gridView_image);
-        gridView_image.setAdapter(new ImageAdapter(getContext()));
+        imageAdapter = new ImageAdapter(getContext());
+        gridView_image.setAdapter(imageAdapter);
 
-        bitmapArrayList = new ArrayList<>();
         for(int i = 0;i < imageId.length;i ++){
             bitmapArrayList.add(BitmapFactory.decodeResource(getResources(), imageId[i]));
         }
@@ -216,6 +218,7 @@ public class ExperimentResultFragment extends Fragment {
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
                     bitmapArrayList.add(bitmap);
+                    imageAdapter.notifyDataSetChanged();
                     byte[] bytes = toByteArray(file);
                 }
             }
@@ -231,6 +234,7 @@ public class ExperimentResultFragment extends Fragment {
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                        selectedImage.setImageBitmap(bitmap);
                         bitmapArrayList.add(bitmap);
+                        imageAdapter.notifyDataSetChanged();
                         byte[] bytes = toByteArray(file);
                     }
                 }
@@ -254,6 +258,7 @@ public class ExperimentResultFragment extends Fragment {
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
                                 (path,MediaStore.Video.Thumbnails.MICRO_KIND);
                         bitmapArrayList.add(thumbnail);
+                        imageAdapter.notifyDataSetChanged();
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -338,7 +343,7 @@ public class ExperimentResultFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return imageId.length;
+            return bitmapArrayList.size();
         }
 
         @Override
@@ -356,9 +361,9 @@ public class ExperimentResultFragment extends Fragment {
             ImageView imageView;
             if(convertView == null){
                 imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams(115,115));
+                imageView.setLayoutParams(new GridView.LayoutParams(115, 115));
                 imageView.setScaleType(ImageView.ScaleType.CENTER);
-                imageView.setPadding(8,8,8,8);
+                imageView.setPadding(8, 8, 8, 8);
             }else{
                 imageView = (ImageView)convertView;
             }
