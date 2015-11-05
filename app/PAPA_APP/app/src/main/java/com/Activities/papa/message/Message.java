@@ -12,11 +12,15 @@ import java.util.Calendar;
  */
 public class Message implements Serializable {
     public enum Status {
+        Critical,
         Normal,
         Outdated,
         Ignored,
         Read
     }
+
+    // 2 days
+    static final long TimeCriticalMilliseconds = 2 * 86400 * 1000;
 
     String id, title, type, content, creatorName, courseName;
     Calendar deadline;
@@ -87,6 +91,8 @@ public class Message implements Serializable {
         long delta = getDeadline().getTimeInMillis() - System.currentTimeMillis();
         if (delta <= 0)
             return Status.Outdated;
+        else if (delta < TimeCriticalMilliseconds)
+            return Status.Critical;
         if (read)
             return Status.Read;
         return Status.Normal;

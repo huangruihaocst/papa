@@ -15,5 +15,10 @@
         android:title="@string/done"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_message_mark_all_as_read"
+        android:title="@string/mark_all_as_read"
+        android:orderInCategory="200"
+        app:showAsAction="never"/>
+
 
 </menu>

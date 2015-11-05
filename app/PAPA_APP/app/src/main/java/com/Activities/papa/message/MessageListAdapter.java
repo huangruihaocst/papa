@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 public class MessageListAdapter extends BaseAdapter {
     Context context;
@@ -38,6 +39,11 @@ public class MessageListAdapter extends BaseAdapter {
         resetData(messages);
     }
 
+    /**
+     * This function should be called every time the messages are updated.
+     *  Or users cannot be informed of the changes.
+     * @param messages new messages to set.
+     */
     public void resetData(MessageList messages) {
         this.messages = sortMessages(messages);
         this.validMessages = null;
@@ -78,6 +84,9 @@ public class MessageListAdapter extends BaseAdapter {
         return 0;
     }
 
+    /**
+     * Click a single message.
+     */
     class MessageClickListener implements View.OnClickListener {
         int position;
         public MessageClickListener(int position) {
@@ -150,20 +159,15 @@ public class MessageListAdapter extends BaseAdapter {
          *      Read: dark gray
          *      Normal: black
          */
-        if (message.getDeadline().compareTo(Calendar.getInstance()) > 0) {
-            long delta = message.getDeadline().getTimeInMillis() - System.currentTimeMillis();
-            if (delta > 0 && delta < context.getResources().getInteger(R.integer.min_deadline_warning_in_milliseconds)) {
-                title.setTextColor(ContextCompat.getColor(context, R.color.color_message_nearing_deadline));
-            }
-            else if (message.getRead()) {
-                title.setTextColor(ContextCompat.getColor(context, R.color.color_message_read));
-            }
-            else {
-                title.setTextColor(ContextCompat.getColor(context, R.color.color_message_normal));
-            }
-        } else {
-            title.setTextColor(ContextCompat.getColor(context, R.color.color_message_after_deadline));
-        }
+        HashMap<Message.Status, Integer> mapStatusColor = new HashMap<>();
+        mapStatusColor.put(Message.Status.Critical, ContextCompat.getColor(context, R.color.color_message_nearing_deadline));
+        mapStatusColor.put(Message.Status.Normal, ContextCompat.getColor(context, R.color.color_message_normal));
+        mapStatusColor.put(Message.Status.Read, ContextCompat.getColor(context, R.color.color_message_read));
+        mapStatusColor.put(Message.Status.Outdated, ContextCompat.getColor(context, R.color.color_message_after_deadline));
+        // just in case
+        mapStatusColor.put(Message.Status.Ignored, ContextCompat.getColor(context, R.color.color_message_after_deadline));
+
+        title.setTextColor(mapStatusColor.get(message.getStatus()));
 
         // content
         TextView content = (TextView)layout.findViewById(R.id.text_view_message_list_view_item_content);
@@ -176,6 +180,10 @@ public class MessageListAdapter extends BaseAdapter {
         this.service = s;
     }
 
+    /**
+     * Get all the messages that are not ignored.
+     * @return result.
+     */
     private MessageList getValidMessages() {
         if (validMessages == null) {
             validMessages = new MessageList();
@@ -188,14 +196,28 @@ public class MessageListAdapter extends BaseAdapter {
         return validMessages;
     }
 
+    /**
+     * Sort all the messages as the following order:
+     *      1. Normal
+     *      2. Read
+     *      3. Outdated
+     *      4. Ignore
+     *  and in each part the messages are sorted reverse by deadline.
+     * @param messages the messages to be sort.
+     * @return the sorted messages
+     */
     private static MessageList sortMessages(MessageList messages) {
         ArrayList<Message> ignored = new ArrayList<>(),
                 outdated = new ArrayList<>(),
                 read = new ArrayList<>(),
-                normal = new ArrayList<>();
+                normal = new ArrayList<>(),
+                critical = new ArrayList<>();
 
         for (Message message : messages) {
             switch (message.getStatus()) {
+                case Critical:
+                    critical.add(message);
+                    break;
                 case Normal:
                     normal.add(message);
                     break;
@@ -218,12 +240,14 @@ public class MessageListAdapter extends BaseAdapter {
                         rhs.getDeadline().getTimeInMillis());
             }
         };
+        Collections.sort(critical, comparator);
         Collections.sort(normal, comparator);
         Collections.sort(ignored, comparator);
         Collections.sort(read, comparator);
         Collections.sort(outdated, comparator);
 
         ArrayList<Message> newMessages = new ArrayList<>();
+        newMessages.addAll(critical);
         newMessages.addAll(normal);
         newMessages.addAll(read);
         newMessages.addAll(outdated);
@@ -231,4 +255,10 @@ public class MessageListAdapter extends BaseAdapter {
         return new MessageList(newMessages);
     }
 
+    void markAllAsRead() {
+        for (Message message : messages) {
+            message.readMessage();
+        }
+        resetData(messages);
+    }
 }

@@ -201,6 +201,9 @@ public class MessageActivity extends AppCompatActivity {
             fragment.quitEditMode(false);
             quitEditMode(menu);
         }
+        else if (id == R.id.action_message_mark_all_as_read) {
+            fragment.markAllAsRead();
+        }
         else {
             return super.onOptionsItemSelected(item);
         }

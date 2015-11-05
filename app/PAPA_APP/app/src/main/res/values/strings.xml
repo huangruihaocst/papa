@@ -59,6 +59,7 @@
     <string name="edit">编辑</string>
     <string name="delete">删除</string>
     <string name="done">完成</string>
+    <string name="mark_all_as_read">全部标记为已读</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

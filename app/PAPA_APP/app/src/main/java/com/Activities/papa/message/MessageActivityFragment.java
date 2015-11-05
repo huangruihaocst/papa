@@ -50,4 +50,7 @@ public class MessageActivityFragment extends Fragment {
     public void quitEditMode(boolean delete) {
         adapter.quitEditMode(delete);
     }
+    public void markAllAsRead() {
+        adapter.markAllAsRead();
+    }
 }
