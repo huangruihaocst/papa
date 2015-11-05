@@ -8,36 +8,33 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.Activities.papa.R;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 
 
 // 赤より紅い夢！！！！！
@@ -79,6 +76,17 @@ public class ExperimentResultFragment extends Fragment {
     GridView gridView_image;
     byte[] bytes;
 
+    private int[] imageId = {
+            R.drawable.ic_file_upload_black_24dp,
+            R.drawable.ic_history_black_24dp,
+            R.drawable.ic_info_black_24dp,
+            R.drawable.ic_notifications_black_24dp,
+    };
+    private ArrayList<Bitmap> bitmapArrayList;
+    private ArrayList<String> pathArrayList;
+    private ArrayList<Integer> isImageArrayList;//1 for image, 0 for video
+    private ImageAdapter imageAdapter;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -108,6 +116,9 @@ public class ExperimentResultFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        bitmapArrayList = new ArrayList<>();
+        pathArrayList = new ArrayList<>();
+        isImageArrayList = new ArrayList<>();
     }
 
     @Override
@@ -119,7 +130,29 @@ public class ExperimentResultFragment extends Fragment {
 //        selectedImage = (ImageView)rootView.findViewById(R.id.selected_image);
 //        selectedVideo = (VideoView)rootView.findViewById(R.id.selected_video);
         gridView_image = (GridView)rootView.findViewById(R.id.gridView_image);
-        gridView_image.setAdapter(new ImageAdapter(getContext()));
+        imageAdapter = new ImageAdapter(getContext());
+        gridView_image.setAdapter(imageAdapter);
+
+        for(int i = 0;i < imageId.length;i ++){
+            bitmapArrayList.add(BitmapFactory.decodeResource(getResources(), imageId[i]));
+            pathArrayList.add("");
+            isImageArrayList.add(1);
+        }
+
+        gridView_image.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                File file = new File(pathArrayList.get(position));
+                if(isImageArrayList.get(position) == 1){
+                    intent.setDataAndType(Uri.fromFile(file), "image/*");
+                }else{
+                    intent.setDataAndType(Uri.fromFile(file), "video/*");
+                }
+                startActivity(intent);
+            }
+        });
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +174,6 @@ public class ExperimentResultFragment extends Fragment {
 
                             fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to save the video
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
-
                             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
 
                             // start the Video Capture Intent
@@ -210,6 +242,10 @@ public class ExperimentResultFragment extends Fragment {
                 if(file.exists()){
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
+                    bitmapArrayList.add(bitmap);
+                    pathArrayList.add(path);
+                    isImageArrayList.add(1);
+                    imageAdapter.notifyDataSetChanged();
                     byte[] bytes = toByteArray(file);
                 }
             }
@@ -224,6 +260,10 @@ public class ExperimentResultFragment extends Fragment {
                     if(file.exists()){
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                        selectedImage.setImageBitmap(bitmap);
+                        bitmapArrayList.add(bitmap);
+                        pathArrayList.add(path);
+                        isImageArrayList.add(1);
+                        imageAdapter.notifyDataSetChanged();
                         byte[] bytes = toByteArray(file);
                     }
                 }
@@ -244,6 +284,12 @@ public class ExperimentResultFragment extends Fragment {
 //                        selectedVideo.setVideoPath(path);
 //                        selectedVideo.start();
                         byte[] bytes = toByteArray(file);
+                        Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
+                                (path,MediaStore.Video.Thumbnails.MINI_KIND);
+                        bitmapArrayList.add(thumbnail);
+                        pathArrayList.add(path);
+                        isImageArrayList.add(0);
+                        imageAdapter.notifyDataSetChanged();
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -328,7 +374,7 @@ public class ExperimentResultFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return ImageId.length;
+            return bitmapArrayList.size();
         }
 
         @Override
@@ -346,24 +392,18 @@ public class ExperimentResultFragment extends Fragment {
             ImageView imageView;
             if(convertView == null){
                 imageView = new ImageView(context);
+                imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setPadding(4, 4, 4, 4);
             }else{
                 imageView = (ImageView)convertView;
             }
-            imageView.setImageResource(ImageId[position]);
-            Toast.makeText(getContext(),ImageId[position],Toast.LENGTH_LONG).show();
+            imageView.setImageBitmap(bitmapArrayList.get(position));
             return imageView;
         }
 
         public ImageAdapter(Context context){
-            Toast.makeText(getContext(),"created",Toast.LENGTH_LONG).show();
             this.context = context;
         }
-
-        private int[] ImageId = {
-                R.drawable.ic_file_upload_black_24dp,
-                R.drawable.ic_history_black_24dp,
-                R.drawable.ic_info_black_24dp,
-                R.drawable.ic_notifications_black_24dp
-        };
     }
 }
