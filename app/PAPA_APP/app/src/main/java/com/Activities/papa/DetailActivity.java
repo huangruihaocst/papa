@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -19,7 +17,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.Activities.papa.R;
 import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
@@ -209,7 +206,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private void postComment(){
         new PostCommentTask(this).execute(
-                new PapaDataBaseManager.PostCommentsRequest(
+                new PapaDataBaseManager.PostTACommentsRequest(
                         bundleHelper.getExperimentId(),
                         bundleHelper.getStudentId(),
                         bundleHelper.getToken(),
@@ -228,7 +225,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     class PostCommentTask extends
-            AsyncTask<PapaDataBaseManager.PostCommentsRequest, Exception, Boolean> {
+            AsyncTask<PapaDataBaseManager.PostTACommentsRequest, Exception, Boolean> {
         ProgressDialog proDialog;
 
         public PostCommentTask(Context context) {
@@ -247,10 +244,10 @@ public class DetailActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground
-                (PapaDataBaseManager.PostCommentsRequest... params) {
+                (PapaDataBaseManager.PostTACommentsRequest... params) {
             // 在后台
             try {
-                papaDataBaseManager.postComments(params[0]);
+                papaDataBaseManager.postTAComments(params[0]);
                 return true;
             } catch (PapaHttpClientException e) {
                 publishProgress(e);

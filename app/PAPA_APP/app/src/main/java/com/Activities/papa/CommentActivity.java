@@ -1,6 +1,9 @@
 package com.Activities.papa;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,6 +18,10 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 public class CommentActivity extends AppCompatActivity {
 
@@ -87,13 +94,82 @@ public class CommentActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
-            float rating = ratingBar.getRating();
-            String comments = editText.getText().toString();
-            Toast.makeText(getApplicationContext(),rating + " " + comments,Toast.LENGTH_LONG).show();
+            // float rating = ratingBar.getRating();
+            // String comments = editText.getText().toString();
+            // Toast.makeText(getApplicationContext(),rating + " " + comments,Toast.LENGTH_LONG).show();
+            postComment();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void postComment(){
+        new PostCommentTask(this).execute(
+                new PapaDataBaseManager.PostStudentCommentsRequest(
+                        bundleHelper.getExperimentId(),
+                        bundleHelper.getStudentId(),
+                        bundleHelper.getToken(),
+                        Float.toString(ratingBar.getRating()),
+                        editText.getText().toString()
+                )
+        );
+    }
+
+    private void afterPostComment() {
+        Toast.makeText(getApplicationContext(), "发送了喵", Toast.LENGTH_LONG).show();
+    }
+
+    class PostCommentTask extends
+            AsyncTask<PapaDataBaseManager.PostStudentCommentsRequest, Exception, Boolean> {
+        ProgressDialog proDialog;
+
+        public PostCommentTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground
+                (PapaDataBaseManager.PostStudentCommentsRequest... params) {
+            // 在后台
+            try {
+                bundleHelper.getPapaDataBaseManager().postStudentComments(params[0]);
+                return true;
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+
+            if(e[0] instanceof PapaDataBaseResourceNotFound)
+                onBackPressed();
+
+            // if(e)
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt)
+                afterPostComment();
+        }
     }
 
 }
