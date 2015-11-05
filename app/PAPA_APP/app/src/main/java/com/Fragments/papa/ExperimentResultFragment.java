@@ -15,11 +15,15 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -33,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,8 +70,9 @@ public class ExperimentResultFragment extends Fragment {
     private Uri fileUri;
 
     // Reference to our image view we will use
-    private ImageView selectedImage;
-    private VideoView selectedVideo;
+//    private ImageView selectedImage;
+//    private VideoView selectedVideo;
+    GridView gridView_image;
     byte[] bytes;
 
     /**
@@ -106,8 +112,11 @@ public class ExperimentResultFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_experiment_result, container, false);
         FloatingActionButton floatingActionButton = (FloatingActionButton)rootView.findViewById(R.id.fab_upload_result);
-        selectedImage = (ImageView)rootView.findViewById(R.id.selected_image);
-        selectedVideo = (VideoView)rootView.findViewById(R.id.selected_video);
+//        selectedImage = (ImageView)rootView.findViewById(R.id.selected_image);
+//        selectedVideo = (VideoView)rootView.findViewById(R.id.selected_video);
+        gridView_image = (GridView)rootView.findViewById(R.id.gridView_image);
+        gridView_image.setAdapter(new ImageAdapter(getContext()));
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,7 +205,7 @@ public class ExperimentResultFragment extends Fragment {
                 File file = new File(path);
                 if(file.exists()){
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                    selectedImage.setImageBitmap(bitmap);
+//                    selectedImage.setImageBitmap(bitmap);
                     byte[] bytes = toByteArray(file);
                 }
             }
@@ -210,7 +219,7 @@ public class ExperimentResultFragment extends Fragment {
                     File file = new File(path);
                     if(file.exists()){
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                        selectedImage.setImageBitmap(bitmap);
+//                        selectedImage.setImageBitmap(bitmap);
                         byte[] bytes = toByteArray(file);
                     }
                 }
@@ -228,8 +237,8 @@ public class ExperimentResultFragment extends Fragment {
                 if (path != null) {
                     File file = new File(path);
                     if(file.exists()){
-                        selectedVideo.setVideoPath(path);
-                        selectedVideo.start();
+//                        selectedVideo.setVideoPath(path);
+//                        selectedVideo.start();
                         byte[] bytes = toByteArray(file);
                     }
                 }
@@ -307,5 +316,50 @@ public class ExperimentResultFragment extends Fragment {
             e.printStackTrace();
         }
         return bytes;
+    }
+
+    public class ImageAdapter extends BaseAdapter{
+
+        private Context context;
+
+        @Override
+        public int getCount() {
+            return ImageId.length;
+        }
+
+        @Override
+        public Object getItem(int arg0) {
+            return arg0;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ImageView imageView;
+            if(convertView == null){
+                imageView = new ImageView(context);
+            }else{
+                imageView = (ImageView)convertView;
+            }
+            imageView.setImageResource(ImageId[position]);
+            Toast.makeText(getContext(),ImageId[position],Toast.LENGTH_LONG).show();
+            return imageView;
+        }
+
+        public ImageAdapter(Context context){
+            Toast.makeText(getContext(),"created",Toast.LENGTH_LONG).show();
+            this.context = context;
+        }
+
+        private int[] ImageId = {
+                R.drawable.ic_file_upload_black_24dp,
+                R.drawable.ic_history_black_24dp,
+                R.drawable.ic_info_black_24dp,
+                R.drawable.ic_notifications_black_24dp
+        };
     }
 }

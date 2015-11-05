@@ -5,7 +5,8 @@
     android:background="#FAFAFA">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/experiment_result" />
 
     <android.support.design.widget.FloatingActionButton
@@ -16,16 +17,27 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_add_white_36dp" />
 
-    <ImageView
+    <GridView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/selected_image"
-        android:contentDescription="test"/>
+        android:id="@+id/gridView_image"
+        android:layout_gravity="center"
+        android:columnWidth="120dp"
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="10dp"
+        android:gravity="start"
+        android:stretchMode="columnWidth"/>
 
-    <VideoView
-        android:layout_width="230dp"
-        android:layout_height="161dp"
-        android:id="@+id/selected_video"
-        android:layout_gravity="center_horizontal|top" />
+    <!--<ImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/selected_image"-->
+        <!--android:contentDescription="test"/>-->
+
+    <!--<VideoView-->
+        <!--android:layout_width="230dp"-->
+        <!--android:layout_height="161dp"-->
+        <!--android:id="@+id/selected_video"-->
+        <!--android:layout_gravity="center_horizontal|top" />-->
 
 </FrameLayout>
