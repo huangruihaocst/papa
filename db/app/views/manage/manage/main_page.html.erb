@@ -228,7 +228,10 @@
 					<h4>deadline</h4>
 					<input id="input-message-3" type="text" class="form-control" placeholder="2000-01-01 20:00:00"></input>
 					<h4>消息类型</h4>
-					<input id="input-message-4" type="text" class="form-control"></input>
+					<div style="float:left">
+						<input type="radio" name="input-message-4" value="homework" checked="true">作业</input>
+						<input type="radio" name="input-message-4" value="notification">消息</input>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-primary" onclick="pushMessages()" data-dismiss="modal">修改</button>
@@ -467,18 +470,22 @@
 		
 		function pushMessages()   //推送消息
 		{
-			var text1,text2,text3,text4,text5,i,p;
+			var text1,text2,text3,text4,i,p,q;
 			p=new Object();
 			p.message=new Object();
 			text1=$("#input-message-1")[0].value;
 			text2=$("#input-message-2")[0].value;
 			text3=$("#input-message-3")[0].value;
-			text4=$("#input-message-4")[0].value;
+			q=$("input[name='input-message-4']");
+			for (i=0;i<q.length;++i)
+			if (q[i].checked)
+			{
+				text4=q[i].value;
+			}
 			p.message.title=text1;
 			p.message.content=text2;
 			p.message.deadline=text3;
 			p.message.type=text4;
-			console.log(p);
 			
 			$.ajax({url:'/courses/'+info.semesters[choosei].courses[choosej].id+'/messages.json',data:p,type:"POST",async:false,success:function(data)
     		{
@@ -719,7 +726,7 @@
 		{
 			choosei=i;choosej=j;choosek=-1;
 			$("#input-message-1")[0].value=$("#input-message-2")[0].value="";
-			$("#input-message-3")[0].value=$("#input-message-4")[0].value="";
+			$("#input-message-3")[0].value="";
 			$('#modal-message').modal('show');
 			event.stopPropagation();
 		}
