@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -250,6 +251,9 @@ public class ExperimentResultFragment extends Fragment {
 //                        selectedVideo.setVideoPath(path);
 //                        selectedVideo.start();
                         byte[] bytes = toByteArray(file);
+                        Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
+                                (path,MediaStore.Video.Thumbnails.MICRO_KIND);
+                        bitmapArrayList.add(thumbnail);
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
