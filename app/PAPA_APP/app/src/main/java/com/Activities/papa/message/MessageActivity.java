@@ -83,7 +83,7 @@ public class MessageActivity extends AppCompatActivity {
                     messagePullService.clearMessageCache();
                     flushMessages();
                 }
-                Snackbar.make(view, "Cache Cleared", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, getString(R.string.notification_clear_all), Snackbar.LENGTH_LONG).show();
             }
         });
     }

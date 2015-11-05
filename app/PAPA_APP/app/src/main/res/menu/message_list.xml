@@ -4,16 +4,16 @@
     tools:context="com.Activities.papa.message.MessageActivity">
 
     <item android:id="@+id/action_message_edit"
-        android:title="Edit"
+        android:title="@string/edit"
         android:orderInCategory="100"
         app:showAsAction="always" />
     <item android:id="@+id/action_message_delete"
-        android:title="Delete"
+        android:title="@string/delete"
         android:orderInCategory="100"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item android:id="@+id/action_message_done"
-        android:title="Done"
+        android:title="@string/done"
         android:orderInCategory="100"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
 </menu>

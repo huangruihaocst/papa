@@ -20,6 +20,6 @@
     <android.support.design.widget.FloatingActionButton android:id="@+id/fab_message_clear_all"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_gravity="bottom|end" android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_notification_clear_all" />
+        android:src="@drawable/ic_clear_white_36dp" />
 
 </android.support.design.widget.CoordinatorLayout>
