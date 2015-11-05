@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -69,13 +70,13 @@ public class ExperimentResultFragment extends Fragment {
     GridView gridView_image;
     byte[] bytes;
 
-    private int[] ImageId = {
+    private int[] imageId = {
             R.drawable.ic_file_upload_black_24dp,
             R.drawable.ic_history_black_24dp,
             R.drawable.ic_info_black_24dp,
             R.drawable.ic_notifications_black_24dp,
     };
-    private Bitmap[] imageBitmap;
+    private ArrayList<Bitmap> bitmapArrayList;
 
     /**
      * Use this factory method to create a new instance of
@@ -119,8 +120,11 @@ public class ExperimentResultFragment extends Fragment {
         gridView_image = (GridView)rootView.findViewById(R.id.gridView_image);
         gridView_image.setAdapter(new ImageAdapter(getContext()));
 
-        imageBitmap = new Bitmap[ImageId.length];
-        for(int i = 0;i < imageBitmap.length;i ++) imageBitmap[i] = BitmapFactory.decodeResource(getResources(),ImageId[i]);
+        bitmapArrayList = new ArrayList<>();
+        for(int i = 0;i < imageId.length;i ++){
+            bitmapArrayList.add(BitmapFactory.decodeResource(getResources(), imageId[i]));
+        }
+
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,6 +214,7 @@ public class ExperimentResultFragment extends Fragment {
                 if(file.exists()){
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
+                    bitmapArrayList.add(bitmap);
                     byte[] bytes = toByteArray(file);
                 }
             }
@@ -224,7 +229,7 @@ public class ExperimentResultFragment extends Fragment {
                     if(file.exists()){
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                        selectedImage.setImageBitmap(bitmap);
-
+                        bitmapArrayList.add(bitmap);
                         byte[] bytes = toByteArray(file);
                     }
                 }
@@ -329,7 +334,7 @@ public class ExperimentResultFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return ImageId.length;
+            return imageId.length;
         }
 
         @Override
@@ -353,7 +358,7 @@ public class ExperimentResultFragment extends Fragment {
             }else{
                 imageView = (ImageView)convertView;
             }
-            imageView.setImageBitmap(imageBitmap[position]);
+            imageView.setImageBitmap(bitmapArrayList.get(position));
             return imageView;
         }
 
