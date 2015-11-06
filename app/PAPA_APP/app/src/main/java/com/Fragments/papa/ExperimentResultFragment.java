@@ -249,8 +249,6 @@ public class ExperimentResultFragment extends Fragment {
             Log.i("PICTURE", "Path: " + path);
             if (path != null) {
                 File file = new File(path);
-
-                /*
                 if(file.exists()){
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
@@ -258,25 +256,24 @@ public class ExperimentResultFragment extends Fragment {
                     pathArrayList.add(path);
                     isImageArrayList.add(1);
                     imageAdapter.notifyDataSetChanged();
-                    byte[] bytes = toByteArray(file);
+                    // byte[] bytes = toByteArray(file);
+
+                    new UploadTask(getContext()).execute(
+                            new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                                    bundleHelper.getExperimentId(),
+                                    bundleHelper.getStudentId(),
+                                    bundleHelper.getToken(),
+                                    file,
+                                    file.getName(),
+                                    "image"
+                            )
+                    );
                 }
-                */
-                new UploadTask(getContext()).execute(
-                        new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
-                                bundleHelper.getExperimentId(),
-                                bundleHelper.getStudentId(),
-                                bundleHelper.getToken(),
-                                file,
-                                file.getName(),
-                                "image"
-                        )
-                );
             }
         }else if(requestCode == CAPTURE_IMAGE){
             if (resultCode == Activity.RESULT_OK) {
                 // Image captured and saved to fileUri specified in the Intent
-                Toast.makeText(getContext(), "Image saved to:\n" +
-                        fileUri.toString(), Toast.LENGTH_LONG).show();
+                Log.i("PICTURE", "Image saved to:\n" + fileUri.toString());
                 String path = fileUri.getPath();
                 if (path != null) {
                     File file = new File(path);
@@ -287,7 +284,18 @@ public class ExperimentResultFragment extends Fragment {
                         pathArrayList.add(path);
                         isImageArrayList.add(1);
                         imageAdapter.notifyDataSetChanged();
-                        byte[] bytes = toByteArray(file);
+                        // byte[] bytes = toByteArray(file);
+
+                        new UploadTask(getContext()).execute(
+                                new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                                        bundleHelper.getExperimentId(),
+                                        bundleHelper.getStudentId(),
+                                        bundleHelper.getToken(),
+                                        file,
+                                        file.getName(),
+                                        "image"
+                                )
+                        );
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -298,21 +306,31 @@ public class ExperimentResultFragment extends Fragment {
         }else if(requestCode == CAPTURE_VIDEO){
             if (resultCode == Activity.RESULT_OK) {
                 // Video captured and saved to fileUri specified in the Intent
-                Toast.makeText(getContext(), "Video saved to:\n" +
-                        data.getData(), Toast.LENGTH_LONG).show();
+                Log.i("PICTURE", "Video saved to:\n" + data.getData());
                 String path = fileUri.getPath();
                 if (path != null) {
                     File file = new File(path);
                     if(file.exists()){
 //                        selectedVideo.setVideoPath(path);
 //                        selectedVideo.start();
-                        byte[] bytes = toByteArray(file);
+                        // byte[] bytes = toByteArray(file);
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
                                 (path,MediaStore.Video.Thumbnails.MINI_KIND);
                         bitmapArrayList.add(thumbnail);
                         pathArrayList.add(path);
                         isImageArrayList.add(0);
                         imageAdapter.notifyDataSetChanged();
+
+                        new UploadTask(getContext()).execute(
+                                new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                                        bundleHelper.getExperimentId(),
+                                        bundleHelper.getStudentId(),
+                                        bundleHelper.getToken(),
+                                        file,
+                                        file.getName(),
+                                        "video"
+                                )
+                        );
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {

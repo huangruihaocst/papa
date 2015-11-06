@@ -129,7 +129,9 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
                 }
                 else if (val instanceof File)
                 {
-                    mpEntity.addPart(key, new FileBody((File)val, "file/*", "UTF-8"));
+
+
+                    mpEntity.addPart(key, new FileBody((File)val));
                 }
                 else
                     throw new PapaHttpClientUnknownParameters();
