@@ -11,6 +11,7 @@ package com.Back.PapaDataBaseManager.papa;
 import com.Activities.papa.message.Message;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -346,7 +347,7 @@ public abstract class PapaDataBaseManager {
     // どこまで叫べば位置を知れる
 
     //////////////////////////////////////////////////////////////////////////
-    // 根据推送 id 找详细信息
+    // 学生课程评价
 
     static public class PostStudentCommentsRequest
     {
@@ -368,5 +369,38 @@ public abstract class PapaDataBaseManager {
 
     public abstract void postStudentComments(PostStudentCommentsRequest request)
             throws PapaHttpClientException;
+
+    // 赤い　紅い　アカイ
+
+    //////////////////////////////////////////////////////////////////////////
+    // 学生课程评价
+
+    static public class PostFileOnLessonAsStudentRequest
+    {
+        public int lessonId;
+        public int personId;
+        public String token;
+
+        public String fileType;
+        public String fileName;
+        public File file;
+
+        public PostFileOnLessonAsStudentRequest(
+                int lessonId, int personId, String token, File file, String fileName, String fileType)
+        {
+            this.lessonId = lessonId;
+            this.personId = personId;
+            this.token = token;
+
+            this.fileType = fileType;
+            this.fileName = fileName;
+            this.file = file;
+        }
+    }
+
+    public abstract void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request)
+            throws PapaHttpClientException;
+
+
 
 }
