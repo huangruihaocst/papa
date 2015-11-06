@@ -10,7 +10,6 @@ class StudentsController < ApplicationController
     if params[:course_id]
       begin
         course = Course.find(params[:course_id])
-
         user = check_login
 
         raise TokenException.new(REASON_PERMISSION_DENIED) unless course.teachers.include?(user) || course.assistants.include?(user)
@@ -24,7 +23,8 @@ class StudentsController < ApplicationController
         json_failed(REASON_RESOURCE_NOT_FOUND)
       end
     elsif params[:lesson_id]
-      json_failed(REASON_NOT_IMPLEMENTED)
+      lesson = Lesson.find(params[:lesson_id])
+      @students = lesson.signed_in_students
     else
       json_failed(REASON_INVALID_OPERATION)
     end
@@ -48,7 +48,15 @@ class StudentsController < ApplicationController
         json_failed
       end
     elsif params[:lesson_id] && param[:id]
-      json_failed(REASON_NOT_IMPLEMENTED)
+      sa = StudentAttendence.create(
+          lesson_id: params[:lesson_id],
+          user_id: params[:id],
+          sign_in_method: params[:sign_in_method])
+      if sa && sa.valid?
+        json_successful
+      else
+        json_failed
+      end
     else
       json_failed
     end
