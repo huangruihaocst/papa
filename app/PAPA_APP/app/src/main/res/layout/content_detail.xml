@@ -20,15 +20,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/user_id"
-                android:id="@+id/textView4"
+                android:id="@+id/textView1"
                 android:theme="@style/DetailHead"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/textView4"
-                android:layout_toEndOf="@+id/textView4"
+                android:layout_toRightOf="@+id/textView1"
+                android:layout_toEndOf="@+id/textView1"
                 android:layout_marginLeft="27dp"
                 android:layout_marginStart="27dp"
                 android:theme="@style/DetailContent"
@@ -38,17 +38,17 @@
                 android:layout_height="wrap_content"
                 android:text="@string/user_class"
                 android:theme="@style/DetailHead"
-                android:layout_below="@+id/textView4"
+                android:layout_below="@+id/textView1"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="23dp"
-                android:id="@+id/textView5" />
+                android:id="@+id/textView2" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:theme="@style/DetailContent"
-                android:layout_alignTop="@+id/textView5"
+                android:layout_alignTop="@+id/textView2"
                 android:layout_alignLeft="@+id/user_id"
                 android:layout_alignStart="@+id/user_id"
                 android:id="@+id/user_class" />
@@ -57,11 +57,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/user_grade"
                 android:theme="@style/DetailHead"
-                android:layout_below="@+id/textView5"
+                android:layout_below="@+id/textView2"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="23dp"
-                android:id="@+id/textView7" />
+                android:id="@+id/textView3" />
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                 android:text=""
                 android:id="@+id/user_grade"
                 android:background="#FAFAFA"
-                android:layout_alignTop="@+id/textView7"
+                android:layout_alignTop="@+id/textView3"
                 android:layout_alignLeft="@+id/user_class"
                 android:layout_alignStart="@+id/user_class" />
             <TextView
@@ -81,11 +81,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/user_comment"
                 android:theme="@style/DetailHead"
-                android:layout_below="@+id/textView7"
+                android:layout_below="@+id/textView3"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="23dp"
-                android:id="@+id/textView9"/>
+                android:id="@+id/textView4"/>
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -95,10 +95,30 @@
                 android:text=""
                 android:id="@+id/user_comment"
                 android:background="#FAFAFA"
-                android:layout_alignTop="@+id/textView9"
+                android:layout_alignTop="@+id/textView4"
                 android:layout_alignLeft="@+id/user_class"
                 android:layout_alignStart="@+id/user_class"
                 android:scrollbars="vertical"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_evaluator"
+                android:theme="@style/DetailHead"
+                android:layout_below="@+id/textView4"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="23dp"
+                android:id="@+id/textView5" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/DetailContent"
+                android:textColor="@color/colorPrimary"
+                android:text=""
+                android:id="@+id/user_evaluator"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/user_class"
+                android:layout_toEndOf="@+id/user_class" />
         </RelativeLayout>
     </ScrollView>
 

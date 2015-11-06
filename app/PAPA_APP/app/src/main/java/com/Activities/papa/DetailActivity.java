@@ -32,6 +32,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView user_class;
     EditText user_grades;
     EditText user_comment;
+    TextView user_evaluator;
     boolean editable;
     FloatingActionButton fab;
 
@@ -65,6 +66,7 @@ public class DetailActivity extends AppCompatActivity {
         user_class = (TextView) findViewById(R.id.user_class);
         user_grades = (EditText) findViewById(R.id.user_grade);
         user_comment = (EditText) findViewById(R.id.user_comment);
+        user_evaluator = (TextView) findViewById(R.id.user_evaluator);
 
         fab = (FloatingActionButton) findViewById(R.id.fab_edit_detail);
         if (identity.equals("student")) {

@@ -38,6 +38,7 @@ public class GradesFragment extends Fragment {
     TextView user_class;
     TextView user_grades;
     TextView user_comment;
+    TextView user_evaluator;
 
     /**
      * Use this factory method to create a new instance of
@@ -78,6 +79,7 @@ public class GradesFragment extends Fragment {
         user_class = (TextView)rootView.findViewById(R.id.user_class);
         user_grades = (TextView)rootView.findViewById(R.id.user_grade);
         user_comment = (TextView)rootView.findViewById(R.id.user_comment);
+        user_evaluator = (TextView)rootView.findViewById(R.id.user_evaluator);
         return rootView;
     }
 
