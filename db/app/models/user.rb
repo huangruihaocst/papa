@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   has_many :assistant_to_student_comments, class_name: 'StudentComment', foreign_key: :creator_id
   has_many :from_assistant_comments, class_name: 'StudentComment', foreign_key: :student_id
   has_many :posted_message, class_name: 'Message', foreign_key: :creator_id
+  has_many :user_messages, foreign_key: :receiver_id
 
   validates :name, presence: true
   validates :email, presence: true
@@ -28,7 +29,8 @@ class User < ActiveRecord::Base
   # end
   before_save :default_values
   def default_values
-    self.avator_id ||= FileResource.find_by_name('default_avator.jpg').id
+    f = FileResource.find_by_name('default_avator.jpg')
+    self.avator_id ||= f.id if f
     self.student_number ||= Random.rand(MAX_PASSWORD_LENGTH_ALLOWED)
   end
 

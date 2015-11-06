@@ -25,7 +25,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.boolean  :is_teacher, default: false
       t.boolean  :is_admin,   default: false
       t.integer  :avator_id
-      t.string   :student_number, null: false
+      t.string   :student_number
       t.string   :class_name
       t.string   :department
       t.text     :description
@@ -36,7 +36,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
     add_index :users, :phone,                unique: true
     add_index :users, :email,                unique: true
     add_index :users, :reset_password_token, unique: true
-    add_index :users, :student_number,       unique: true
+    #add_index :users, :student_number,       unique: true
     # add_index :users, :confirmation_token,   unique: true
     # add_index :users, :unlock_token,         unique: true
   end

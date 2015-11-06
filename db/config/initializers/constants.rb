@@ -22,5 +22,10 @@ REASON_FORMAT_ERROR = 'format_error'
 REASON_INVALID_FIELD = 'invalid_field'
 INVALID_FIELDS_NAME = 'invalid_fields'
 REASON_FILE_TOO_BIG = 'file_too_big'
+REASON_TOO_OFTEN = 'too_often'
+
 
 ALLOWED_FILE_SUFFIXES = %w"jpg gif png mp4 mpg avi"
+
+MESSAGE_STATUS_UNREAD = 'unread'
+MESSAGE_STATUS_READ   = 'read'

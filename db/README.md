@@ -304,6 +304,17 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     DELETE /files/1.json             删除自己上传的文件                                                  Creator           
         resource_not_found: file_id不存在
         permission_denied: 当前用户不是文件创建者
+        
+    # 学生老师发消息
+    POST    /users/1/messages.json   当前用户给该用户发送消息
+        resource_not_found: user_id 不存在
+        too_often: 发送消息太频繁
+    GET     /messages.json           获取当前用户的所有消息
+        permission_denied: 未登录
+    POST    /messages/1/read.json
+        resource_not_found
+    GET     /messages/new_messages_count.json
+        permission_denied: 未登录
     
     # App更新
     GET    /android/current_version.json 得到当前最新版本号  {"version": "xx", "apk_path": "xx"}         Student

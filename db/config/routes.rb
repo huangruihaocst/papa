@@ -78,6 +78,11 @@ Rails.application.routes.draw do
 
   resources :messages, only: [:show]
 
+  get 'messages' => 'user_messages#index', as: :user_messages
+  get 'new_message_count' => 'user_messages#new_message_count', as: :new_message_count
+  post 'users/:user_id/messages' => 'user_messages#create', as: :create_user_message
+  post 'messages/:message_id/read' => 'user_messages#read', as: :read_message
+
   namespace :apps do
     get 'current_version' => 'android_apps#current_version'
     post 'current_version' => 'android_apps#create'
