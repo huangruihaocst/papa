@@ -94,6 +94,8 @@ public class ExperimentDetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.experiment_detail, menu);
+        MenuItem item = menu.getItem(0);
+        if(identity.equals("teacher_assistant"))item.setVisible(false);
         return true;
     }
 
@@ -108,7 +110,7 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         if (id == R.id.action_comment) {
             Intent intent = new Intent(ExperimentDetailActivity.this,CommentActivity.class);
             Bundle data = new Bundle();
-            String key_experiment_detail_comment = getString(R.string.key_experiment_detail_comment);
+            String key_experiment_detail_comment = getString(R.string.key_to_comment);
             data.putParcelable(key_experiment_detail_comment,bundleHelper);
             intent.putExtras(data);
             startActivity(intent);

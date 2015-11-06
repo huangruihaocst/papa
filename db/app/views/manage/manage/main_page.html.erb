@@ -54,7 +54,8 @@
 		.custom-div
 		{
 			float:left;
-			height:20px;
+			height:40px;
+			width:100%;
 		}
 		
 		.names
@@ -258,7 +259,7 @@
 					</form>
 					
 					<h4>已有文件</h4>
-					<div id="input-files-2"></div>
+					<div id="input-files-2" style="margin-left:20px"></div>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -512,7 +513,8 @@
 		{
 			var text=getFileName($("#file-file").val());
 			$("#file-name")[0].value=text;
-			$("#file-type")[0].value=text.substring(text.lastIndexOf(".")+1);
+		//	$("#file-type")[0].value=text.substring(text.lastIndexOf(".")+1);
+			$("#file-type")[0].value="file";
 			$("#up-load-file").ajaxSubmit(function(data)
 			{
 				if (data.status=="failed")
@@ -555,11 +557,14 @@
 				{
 					data=data.files;
 					var text="";
-					
 					for (i=0;i<data.length;++i)
 					{
-						text+='<div class="custom-div"><a target="_top" href="'+data[i].path+'">'+data[i].name+'</a>';
-						text+='<div class="custom-button custom-font-size" onclick="deleteFiles('+data[i].id+')">×</div></div>';
+						text+='<div class="custom-div"><a class="custom-font-size" style="float:left" target="_top" href="'+data[i].path+'">'+data[i].name+'</a>';
+						text+='<button class="btn btn-default btn-xs custom-font-size" style="float:left" onclick="deleteFiles('+data[i].id+')">删除</button></br></div>';
+					}
+					if (data.length==0)
+					{
+						text='<div style="float:left">无文件</div>';
 					}
 					$("#input-files-2")[0].innerHTML=text;
 				}
