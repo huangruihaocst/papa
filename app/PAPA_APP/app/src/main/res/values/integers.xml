@@ -3,4 +3,6 @@
     <integer name="key_message_pull_notification_id">1</integer>
     <integer name="key_message_nearing_deadline_notification_id">2</integer>
     <integer name="min_deadline_warning_in_milliseconds">172800</integer>
+    <integer name="max_displayed_content_length">10</integer>
+    <integer name="message_pull_service_polling_interval_milliseconds">6000</integer>
 </resources>

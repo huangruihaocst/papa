@@ -86,12 +86,12 @@ l31.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', 
 l31.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'haha2')
 l31.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'haha3')
 
-l11.lesson_comments.create(score: '123', content: 'haha', creator_id: u4.id)
-l11.lesson_comments.create(score: '123', content: 'hahaha', creator_id: u3.id)
+l11.lesson_comments.create(score: '10', content: '这个课程真好呀!', creator_id: u4.id)
+l11.lesson_comments.create(score: '1', content: '这个课程真无聊啊!', creator_id: u3.id)
 
-c1.messages.create(title: 'Midterm exam', content: '5201', deadline: Time.now, creator: teacher0, message_type: :notification)
-c1.messages.create(title: 'Final exam', content: '5202', deadline: Time.now + 3.days, creator: teacher0, message_type: :notification)
-c1.messages.create(title: 'Lesson canceled', content: '5203', deadline: Time.now + 3.days, creator: teacher0, message_type: :notification)
+c1.messages.create(title: 'Midterm exam', content: '五教-5201', deadline: Time.now, creator: teacher0, message_type: :notification)
+c1.messages.create(title: 'Final exam', content: '五教-5202', deadline: Time.now + 3.days, creator: teacher0, message_type: :notification)
+c1.messages.create(title: 'Lesson canceled', content: '五教-5203', deadline: Time.now + 3.days, creator: teacher0, message_type: :notification)
 c1.messages.create(title: 'Homework 1', content: '选作', deadline: Time.now, creator: teacher0, message_type: :homework)
 c1.messages.create(title: 'Homework 2', content: '必做', deadline: Time.now + 1.days, creator: teacher0, message_type: :homework)
 

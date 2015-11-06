@@ -11,12 +11,23 @@ import java.util.Calendar;
  * It is also serializable.
  */
 public class Message implements Serializable {
+    public enum Status {
+        Critical,
+        Normal,
+        Outdated,
+        Ignored,
+        Read
+    }
+
+    // 2 days
+    static final long TimeCriticalMilliseconds = 2 * 86400 * 1000;
+
     String id, title, type, content, creatorName, courseName;
     Calendar deadline;
-    boolean ignored = false;
-    boolean read = false;
-    boolean newMessage = true;
-    boolean notifyDeadline = true;
+    boolean ignored;
+    boolean read;
+    boolean newMessage;
+    boolean notifyDeadline;
 
     public final static Message InvalidMessage = new Message("-1", "InvalidMessage", "404", "404", Calendar.getInstance(), "Operating System", "Alex");
 
@@ -28,6 +39,10 @@ public class Message implements Serializable {
         this.deadline = deadline;
         this.courseName = courseName;
         this.creatorName = creatorName;
+        ignored = false;
+        read = false;
+        newMessage = true;
+        notifyDeadline = true;
     }
 
     // getters
@@ -43,6 +58,15 @@ public class Message implements Serializable {
     public String getContent() {
         return content;
     }
+    public String getTruncatedContent(int length) {
+        if (content.length() > length) {
+            return content.substring(0, length);
+        }
+        else {
+            return content;
+        }
+    }
+
     public Calendar getDeadline() {
         return deadline;
     }
@@ -63,6 +87,19 @@ public class Message implements Serializable {
     }
     public boolean needNotifyDeadline() {
         return notifyDeadline;
+    }
+
+    public Status getStatus() {
+        if (ignored)
+            return Status.Ignored;
+        long delta = getDeadline().getTimeInMillis() - System.currentTimeMillis();
+        if (delta <= 0)
+            return Status.Outdated;
+        else if (delta < TimeCriticalMilliseconds)
+            return Status.Critical;
+        if (read)
+            return Status.Read;
+        return Status.Normal;
     }
 
     // these functions will affect message contents.

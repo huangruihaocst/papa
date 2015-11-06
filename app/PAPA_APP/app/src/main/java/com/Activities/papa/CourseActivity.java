@@ -1,10 +1,13 @@
 package com.Activities.papa;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Activities.papa.message.MessageActivity;
+import com.Activities.papa.message.MessagePullService;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Fragments.papa.CourseFragment;
@@ -45,6 +49,15 @@ public class CourseActivity extends AppCompatActivity
 
     int id;
     String token;
+
+    /**
+     * Indicating whether the connection to MessagePullService is establish.
+     **/
+    boolean bound;
+    /**
+     * Service connection callbacks.
+     */
+    private ServiceConnection connection;
 
     LinearLayout linearLayout;
 
@@ -118,9 +131,54 @@ public class CourseActivity extends AppCompatActivity
         linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
 
         getHeaderView(navigationView);
-
     }
 
+
+    /**
+     * Bind the service.
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName className, IBinder service) {
+                bound = true;
+                MessagePullService.LocalBinder binder = (MessagePullService.LocalBinder) service;
+                final MessagePullService messagePullService = binder.getService();
+                messagePullService.setUserInfo(String.valueOf(id), token);
+
+                // start the polling procedure
+                new AsyncTask<Object, Exception, Object>() {
+                    @Override
+                    protected Object doInBackground(Object... params) {
+                        messagePullService.startListen();
+                        messagePullService.notifyMessagesNearingDeadline();
+                        return null;
+                    }
+                }.execute();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName arg0) {
+                bound = false;
+            }
+        };
+
+        bindService(new Intent(this, MessagePullService.class),
+                connection,
+                Context.BIND_AUTO_CREATE);
+    }
+
+    /**
+     * Unbind.
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (bound)
+            unbindService(connection);
+    }
 
     @Override
     public void onBackPressed() {

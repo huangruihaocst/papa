@@ -2,11 +2,14 @@ package com.Activities.papa.message;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class represents a list of Message object only intended for serialization.
  */
-public class MessageList implements Serializable {
+public class MessageList implements Serializable, Iterable<Message> {
     ArrayList<Message> messages = new ArrayList<>();
 
     public MessageList() {
@@ -20,6 +23,9 @@ public class MessageList implements Serializable {
     }
     public void add(int pos, Message msg) {
         messages.add(pos, msg);
+    }
+    public void addFront(Message msg) {
+        messages.add(0, msg);
     }
     public Message get(int position) {
         return messages.get(position);
@@ -44,7 +50,7 @@ public class MessageList implements Serializable {
         }
         return null;
     }
-    public ArrayList<String> filterByMessageId(ArrayList<String> ids) {
+    public ArrayList<String> filterByMessageId(List<String> ids) {
         ArrayList<String> newIds = new ArrayList<>();
         for (int i = 0; i < ids.size(); ++i) {
             if (findById(ids.get(i)) == null) {
@@ -54,4 +60,8 @@ public class MessageList implements Serializable {
         return newIds;
     }
 
+    @Override
+    public Iterator<Message> iterator() {
+        return messages.iterator();
+    }
 }

@@ -1,6 +1,5 @@
 package com.Activities.papa.message;
 
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -9,57 +8,62 @@ import android.os.*;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
 
 public class MessageActivity extends AppCompatActivity {
-    class SyncMessageTask extends AsyncTask<String, String, String> {
-        ProgressDialog progressDialog;
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(MessageActivity.this);
-            progressDialog.setMessage("Sync...");
-            progressDialog.setIndeterminate(false);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-        @Override
-        protected String doInBackground(String... aurl) {
-            Message message = handler.obtainMessage();
-            message.what = Flush;
-            handler.dispatchMessage(message);
-            return null;
-        }
-        @Override
-        protected void onPostExecute(String unused) {
-            super.onPostExecute(unused);
-            progressDialog.dismiss();
-        }
-    }
+    static final String TAG = "MessageActivity";
 
     boolean bound;
     MessagePullService messagePullService;
-    MessageActivityFragment fragment;
+
     Menu menu;
-    BundleHelper bundleHelper;
+    ListView messageListView;
+    MessageListAdapter adapter;
+    SwipeRefreshLayout layout;
+
+    String userId;
+    String token;
+
+    void setUserData(Intent intent) {
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) {
+            Log.w(TAG, "Null intent extra!");
+            return;
+        }
+
+        BundleHelper bundleHelper = bundle.getParcelable(getString(R.string.key_to_message));
+
+        if (bundleHelper != null) {
+            this.userId = String.valueOf(bundleHelper.getId());
+            this.token = bundleHelper.getToken();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setUserData(intent);
+        flushMessages();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-//        Intent intent = getIntent();
-//        String key_to_message = getString(R.string.key_to_message);
-//        Bundle data = intent.getExtras();
-//        bundleHelper = data.getParcelable(key_to_message);
+        // id and token
+        setUserData(getIntent());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_message_list);
         toolbar.setTitle(getString(R.string.message));
@@ -73,8 +77,28 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        fragment = (MessageActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_message_content);
+        /**
+         * SwipeRefreshLayout
+         * */
+        layout = (SwipeRefreshLayout) findViewById(R.id.layout_content_message_list);
+        layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                flushMessages();
+            }
+        });
+        layout.setColorSchemeColors(ContextCompat.getColor(MessageActivity.this, R.color.colorPrimary));
 
+        /**
+         * ListView
+         */
+        messageListView = (ListView) layout.findViewById(R.id.listViewMessageList);
+        adapter = new MessageListAdapter(MessageActivity.this, new MessageList());
+        messageListView.setAdapter(adapter);
+
+        /**
+         * Floating Action Button
+         */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_message_clear_all);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,8 +115,9 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, MessagePullService.class);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, MessagePullService.class),
+                connection,
+                Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -110,49 +135,98 @@ public class MessageActivity extends AppCompatActivity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             MessagePullService.LocalBinder binder = (MessagePullService.LocalBinder) service;
             messagePullService = binder.getService();
+            messagePullService.setUserInfo(userId, token);
             bound = true;
+            adapter.setMessageService(messagePullService);
 
-            fragment.setMessageService(messagePullService);
-
-            //new SyncMessageTask().execute();
             flushMessages();
-
-            messagePullService.startListen();
-            messagePullService.notifyMessagesNearingDeadline();
+            startListen();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            fragment.setMessageService(null);
             bound = false;
         }
     };
 
+    void flushMessages() {
+        new AsyncTask<Object, Exception, Object>() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                Message message = new Message();
+                message.what = Flush;
+                message.obj = messagePullService.syncMessages();
+                handler.sendMessage(message);
+                return null;
+            }
+        }.execute();
+    }
+
+    void startListen() {
+        new AsyncTask<Object, Exception, Object>() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                messagePullService.startListen();
+                messagePullService.notifyMessagesNearingDeadline();
+                return null;
+            }
+        }.execute();
+    }
+
     static final int Flush = 1;
-    Handler handler = new Handler() {
+    static final int Init = 2;
+    class MessageActivityHandler extends Handler {
         @Override
         public void handleMessage(android.os.Message msg) {
             if (msg.what == Flush) {
-               flushMessages();
+                MessageList messageList = (MessageList) msg.obj;
+                adapter.resetData(messageList);
+                layout.setRefreshing(false);
             }
         }
-    };
-
-    void flushMessages() {
-        fragment.updateMessages(messagePullService.syncMessages());
     }
+    Handler handler = new MessageActivityHandler();
 
     static final int MenuEditAction = 0;
     static final int MenuDeleteAction = 1;
     static final int MenuDoneAction = 2;
+    static final int MenuSelectUnselectAll = 3;
+    static final int MenuMarkAllAsRead = 4;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.message_list, menu);
+        quitEditMode(menu);
+        return true;
+    }
+
+    void enterEditMode(Menu menu) {
+        adapter.enterEditMode();
+        menu.getItem(MenuDeleteAction).setVisible(true);
+        menu.getItem(MenuDoneAction).setVisible(true);
+        menu.getItem(MenuEditAction).setVisible(false);
+        menu.getItem(MenuSelectUnselectAll).setVisible(true);
+        menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.select_all));
+    }
+    void quitEditMode(Menu menu) {
         menu.getItem(MenuDeleteAction).setVisible(false);
         menu.getItem(MenuDoneAction).setVisible(false);
-        return true;
+        menu.getItem(MenuEditAction).setVisible(true);
+        menu.getItem(MenuSelectUnselectAll).setVisible(false);
+        menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.reverse_select));
+    }
+    boolean selectAllMode = true;
+    void toggleSelectAll() {
+        if (selectAllMode) {
+            menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.reverse_select));
+            adapter.selectAll();
+        }
+        else {
+            menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.select_all));
+            adapter.reverseSelect();
+        }
+        selectAllMode = !selectAllMode;
     }
 
     @Override
@@ -161,30 +235,27 @@ public class MessageActivity extends AppCompatActivity {
 
         if(id == R.id.action_message_edit){
             // enter edit mode
-            fragment.enterEditMode();
-            menu.getItem(MenuDeleteAction).setVisible(true);
-            menu.getItem(MenuDoneAction).setVisible(true);
-            menu.getItem(MenuEditAction).setVisible(false);
-            return true;
+            enterEditMode(menu);
         }
         else if (id == R.id.action_message_delete) {
-            // quit edit mode
-            fragment.quitEditMode(true);
-            menu.getItem(MenuDeleteAction).setVisible(false);
-            menu.getItem(MenuDoneAction).setVisible(false);
-            menu.getItem(MenuEditAction).setVisible(true);
-            return true;
+            adapter.quitEditMode(true);
+            quitEditMode(menu);
         }
         else if (id == R.id.action_message_done) {
-            // quit edit mode
-            fragment.quitEditMode(false);
-            menu.getItem(MenuDeleteAction).setVisible(false);
-            menu.getItem(MenuDoneAction).setVisible(false);
-            menu.getItem(MenuEditAction).setVisible(true);
-            return true;
+            adapter.quitEditMode(false);
+            quitEditMode(menu);
+        }
+        else if (id == R.id.action_message_mark_all_as_read) {
+            adapter.markAllAsRead();
+        }
+        else if (id == R.id.action_message_select_unselect_all) {
+            toggleSelectAll();
+        }
+        else {
+            return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
 }

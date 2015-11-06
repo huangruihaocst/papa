@@ -6,10 +6,11 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.*;
-import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 
+import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
@@ -20,79 +21,37 @@ import java.io.IOError;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.List;
+import java.util.Timer;
 import java.util.TimerTask;
 
 public class MessagePullService extends Service {
+    Timer pullingTimer;
 
-    /** This thread will poll messages from the server
-     *      and call the service function onMessageReceived
-     *      if new Message received.
-     */
-    class PullingThread extends Thread {
-        public Handler mHandler;
-        public static final int Stop = 1;
-        public static final int Pull = 2;
-        public static final int Start = 3;
-
-        public static final int PullIntervalMilliseconds = 5000;
-
-        public void run() {
-            Looper.prepare();
-
-            final java.util.Timer timer = new java.util.Timer(true);
-            final TimerTask task = new TimerTask() {
-                public void run() {
-                    android.os.Message m = new Message();
-                    m.what = Pull;
-                    mHandler.dispatchMessage(m);
-                }
-            };
-
-            mHandler = new Handler(getMainLooper()) {
-                public void handleMessage(android.os.Message msg) {
-                    switch (msg.what) {
-                        case Start:
-                            timer.schedule(task, 0, PullIntervalMilliseconds);
-                            break;
-                        case Stop:
-                            timer.cancel();
-                            break;
-                        case Pull:
-                            MessageList list = readNewMessages(syncMessages());
-                            if (list.size() > 0) {
-                                onMessageReceived(list);
-                            }
-                            break;
-                    }
-                }
-            };
-
-            Message msg = new Message();
-            msg.what = Start;
-            mHandler.dispatchMessage(msg);
-
-            Looper.loop();
-        }
-
-    }
-
-    PullingThread pullingThread;
-
-    static int messageCount = 0;
+    String userId;
+    String token;
 
     PapaDataBaseManager papaDataBaseManager;
 
-    public MessagePullService()
-    {
+    public MessagePullService() {
         papaDataBaseManager = new PapaDataBaseManagerReal();
     }
 
-    // TODO get real messages
-    public MessageList syncMessages() {
-        // get local message list
+    private void saveMessages(MessageList messageList) {
+        try {
+            FileOutputStream fos = openFileOutput(getString(R.string.key_message_service_messages_file_name), MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+            oos.writeObject(messageList);
+
+            oos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private MessageList loadMessages() {
         MessageList messageList = new MessageList();
         try {
             File file = new File(getFilesDir().getPath() + "/" + getString(R.string.key_message_service_messages_file_name));
@@ -106,144 +65,108 @@ public class MessagePullService extends Service {
         } catch (IOException|ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return messageList;
+    }
+
+    /**
+     * the message list
+     */
+    public MessageList syncMessages() {
+
+        // do nothing if userId or token do not exist
+        if (userId == null || token == null)
+            return new MessageList();
+
+        // get local message list
+        MessageList messageList = loadMessages();
 
         // get remote message list
         // get all message ids
-        ArrayList<String> allIds = new ArrayList<>();
-        allIds.add(Integer.toString(messageCount));
+        List<String> messageIds;
 
-        /// TODO: get token and personID.
-        /// plug token and personID into the following code,
-        /// solve the (differential) code equation, and you will get the answer.
-        /*
-        allIds = papaDataBaseManager.getMessagesID(
-                new PapaDataBaseManager.GetMessagesIDRequest(personId, token)
-        ).msgIdLst;
-        */
+        try {
+            messageIds = papaDataBaseManager.getMessagesID(
+                    new PapaDataBaseManager.GetMessagesIDRequest(Integer.parseInt(userId), token)
+            ).msgIdLst;
+        } catch (PapaHttpClientException e) {
+            e.printStackTrace();
+            // cannot get any messages.
+            return new MessageList();
+        }
 
         // filter those we have
-        ArrayList<String> dontHave = messageList.filterByMessageId(allIds);
+        ArrayList<String> newMessageIds = messageList.filterByMessageId(messageIds);
 
-        // get those we do not have
-        // GET /messages/donthave.json
-        Calendar deadline = Calendar.getInstance();
-        deadline.add(Calendar.SECOND, 20);
-        com.Activities.papa.message.Message msg =
-                new com.Activities.papa.message.Message(
-                        String.valueOf(messageCount),
-                        String.valueOf(messageCount) + " days off!",
-                        "notification",
-                        "It's real!",
-                        deadline,
-                        "Operating System",
-                        "Alex"
-                        );
-        messageList.add(0, msg);
-
-        /// And also this code
-        /*
-        for (int i = 0; i < dontHave.size(); ++i)
-        {
-            messageList.add(dontHave.get(i),
-                    papaDataBaseManager.getMessageByID(
-                            new PapaDataBaseManager.GetMessageByIDRequest(dontHave.get(i), token)
-                    ).msg
-            );
-        }
-        */
-
-
-
-
-        messageCount++;
-
-        // save
-        try {
-            File file = new File(getFilesDir().getPath() + "/" + getString(R.string.key_message_service_messages_file_name));
-            FileOutputStream fos = new FileOutputStream(file, true);
-            FileChannel channel = fos.getChannel();
-            channel.lock();
-            channel.truncate(0);
-            channel.force(true);
-            fos.close();
-
-            fos = new FileOutputStream(file);
-
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-            oos.writeObject(messageList);
-
-            oos.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        // get the messages that we do not have
+        for (String id : newMessageIds) {
+            try {
+                Message message = papaDataBaseManager.getMessageByID(new PapaDataBaseManager.GetMessageByIDRequest(id, token)).msg;
+                messageList.addFront(message);
+            }
+            catch (PapaHttpClientException e) {
+                e.printStackTrace();
+                // ignore the messages we can not download
+            }
         }
 
+        // mark all new messages as new
+        MessageList list = filterNewMessages(messageList);
+        if (list.size() > 0) {
+            notifyMessageReceived(list);
+        }
+
+        // save to the file
+        saveMessages(messageList);
         // return
         return messageList;
     }
 
-    //
+    /**
+     * Synchronize the message list from outside the service.
+     * @param list: the message list to synchronize.
+     */
     public void syncFromApp(MessageList list) {
-        try {
-            File file = new File(getFilesDir().getPath() + "/" + getString(R.string.key_message_service_messages_file_name));
-            FileOutputStream fos = new FileOutputStream(file, true);
-            FileChannel channel = fos.getChannel();
-            channel.lock();
-            channel.truncate(0);
-            channel.force(true);
-            fos.close();
-
-            fos = new FileOutputStream(file);
-
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-            oos.writeObject(list);
-
-            oos.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        saveMessages(list);
     }
 
-    // filter old messages
-    public MessageList readNewMessages(MessageList list) {
-        MessageList newList = new MessageList();
-        for (int i = 0; i < list.size(); ++i) {
-            if (list.get(i).isNew()) {
-                list.get(i).setIsNew(false);
-                newList.add(list.get(i));
-            }
-        }
-        return newList;
+    /**
+     * @param id:   the ID of the current user(retrieved when logging in)
+     * @param token: the authentication token for the current user
+     */
+    public void setUserInfo(String id, String token) {
+        this.userId = id;
+        this.token = token;
     }
 
-    // DONE
+    /**
+     * The service starts a new thread and polls from the remote server.
+     * If any new message are received, we will inform the user by Notification.
+     */
     public void startListen() {
-        stopListen();
+        if (pullingTimer != null)
+            return;
+        else
+            pullingTimer = new Timer();
 
-        pullingThread = new PullingThread();
-        pullingThread.start();
-    }
-
-    // DONE
-    public void stopListen() {
-        if (pullingThread != null) {
-            android.os.Message message = new android.os.Message();
-            message.what = PullingThread.Stop;
-            pullingThread.mHandler.dispatchMessage(message);
-            while (pullingThread.isAlive()) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        pullingTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                syncMessages();
             }
-        }
+        }, 0, getResources().getInteger(R.integer.message_pull_service_polling_interval_milliseconds));
     }
 
-    // DONE
+    /**
+     * Stop the background polling thread.
+     */
+    public void stopListen() {
+        // NOTE: this method may cause an interrupted exception.
+        pullingTimer.cancel();
+    }
+
+    /**
+     * Clear local messages cache.
+     */
     public void clearMessageCache() {
         File file = new File(getFilesDir().getPath() + "/" + getString(R.string.key_message_service_messages_file_name));
         // just to make the IDE happy
@@ -253,6 +176,9 @@ public class MessagePullService extends Service {
         }
     }
 
+    /**
+     * Create a notification if any message are nearing deadline.
+     */
     public void notifyMessagesNearingDeadline() {
         MessageList messageList = syncMessages();
         MessageList near = new MessageList();
@@ -274,16 +200,19 @@ public class MessagePullService extends Service {
                     .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                     .setContentText(sb.toString())
                     .setContentIntent(PendingIntent.getActivity(
-                            this, 0, new Intent(this, MessageActivity.class), 0))
+                            this, 0, createIntentForStartMessageActivity(), PendingIntent.FLAG_UPDATE_CURRENT))
                     .build();
 
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(getResources().getInteger(R.integer.key_message_nearing_deadline_notification_id), notification);
+            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            nm.notify(getResources().getInteger(R.integer.key_message_pull_notification_id), notification);
         }
     }
 
-    // DONE
-    public void onMessageReceived(MessageList messages) {
+    /**
+     * Create a android Notification with messages.
+     * @param messages the new messages.
+     */
+    public void notifyMessageReceived(MessageList messages) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < messages.size(); ++i) {
             builder.append(messages.get(i).getTitle());
@@ -295,11 +224,33 @@ public class MessagePullService extends Service {
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentText(builder.toString())
                 .setContentIntent(PendingIntent.getActivity(
-                        this, 0, new Intent(this, MessageActivity.class), 0))
+                        this, 0, createIntentForStartMessageActivity(), PendingIntent.FLAG_UPDATE_CURRENT))
                 .build();
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(getResources().getInteger(R.integer.key_message_pull_notification_id), notification);
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(getResources().getInteger(R.integer.key_message_pull_notification_id), notification);
+    }
+
+    private Intent createIntentForStartMessageActivity() {
+        Intent intent = new Intent(this, MessageActivity.class);
+        BundleHelper bundleHelper = new BundleHelper();
+        bundleHelper.setId(Integer.parseInt(userId));
+        bundleHelper.setToken(token);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.key_to_message), bundleHelper);
+        intent.putExtras(bundle);
+        return intent;
+    }
+    // filter old messages
+    public static MessageList filterNewMessages(MessageList list) {
+        MessageList newList = new MessageList();
+        for (int i = 0; i < list.size(); ++i) {
+            if (list.get(i).isNew()) {
+                list.get(i).setIsNew(false);
+                newList.add(list.get(i));
+            }
+        }
+        return newList;
     }
 
     /**
@@ -312,7 +263,7 @@ public class MessagePullService extends Service {
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
     public class LocalBinder extends Binder {
-        MessagePullService getService() {
+        public MessagePullService getService() {
             // Return this instance of LocalService so clients can call public methods
             return MessagePullService.this;
         }
