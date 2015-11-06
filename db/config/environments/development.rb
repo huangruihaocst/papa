@@ -43,4 +43,7 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   config.consider_all_requests_local = false
+
+  config.to_prepare { Devise::SessionsController.force_ssl }
+  config.to_prepare { Devise::RegistrationsController.force_ssl }
 end
