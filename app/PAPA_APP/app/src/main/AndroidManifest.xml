@@ -9,8 +9,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-feature android:name="android.hardware.camera" />
 
     <application
         android:allowBackup="true"
@@ -69,9 +70,8 @@
         <activity
             android:name=".message.MessageActivity"
             android:label="@string/title_activity_message"
-            android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTop"
-            >
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
             android:name=".message.MessageDetailActivity"
@@ -82,8 +82,7 @@
         <service
             android:name=".message.MessagePullService"
             android:enabled="true"
-            android:exported="true"
-            >
+            android:exported="true" >
         </service>
 
         <activity
@@ -93,9 +92,9 @@
         </activity>
         <activity
             android:name=".ExperimentDetailActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_experiment_detail_temp"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
             android:name=".DetailActivity"
@@ -107,6 +106,17 @@
             android:label="@string/title_activity_comment_temp"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".attendence.AttendenceActivity"
+            android:label="@string/title_activity_attendence"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
+        <service
+            android:name=".attendence.LocationService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

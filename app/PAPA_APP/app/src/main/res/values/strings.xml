@@ -177,5 +177,6 @@
     <string name="title_activity_experiment_detail_temp">ExperimentDetailTempActivity</string>
     <string name="title_activity_detail_temp">DetailTempActivity</string>
     <string name="title_activity_comment_temp">CommentTempActivity</string>
+    <string name="title_activity_attendence">AttendenceActivity</string>
 
 </resources>
