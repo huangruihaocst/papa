@@ -191,4 +191,9 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public void postStudentComments(PostStudentCommentsRequest request) throws PapaHttpClientException {
 
     }
+
+    @Override
+    public void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request) throws PapaHttpClientException {
+
+    }
 }

@@ -2,6 +2,7 @@ package com.Fragments.papa;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,10 +11,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +28,10 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -49,13 +55,15 @@ import java.util.Date;
  * create an instance of this fragment.
  */
 public class ExperimentResultFragment extends Fragment {
+
+    private static final String TAG = "ExperimentResultFragment";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_BUNDLE_HELPER = "bundleHelper";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
@@ -68,6 +76,8 @@ public class ExperimentResultFragment extends Fragment {
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
 
+
+    private BundleHelper bundleHelper;
     private Uri fileUri;
 
     // Reference to our image view we will use
@@ -96,10 +106,10 @@ public class ExperimentResultFragment extends Fragment {
      * @return A new instance of fragment ExperimentResultFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ExperimentResultFragment newInstance(String param1, String param2) {
+    public static ExperimentResultFragment newInstance(BundleHelper bundleHelper, String param2) {
         ExperimentResultFragment fragment = new ExperimentResultFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putParcelable(ARG_BUNDLE_HELPER, bundleHelper);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -113,7 +123,7 @@ public class ExperimentResultFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            bundleHelper = getArguments().getParcelable(ARG_BUNDLE_HELPER);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         bitmapArrayList = new ArrayList<>();
@@ -145,9 +155,9 @@ public class ExperimentResultFragment extends Fragment {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 File file = new File(pathArrayList.get(position));
-                if(isImageArrayList.get(position) == 1){
+                if (isImageArrayList.get(position) == 1) {
                     intent.setDataAndType(Uri.fromFile(file), "image/*");
-                }else{
+                } else {
                     intent.setDataAndType(Uri.fromFile(file), "video/*");
                 }
                 startActivity(intent);
@@ -239,6 +249,8 @@ public class ExperimentResultFragment extends Fragment {
             Log.i("PICTURE", "Path: " + path);
             if (path != null) {
                 File file = new File(path);
+
+                /*
                 if(file.exists()){
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
@@ -248,6 +260,17 @@ public class ExperimentResultFragment extends Fragment {
                     imageAdapter.notifyDataSetChanged();
                     byte[] bytes = toByteArray(file);
                 }
+                */
+                new UploadTask(getContext()).execute(
+                        new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                                bundleHelper.getExperimentId(),
+                                bundleHelper.getStudentId(),
+                                bundleHelper.getToken(),
+                                file,
+                                file.getName(),
+                                "image"
+                        )
+                );
             }
         }else if(requestCode == CAPTURE_IMAGE){
             if (resultCode == Activity.RESULT_OK) {
@@ -297,6 +320,56 @@ public class ExperimentResultFragment extends Fragment {
             } else {
                 // Video capture failed, advise user
             }
+        }
+    }
+
+    class UploadTask extends AsyncTask
+            <PapaDataBaseManager.PostFileOnLessonAsStudentRequest,
+                    Exception, Boolean>
+    {
+        ProgressDialog proDialog;
+
+        public UploadTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.show();
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute(){
+            // UI
+        }
+
+        @Override
+        protected Boolean doInBackground
+                (PapaDataBaseManager.PostFileOnLessonAsStudentRequest... params)
+        {
+            // 在后台
+            try {
+                bundleHelper.getPapaDataBaseManager().postFileOnLessonAsStudent(params[0]);
+                return true;
+            } catch(PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Log.e(TAG, e[0].getMessage());
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if(rlt != false)
+                Toast.makeText(getContext(), "上传好了喵", Toast.LENGTH_SHORT).show();
         }
     }
 

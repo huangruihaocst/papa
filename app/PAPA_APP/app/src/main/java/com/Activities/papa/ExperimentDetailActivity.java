@@ -136,9 +136,6 @@ public class ExperimentDetailActivity extends AppCompatActivity {
             Fragment fragment = new Fragment();
             switch (position){
                 case 0:
-                    // newInstance("1","2") 是搞毛阿!!!
-                    // 你这也搞得太简陋了吧
-
                     fragment = ExperimentInformationFragment.newInstance(bundleHelper);
                     break;
                 case 1:
@@ -149,7 +146,7 @@ public class ExperimentDetailActivity extends AppCompatActivity {
                     }
                     break;
                 case 2:
-                    fragment = ExperimentResultFragment.newInstance("1", "2");
+                    fragment = ExperimentResultFragment.newInstance(bundleHelper, "2");
                     break;
             }
             return fragment;

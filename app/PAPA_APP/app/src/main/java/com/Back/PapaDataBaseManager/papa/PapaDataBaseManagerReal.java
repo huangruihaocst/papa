@@ -509,4 +509,20 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 h
         );
     }
+
+    @Override
+    public void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request) throws PapaHttpClientException {
+        HashMap<String, Object> h = new HashMap<>();
+        h.put("token", request.token);
+        h.put("file[type]", request.fileType);
+        h.put("file[name]", request.fileName);
+        h.put("file[file]", request.file);
+
+        dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.post,
+                "/students/" + request.personId + "/lessons/" +
+                        request.lessonId + "/files.json",
+                h
+        );
+    }
 }
