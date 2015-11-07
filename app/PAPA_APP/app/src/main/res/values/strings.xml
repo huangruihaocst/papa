@@ -178,6 +178,11 @@
     <string name="title_activity_experiment_detail_temp">ExperimentDetailTempActivity</string>
     <string name="title_activity_detail_temp">DetailTempActivity</string>
     <string name="title_activity_comment_temp">CommentTempActivity</string>
+
     <string name="title_activity_attendence">AttendenceActivity</string>
+    <string name="key_attendence_activity_command">key_attendence_activity_command</string>
+    <string name="key_attendence_activity_start_sign_in">key_attendence_activity_start_sign_in</string>
+    <string name="title_attendence_activity_sign_in_successful">%1$s, You have successfully signed in %2$s</string>
+    <string name="key_settings_file_name">settings.dat</string>
 
 </resources>

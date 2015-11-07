@@ -115,7 +115,7 @@ public class MessagePullService extends Service {
             notifyMessageReceived(list);
         }
 
-        // save to the file
+        // commit to the file
         saveMessages(messageList);
         // return
         return messageList;

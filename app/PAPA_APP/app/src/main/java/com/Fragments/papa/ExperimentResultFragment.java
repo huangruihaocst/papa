@@ -174,7 +174,7 @@ public class ExperimentResultFragment extends Fragment {
                         if(which == 0){//camera
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
+                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to commit the image
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
 
                             // start the image capture Intent
@@ -182,7 +182,7 @@ public class ExperimentResultFragment extends Fragment {
                         }else if(which == 1){//video
                             Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
-                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to save the video
+                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to commit the video
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
                             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
 
