@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.DhcpInfo;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -32,8 +34,10 @@ public class NetworkStateChangeBroadcastReceiver extends BroadcastReceiver {
         getGatewayInfo();
     }
 
-    private void getGatewayInfo() {
+    private void getGatewayInfo(Context context) {
         try {
+            WifiManager wifii= (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            DhcpInfo d = wifii.getDhcpInfo();
             List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
             for (NetworkInterface networkInterface : interfaces) {
                 byte[] mac = networkInterface.getHardwareAddress();

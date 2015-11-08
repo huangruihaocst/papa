@@ -26,4 +26,5 @@ class UserMessagesControllerTest < ActionController::TestCase
     assert_json_success
     assert_not_nil json['id']
   end
+
 end

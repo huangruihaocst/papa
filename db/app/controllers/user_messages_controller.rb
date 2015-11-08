@@ -4,6 +4,7 @@ class UserMessagesController < ApplicationController
   def index
     user = check_login
     @user_messages = user.user_messages
+                         .where(receiver_deleted: false)
   end
 
   # POST /users/1/messages.json
@@ -31,11 +32,33 @@ class UserMessagesController < ApplicationController
   # GET /messages/new_messages_count
   def new_messages_count
     user = check_login
-    @user_messages = user.user_messages.where(status: MESSAGE_STATUS_UNREAD)
+    @user_messages = user.user_messages
+                         .where(status: MESSAGE_STATUS_UNREAD)
+                         .where(receiver_deleted: false)
+  end
+
+  # DELETE /messages/1.json
+  def destroy
+    user = check_login
+    message = UserMessage.find(params[:id])
+    if message.sender == user
+      message.sender_deleted = true
+    elsif message.receiver == user
+      message.receiver_deleted = true
+    else
+      json_failed(REASON_PERMISSION_DENIED)
+      return
+    end
+    if message.save
+      json_successful
+    else
+      json_failed
+    end
   end
 
   protected
   def check_send_freq(sender, receiver)
+    # TODO
     true
   end
 

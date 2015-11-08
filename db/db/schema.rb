@@ -146,8 +146,10 @@ ActiveRecord::Schema.define(version: 20151106135008) do
     t.string   "title"
     t.text     "content"
     t.string   "status"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.boolean  "sender_deleted",   default: false, null: false
+    t.boolean  "receiver_deleted", default: false, null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
   create_table "users", force: :cascade do |t|

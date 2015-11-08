@@ -315,6 +315,9 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         resource_not_found
     GET     /messages/new_messages_count.json
         permission_denied: 未登录
+    DELETE  /messages/1.json        
+        not_implemented
+    
     
     # App更新
     GET    /android/current_version.json 得到当前最新版本号  {"version": "xx", "apk_path": "xx"}         Student
