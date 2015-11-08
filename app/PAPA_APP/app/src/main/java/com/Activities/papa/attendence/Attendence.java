@@ -1,0 +1,91 @@
+package com.Activities.papa.attendence;
+
+import android.content.Context;
+import android.location.Location;
+import android.util.Log;
+
+import com.Activities.papa.settings.Settings;
+
+import java.util.Calendar;
+
+public class Attendence {
+    static final String TAG = "Attendence";
+    static final int InterLessonPeriod = 1073741824;
+
+    private static Attendence theInstance;
+    public static Attendence getInstance() {
+        if (theInstance == null)
+            theInstance = new Attendence();
+        return theInstance;
+    }
+
+    /**
+     * Try to sign in.
+     * If we can sign in, notify the user and
+     *  send sign in request and set a flag so that we won't sign in too many times.
+     */
+    public synchronized void trySignIn(OnSignInSuccessListener listener, Context context) {
+        Settings settings = Settings.getInstance(context);
+        if (canSignIn(settings)) {
+            // send sign in request
+            Log.w(TAG, "can sign in");
+
+            // sign in and set signed in flags
+            signIn(listener, settings, context);
+        }
+        else if (haveSignedIn(settings)) {
+            // already signed in
+            // do nothing
+            Log.w(TAG, "already signed in");
+        }
+        else {
+            // missed a lesson
+            Log.w(TAG, "missed a lesson");
+            setNextLessonTime(settings, context);
+        }
+    }
+
+    // TODO: should use lesson time
+    private void setNextLessonTime(Settings s, Context context) {
+        Calendar c = (Calendar) s.getNextSignInStartTime().clone();
+        c.add(Calendar.MILLISECOND, InterLessonPeriod);
+        s.setNextSignInStartTime(c);
+
+        c = (Calendar) s.getNextSignInEndTime().clone();
+        c.add(Calendar.MILLISECOND, InterLessonPeriod);
+        s.setNextSignInEndTime(c);
+
+        s.commit(context);
+    }
+
+    /**
+     * Determines whether we can sign in now, by the lesson time in settings.
+     * @param settings, the settings that save the lesson time.
+     * @return result
+     */
+    private boolean canSignIn(Settings settings) {
+        long current = System.currentTimeMillis();
+        return settings.getNextSignInStartTime().getTimeInMillis() < current &&
+                current < settings.getNextSignInEndTime().getTimeInMillis();
+    }
+
+    /**
+     * Determines whether we have sign in.
+     * @param settings, the settings that save the lesson time.
+     * @return result
+     */
+    private boolean haveSignedIn(Settings settings) {
+        return System.currentTimeMillis() < settings.getNextSignInStartTime().getTimeInMillis();
+    }
+
+    /**
+     * Send real sign in request
+     */
+    private void signIn(OnSignInSuccessListener listener, Settings settings, Context context) {
+        // TODO 2 access the network
+
+        // these should move into network success callback
+        listener.onSignInSuccess();
+        setNextLessonTime(settings, context);
+    }
+}

@@ -12,9 +12,9 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <!-- Use for GPS/Wifi sign in -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -24,7 +24,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="45aeb7238a6690008094ae7e5bbf62bc" />
@@ -120,18 +119,33 @@
             android:name=".attendence.AttendenceActivity"
             android:label="@string/title_activity_attendence"
             android:theme="@style/AppTheme.NoActionBar" >
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+
+
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
 
         <service
             android:name=".attendence.LocationService"
-            android:enabled="true"
-            >
+            android:enabled="true" >
         </service>
+        <service
+            android:name=".attendence.WifiMonitoringService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <receiver
+            android:name=".attendence.NetworkStateChangeBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

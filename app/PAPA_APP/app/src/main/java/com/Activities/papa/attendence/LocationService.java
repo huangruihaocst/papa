@@ -45,13 +45,13 @@ public class LocationService extends Service {
             // TODO: shouldn't clear cache every time
             Settings.clearCache(this);
             settings = Settings.getInstance(this);
-            startReportingPosition();
+            startTrackingPosition();
         }
 
         return START_NOT_STICKY;
     }
 
-    public boolean startReportingPosition() {
+    public boolean startTrackingPosition() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
@@ -59,7 +59,7 @@ public class LocationService extends Service {
         }
         return false;
     }
-    void stopReportingPosition() {
+    void stopTrackingPosition() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationManager.removeUpdates(locationListener);
     }
@@ -69,7 +69,7 @@ public class LocationService extends Service {
         public void onLocationChanged(Location location) {
             Log.w(TAG, "location changed");
 
-            // TODO
+            // TODO 1
             // get center location and min distance from server
 
             // calculate location from center
@@ -79,7 +79,13 @@ public class LocationService extends Service {
             if (dis <= MinDistance) {
                 // sign in
                 Log.w(TAG, "In classroom, distance: " + String.valueOf(dis));
-                trySignIn();
+                Attendence.getInstance().trySignIn(new OnSignInSuccessListener() {
+                    @Override
+                    public void onSignInSuccess() {
+                        stopTrackingPosition();
+                        notifySignInSuccessful("Operating System", Calendar.getInstance(), "Alex", "GPS");
+                    }
+                }, LocationService.this);
             }
             else {
                 Log.w(TAG, "Out of classroom distance: " + String.valueOf(dis));
@@ -99,78 +105,6 @@ public class LocationService extends Service {
         }
     };
 
-    // TODO: should use lesson time
-    void setNextLessonTime(Settings s) {
-        Calendar c = (Calendar) s.getNextSignInStartTime().clone();
-        c.add(Calendar.MILLISECOND, InterLessonPeriod);
-        s.setNextSignInStartTime(c);
-
-        c = (Calendar) s.getNextSignInEndTime().clone();
-        c.add(Calendar.MILLISECOND, InterLessonPeriod);
-        s.setNextSignInEndTime(c);
-
-        s.commit(this);
-    }
-
-    /**
-     * Determines whether we can sign in now, by the lesson time in settings.
-     * @param settings, the settings that save the lesson time.
-     * @return result
-     */
-    boolean canSignIn(Settings settings) {
-        long current = System.currentTimeMillis();
-        return settings.getNextSignInStartTime().getTimeInMillis() < current &&
-                current < settings.getNextSignInEndTime().getTimeInMillis();
-    }
-
-    /**
-     * Determines whether we have sign in.
-     * @param settings, the settings that save the lesson time.
-     * @return result
-     */
-    boolean haveSignedIn(Settings settings) {
-        return System.currentTimeMillis() < settings.getNextSignInStartTime().getTimeInMillis();
-    }
-
-    /**
-     * Try to sign in.
-     * If we can sign in, notify the user and
-     *  send sign in request and set a flag so that we won't sign in too many times.
-     */
-    void trySignIn() {
-        if (canSignIn(settings)) {
-            // send sign in request
-            Log.w(TAG, "can sign in");
-
-            // if success
-            if (signIn()) {
-                setNextLessonTime(settings);
-            }
-        }
-        else if (haveSignedIn(settings)) {
-            // already signed in
-            // do nothing
-            Log.w(TAG, "already signed in");
-        }
-        else {
-            // missed a lesson
-            Log.w(TAG, "missed a lesson");
-            setNextLessonTime(settings);
-        }
-    }
-
-    /**
-     * Send real sign in request
-     * @return whether we successfully sign in.
-     */
-    boolean signIn() {
-        // access the network
-
-        stopReportingPosition();
-        notifySignInSuccessful("Operating System", Calendar.getInstance(), "Alex", "GPS");
-        return true;
-    }
-
     /**
      * Notify the user that he has successfully signed in.
      * @param lesson the lesson he has signed in
@@ -183,7 +117,7 @@ public class LocationService extends Service {
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle(String.format(getString(R.string.title_attendence_activity_sign_in_successful), name, lesson))
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                .setContentText("Time: " + time.toString() + " method: " + method)
+                .setContentText("Time: " + time.getTime().toString() + " method: " + method)
                 .build();
 
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

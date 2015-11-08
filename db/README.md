@@ -422,6 +422,13 @@ Http Parameters/JSON对象格式
             type=string
             name=string
             path=string(not required)
+    
+    user_message id=int
+            title=string
+            content=string
+            sender_id=int
+            receiver_id=int
+            status=string [read|unread]
             
 ###reason的可能值和含义
 REASON_PERMISSION_DENIED = 'permission_denied'
