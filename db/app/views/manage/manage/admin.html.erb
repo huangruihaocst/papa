@@ -96,16 +96,13 @@
     			if (data.status=="failed")
     			{
     				alert("添加失败");
-    				return;
     			}
     			if (data.status=="successful")
     			{
     				p.semester.id=data.id;
     				info.semesters[info.tot++]=p.semester;
     				showInfo();
-    				return;
     			}
-    			alert("unexpected: /semesters.json");
     		}
     		);
 		}
@@ -123,15 +120,12 @@
     			if (data.status=="failed")
     			{
     				alert("修改失败");
-    				return;
     			}
     			if (data.status=="successful")
     			{
     				info.semesters[choosei]=p.semester;
     				showInfo();
-    				return;
     			}
-    			alert("unexpected: modifyCourse");
     		}});
     	}
 		
@@ -143,7 +137,7 @@
 			{
 				if (data.status=="failed")
     			{
-    				alert("删除失败");return;
+    				alert("删除失败");
     			}
     			if (data.status=="successful")
     			{
@@ -153,13 +147,11 @@
   					}
   					--info.tot;
     				showInfo();
-    				return;
     			}
-    			alert("unexpected: deleteItem");
     		}});
 		}
 		
-		function loadInfo()  //从后台获取课程信息
+		function loadInfo()  //从后台获取学期信息
 		{
 			info=new Object();
 			info.tot=0;
@@ -171,7 +163,6 @@
 				if (data1.status=="failed"||data2.status=="failed")
 				{
 					alert("获取信息失败");
-					return;
 				}
 				if (data1.status=="successful"&&data2.status=="successful")
 				{
@@ -183,9 +174,7 @@
 					}
 					usersId=data2.id;
 					showInfo();
-					return;
 				}
-				alert("unexpected error");
 			}
 				
 			$.ajax({url:"/semesters.json",data:{},type:"GET",success:function(data)
@@ -224,7 +213,7 @@
 			event.stopPropagation();
 		}
 		
-		function showInfo()  //显示信息
+		function showInfo()  //显示学期信息
 		{
 			var i,text="";
 			text+='<div class="btn btn-info custom-button" onclick="addSemester(event)">添加学期</div>';

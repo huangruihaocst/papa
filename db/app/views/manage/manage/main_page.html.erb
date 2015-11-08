@@ -309,8 +309,7 @@
     		{
     			if (data.status=="failed")
     			{
-    				alert("添加失败");
-    				return;
+    				alert("添加课程失败");
     			}
     			if (data.status=="successful")
     			{
@@ -321,9 +320,7 @@
     				info.semesters[choosei].courses[i].clicked=false;
     				info.semesters[choosei].courses[i].lessons=new Array();
     				showInfo();
-    				return;
     			}
-    			alert("unexpected: confirmCourse");
     		}
     		);
     	}
@@ -341,16 +338,13 @@
     		{
     			if (data.status=="failed")
     			{
-    				alert("修改失败");
-    				return;
+    				alert("修改课程信息失败");
     			}
     			if (data.status=="successful")
     			{
     				info.semesters[choosei].courses[choosej]=p.course;
     				showInfo();
-    				return;
     			}
-    			alert("unexpected: modifyCourse");
     		}});
     	}
 		
@@ -375,8 +369,7 @@
     		{
     			if (data.status=="failed")
     			{
-    				alert("添加失败");
-    				return;
+    				alert("添加实验失败");
     			}
     			if (data.status=="successful")
     			{
@@ -385,9 +378,7 @@
     				info.semesters[choosei].courses[choosej].lessons[i]=p.lesson;
     				info.semesters[choosei].courses[choosej].lessons[i].clicked=false;
     				showInfo();
-    				return;
     			}
-    			alert("unexpected: confirmClass");
     		}
     		);
 		}
@@ -412,14 +403,12 @@
     		{
     			if (data.status=="failed")
     			{
-    				alert("修改失败");
-    				return;
+    				alert("修改实验失败");
     			}
     			if (data.status=="successful")
     			{
     				info.semesters[choosei].courses[choosej].lessons[choosek]=p.lesson;
     				showInfo();
-    				return;
     			}
     			alert("unexpected: modifyClass");
     		}});
@@ -435,7 +424,7 @@
 				{
 					if (data.status=="failed")
     				{
-    					alert("删除失败");return;
+    					alert("删除课程失败");
     				}
     				if (data.status=="successful")
     				{
@@ -445,9 +434,7 @@
   						}
   						--info.semesters[choosei].tot;
     					showInfo();
-    					return;
     				}
-    				alert("unexpected: deleteItem");
     			}});
     		}else   //删除实验
     		{
@@ -456,7 +443,7 @@
 				{
 					if (data.status=="failed")
 					{
-						alert("删除失败");return;
+						alert("删除实验失败");
 					}
     				if (data.status=="successful")
     				{
@@ -466,9 +453,7 @@
   						}
   						--info.semesters[choosei].courses[choosej].tot;
     					showInfo();
-    					return;
     				}
-    				alert("unexpected: deleteItem");
     			}});
     		}
 		}
@@ -496,24 +481,22 @@
     		{
     			if (data.status=="failed")
     			{
-    				alert("修改失败");
-    				return;
+    				alert("推送消息失败");
     			}
     			if (data.status=="successful")
     			{
-    				return;
+    				alert("推送消息成功");
     			}
-    			alert("unexpected: pushMessages");
     		}});
 		}
 		
-		function getFileName(o)
+		function getFileName(o)    //去除文件路径
 		{
    			var pos=o.lastIndexOf("\\");
    			return o.substring(pos+1);  
 		}
 		
-		function upLoadFiles()
+		function upLoadFiles()    //上传文件
 		{
 			var text=getFileName($("#file-file").val());
 			$("#file-name")[0].value=text;
@@ -523,7 +506,7 @@
 			{
 				if (data.status=="failed")
 				{
-					alert("上传失败");
+					alert("上传文件失败");
 				}
 				if (data.status=="successful")
 				{
@@ -533,13 +516,13 @@
 			return false;
 		}
 		
-		function deleteFiles(i)
+		function deleteFiles(i)    //删除文件
 		{
 			$.ajax({url:'/files/'+i+'.json',data:{},async:false,type:"DELETE",success:function(data)
 			{
 				if (data.status=="failed")
 				{
-					alert("删除失败");
+					alert("删除文件失败");
 				}
 				if (data.status=="successful")
 				{
@@ -548,7 +531,7 @@
 			}});
 		}
 		
-		function showFiles()
+		function showFiles()    //显示文件列表
 		{
 			$.get('/lessons/'+info.semesters[choosei].courses[choosej].lessons[choosek].id+'/files.json',{},
 			function(data)
@@ -575,7 +558,7 @@
 			});
 		}
 		
-		function checkDateTime(text)
+		function checkDateTime(text)    //检查时间合法性
 		{
     		var reg = /^(\d+)-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
     		var r = text.match(reg);
@@ -592,7 +575,7 @@
 		} 
 		
 		var checkStatus=[false,false,false,false,false];
-		function checkForm(i,text)
+		function checkForm(i,text)    //修改时间输入框颜色
 		{
 			var p=$('input[name="check-'+i+'"]')[0];
 			if (text=="")
@@ -641,7 +624,7 @@
 			}
 		}
 		
-		function modifyDateTime(text)
+		function modifyDateTime(text)    //修改后台获取的时间的格式
 		{
 			var i;
 			text=text.replace("T"," ");
@@ -652,7 +635,7 @@
 			return "";
 		}
 		
-		function loadInfo()  //从后台获取课程信息
+		function loadInfo()  //从后台获取学期、课程和实验信息
 		{
 			info=new Object();
 			info.tot=0;
@@ -664,7 +647,6 @@
 				if (data1.status=="failed"||data2.status=="failed")
 				{
 					alert("获取信息失败");
-					return;
 				}
 				if (data1.status=="successful"&&data2.status=="successful")
 				{
@@ -687,7 +669,6 @@
 						if (data.status=="failed")
 						{
 							alert("获取信息失败");
-							return;
 						}
 						if (data.status=="successful")
 						{
@@ -714,7 +695,6 @@
 									if (data.status=="failed")
 									{
 										alert("无法获取课程的实验");
-										return;
 									}
 									if (data.status=="successful")
 									{
@@ -727,20 +707,12 @@
 											info.semesters[i].courses[j].lessons[k]=data[p2];
 											info.semesters[i].courses[j].lessons[k].clicked=false;
 										}
-										return;
 									}
-									alert("unexpected: /courses/id/lessons.json");
 								}});
 							}
 							showInfo();
-						}else
-						{
-							alert("unexpected error");
 						}
 					}});
-				}else
-				{
-					alert("unexpected error");
 				}
 			}
 				
@@ -750,7 +722,7 @@
 				if (data1&&data2) deal();
 			}});
 			
-			$.ajax({url:"/users/current.json",data:{},type:"GET",success:function(data)    //#modify
+			$.ajax({url:"/users/current.json",data:{},type:"GET",success:function(data)
 			{
 				data2=data;
 				if (data1&&data2) deal();

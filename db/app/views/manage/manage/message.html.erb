@@ -45,6 +45,14 @@
 			margin-top:10px;
 			margin-left:10px;
 		}
+		
+		.custom-button
+		{
+			float:right;
+			margin-left:3px;
+			margin-right:3px;
+			display:none;
+		}
 	</style>
 </head>
 <body>
@@ -119,7 +127,7 @@
 	<script type="text/javascript">
 		var n,info,choosei;
 		
-		function loadInfo()
+		function loadInfo()    //获取所有消息内容
 		{
 			var i;
 			n=0;
@@ -142,7 +150,7 @@
 			});
 		}
 		
-		function showMessage(i)
+		function showMessage(i)    //显示消息信息
 		{
 			$("#input-show-message-1")[0].value=info[i].title;
 			$("#input-show-message-2")[0].value=info[i].content;
@@ -165,13 +173,13 @@
 			$('#modal-show-message').modal('show');
 		}
 		
-		function deleteItem()
+		function deleteItem()    //删除消息
 		{
 			$.ajax({url:'/messages/'+choosei+'.json',data:{},async:false,type:"DELETE",success:function(data)
 			{
 				if (data.status=="failed")
 				{
-					alert("删除失败");
+					alert("删除消息失败");
 				}
 				if (data.status=="successful")
 				{
@@ -181,14 +189,14 @@
 			}});
 		}
 		
-		function deleteMessage(event,i)
+		function deleteMessage(event,i)    //删除第i条消息
 		{
 			choosei=i;
 			$('#modal-delete').modal('show');
 			event.stopPropagation();
 		}
 		
-		function confirmMessage()
+		function confirmMessage()     //回复消息
 		{
 			var text1,text2;
 			text1=$("#input-send-message-1")[0].value;
@@ -210,14 +218,14 @@
 			});
 		}
 		
-		function replyMessage(event,i)
+		function replyMessage(event,i)    //回复第i条消息
 		{
 			choosei=i;
 			$('#modal-send-message').modal('show');
 			event.stopPropagation();
 		}
 		
-		function showInfo()
+		function showInfo()    //显示当前用户的所有消息
 		{
 			text="";
 			if (n==0)
