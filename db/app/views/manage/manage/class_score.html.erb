@@ -1,5 +1,5 @@
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=gb2312">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
   	<meta name="author" content="oscar999">
   	<link href="/common.css" rel=stylesheet type="text/css">
 	<style type="text/css">
@@ -234,13 +234,14 @@
 		function clickDownload(aLink)
 		{
 			if (focusi!=-1&&focusj!=-1) return; 
-			var p=$("#table1")[0],i,j,n=p.rows.length,m=p.rows[2].cells.length,data="",text;
-			for (i=2;i<n;++i)
+			var p=$("#table1")[0],i,j,n=p.rows.length,m=p.rows[2].cells.length,data="",text="";
+			data="学号,姓名,系,班级,成绩,图片数,视频数,打分助教\n";
+			for (i=3;i<n;++i)
 			{
 				text=p.rows[i].cells[0].textContent;
 				if (!text) text=p.rows[i].cells[0].innerText;
 				data+=text;
-				for (j=0;j<m;++j)
+				for (j=1;j<m-1;++j)
 				{
 					text=p.rows[i].cells[j].textContent;
 					if (!text) text=p.rows[i].cells[j].innerText;

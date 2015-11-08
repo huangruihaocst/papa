@@ -33,12 +33,14 @@
 		{
 			font-size:20px;
 			margin-top:30px;
+			margin-left:10px;
 			text-align:left;
 		}
 		.author
 		{
 			font-size:12px;
 			margin-top:2px;
+			margin-left:15px;
 			text-align:left;
 		}
 		#comment
@@ -66,7 +68,7 @@
 		</div>
 		<div id="comment">
 		</div>
-		<div id="contentbutton">
+		<div id="content-button">
 		</div>
 	</div>
 	<script>
@@ -93,7 +95,6 @@
 			var i;
 			n=0;
 			nowPage=1;
-			showComments();
 			var p1=false,p2=false,p3=false;
 			function deal()
 			{
@@ -172,18 +173,25 @@
 		function showComments()
 		{
 			var text="",t1,t2;
-			t1=(nowPage-1)*numberPerPage;
-			t2=nowPage*numberPerPage;
-			if (t2>n) t2=n;
-			for (i=t1;i<t2;++i)
+			if (totalPages<=0)
 			{
-				text+='<div class="comment">'+comments[i].content+'</div>';
-				text+='<div class="author">'+comments[i].creator_name+'</div>';
+				text='<div class="comment">无评论</div>';
+				$("#comment")[0].innerHTML=text;
+			}else
+			{
+				t1=(nowPage-1)*numberPerPage;
+				t2=nowPage*numberPerPage;
+				if (t2>n) t2=n;
+				for (i=t1;i<t2;++i)
+				{
+					text+='<div class="comment">'+comments[i].content+'</div>';
+					text+='<div class="author">'+comments[i].creator_name+'</div>';
+				}
+				$("#comment")[0].innerHTML=text;
+				text='<button class="btn btn-default" onclick="changePage(-1)">上一页</button>';
+				text+='第'+nowPage+'页 共'+totalPages+'页<button class="btn btn-default" onclick="changePage(1)">下一页</button>';
+				$("#content-button")[0].innerHTML=text;
 			}
-			$("#comment")[0].innerHTML=text;
-			text='<button class="btn btn-default" onclick="changePage(-1)">上一页</button>';
-			text+='第'+nowPage+'页 共'+totalPages+'页<button class="btn btn-default" onclick="changePage(1)">下一页</button>';
-			$("#contentbutton")[0].innerHTML=text;
 		}
 		
 		function showInfo()

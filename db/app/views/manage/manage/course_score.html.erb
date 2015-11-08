@@ -1,6 +1,6 @@
 <head>
 	<link href="/common.css" rel=stylesheet type="text/css">
-	<meta http-equiv="content-type" content="text/html; charset=gb2312">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
   	<meta name="author" content="oscar999">
 	<style type="text/css">
 	</style>
@@ -26,7 +26,6 @@
 		function loadInfo()
 		{
 			getId();
-			courseInfo="计算机组成原理";
 			var i;
 			info=new Array();
 			n1=4;n2=0;m=0;
@@ -147,8 +146,8 @@
 					y=y.people.class_name;
 					break;
 				default:
-					x=x.classScore[o-3];
-					y=y.classScore[o-3];
+					x=x.classScore[o-4];
+					y=y.classScore[o-4];
 			}
 			if (p==0&&x<y||p==1&&x>y) return true;
 			else return false;
@@ -212,13 +211,16 @@
 		function clickDownload(aLink)
 		{
 			if (focusi!=-1&&focusj!=-1) return; 
-			var p=$("#table1")[0],i,j,n=p.rows.length,m=p.rows[2].cells.length,data="",text;
-			for (i=2;i<n;++i)
+			var p=$("#table1")[0],i,j,n=p.rows.length,m=p.rows[2].cells.length,data="",text="";
+			data="学号,姓名,系,班级";
+			for (i=0;i<n2;++i) data+=','+items.classNames[i];
+			data+='\n';
+			for (i=3;i<n;++i)
 			{
 				text=p.rows[i].cells[0].textContent;
 				if (!text) text=p.rows[i].cells[0].innerText;
 				data+=text;
-				for (j=0;j<m;++j)
+				for (j=1;j<m;++j)
 				{
 					text=p.rows[i].cells[j].textContent;
 					if (!text) text=p.rows[i].cells[j].innerText;
