@@ -41,5 +41,7 @@ class ManageController < ApplicationController
     @course_id = params[:id]
     @course_name = Course.find(@course_id).name;
   end
+  def message
+  end
 end
 end

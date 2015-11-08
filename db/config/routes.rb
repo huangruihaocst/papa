@@ -99,6 +99,7 @@ Rails.application.routes.draw do
     get 'ShowPhotos/:id' => 'manage#show_photos'
     get 'student/:id/lesson/:lessonId' => 'manage#student_lesson_info'
     get 'CourseStudents/:id' => 'manage#course_students'
+    get 'Message' => 'manage#message'
   end
   root "manage/manage#main_page"
 end
