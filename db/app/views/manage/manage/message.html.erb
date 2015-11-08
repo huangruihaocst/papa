@@ -1,0 +1,248 @@
+<head>
+	<link href="/common.css" rel=stylesheet type="text/css"/>
+	<style type="text/css">
+		.custom-div
+		{
+			float:left;
+			height:40px;
+			width:100%;
+		}
+		
+		h4
+		{
+			text-align:left;
+		}
+		
+		.comment
+		{
+			font-size:20px;
+			margin-top:30px;
+			margin-left:10px;
+			text-align:left;
+		}
+		
+		.titles1
+		{
+			float:left;
+			font-size:20px;
+		}
+		
+		.titles2
+		{
+			float:left;
+			font-size:20px;
+			font-weight:bold;
+		}
+		
+		#title
+		{
+			font-size:40px;
+		}
+		
+		.message
+		{
+			font-size:20px;
+			margin-top:10px;
+			margin-left:10px;
+		}
+	</style>
+</head>
+<body>
+	<div id="content">
+		<div id="title">
+		消息列表
+		</div>
+		<div id="messages">
+		</div>
+	</div>
+	
+	<div class="modal fade" id="modal-show-message" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" type="button" data-dismiss="modal">×</button>
+					<h3>查看消息</h3>
+				</div>
+				<div class="modal-body">
+					<h4>标题</h4>
+					<input id="input-show-message-1" type="text" class="form-control"></input>
+					<h4>内容</h4>
+					<textarea id="input-show-message-2" type="text" class="form-control"></textarea>
+					<h4>作者</h4>
+					<input id="input-show-message-3" type="text" class="form-control"></input>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="modal-send-message" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" type="button" data-dismiss="modal">×</button>
+					<h3>回复消息</h3>
+				</div>
+				<div class="modal-body">
+					<h4>标题</h4>
+					<input id="input-send-message-1" type="text" class="form-control"></input>
+					<h4>内容</h4>
+					<textarea id="input-send-message-2" type="text" class="form-control"></textarea>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" onclick="confirmMessage()" data-dismiss="modal">发送</button>
+					<button class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" type="button" data-dismiss="modal">×</button>
+					<h3>确认删除？</h3>
+				</div>
+				<div class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" onclick="deleteItem()" data-dismiss="modal">确认</button>
+					<button class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		var n,info,choosei;
+		
+		function loadInfo()
+		{
+			var i;
+			n=0;
+			$.get("/messages.json",{},
+			function(data)
+			{
+				if (data.status=="failed")
+				{
+					alert("消息加载失败");
+					return;
+				}
+				if (data.status=="successful")
+				{
+					data=data.user_messages;
+					n=data.length;
+					info=data;
+					showInfo();
+					return;
+				}
+			});
+		}
+		
+		function showMessage(i)
+		{
+			$("#input-show-message-1")[0].value=info[i].title;
+			$("#input-show-message-2")[0].value=info[i].content;
+			$("#input-show-message-3")[0].value=info[i].author;
+			if (info[i].status!="read")
+			{
+				$.post('messages/'+info[i].id+'/read.json',{},
+				function(data)
+				{
+					if (data.status=="failed")
+					{
+					}
+					if (data.status=="successful")
+					{
+						info[i].status="read";
+						showInfo();
+					}
+				});
+			}
+			$('#modal-show-message').modal('show');
+		}
+		
+		function deleteItem()
+		{
+			$.ajax({url:'/messages/'+choosei+'.json',data:{},async:false,type:"DELETE",success:function(data)
+			{
+				if (data.status=="failed")
+				{
+					alert("删除失败");
+				}
+				if (data.status=="successful")
+				{
+					for (i=choosei;i<n-1;++i) info[i]=info[i+1];--n;
+					showInfo();
+				}
+			}});
+		}
+		
+		function deleteMessage(event,i)
+		{
+			choosei=i;
+			$('#modal-delete').modal('show');
+			event.stopPropagation();
+		}
+		
+		function confirmMessage()
+		{
+			var text1,text2;
+			text1=$("#input-send-message-1")[0].value;
+			text2=$("#input-send-message-2")[0].value;
+			var p=new Object();
+			p.title=text1;
+			p.content=text2;
+			$.post('/users/'+info[choosei].sender_id+'/messages.json',p,
+			function(data)
+			{
+				if (data.status=="failed")
+				{
+					alert("发送失败");
+					return;
+				}
+				if (data.status=="successful")
+				{
+				}
+			});
+		}
+		
+		function replyMessage(event,i)
+		{
+			choosei=i;
+			$('#modal-send-message').modal('show');
+			event.stopPropagation();
+		}
+		
+		function showInfo()
+		{
+			text="";
+			if (n==0)
+			{
+				text='<div class="message">无消息</div>';
+			}else
+			{
+				for (i=0;i<n;++i)
+				{
+					text+='<div class="message-content" onclick="showMesage('+i+')">';
+					if (info[i].status=="read")
+					{
+						text+='<div class="titles1">'+info[i].title+'</div>';
+					}else
+					{
+						text+='<div class="titles2">'+info[i].title+'</div>';
+					}
+					text+='<div class="btn btn-info custom-button" onclick="deleteMessage(event,'+i+')">删除</div>';
+					text+='<div class="btn btn-info custom-button" onclick="replyMessage(event,'+i+')">回复</div>';
+					text+='</div>';
+				}
+			}
+			$("#messages")[0].innerHTML=text;
+		}
+		
+		loadInfo();
+	</script>
+</body>
