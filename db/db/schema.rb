@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151106123826) do
+ActiveRecord::Schema.define(version: 20151106135008) do
 
   create_table "android_apps", force: :cascade do |t|
     t.string   "version"
@@ -101,6 +101,15 @@ ActiveRecord::Schema.define(version: 20151106123826) do
 
   create_table "semesters", force: :cascade do |t|
     t.string "name"
+  end
+
+  create_table "student_attendences", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "lesson_id"
+    t.string   "sign_up_method"
+    t.text     "description"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "student_comments", force: :cascade do |t|

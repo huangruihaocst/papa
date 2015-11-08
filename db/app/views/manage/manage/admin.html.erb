@@ -7,7 +7,7 @@
 			height:50px;
 			margin-top:15px;
 		}
-		.custombutton
+		.custom-button
 		{
 			float:right;
 			margin-left:3px;
@@ -227,14 +227,13 @@
 		function showInfo()  //显示信息
 		{
 			var i,text="";
-			
+			text+='<div class="btn btn-info custom-button" onclick="addSemester(event)">添加学期</div>';
 			for (i=0;i<info.tot;++i)
 			{
 				text+='<div class="rectangleSemester btn btn-default">';
 				text+='<div class="names">'+info.semesters[i].name+'</div>';
-				text+='<div class="custombutton" onclick="deleteSemester(event,'+i+')">×</div>';
-				text+='<div class="btn btn-info custombutton" onclick="addSemester(event)">添加学期</div>';
-				text+='<div class="btn btn-info custombutton" onclick="changeSemester(event,'+i+')">修改学期</div>';
+				text+='<div class="btn btn-info custom-button" onclick="deleteSemester(event,'+i+')">删除学期</div>';
+				text+='<div class="btn btn-info custom-button" onclick="changeSemester(event,'+i+')">修改学期</div>';
 				text+='</div>';
 			}
 			
