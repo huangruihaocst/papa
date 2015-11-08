@@ -132,11 +132,6 @@
             android:name=".attendence.LocationService"
             android:enabled="true" >
         </service>
-        <service
-            android:name=".attendence.WifiMonitoringService"
-            android:enabled="true"
-            android:exported="true" >
-        </service>
 
         <receiver
             android:name=".attendence.NetworkStateChangeBroadcastReceiver"

@@ -8,10 +8,10 @@ import android.net.DhcpInfo;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -29,28 +29,78 @@ public class NetworkStateChangeBroadcastReceiver extends BroadcastReceiver {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
+        if (isConnected) {
+            checkGatewayAndSignIn(context);
+        }
         Log.w(TAG, "wifi changed");
-
-        getGatewayInfo();
     }
 
-    private void getGatewayInfo(Context context) {
+    private static String intToIp(int i) {
+        return ((i >> 24 ) & 0xFF ) + "." +
+                ((i >> 16 ) & 0xFF) + "." +
+                ((i >> 8 ) & 0xFF) + "." +
+                ( i & 0xFF) ;
+    }
+    private static String macToString(byte[] mac) {
+        StringBuilder sb = new StringBuilder();
+        if (mac == null)
+            return "";
+        for (int i = mac.length - 1; i >= 0; --i) {
+            sb.append(String.format("%02x", mac[i]));
+            if (i != 0)
+                sb.append(":");
+        }
+        return sb.toString();
+    }
+    private static String ipArrayToString(byte[] arr) {
+        StringBuilder sb = new StringBuilder();
+        if (arr == null)
+            return "";
+        for (int i = arr.length - 1; i >= 0; --i) {
+            sb.append(String.format("%d", arr[i]));
+            if (i != 0)
+                sb.append(".");
+        }
+        return sb.toString();
+    }
+
+    private void checkGatewayAndSignIn(Context context) {
+        WifiManager wifiManager= (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        DhcpInfo dhcpInfo = wifiManager.getDhcpInfo();
+        Log.w(TAG, "IP Address=" + intToIp(dhcpInfo.gateway));
+        List<NetworkInterface> interfaces = null;
         try {
-            WifiManager wifii= (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            DhcpInfo d = wifii.getDhcpInfo();
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
             for (NetworkInterface networkInterface : interfaces) {
-                byte[] mac = networkInterface.getHardwareAddress();
-                Log.w(TAG, String.valueOf(mac));
-                Enumeration<InetAddress> addrs = networkInterface.getInetAddresses();
-                for (InetAddress x = addrs.nextElement(); addrs.hasMoreElements(); x = addrs.nextElement()) {
+                try {
+                    byte[] mac = networkInterface.getHardwareAddress();
+                    Log.w(TAG, macToString(mac));
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+                Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+                while (inetAddresses.hasMoreElements()) {
+                    InetAddress x = inetAddresses.nextElement();
                     if (x.getAddress() != null) {
-                        Log.w(TAG, x.getAddress().toString());
+                        Log.w(TAG, ipArrayToString(x.getAddress()));
                     }
                 }
             }
+        } catch (SocketException e) {
+            e.printStackTrace();
         }
-        catch (Exception ex) {
+
+        if (checkInClassroom(dhcpInfo, interfaces)) {
+            Attendence.getInstance().trySignIn(new OnSignInSuccessListener() {
+                @Override
+                public void onSignInSuccess() {
+                    Log.w(TAG, "Sign in success");
+                }
+            }, context);
         }
+    }
+
+    private boolean checkInClassroom(DhcpInfo dhcpInfo, List<NetworkInterface> networkInterfaces) {
+        return true;
     }
 }

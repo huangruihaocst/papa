@@ -42,8 +42,6 @@ public class LocationService extends Service {
 
         String command = intent.getStringExtra(getString(R.string.key_attendence_activity_command));
         if (command != null && command.equals(getString(R.string.key_attendence_activity_start_sign_in))) {
-            // TODO: shouldn't clear cache every time
-            Settings.clearCache(this);
             settings = Settings.getInstance(this);
             startTrackingPosition();
         }

@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.Activities.papa.R;
+import com.Activities.papa.settings.Settings;
 
 public class AttendenceActivity extends AppCompatActivity {
     static final String TAG = "AttendenceActivity";
@@ -33,6 +34,10 @@ public class AttendenceActivity extends AppCompatActivity {
             startSignInByGPS(AttendenceActivity.this);
             }
         });
+
+
+        // TODO: shouldn't clear cache every time
+        Settings.clearCache(this);
     }
 
     /**
