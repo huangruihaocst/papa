@@ -26,6 +26,7 @@ class UserMessagesController < ApplicationController
   def read
     message = UserMessage.find(params[:message_id])
     message.status = MESSAGE_STATUS_READ
+    message.save
     json_successful
   end
 
