@@ -1,7 +1,7 @@
 <head>
 	<link href="/common.css" rel=stylesheet type="text/css">
 	<style type="text/css">
-		.rectangleSemester
+		.rectangle-semester
 		{
 			width:100%;
 			height:50px;
@@ -219,7 +219,7 @@
 			text+='<div class="btn btn-info custom-button" onclick="addSemester(event)">添加学期</div>';
 			for (i=0;i<info.tot;++i)
 			{
-				text+='<div class="rectangleSemester btn btn-default">';
+				text+='<div class="rectangle-semester btn btn-default">';
 				text+='<div class="names">'+info.semesters[i].name+'</div>';
 				text+='<div class="btn btn-info custom-button" onclick="deleteSemester(event,'+i+')">删除学期</div>';
 				text+='<div class="btn btn-info custom-button" onclick="changeSemester(event,'+i+')">修改学期</div>';

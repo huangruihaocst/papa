@@ -5,6 +5,7 @@
 		{
 			width:100%;
 			height:50px;
+			margin-top:8px;
 		}
 		
 		h4
@@ -133,25 +134,17 @@
 			$.get("/messages.json",{},
 			function(data)
 			{
+				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("消息加载失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
 					data=data.user_messages;
 					n=data.length;
 					info=data;
-					n=1;
-					info[0]=new Object();
-					info[0].title="test";
-					info[0].content="text";
-					info[0].author="aaaa";
-					info[0].sender_id=2;
-					info[0].id=0;
 					showInfo();
-					return;
 				}
 			});
 		}
@@ -160,10 +153,10 @@
 		{
 			$("#input-show-message-1")[0].value=info[i].title;
 			$("#input-show-message-2")[0].value=info[i].content;
-			$("#input-show-message-3")[0].value=info[i].author;
+			$("#input-show-message-3")[0].value=info[i].sender_name;
 			if (info[i].status!="read")
 			{
-				$.post('messages/'+info[i].id+'/read.json',{},
+				$.post('/messages/'+info[i].id+'/read.json',{},
 				function(data)
 				{
 					console.log(data);
