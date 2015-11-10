@@ -24,7 +24,7 @@ class UserMessagesController < ApplicationController
 
   # POST /messages/1/read.json
   def read
-    message = UserMessage.find(params[:id])
+    message = UserMessage.find(params[:message_id])
     message.status = MESSAGE_STATUS_READ
     json_successful
   end
@@ -41,7 +41,9 @@ class UserMessagesController < ApplicationController
   def destroy
     user = check_login
     message = UserMessage.find(params[:id])
-    if message.sender == user
+    if message.sender == message.receiver
+      message.sender_deleted, message.receiver_deleted = true, true
+    elsif message.sender == user
       message.sender_deleted = true
     elsif message.receiver == user
       message.receiver_deleted = true
