@@ -25,6 +25,7 @@
 		{
 			float:left;
 			font-size:20px;
+			color:#AAA;
 		}
 		
 		.titles2
@@ -134,7 +135,6 @@
 			$.get("/messages.json",{},
 			function(data)
 			{
-				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("消息加载失败");
@@ -177,7 +177,6 @@
 		{
 			$.ajax({url:'/messages/'+info[choosei].id+'.json',data:{},async:false,type:"DELETE",success:function(data)
 			{
-				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("删除消息失败");
