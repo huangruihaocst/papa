@@ -1,11 +1,10 @@
 <head>
 	<link href="/common.css" rel=stylesheet type="text/css"/>
 	<style type="text/css">
-		.custom-div
+		.message-content
 		{
-			float:left;
-			height:40px;
 			width:100%;
+			height:50px;
 		}
 		
 		h4
@@ -144,6 +143,13 @@
 					data=data.user_messages;
 					n=data.length;
 					info=data;
+					n=1;
+					info[0]=new Object();
+					info[0].title="test";
+					info[0].content="text";
+					info[0].author="aaaa";
+					info[0].sender_id=2;
+					info[0].id=0;
 					showInfo();
 					return;
 				}
@@ -160,6 +166,7 @@
 				$.post('messages/'+info[i].id+'/read.json',{},
 				function(data)
 				{
+					console.log(data);
 					if (data.status=="failed")
 					{
 					}
@@ -175,8 +182,9 @@
 		
 		function deleteItem()    //删除消息
 		{
-			$.ajax({url:'/messages/'+choosei+'.json',data:{},async:false,type:"DELETE",success:function(data)
+			$.ajax({url:'/messages/'+info[choosei].id+'.json',data:{},async:false,type:"DELETE",success:function(data)
 			{
+				console.log(data);
 				if (data.status=="failed")
 				{
 					alert("删除消息失败");
@@ -220,6 +228,8 @@
 		
 		function replyMessage(event,i)    //回复第i条消息
 		{
+			$("#input-send-message-1")[0].value="Re: "+info[i].title;
+			$("#input-send-message-2")[0].value="";
 			choosei=i;
 			$('#modal-send-message').modal('show');
 			event.stopPropagation();
@@ -227,7 +237,7 @@
 		
 		function showInfo()    //显示当前用户的所有消息
 		{
-			text="";
+			var text="",text2="";
 			if (n==0)
 			{
 				text='<div class="message">无消息</div>';
@@ -235,7 +245,8 @@
 			{
 				for (i=0;i<n;++i)
 				{
-					text+='<div class="message-content" onclick="showMesage('+i+')">';
+					text2="message-"+i;
+					text+='<div id="'+text2+'" class="message-content btn btn-default" onclick="showMessage('+i+')">';
 					if (info[i].status=="read")
 					{
 						text+='<div class="titles1">'+info[i].title+'</div>';
@@ -243,12 +254,35 @@
 					{
 						text+='<div class="titles2">'+info[i].title+'</div>';
 					}
-					text+='<div class="btn btn-info custom-button" onclick="deleteMessage(event,'+i+')">删除</div>';
-					text+='<div class="btn btn-info custom-button" onclick="replyMessage(event,'+i+')">回复</div>';
+					text+='<div class="btn btn-info custom-button '+text2+'" onclick="deleteMessage(event,'+i+')">删除</div>';
+					text+='<div class="btn btn-info custom-button '+text2+'" onclick="replyMessage(event,'+i+')">回复</div>';
 					text+='</div>';
 				}
 			}
 			$("#messages")[0].innerHTML=text;
+			function deal(text)
+			{
+				$("#"+text).hover(
+				function()
+				{
+					var p=$("."+text),i;
+					for (i=0;i<p.length;++i)
+					{
+						p[i].style.display="block";
+					}
+				},function()
+				{
+					var p=$("."+text),i;
+					for (i=0;i<p.length;++i)
+					{
+						p[i].style.display="none";
+					}
+				});
+			}
+			for (i=0;i<n;++i)
+			{
+				deal('message-'+i);
+			}
 		}
 		
 		loadInfo();
