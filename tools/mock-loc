@@ -3,6 +3,7 @@ require 'optparse'
 require 'timeout'
 require 'net/telnet'
 
+
 # seconds
 ANALOG_INTERVAL = 1
 
