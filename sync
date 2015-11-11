@@ -1,0 +1,20 @@
+#!/bin/bash -l
+cd db
+rvm use 2.2.2
+
+while true
+do
+        if git pull pp pap9 | grep -q "up-to-date"; then
+                echo "sync done, already up-to-date"
+        else
+                cd db
+                kill $(cat tmp/pids/server.pid)
+                rake db:drop
+                rake db:migrate
+                rake db:seed
+                rails s -p 5123 -d
+                cd ..
+        fi
+        sleep 5
+done
+
