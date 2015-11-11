@@ -47,7 +47,10 @@ class ManageController < ApplicationController
 
   private
   def prepare_data
-    @message_number = 0
+    @message_number =
+        current_user.user_messages
+                         .where(status: MESSAGE_STATUS_UNREAD)
+                         .where(receiver_deleted: false).count
   end
 end
 end
