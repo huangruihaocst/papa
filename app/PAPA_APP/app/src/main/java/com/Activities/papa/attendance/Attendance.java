@@ -3,7 +3,7 @@ package com.Activities.papa.attendance;
 import android.content.Context;
 import android.util.Log;
 
-import com.Activities.papa.settings.Settings;
+import com.Settings.Settings;
 
 import java.util.Calendar;
 

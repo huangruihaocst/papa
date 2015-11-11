@@ -13,7 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.Activities.papa.R;
-import com.Activities.papa.settings.Settings;
+import com.Settings.Settings;
 
 public class AttendanceActivity extends AppCompatActivity {
     static final String TAG = "AttendanceActivity";
@@ -31,20 +31,19 @@ public class AttendanceActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Locating", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-            startSignInByGPS(AttendanceActivity.this);
+                startSignInByGPS(AttendanceActivity.this);
             }
         });
 
-
-        // TODO: shouldn't clear cache every time
-        Settings.clearCache(this);
     }
 
     /**
      * Happily use this function to try sign in.
      * @param activity current activity
      */
-    static void startSignInByGPS(Activity activity) {
+    public static void startSignInByGPS(Activity activity) {
+        // TODO: shouldn't clear cache every time
+        Settings.clearCache(activity);
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }

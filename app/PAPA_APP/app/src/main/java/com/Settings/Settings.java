@@ -1,4 +1,4 @@
-package com.Activities.papa.settings;
+package com.Settings;
 
 import android.content.Context;
 
@@ -114,7 +114,7 @@ public class Settings implements Serializable {
             fis.close();
             return settings;
         } catch (IOException|ClassNotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return new Settings();
         }
     }
