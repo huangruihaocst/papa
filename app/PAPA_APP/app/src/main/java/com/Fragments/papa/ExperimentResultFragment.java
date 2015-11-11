@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -190,7 +189,7 @@ public class ExperimentResultFragment extends Fragment {
                             startActivityForResult(intent, CAPTURE_VIDEO);
                         }else if(which == 2){//gallery
                             Intent intent = new Intent(Intent.ACTION_PICK);
-                            intent.setType("image/*,video/*");
+                            intent.setType("*/*");
                             startActivityForResult(intent, IMAGE_PICKER_SELECT);
                         }
                     }
@@ -250,13 +249,30 @@ public class ExperimentResultFragment extends Fragment {
             if (path != null) {
                 File file = new File(path);
                 if(file.exists()){
-                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    Uri returnUri = data.getData();
+                    String mimeType = getContext().getContentResolver().getType(returnUri);
+                    if(mimeType != null){
+                        if(mimeType.contains("video")){
+                            Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
+                                    (path,MediaStore.Video.Thumbnails.MINI_KIND);
+                            bitmapArrayList.add(thumbnail);
+                            pathArrayList.add(path);
+                            isImageArrayList.add(0);
+                            imageAdapter.notifyDataSetChanged();
+                        }else if(mimeType.contains("image")){
+                            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
-                    bitmapArrayList.add(bitmap);
-                    pathArrayList.add(path);
-                    isImageArrayList.add(1);
-                    imageAdapter.notifyDataSetChanged();
-                    // byte[] bytes = toByteArray(file);
+                            bitmapArrayList.add(bitmap);
+                            pathArrayList.add(path);
+                            isImageArrayList.add(1);
+                            imageAdapter.notifyDataSetChanged();
+                            // byte[] bytes = toByteArray(file);
+                        }else{
+                            Toast.makeText(getContext(),getString(R.string.no_media),Toast.LENGTH_LONG).show();
+                        }
+                    }else{
+                        Toast.makeText(getContext(),getString(R.string.no_media),Toast.LENGTH_LONG).show();
+                    }
 
                     new UploadTask(getContext()).execute(
                             new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(

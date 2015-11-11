@@ -71,6 +71,8 @@
     <string name="mail">邮箱</string>
     <string name="change_password">修改密码</string>
     <string name="change_photo">修改头像</string>
+    <string name="no_media">找不到对象T_T</string>
+    <string name="invalid_file">不合法的文件格式QAQ</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
