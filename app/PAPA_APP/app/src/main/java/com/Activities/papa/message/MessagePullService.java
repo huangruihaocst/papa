@@ -237,7 +237,7 @@ public class MessagePullService extends Service {
         bundleHelper.setId(Integer.parseInt(userId));
         bundleHelper.setToken(token);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(getString(R.string.key_to_message), bundleHelper);
+        bundle.putParcelable(getString(R.string.key_to_notification), bundleHelper);
         intent.putExtras(bundle);
         return intent;
     }

@@ -263,8 +263,15 @@ public class CourseActivity extends AppCompatActivity
         } else if (id == R.id.nav_notification) {
             Intent intent = new Intent(CourseActivity.this, MessageActivity.class);
             Bundle data = new Bundle();
-            String key_to_notification = getString(R.string.key_to_message);
+            String key_to_notification = getString(R.string.key_to_notification);
             data.putParcelable(key_to_notification, bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
+        }else if(id == R.id.nav_send_message){
+            Intent intent = new Intent(CourseActivity.this, SendMessageActivity.class);
+            Bundle data = new Bundle();
+            String key_to_send_message = getString(R.string.key_to_send_message);
+            data.putParcelable(key_to_send_message, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
         }

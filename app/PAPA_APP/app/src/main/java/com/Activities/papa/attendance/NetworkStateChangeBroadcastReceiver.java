@@ -1,4 +1,4 @@
-package com.Activities.papa.attendence;
+package com.Activities.papa.attendance;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -91,7 +91,7 @@ public class NetworkStateChangeBroadcastReceiver extends BroadcastReceiver {
         }
 
         if (checkInClassroom(dhcpInfo, interfaces)) {
-            Attendence.getInstance().trySignIn(new OnSignInSuccessListener() {
+            Attendance.getInstance().trySignIn(new OnSignInSuccessListener() {
                 @Override
                 public void onSignInSuccess() {
                     Log.w(TAG, "Sign in success");
