@@ -2,6 +2,7 @@ module  Manage
 class ManageController < ApplicationController
   layout "application"
   before_action :authenticate_user!
+  before_action :prepare_data
   def index
   end
   def main_page
@@ -42,6 +43,11 @@ class ManageController < ApplicationController
     @course_name = Course.find(@course_id).name;
   end
   def message
+  end
+
+  private
+  def prepare_data
+    @message_number = 0
   end
 end
 end

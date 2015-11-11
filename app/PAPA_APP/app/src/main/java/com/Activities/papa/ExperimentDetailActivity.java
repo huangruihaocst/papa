@@ -23,7 +23,7 @@ import com.Fragments.papa.StudentsFragment;
 public class ExperimentDetailActivity extends AppCompatActivity {
 
     BundleHelper bundleHelper;
-    String identity;
+    BundleHelper.Identity identity;
 
     TabLayout tabLayout;
     ViewPager viewPager;
@@ -54,9 +54,9 @@ public class ExperimentDetailActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout)findViewById(R.id.option_tabs);
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.experiment_information)));
-        if(identity.equals("teacher_assistant"))
+        if(identity == BundleHelper.Identity.teacher_assistant)
             tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.view_students)));
-        else if(identity.equals("student"))
+        else if(identity == BundleHelper.Identity.student)
             tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.view_grades)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.experiment_result)));
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -95,7 +95,7 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.experiment_detail, menu);
         MenuItem item = menu.getItem(0);
-        if(identity.equals("teacher_assistant"))item.setVisible(false);
+        if(identity == BundleHelper.Identity.teacher_assistant)item.setVisible(false);
         return true;
     }
 
@@ -122,12 +122,12 @@ public class ExperimentDetailActivity extends AppCompatActivity {
 
     public class OptionsAdapter extends FragmentStatePagerAdapter {
         int tabs_amount;
-        String identity;
+        BundleHelper.Identity identity;
 
         public OptionsAdapter(FragmentManager fm) {
             super(fm);
         }
-        public OptionsAdapter(FragmentManager fm, int count, String identity) {
+        public OptionsAdapter(FragmentManager fm, int count, BundleHelper.Identity identity) {
             this(fm);
             this.tabs_amount = count;
             this.identity = identity;
@@ -141,9 +141,9 @@ public class ExperimentDetailActivity extends AppCompatActivity {
                     fragment = ExperimentInformationFragment.newInstance(bundleHelper);
                     break;
                 case 1:
-                    if (identity.equals("teacher_assistant")){
+                    if (identity == BundleHelper.Identity.teacher_assistant){
                         fragment = StudentsFragment.newInstance(bundleHelper);
-                    }else if(identity.equals("student")){
+                    }else if(identity == BundleHelper.Identity.student){
                         fragment = GradesFragment.newInstance(bundleHelper);
                     }
                     break;

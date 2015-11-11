@@ -12,6 +12,11 @@ import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
  * Created by huang on 15-10-10.
  */
 public class BundleHelper implements Parcelable{
+    public enum Identity{
+        teacher_assistant,
+        student,
+        no_identity
+    }
     private String username;
     private String password;//not used
     private String course_name;
@@ -20,7 +25,7 @@ public class BundleHelper implements Parcelable{
     private int experiment_id;
     private String student_name;
     private int student_id;
-    private String identity;
+    private Identity identity;
     private int id;
     private String token;
 //    private JSONObject jsonObject;
@@ -35,7 +40,7 @@ public class BundleHelper implements Parcelable{
         experiment_id = -1;
         student_name = "";
         student_id = -1;
-        identity = "";
+        identity = Identity.no_identity;
         id = -1;
         token = "";
 //        jsonObject = new JSONObject();
@@ -67,7 +72,7 @@ public class BundleHelper implements Parcelable{
     public int getStudentId(){
         return student_id;
     }
-    public String getIdentity(){
+    public Identity getIdentity(){
         return identity;
     }
     public int getId(){
@@ -118,7 +123,7 @@ public class BundleHelper implements Parcelable{
     public void setStudentId(int student_id){
         this.student_id = student_id;
     }
-    public void setIdentity(String identity){
+    public void setIdentity(Identity identity){
         this.identity = identity;
     }
     public void setId(int id){
@@ -149,7 +154,7 @@ public class BundleHelper implements Parcelable{
         out.writeInt(experiment_id);
         out.writeString(student_name);
         out.writeInt(student_id);
-        out.writeString(identity);
+        out.writeString(identity.toString());
         out.writeInt(id);
         out.writeString(token);
 //        out.writeString(getter_string);
@@ -174,7 +179,18 @@ public class BundleHelper implements Parcelable{
         experiment_id = in.readInt();
         student_name = in.readString();
         student_id = in.readInt();
-        identity = in.readString();
+        String identity_string = in.readString();
+        switch (identity_string){
+            case "teacher_assistant":
+                identity = Identity.teacher_assistant;
+                break;
+            case "student":
+                identity = Identity.student;
+                break;
+            case "no_identity":
+                identity = Identity.no_identity;
+                break;
+        }
         id = in.readInt();
         token = in.readString();
 //        getter_string = in.readString();

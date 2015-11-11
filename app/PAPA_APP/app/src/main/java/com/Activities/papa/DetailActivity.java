@@ -26,7 +26,7 @@ public class DetailActivity extends AppCompatActivity {
     PapaDataBaseManager papaDataBaseManager;
 
     String experiment_name;
-    String identity;
+    BundleHelper.Identity identity;
     BundleHelper bundleHelper = new BundleHelper();
     TextView user_id;
     TextView user_class;
@@ -69,7 +69,7 @@ public class DetailActivity extends AppCompatActivity {
         user_evaluator = (TextView) findViewById(R.id.user_evaluator);
 
         fab = (FloatingActionButton) findViewById(R.id.fab_edit_detail);
-        if (identity.equals("student")) {
+        if (identity == BundleHelper.Identity.student) {
             fab.setVisibility(View.GONE);
         }
         fab.setOnClickListener(new View.OnClickListener() {
@@ -116,10 +116,6 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.detail, menu);
-//        if(identity.equals("teacher_assistant")){
-//            MenuItem item = menu.findItem(R.id.action_generate_QR_code);
-//            item.setVisible(false);
-//        }
         return true;
     }
 
