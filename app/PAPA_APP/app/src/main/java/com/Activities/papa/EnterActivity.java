@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.Activities.papa.attendance.AttendanceActivity;
+import com.Activities.papa.attendance.Attendance;
 import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 
@@ -35,6 +35,6 @@ public class EnterActivity extends AppCompatActivity {
         };
         timer.schedule(timerTask,1000);
 
-        AttendanceActivity.startSignInByGPS(this);
+        Attendance.startSignInByGPS(this);
     }
 }

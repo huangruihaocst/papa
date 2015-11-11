@@ -110,11 +110,6 @@
             android:label="@string/title_activity_comment"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity
-            android:name=".attendance.AttendanceActivity"
-            android:label="@string/title_activity_attendance"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
 
         <service
             android:name=".attendance.LocationService"
