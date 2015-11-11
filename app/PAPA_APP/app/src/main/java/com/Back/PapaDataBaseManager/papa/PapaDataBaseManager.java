@@ -8,7 +8,7 @@
 package com.Back.PapaDataBaseManager.papa;
 
 
-import com.Activities.papa.message.Message;
+import com.Activities.papa.receive_message.Message;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
 import java.io.File;

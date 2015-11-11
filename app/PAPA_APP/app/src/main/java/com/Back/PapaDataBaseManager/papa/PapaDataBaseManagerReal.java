@@ -2,7 +2,7 @@ package com.Back.PapaDataBaseManager.papa;
 
 import android.util.Log;
 
-import com.Activities.papa.message.Message;
+import com.Activities.papa.receive_message.Message;
 import com.Back.DataBaseAccess.papa.PapaDataBaseAccess;
 import com.Back.DataBaseAccess.papa.PapaDataBaseInvalidFieldError;
 import com.Back.DataBaseAccess.papa.PapaDataBaseJsonError;

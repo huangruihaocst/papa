@@ -1,10 +1,7 @@
-package com.Activities.papa.message;
+package com.Activities.papa.receive_message;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 
 public class MessageDetailActivity extends AppCompatActivity {

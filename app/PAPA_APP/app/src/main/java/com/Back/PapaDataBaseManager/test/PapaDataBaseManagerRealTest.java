@@ -3,14 +3,10 @@ package com.Back.PapaDataBaseManager.test;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
-import com.Activities.papa.message.Message;
-import com.Back.NetworkAccess.papa.PapaApacheHttpClient;
+import com.Activities.papa.receive_message.Message;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
-import junit.framework.Assert;
-
-import java.util.HashMap;
 import java.util.List;
 
 /**

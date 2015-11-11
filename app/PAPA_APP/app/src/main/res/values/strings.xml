@@ -64,6 +64,10 @@
     <string name="select_all">全选</string>
     <string name="reverse_select">反选</string>
     <string name="send_message">发信</string>
+    <string name="new_message">创建新信息</string>
+    <string name="title">标题:</string>
+    <string name="body">正文:</string>
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -76,6 +80,7 @@
     <string name="action_make_comments">评价该课程</string>
     <string name="action_view_comments">对该课程的评价</string>
     <string name="action_save">保存</string>
+    <string name="action_send_message">发送</string>
 
     <string name="title_semester">学期</string>
 
@@ -92,7 +97,8 @@
     <string name="key_to_notification">key_to_notification</string>
     <string name="key_experiment_experiment_detail">key_experiment_experiment_detail</string>
     <string name="key_to_comment">key_to_comment</string>
-    <string name="key_to_send_message">key_to_send_message</string>
+    <string name="key_to_sent_list">key_to_sent_lit</string>
+    <string name="key_sent_list_new_message">key_sent_list_new_message</string>
 
     <!--<string name="color_primary">#2196F3</string>-->
     <!--<string name="color_primary_dark">#1976D2</string>-->
@@ -184,5 +190,6 @@
     <string name="title_attendance_activity_sign_in_successful">%1$s, You have successfully signed in %2$s</string>
     <string name="key_settings_file_name">settings.dat</string>
     <string name="title_activity_send_message">SendMessageActivity</string>
+    <string name="title_activity_new_message">NewMessageActivity</string>
 
 </resources>

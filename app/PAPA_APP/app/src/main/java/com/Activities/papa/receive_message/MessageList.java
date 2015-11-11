@@ -1,8 +1,7 @@
-package com.Activities.papa.message;
+package com.Activities.papa.receive_message;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 

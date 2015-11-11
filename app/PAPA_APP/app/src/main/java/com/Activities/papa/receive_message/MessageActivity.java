@@ -1,4 +1,4 @@
-package com.Activities.papa.message;
+package com.Activities.papa.receive_message;
 
 import android.content.ComponentName;
 import android.content.Context;

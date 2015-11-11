@@ -1,4 +1,4 @@
-package com.Activities.papa.message;
+package com.Activities.papa.receive_message;
 
 import android.app.Notification;
 import android.app.NotificationManager;

@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,13 +23,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.Activities.papa.message.MessageActivity;
-import com.Activities.papa.message.MessagePullService;
+import com.Activities.send_message.SentListActivity;
+import com.Activities.papa.receive_message.MessageActivity;
+import com.Activities.papa.receive_message.MessagePullService;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Fragments.papa.CourseFragment;
@@ -268,9 +271,9 @@ public class CourseActivity extends AppCompatActivity
             intent.putExtras(data);
             startActivity(intent);
         }else if(id == R.id.nav_send_message){
-            Intent intent = new Intent(CourseActivity.this, SendMessageActivity.class);
+            Intent intent = new Intent(CourseActivity.this, SentListActivity.class);
             Bundle data = new Bundle();
-            String key_to_send_message = getString(R.string.key_to_send_message);
+            String key_to_send_message = getString(R.string.key_to_sent_list);
             data.putParcelable(key_to_send_message, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);

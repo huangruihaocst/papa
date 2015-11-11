@@ -1,4 +1,4 @@
-package com.Activities.papa.message;
+package com.Activities.papa.receive_message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
