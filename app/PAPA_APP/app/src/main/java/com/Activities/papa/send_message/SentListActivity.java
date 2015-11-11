@@ -1,4 +1,4 @@
-package com.Activities.send_message;
+package com.Activities.papa.send_message;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -12,7 +12,7 @@
     <string name="title_activity_edit_profile">EditProfileActivity</string>
 
     <string name="app_name">PAPA</string>
-    <string name="username">用户名(手机号, 邮箱)</string>
+    <string name="username_others">用户名(手机号, 邮箱)</string>
     <string name="password">密码</string>
     <string name="cannot_get_telephone_num">获取不了手机号喵 QAQ</string>
     <string name="hint_sign_in_1">登录</string>
@@ -65,9 +65,12 @@
     <string name="reverse_select">反选</string>
     <string name="send_message">发信</string>
     <string name="new_message">创建新信息</string>
-    <string name="title">标题:</string>
-    <string name="body">正文:</string>
-
+    <string name="title">标题</string>
+    <string name="body">正文</string>
+    <string name="username">用户名</string>
+    <string name="mail">邮箱</string>
+    <string name="change_password">修改密码</string>
+    <string name="change_photo">修改头像</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

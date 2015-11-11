@@ -60,7 +60,7 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".ProfileActivity"
+            android:name=".profile.ProfileActivity"
             android:label="@string/title_activity_edit_profile"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
@@ -126,12 +126,12 @@
         <!--</receiver>-->
 
         <activity
-            android:name="com.Activities.send_message.SentListActivity"
+            android:name=".send_message.SentListActivity"
             android:label="@string/title_activity_send_message"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name="com.Activities.send_message.NewMessageActivity"
+            android:name=".send_message.NewMessageActivity"
             android:label="@string/title_activity_new_message"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>

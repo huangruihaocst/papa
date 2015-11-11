@@ -3,7 +3,7 @@ package com.Settings;
 import android.content.Context;
 
 import com.Activities.papa.R;
-import com.Activities.papa.message.MessageList;
+import com.Activities.papa.receive_message.MessageList;
 
 import java.io.File;
 import java.io.FileInputStream;

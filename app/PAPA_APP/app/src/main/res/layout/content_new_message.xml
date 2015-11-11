@@ -8,7 +8,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_new_message"
-    tools:context="com.Activities.send_message.NewMessageActivity">
+    tools:context="com.Activities.papa.send_message.NewMessageActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         android:layout_alignBottom="@+id/text_title"
         android:background="@drawable/edit_text_selector"
         android:textSize="25sp"
-        android:layout_marginRight="0sp"
+        android:layout_marginRight="3sp"
         android:layout_marginTop="0sp"
         android:layout_marginBottom="0sp" />
 
