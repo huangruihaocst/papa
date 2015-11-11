@@ -13,6 +13,7 @@ import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
+import com.Settings.Settings;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,36 +39,6 @@ public class MessagePullService extends Service {
         papaDataBaseManager = new PapaDataBaseManagerReal();
     }
 
-    private void saveMessages(MessageList messageList) {
-        try {
-            FileOutputStream fos = openFileOutput(getString(R.string.key_message_service_messages_file_name), MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-            oos.writeObject(messageList);
-
-            oos.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    private MessageList loadMessages() {
-        MessageList messageList = new MessageList();
-        try {
-            File file = new File(getFilesDir().getPath() + "/" + getString(R.string.key_message_service_messages_file_name));
-            FileInputStream fis = new FileInputStream(file);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-
-            messageList = (MessageList) ois.readObject();
-
-            ois.close();
-            fis.close();
-        } catch (IOException|ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return messageList;
-    }
-
     /**
      * the message list
      */
@@ -78,7 +49,7 @@ public class MessagePullService extends Service {
             return new MessageList();
 
         // get local message list
-        MessageList messageList = loadMessages();
+        MessageList messageList = Settings.getInstance(this).getMessageList();
 
         // get remote message list
         // get all message ids
@@ -116,7 +87,10 @@ public class MessagePullService extends Service {
         }
 
         // commit to the file
-        saveMessages(messageList);
+        Settings settings = Settings.getInstance(this);
+        settings.setMessageList(messageList);
+        settings.commit(this);
+
         // return
         return messageList;
     }
@@ -126,7 +100,9 @@ public class MessagePullService extends Service {
      * @param list: the message list to synchronize.
      */
     public void syncFromApp(MessageList list) {
-        saveMessages(list);
+        Settings settings = Settings.getInstance(this);
+        settings.setMessageList(list);
+        settings.commit(this);
     }
 
     /**
@@ -164,17 +140,6 @@ public class MessagePullService extends Service {
         pullingTimer.cancel();
     }
 
-    /**
-     * Clear local messages cache.
-     */
-    public void clearMessageCache() {
-        File file = new File(getFilesDir().getPath() + "/" + getString(R.string.key_message_service_messages_file_name));
-        // just to make the IDE happy
-        boolean deleted = file.delete();
-        if (!deleted) {
-            throw new IOError(new IOException("Can't delete message cache file"));
-        }
-    }
 
     /**
      * Create a notification if any message are nearing deadline.

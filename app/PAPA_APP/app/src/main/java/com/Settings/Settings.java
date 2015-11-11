@@ -3,6 +3,7 @@ package com.Settings;
 import android.content.Context;
 
 import com.Activities.papa.R;
+import com.Activities.papa.message.MessageList;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +29,8 @@ public class Settings implements Serializable {
         nextSignInStartTime.add(Calendar.SECOND, 10);
         this.nextSignInEndTime = Calendar.getInstance();
         nextSignInEndTime.add(Calendar.SECOND, 50);
+
+        this.messageList = new MessageList();
     }
 
     // this lock avoids different thread instantiate different objs.
@@ -49,36 +52,45 @@ public class Settings implements Serializable {
     }
 
     // These fields are for position tracking.
-    double lastPositionLongitude;
-    double lastPositionLatitude;
-    double lastTargetPositionLongitude;
-    double lastTargetPositionLatitude;
-    Calendar lastRecordTime;
-    Calendar lastSaveTime;
-    Calendar lastSignInStartTime;
-    Calendar lastSignInEndTime;
-    Calendar nextSignInStartTime;
-    Calendar nextSignInEndTime;
+    double      lastPositionLongitude;
+    double      lastPositionLatitude;
+    double      lastTargetPositionLongitude;
+    double      lastTargetPositionLatitude;
+    Calendar    lastRecordTime;
+    Calendar    lastSaveTime;
+    Calendar    lastSignInStartTime;
+    Calendar    lastSignInEndTime;
+    Calendar    nextSignInStartTime;
+    Calendar    nextSignInEndTime;
 
     // TODO: these copy by references may cause racing conditions.
-    public synchronized Calendar getNextSignInStartTime() {
+    public synchronized Calendar    getNextSignInStartTime() {
         return nextSignInStartTime;
     }
-    public synchronized void setNextSignInStartTime(Calendar c) {
+    public synchronized void        setNextSignInStartTime(Calendar c) {
         nextSignInStartTime = c;
     }
-    public synchronized Calendar getNextSignInEndTime() {
+    public synchronized Calendar    getNextSignInEndTime() {
         return nextSignInEndTime;
     }
-    public synchronized void setNextSignInEndTime(Calendar c) {
+    public synchronized void        setNextSignInEndTime(Calendar c) {
         nextSignInEndTime = c;
     }
+
+    MessageList messageList;
+    public synchronized MessageList getMessageList() {
+        return this.messageList;
+    }
+    public synchronized void        setMessageList(MessageList messageList) {
+        this.messageList = messageList;
+    }
+
 
     /**
      * Save the settings to some persistent storage
      * @param context, android context
      */
-    synchronized public void commit(Context context) {
+    public synchronized void        commit(Context context) {
         try {
             FileOutputStream fos = context.openFileOutput(
                     context.getString(R.string.key_settings_file_name), Context.MODE_PRIVATE);
@@ -99,7 +111,7 @@ public class Settings implements Serializable {
      * Load the settings from a particular persistent storage
      * @param context, android context
      */
-    private static Settings load(Context context) {
+    private static Settings         load(Context context) {
         Settings settings;
         try {
             File file = new File(
@@ -108,6 +120,8 @@ public class Settings implements Serializable {
             FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
 
+            // settings
+            // message list
             settings = (Settings) ois.readObject();
 
             ois.close();
@@ -124,7 +138,7 @@ public class Settings implements Serializable {
      * @param context android context
      * @return whether cached settings exist.
      */
-    public static boolean clearCache(Context context) {
+    public static boolean           clearCache(Context context) {
         File file = new File(
                 context.getFilesDir().getPath() + "/" +
                         context.getString(R.string.key_settings_file_name));
