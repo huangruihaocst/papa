@@ -44,7 +44,7 @@ end
 puts 'courses created...'
 
 # create default admin and default avator
-admin0 = User.create(name:'admin', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123',
+admin0 = User.create(name:'admin', phone:'0123', email:'a@b.c', password:'123', password_confirmation:'123',
                  student_number: '1230', class_name: '44', department: '计算机系', description: '123', is_admin: true, avator_id: 1)
 default_avator = FileResource.create(path: '/uploads/default_avator.jpg', name: 'default_avator.jpg', file_type: 'jpg', creator_id: admin0.id)
 admin0.avator_id = default_avator.id
