@@ -1,98 +1,177 @@
-s0 = Semester.create(name: '2015秋季学期')
-s1 = Semester.create(name: '2015春季学期')
-s2 = Semester.create(name: '2013秋季学期')
 
-c1 = Course.create(name: '操作系统', description: '操作系统, 计算机基础课程', semester_id: s0.id)
-c2 = Course.create(name: '数据结构', description: '数据结构, 计算机基础课程', semester_id: s0.id)
-c3 = Course.create(name: '安卓开发', description: '教授android开发, 毕业后保证1000+每月', semester_id: s0.id)
-c4 = Course.create(name: '竞技游戏导论', description: '通过教学CS游戏, 提高学生的竞技游戏能力', semester_id: s1.id)
+# create semesters
+SEMESTER_BEGIN = 2008
+SEMESTER_COUNT = 10
+SEMESTER_SPRING = '春季'
+SEMESTER_SUMMER = '夏季'
+SEMESTER_FALL = '秋季'
 
-l11 = c1.lessons.create(name: 'Bootstrap实验', start_time: Time.now, end_time: Time.now + 100.days, location: '五教5201')
-l12 = c1.lessons.create(name: '内存管理子系统实验', start_time: Time.now, end_time: Time.now + 100.days, location: '三教3201')
-l13 = c1.lessons.create(name: 'IO子系统实验', start_time: Time.now, end_time: Time.now + 100.days, location: '三角3201')
-l14 = c1.lessons.create(name: '终端处理实验', start_time: Time.now, end_time: Time.now + 100.days, location: '一教201')
+semesters = []
+SEMESTER_COUNT.times do |x|
+  semesters.push(
+      Semester.create(name: (SEMESTER_BEGIN+x).to_s + SEMESTER_FALL),
+      Semester.create(name: (SEMESTER_BEGIN+x).to_s + SEMESTER_SPRING),
+      Semester.create(name: (SEMESTER_BEGIN+x).to_s + SEMESTER_SUMMER)
+  )
+end
+puts 'semesters created...'
 
-l21 = c2.lessons.create(name: '实现二叉树实验', start_time: Time.now, end_time: Time.now + 100.days, location: '五教5201')
-l22 = c2.lessons.create(name: '红黑树复杂度实验', start_time: Time.now, end_time: Time.now + 100.days, location: '五教5201')
-l23 = c2.lessons.create(name: 'B树实验', start_time: Time.now, end_time: Time.now + 100.days, location: '五教5201')
-l24 = c2.lessons.create(name: '3min之内写出Dijkstra算法', start_time: Time.now, end_time: Time.now + 100.days, location: '五教5201')
+# create courses
+course_names = {
+    '操作系统' => ['实验1', '实验2', '实验3', '实验4'],
+    '计算机组成原理' => ['实验1', '实验2', '实验3', '实验4'],
+    '程序设计基础' => ['实验1', '实验2', '实验3', '实验4'],
+    '离散数学' => ['实验1', '实验2', '实验3', '实验4']
+}
+start_time = Time.new(2000, 1, 1, 8, 0, 0)
 
-l31 = c3.lessons.create(name: 'Activity实践与探索', start_time: Time.now, end_time: Time.now + 100.days, location: '五教5201')
-l32 = c3.lessons.create(name: '大话Service', start_time: Time.now, end_time: Time.now + 100.days, location: '五教5201')
-l33 = c3.lessons.create(name: '深入浅出Broadcast', start_time: Time.now, end_time: Time.now + 100.days, location: '五教5201')
-l34 = c3.lessons.create(name: '30天开发JVM', start_time: Time.now, end_time: Time.now + 100.days, location: '五教5201')
+courses = []
+course_names.each do |course_name, lesson_names|
+  course = Course.create(name: course_name,
+                         description: course_name + ', 计算机基础课程',
+                         semester_id: semesters[0].id)
+  i = 0
+  lesson_names.each do |lesson_name|
+    course.lessons.create(name: lesson_name,
+                          start_time: start_time + (2+i).hours,
+                          end_time: start_time + (3+i).hours,
+                          location: '五教5201')
+    i += 1
+  end
+  courses.push(course)
 
+end
+puts 'courses created...'
+
+# create default admin and default avator
 admin0 = User.create(name:'admin', phone:'123', email:'a@b.c', password:'123', password_confirmation:'123',
                  student_number: '1230', class_name: '44', department: '计算机系', description: '123', is_admin: true, avator_id: 1)
 default_avator = FileResource.create(path: '/uploads/default_avator.jpg', name: 'default_avator.jpg', file_type: 'jpg', creator_id: admin0.id)
 admin0.avator_id = default_avator.id
 admin0.save
+puts 'admin created...'
 
-teacher0 = User.create(name:'张三', phone:'1234', email:'aa@b.c', password:'123', password_confirmation:'123',
-                 student_number: '1231', class_name: '44', department: '计算机系', description: '123', is_admin: false, is_teacher: true)
-u2 = User.create(name:'张四', phone:'222', email:'b@c.d', password:'123', password_confirmation:'123',
-                 student_number: '1232', class_name: '44', department: '计算机系', description: '123', is_admin: false)
-u3 = User.create(name:'张五', phone:'333', email:'c@d.e', password:'123', password_confirmation:'123',
-                 student_number: '1233', class_name: '44', department: '计算机系', description: '123', is_admin: false)
-u4 = User.create(name:'张六', phone:'444', email:'d@d.e', password:'123', password_confirmation:'123',
-                 student_number: '1234', class_name: '44', department: '计算机系', description: '123', is_admin: false)
-u5 = User.create(name:'张七', phone:'555', email:'e@d.e', password:'123', password_confirmation:'123',
-                 student_number: '1235', class_name: '44', department: '计算机系', description: '123', is_admin: false)
-u6 = User.create(name:'张八', phone:'666', email:'f@d.e', password:'123', password_confirmation:'123',
-                 student_number: '1236', class_name: '44', department: '计算机系', description: '123', is_admin: false)
+# create teachers
+teacher_names = ['张三', '张四', '王大卫']
+teachers = []
 
-TeachingCourse.create(user_id: teacher0.id, course_id: c1.id)
+i = 0
+courses.each do |course|
+  teacher = User.create(name: teacher_names[i], phone: "1#{i}", email: "teacher#{i}@b.c", password:'123', password_confirmation:'123',
+                         student_number: "1#{i}", class_name: '4x', department: '计算机系', description: 'xxx', is_admin: false, is_teacher: true)
+  TeachingCourse.create(user_id: teacher.id, course_id: course.id)
 
-Participation.create(user_id: u2.id, course_id: c1.id, role: ROLE_ASSISTANT)
-Participation.create(user_id: u2.id, course_id: c2.id, role: ROLE_ASSISTANT)
-Participation.create(user_id: u2.id, course_id: c3.id, role: ROLE_ASSISTANT)
-Participation.create(user_id: u2.id, course_id: c4.id, role: ROLE_ASSISTANT)
+  i += 1
+  i %= teacher_names.size
+  teachers.push(teacher)
+end
+puts 'teachers created...'
 
-Participation.create(user_id: u3.id, course_id: c1.id, role: ROLE_ASSISTANT)
-Participation.create(user_id: u3.id, course_id: c2.id, role: ROLE_ASSISTANT)
-Participation.create(user_id: u3.id, course_id: c3.id, role: ROLE_STUDENT)
-Participation.create(user_id: u3.id, course_id: c4.id, role: ROLE_STUDENT)
+# create assistant for course 0
+assistant_names = %w"了数量 进口的 分类时 开机 的分类 开始 解放路 凯沙 罗顿发送"
+assistant_names.each do |assistant_name|
+  user =  User.create(name: assistant_name,
+                      phone: "2#{i}",
+                      email:"assistant#{i}@b.c",
+                      password:'123', password_confirmation:'123',
+                      student_number: "2#{i}",
+                      class_name: '4x',
+                      department: '计算机系',
+                      description: 'xxx',
+                      is_admin: false, is_teacher: false)
+  Participation.create(user_id: user.id, course_id: courses[0].id, role: ROLE_ASSISTANT)
+  i += 1
+end
+puts 'assistants created...'
 
-Participation.create(user_id: u4.id, course_id: c1.id, role: ROLE_STUDENT)
-Participation.create(user_id: u4.id, course_id: c2.id, role: ROLE_STUDENT)
-Participation.create(user_id: u4.id, course_id: c3.id, role: ROLE_STUDENT)
-Participation.create(user_id: u4.id, course_id: c4.id, role: ROLE_STUDENT)
+# create students for course 0
+student_names = %w'顺 路快 递非农 阿森纳费 哦司机 的愤怒 死定就分io s就发 送始发 地就'
+students = []
+i = 0
+student_names.each do |student_name|
+  user = User.create(name: student_name,
+                     phone: "3#{i}",
+                     email:"student#{i}@b.c",
+                     password:'123', password_confirmation:'123',
+                     student_number: "3#{i}",
+                     class_name: '4x',
+                     department: '计算机系',
+                     description: '123',
+                     is_admin: false, is_teacher: false)
+  Participation.create(user_id: user.id, course_id: courses[0].id, role: ROLE_STUDENT)
+  students.push(user)
+  i += 1
+end
+puts 'students created...'
 
-Participation.create(user_id: u5.id, course_id: c1.id, role: ROLE_STUDENT)
-Participation.create(user_id: u6.id, course_id: c1.id, role: ROLE_STUDENT)
+# create files
+f1 = FileResource.create(name: '1.jpg', file_type: 'jpg', path: '/uploads/1.jpg', creator_id: admin0.id)
+f2 = FileResource.create(name: '2.jpg', file_type: 'jpg', path: '/uploads/2.jpg', creator_id: admin0.id)
+puts 'files created...'
 
-f1 = FileResource.create(name: '1.jpg', file_type: 'jpg', path: '/uploads/1.jpg', creator_id: teacher0.id)
-f2 = FileResource.create(name: '2.jpg', file_type: 'jpg', path: '/uploads/2.jpg', creator_id: teacher0.id)
+## create lesson comments
+#l11.student_files.create(student_id: u3.id, file_resource_id: f1.id)
+LESSON_COMMENT_COUNT = 10
+courses[0].lessons.each do |lesson|
+  LESSON_COMMENT_COUNT.times do |x|
+    lesson.course.students.each do |student|
+      lesson.student_comments.create(creator_id: teachers[Random.rand(teachers.size)].id,
+                                     student_id: student.id,
+                                     score: Random.rand(100),
+                                     content: '实验做的不错')
+    end
+  end
+  lesson.lesson_comments.create(score: Random.rand(10),
+                                content: '这个课程真好呀!',
+                                creator_id: teachers[Random.rand(teachers.size)].id)
+end
+puts 'student comments created...'
 
-l11.student_files.create(student_id: u3.id, file_resource_id: f1.id)
+# create messages
+# notification
+NOTIFICATION_COUNT = 5
+courses.each do |course|
+  NOTIFICATION_COUNT.times do |x|
+    course.messages.create(
+        title: "期中考试#{x}",
+        content: '五教-5' + Random.rand(999).to_s,
+        deadline: Time.now,
+        creator: teachers[0],
+        message_type: :notification)
+  end
+end
+puts 'notifications created...'
 
-l11.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '8', content: '这门实验课非常赞')
-l11.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: 'Bootstrap还是不太懂')
-l11.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: 'IO子系统是如何修改中断向量表的?')
-l11.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: 'OS又崩了')
+# homework
+HOMEWORK_COUNT = 5
+courses.each do |course|
+  HOMEWORK_COUNT.times do |x|
+    course.messages.create(
+        title: "作业#{x}",
+        content: '实验xxxx报告',
+        deadline: Time.now,
+        creator: teachers[0],
+        message_type: :homework)
+  end
+end
+puts 'homework created...'
 
-l12.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '7', content: '这实验真无聊,我幼儿园就会了')
-l12.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: '我觉得这个实验有bug, 应该...')
-l12.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: '明年不要开这门实验了,太难了')
-l12.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: '好实验真赞^_^')
+# user messages
+USER_MESSAGES_COUNT = 5
+teachers.each do |teacher|
+  students.each do |student|
+    UserMessage.create(sender_id: student.id,
+                       receiver_id: teacher.id,
+                       title: '老师我请个假行吗',
+                       content: '原因很复杂...',
+                       status: MESSAGE_STATUS_UNREAD)
+    UserMessage.create(sender_id: teacher.id,
+                       receiver_id: student.id,
+                       title: %w"行 不行"[Random.rand(2)],
+                       content: '内容描述',
+                       status: MESSAGE_STATUS_UNREAD)
+  end
+end
+puts 'user messages created...'
 
-l21.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '6', content: '二叉树是什么鬼?')
-l21.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: '我会100种树和1000种搜索算法')
-l21.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: '我能30s内用c语言写出快排')
-l21.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: '我能30min内造一台计算机')
-
-l31.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '5', content: '哈哈, 老师真帅')
-l31.student_comments.create(creator_id: u2.id, student_id: u5.id, score: '333', content: '哈哈, 助教真帅')
-l31.student_comments.create(creator_id: teacher0.id, student_id: u4.id, score: '111', content: '哈哈安卓真好玩')
-l31.student_comments.create(creator_id: u3.id, student_id: u5.id, score: '222', content: '哈哈, 我再也不学安卓了')
-
-l11.lesson_comments.create(score: '10', content: '这个课程真好呀!', creator_id: u4.id)
-l11.lesson_comments.create(score: '1', content: '这个课程真无聊啊!', creator_id: u3.id)
-
-c1.messages.create(title: '期中考试', content: '五教-5201', deadline: Time.now, creator: teacher0, message_type: :notification)
-c1.messages.create(title: '期末考试', content: '五教-5202', deadline: Time.now + 3.days, creator: teacher0, message_type: :notification)
-c1.messages.create(title: '第五周课程取消', content: '五教-5203', deadline: Time.now + 3.days, creator: teacher0, message_type: :notification)
-c1.messages.create(title: '第三周作业上交', content: '选作', deadline: Time.now, creator: teacher0, message_type: :homework)
-c1.messages.create(title: '第五周作业上交', content: '必做', deadline: Time.now + 1.days, creator: teacher0, message_type: :homework)
-
-puts '--- init_data created ---'
+puts '--- seed created ---'
