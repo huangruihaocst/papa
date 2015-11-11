@@ -14,7 +14,7 @@
 	<script>
 		var courseId,classId=new Array();
 		
-		function getId()
+		function getId()    //获取当前课程id
 		{
 			var p=window.location.href.split("/");
 			p=p[p.length-1];
@@ -23,7 +23,7 @@
 		
 		var n,m,tot,info,items,courseInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
 		
-		function loadInfo()
+		function loadInfo()   //获取当前课程学生各个实验的成绩
 		{
 			getId();
 			var i;
@@ -43,7 +43,6 @@
 					if (data.status=="failed")
 					{
 						alert("学生名单加载失败");
-						return;
 					}
 					if (data.status=="successful")
 					{
@@ -89,14 +88,12 @@
 				if (data.status=="failed")
 				{
 					alert("获取课程信息失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
 					courseInfo=data.course.name;
 					p1=true;
 					if (p1&&p2) deal();
-					return;
 				}
 				alert("unexpected: /courses/id.json");
 			});
@@ -106,7 +103,6 @@
 				if (data.status=="failed")
 				{
 					alert("获取实验信息失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
@@ -119,9 +115,7 @@
 					}
 					p2=true;
 					if (p1&&p2) deal();
-					return;
 				}
-				alert("unexpected: /courses/id/lessons.json");
 			});
 		}
 		
@@ -208,7 +202,7 @@
 		}
 		window.document.onkeydown=escPress;*/
 		
-		function clickDownload(aLink)
+		function clickDownload(aLink)    //导出csv
 		{
 			if (focusi!=-1&&focusj!=-1) return; 
 			var p=$("#table1")[0],i,j,n=p.rows.length,m=p.rows[2].cells.length,data="",text="";
@@ -250,7 +244,7 @@
 			p.innerHTML=text;
 		}*/
 		
-		function showInfo()
+		function showInfo()    //显示学生成绩
 		{
 			var i,j,text="",text2;
 			text+='<h3>课程成绩</h3>';

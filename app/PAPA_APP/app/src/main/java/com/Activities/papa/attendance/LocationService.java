@@ -1,4 +1,4 @@
-package com.Activities.papa.attendence;
+package com.Activities.papa.attendance;
 
 import android.Manifest;
 import android.app.Notification;
@@ -40,8 +40,8 @@ public class LocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        String command = intent.getStringExtra(getString(R.string.key_attendence_activity_command));
-        if (command != null && command.equals(getString(R.string.key_attendence_activity_start_sign_in))) {
+        String command = intent.getStringExtra(getString(R.string.key_attendance_activity_command));
+        if (command != null && command.equals(getString(R.string.key_attendance_activity_start_sign_in))) {
             settings = Settings.getInstance(this);
             startTrackingPosition();
         }
@@ -77,7 +77,7 @@ public class LocationService extends Service {
             if (dis <= MinDistance) {
                 // sign in
                 Log.w(TAG, "In classroom, distance: " + String.valueOf(dis));
-                Attendence.getInstance().trySignIn(new OnSignInSuccessListener() {
+                Attendance.getInstance().trySignIn(new OnSignInSuccessListener() {
                     @Override
                     public void onSignInSuccess() {
                         stopTrackingPosition();
@@ -113,7 +113,7 @@ public class LocationService extends Service {
     void notifySignInSuccessful(String lesson, Calendar time, String name, String method) {
         time.setTimeZone(TimeZone.getDefault());
         Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle(String.format(getString(R.string.title_attendence_activity_sign_in_successful), name, lesson))
+                .setContentTitle(String.format(getString(R.string.title_attendance_activity_sign_in_successful), name, lesson))
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentText("Time: " + time.getTime().toString() + " method: " + method)
                 .build();

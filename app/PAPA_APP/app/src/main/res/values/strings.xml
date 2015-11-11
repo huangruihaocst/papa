@@ -28,7 +28,7 @@
     <string name="upload_history">我的上传</string>
     <string name="profile">个人中心</string>
     <string name="more">更多</string>
-    <string name="message">通知</string>
+    <string name="notification">通知</string>
     <string name="get_telephone_number">获取手机号</string>
     <string name="user_id">学号</string>
     <string name="user_class">班级</string>
@@ -63,6 +63,7 @@
     <string name="mark_all_as_read">全部标记为已读</string>
     <string name="select_all">全选</string>
     <string name="reverse_select">反选</string>
+    <string name="send_message">发信</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -88,12 +89,10 @@
     <string name="key_to_upload_history">key_to_upload_history</string>
     <string name="key_to_edit_profile">key_to_edit_profile</string>
     <string name="key_to_sign_in">key_to_sign_in</string>
-    <string name="key_to_message">key_to_message</string>
+    <string name="key_to_notification">key_to_notification</string>
     <string name="key_experiment_experiment_detail">key_experiment_experiment_detail</string>
     <string name="key_to_comment">key_to_comment</string>
-
-    <string name="title_activity_detail">DetailActivity</string>
-    <string name="title_activity_comment">CommentActivity</string>
+    <string name="key_to_send_message">key_to_send_message</string>
 
     <!--<string name="color_primary">#2196F3</string>-->
     <!--<string name="color_primary_dark">#1976D2</string>-->
@@ -176,13 +175,14 @@
     <string name="string_message_title">Title: %s</string>
     <string name="string_message_notify_deadline_title">%d messages are nearing deadline.</string>
     <string name="title_activity_experiment_detail_temp">ExperimentDetailTempActivity</string>
-    <string name="title_activity_detail_temp">DetailTempActivity</string>
-    <string name="title_activity_comment_temp">CommentTempActivity</string>
+    <string name="title_activity_detail">DetailTempActivity</string>
+    <string name="title_activity_comment">CommentTempActivity</string>
 
-    <string name="title_activity_attendence">AttendenceActivity</string>
-    <string name="key_attendence_activity_command">key_attendence_activity_command</string>
-    <string name="key_attendence_activity_start_sign_in">key_attendence_activity_start_sign_in</string>
-    <string name="title_attendence_activity_sign_in_successful">%1$s, You have successfully signed in %2$s</string>
+    <string name="title_activity_attendance">AttendanceActivity</string>
+    <string name="key_attendance_activity_command">key_attendance_activity_command</string>
+    <string name="key_attendance_activity_start_sign_in">key_attendance_activity_start_sign_in</string>
+    <string name="title_attendance_activity_sign_in_successful">%1$s, You have successfully signed in %2$s</string>
     <string name="key_settings_file_name">settings.dat</string>
+    <string name="title_activity_send_message">SendMessageActivity</string>
 
 </resources>

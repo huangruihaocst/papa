@@ -6,7 +6,7 @@
       </div>
       <ul class="nav navbar-nav pull-right">
           <li class="user_msg"><a id="user_name"><%= current_user.email %></a></li>
-          <li class="user_msg"><a href="/manage/message">消息<span>(<%=@message_number%>)</span></a></li>
+          <li class="user_msg"><a href="/manage/Message">消息<span>(<%=@message_number%>)</span></a></li>
           <li class="user_msg">
             <%= link_to "Sign out",destroy_user_session_path , method: :delete %>
           </li>

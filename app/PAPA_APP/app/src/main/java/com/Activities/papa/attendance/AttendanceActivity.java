@@ -1,4 +1,4 @@
-package com.Activities.papa.attendence;
+package com.Activities.papa.attendance;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,13 +15,13 @@ import android.view.View;
 import com.Activities.papa.R;
 import com.Activities.papa.settings.Settings;
 
-public class AttendenceActivity extends AppCompatActivity {
-    static final String TAG = "AttendenceActivity";
+public class AttendanceActivity extends AppCompatActivity {
+    static final String TAG = "AttendanceActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attendence);
+        setContentView(R.layout.activity_attendance);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -31,7 +31,7 @@ public class AttendenceActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Locating", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-            startSignInByGPS(AttendenceActivity.this);
+            startSignInByGPS(AttendanceActivity.this);
             }
         });
 
@@ -49,8 +49,8 @@ public class AttendenceActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
         Intent intent = new Intent(activity, LocationService.class);
-        intent.putExtra(activity.getString(R.string.key_attendence_activity_command),
-                activity.getString(R.string.key_attendence_activity_start_sign_in));
+        intent.putExtra(activity.getString(R.string.key_attendance_activity_command),
+                activity.getString(R.string.key_attendance_activity_start_sign_in));
         activity.startService(intent);
     }
 
@@ -59,8 +59,8 @@ public class AttendenceActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
         Intent intent = new Intent(activity, LocationService.class);
-        intent.putExtra(activity.getString(R.string.key_attendence_activity_command),
-                activity.getString(R.string.key_attendence_activity_start_sign_in));
+        intent.putExtra(activity.getString(R.string.key_attendance_activity_command),
+                activity.getString(R.string.key_attendance_activity_start_sign_in));
         activity.startService(intent);
     }
 }

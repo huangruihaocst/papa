@@ -13,7 +13,7 @@ class UserMessagesController < ApplicationController
     receiver = User.find(params[:user_id])
     raise RequestException.new(REASON_TOO_OFTEN) unless check_send_freq(user, receiver)
 
-    user_message = UserMessage.create(sender_id: user, receiver_id: receiver,
+    user_message = UserMessage.create(sender_id: user.id, receiver_id: receiver.id,
                        title: params[:title], content: params[:content], status: MESSAGE_STATUS_UNREAD)
     if user_message && user_message.valid?
       json_successful(id: user_message.id)
@@ -24,8 +24,9 @@ class UserMessagesController < ApplicationController
 
   # POST /messages/1/read.json
   def read
-    message = UserMessage.find(params[:id])
+    message = UserMessage.find(params[:message_id])
     message.status = MESSAGE_STATUS_READ
+    message.save
     json_successful
   end
 
@@ -41,7 +42,9 @@ class UserMessagesController < ApplicationController
   def destroy
     user = check_login
     message = UserMessage.find(params[:id])
-    if message.sender == user
+    if message.sender == message.receiver
+      message.sender_deleted, message.receiver_deleted = true, true
+    elsif message.sender == user
       message.sender_deleted = true
     elsif message.receiver == user
       message.receiver_deleted = true

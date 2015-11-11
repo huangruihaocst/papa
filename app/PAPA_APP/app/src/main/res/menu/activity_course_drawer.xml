@@ -12,8 +12,10 @@
             android:title="@string/upload_history" />
         <item android:id="@+id/nav_profile" android:icon="@drawable/ic_person_black_36dp"
             android:title="@string/profile" />
-        <item android:id="@+id/nav_notification" android:icon="@drawable/ic_sms_grey600_24dp"
-            android:title="@string/message" />
+        <item android:id="@+id/nav_notification" android:icon="@drawable/ic_notifications_black_36dp"
+            android:title="@string/notification" />
+        <item android:id="@+id/nav_send_message" android:icon="@drawable/ic_message_black_36dp"
+            android:title="@string/send_message" />
     </group>
 
     <item android:title="@string/more">

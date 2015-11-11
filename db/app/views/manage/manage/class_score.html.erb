@@ -22,7 +22,7 @@
 	<script>
 		var courseId,classId;
 		
-		function getId()
+		function getId()    //获取当前课程和实验的id
 		{
 			var p=window.location.href.split("/");
 			p=p[p.length-1];
@@ -32,7 +32,7 @@
 		
 		var n1,n2,m,info,items,classInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
 		
-		function loadInfo()
+		function loadInfo()    //获取实验成绩信息
 		{
 			getId();
 			var i;
@@ -56,16 +56,13 @@
 				if (data.status=="failed")
 				{
 					alert("实验信息加载失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
 					classInfo=data.lesson.name;
 					p1=true;
 					if (p1&&p2) deal();
-					return;
 				}
-				alert("unexpected: /lessons/id.json");
 			});
 			$.get("/courses/"+courseId+"/students.json",{},
 			function(data)
@@ -73,7 +70,6 @@
 				if (data.status=="failed")
 				{
 					alert("学生名单加载失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
@@ -99,15 +95,12 @@
 							if (data.status=="successful")
 							{
 								info[i].scoreInfo=data.student_comment;
-								return;
 							}
 							if (data.status=="failed"&&data.reason=="resource_not_found")
 							{
 								info[i].scoreInfo.score="未登记";
 								info[i].scoreInfo.creator_name="未定";
-								return;
 							}
-							alert("unexpected: /lessons/id/students/id/comment.json");
 						}});
 						$.ajax({url:"/students/"+data[i].id+"/lessons/"+classId+"/files.json",data:{},async:false,type:"GET",success:function(data)
 						{
@@ -127,9 +120,7 @@
 					}
 					p2=true;
 					if (p1&&p2) deal();
-					return;
 				}
-				alert("unexpected: /courses/id/students.json");
 			});
 		}
 		
@@ -231,7 +222,7 @@
 		}
 		window.document.onkeydown=escPress;*/
 		
-		function clickDownload(aLink)
+		function clickDownload(aLink)    //导出csv文件
 		{
 			if (focusi!=-1&&focusj!=-1) return; 
 			var p=$("#table1")[0],i,j,n=p.rows.length,m=p.rows[2].cells.length,data="",text="";
@@ -271,7 +262,7 @@
 			p.innerHTML=text;
 		}*/
 		
-		function showInfo()
+		function showInfo()    //显示实验成绩
 		{
 			var i,j,text="",text2;
 			text+='<h3>实验成绩</h3>';
