@@ -72,11 +72,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NotificationActivity"
-            android:label="@string/title_activity_notification"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".message.MessageActivity"
             android:label="@string/title_activity_message"
             android:launchMode="singleTop"

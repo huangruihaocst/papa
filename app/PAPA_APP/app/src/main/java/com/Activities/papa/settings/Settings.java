@@ -75,7 +75,7 @@ public class Settings implements Serializable {
     }
 
     /**
-     * Save the settings to some persistant storage
+     * Save the settings to some persistent storage
      * @param context, android context
      */
     synchronized public void commit(Context context) {
@@ -96,7 +96,7 @@ public class Settings implements Serializable {
     }
 
     /**
-     * Load the settings from a particular persistant storage
+     * Load the settings from a particular persistent storage
      * @param context, android context
      */
     private static Settings load(Context context) {
