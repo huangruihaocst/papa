@@ -25,7 +25,7 @@ public class Attendance {
     }
 
     /**
-     * Happily use this function to try sign in.
+     * Happily use this function in other activities to try sign in.
      * @param activity current activity
      */
     public static void startSignInByGPS(Activity activity) {

@@ -16,6 +16,10 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+/**
+ * This class is deprecated.
+ */
+
 public class NetworkStateChangeBroadcastReceiver extends BroadcastReceiver {
     static final String TAG = "WifiStateChangeBR";
     public NetworkStateChangeBroadcastReceiver() {

@@ -72,6 +72,8 @@ public class LocationService extends Service {
 
             // TODO 1
             // get center location and min distance from server
+            final String courseName = "Operating System";
+            final String userName = "Alex";
 
             // calculate location from center
             double dis = distanceToCenter(CenterLatitude, CenterLongitude, location);
@@ -84,7 +86,7 @@ public class LocationService extends Service {
                     @Override
                     public void onSignInSuccess() {
                         stopTrackingPosition();
-                        notifySignInSuccessful("Operating System", Calendar.getInstance(), "Alex", "GPS");
+                        notifySignInSuccessful(courseName, Calendar.getInstance(), userName, "GPS");
                     }
                 }, LocationService.this);
             }
@@ -118,7 +120,10 @@ public class LocationService extends Service {
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle(String.format(getString(R.string.title_attendance_activity_sign_in_successful), name, lesson))
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                .setContentText("Time: " + time.getTime().toString() + " method: " + method)
+                .setContentText(String.format(getString(
+                                        R.string.title_attendance_activity_sign_in_content),
+                                        Calendar.getInstance().toString(),
+                                        method))
                 .build();
 
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
