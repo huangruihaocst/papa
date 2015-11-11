@@ -23,7 +23,7 @@ public class CommentActivity extends AppCompatActivity {
 
     BundleHelper bundleHelper;
     String course_name;
-    String identity;
+    BundleHelper.Identity identity;
     RatingBar ratingBar;
     EditText editText;
 
@@ -40,11 +40,11 @@ public class CommentActivity extends AppCompatActivity {
         identity = bundleHelper.getIdentity();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (identity.equals("teacher_assistant")) {
+        if (identity == BundleHelper.Identity.teacher_assistant) {
             toolbar.setTitle(String.format(getString(R.string.view_comment),
                             bundleHelper.getStudentName(),
                             bundleHelper.getCourseName()));
-        } else if (identity.equals("student")) {
+        } else if (identity == BundleHelper.Identity.student) {
             toolbar.setTitle(getString(R.string.for_course) + course_name);
         }
         setSupportActionBar(toolbar);
@@ -60,7 +60,7 @@ public class CommentActivity extends AppCompatActivity {
         TextView textView_hint_comment = (TextView)findViewById(R.id.hint_comment);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         editText = (EditText) findViewById(R.id.editText);
-        if (identity.equals("teacher_assistant")) {
+        if (identity == BundleHelper.Identity.teacher_assistant) {
             ratingBar.setEnabled(false);
             editText.setEnabled(false);
             editText.setHint(getString(R.string.no_comment));
@@ -79,7 +79,7 @@ public class CommentActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.comment, menu);
         MenuItem item = menu.getItem(0);
-        if(identity.equals("teacher_assistant"))item.setVisible(false);
+        if(identity == BundleHelper.Identity.teacher_assistant)item.setVisible(false);
         return true;
     }
 

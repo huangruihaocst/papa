@@ -74,7 +74,7 @@
 	<script>
 		var courseId,classId;
 		
-		function getId()
+		function getId()    //获取当前查看的课程和实验id
 		{
 			var p=window.location.href.split("/");
 			p=p[p.length-1];
@@ -88,7 +88,7 @@
 		$("#chart2")[0].height=$("#chart2")[0].width;
 		var totalPages,nowPage,numberPerPage=10;
 		
-		function loadInfo()
+		function loadInfo()    //加载实验信息
 		{
 			getId();
 			for (i=0;i<11;++i) score[i]=0;
@@ -108,16 +108,13 @@
 				if (data.status=="failed")
 				{
 					alert("获取实验信息失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
 					classInfo=data.lesson.name;
 					p1=true;
 					if (p1&&p2&&p3) deal();
-					return;
 				}
-				alert("unexpected: /lessons/id.json");
 			});
 			$.get("/courses/"+courseId+"/students.json",{},
 			function(data)
@@ -125,16 +122,13 @@
 				if (data.status=="failed")
 				{
 					alert("获取课程人数失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
 					people.tot=data.students.length;
 					p2=true;
 					if (p1&&p2&&p3) deal();
-					return;
 				}
-				alert("unexpected: /courses/id/students.json");
 			});
 			$.get("/lessons/"+classId+"/comments.json",{},
 			function(data)
@@ -142,7 +136,6 @@
 				if (data.status=="failed")
 				{
 					alert("获取评论失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
@@ -156,9 +149,7 @@
 					}
 					p3=true;
 					if (p1&&p2&&p3) deal();
-					return;
 				}
-				alert("unexpected: /lessons/id/comments.json");
 			});
 		}
 		
@@ -170,7 +161,7 @@
 			showComments();
 		}
 		
-		function showComments()
+		function showComments()    //显示评论
 		{
 			var text="",t1,t2;
 			if (totalPages<=0)
@@ -194,7 +185,7 @@
 			}
 		}
 		
-		function showInfo()
+		function showInfo()    //显示信息
 		{
 			var data,data2,text="",i;
 			$("#title")[0].innerHTML=classInfo;

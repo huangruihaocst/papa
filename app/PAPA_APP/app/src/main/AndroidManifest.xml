@@ -72,11 +72,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NotificationActivity"
-            android:label="@string/title_activity_notification"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".message.MessageActivity"
             android:label="@string/title_activity_message"
             android:launchMode="singleTop"
@@ -107,45 +102,44 @@
         </activity>
         <activity
             android:name=".DetailActivity"
-            android:label="@string/title_activity_detail_temp"
+            android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
             android:name=".CommentActivity"
-            android:label="@string/title_activity_comment_temp"
+            android:label="@string/title_activity_comment"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".attendence.AttendenceActivity"
-            android:label="@string/title_activity_attendence"
+            android:name=".attendance.AttendanceActivity"
+            android:label="@string/title_activity_attendance"
             android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-
-
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <service
-            android:name=".attendence.LocationService"
+            android:name=".attendance.LocationService"
             android:enabled="true" >
-        </service>
-        <service
-            android:name=".attendence.WifiMonitoringService"
-            android:enabled="true"
-            android:exported="true" >
         </service>
 
         <receiver
-            android:name=".attendence.NetworkStateChangeBroadcastReceiver"
+            android:name=".attendance.NetworkStateChangeBroadcastReceiver"
             android:enabled="true"
             android:exported="true" >
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".SendMessageActivity"
+            android:label="@string/title_activity_send_message"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

@@ -1,21 +1,20 @@
-package com.Activities.papa.attendence;
+package com.Activities.papa.attendance;
 
 import android.content.Context;
-import android.location.Location;
 import android.util.Log;
 
 import com.Activities.papa.settings.Settings;
 
 import java.util.Calendar;
 
-public class Attendence {
-    static final String TAG = "Attendence";
+public class Attendance {
+    static final String TAG = "Attendance";
     static final int InterLessonPeriod = 1073741824;
 
-    private static Attendence theInstance;
-    public static Attendence getInstance() {
+    private static Attendance theInstance;
+    public static Attendance getInstance() {
         if (theInstance == null)
-            theInstance = new Attendence();
+            theInstance = new Attendance();
         return theInstance;
     }
 

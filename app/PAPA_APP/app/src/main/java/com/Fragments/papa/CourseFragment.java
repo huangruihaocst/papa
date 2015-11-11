@@ -253,7 +253,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
 
 
-    private void startExperimentActivity(String courseName, int courseId, String identity){
+    private void startExperimentActivity(String courseName, int courseId, BundleHelper.Identity identity){
 
         Log.i(tag, courseName + "=" + courseId);
 
@@ -323,7 +323,9 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "student");
+                startExperimentActivity(rlt.course.get(position).getValue(),
+                        rlt.course.get(position).getKey(),
+                        BundleHelper.Identity.student);
             }
         });
     }
@@ -335,7 +337,9 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(rlt.course.get(position).getValue(), rlt.course.get(position).getKey(), "teacher_assistant");
+                startExperimentActivity(rlt.course.get(position).getValue(),
+                        rlt.course.get(position).getKey(),
+                        BundleHelper.Identity.teacher_assistant);
             }
         });
     }

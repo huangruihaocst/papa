@@ -32,7 +32,7 @@ public class ExperimentActivity extends AppCompatActivity {
 
     String course_name;
     int courseId;
-    String identity;
+    BundleHelper.Identity identity;
     BundleHelper bundleHelper = new BundleHelper();
 
     PapaDataBaseManager papaDataBaseManager;

@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
@@ -43,7 +42,7 @@ public class MessageActivity extends AppCompatActivity {
             return;
         }
 
-        BundleHelper bundleHelper = bundle.getParcelable(getString(R.string.key_to_message));
+        BundleHelper bundleHelper = bundle.getParcelable(getString(R.string.key_to_notification));
 
         if (bundleHelper != null) {
             this.userId = String.valueOf(bundleHelper.getId());
@@ -66,7 +65,7 @@ public class MessageActivity extends AppCompatActivity {
         setUserData(getIntent());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_message_list);
-        toolbar.setTitle(getString(R.string.message));
+        toolbar.setTitle(getString(R.string.notification));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

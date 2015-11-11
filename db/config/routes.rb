@@ -82,6 +82,7 @@ Rails.application.routes.draw do
   get 'new_message_count' => 'user_messages#new_message_count', as: :new_message_count
   post 'users/:user_id/messages' => 'user_messages#create', as: :create_user_message
   post 'messages/:message_id/read' => 'user_messages#read', as: :read_message
+  delete 'messages/:id' => 'user_messages#destroy'
 
   namespace :apps do
     get 'current_version' => 'android_apps#current_version'
@@ -99,6 +100,7 @@ Rails.application.routes.draw do
     get 'ShowPhotos/:id' => 'manage#show_photos'
     get 'student/:id/lesson/:lessonId' => 'manage#student_lesson_info'
     get 'CourseStudents/:id' => 'manage#course_students'
+    get 'Message' => 'manage#message'
   end
   root "manage/manage#main_page"
 end
