@@ -1,4 +1,4 @@
-package com.Activities.papa;
+package com.Activities.papa.experiments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,15 +6,16 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.Activities.papa.BundleHelper;
+import com.Activities.papa.CommentActivity;
+import com.Activities.papa.R;
 import com.Fragments.papa.ExperimentInformationFragment;
 import com.Fragments.papa.ExperimentResultFragment;
 import com.Fragments.papa.GradesFragment;

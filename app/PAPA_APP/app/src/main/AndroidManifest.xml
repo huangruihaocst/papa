@@ -90,12 +90,12 @@
         </service>
 
         <activity
-            android:name=".ExperimentActivity"
+            android:name=".experiments.ExperimentActivity"
             android:label="@string/title_activity_experiment"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".ExperimentDetailActivity"
+            android:name=".experiments.ExperimentDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_experiment_detail_temp"
             android:theme="@style/AppTheme.NoActionBar" >

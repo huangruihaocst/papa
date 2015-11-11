@@ -1,4 +1,4 @@
-package com.Activities.papa;
+package com.Activities.papa.experiments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,6 +19,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Activities.papa.BundleHelper;
+import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
@@ -106,39 +106,6 @@ public class ExperimentActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class MyAdapter extends BaseAdapter {
-        private List<Map.Entry<Integer, String>> lst;
-
-        public MyAdapter(List<Map.Entry<Integer, String>> lst) {
-            this.lst = lst;
-        }
-
-        @Override
-        public int getCount() {
-            return lst.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return lst.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent){
-            TextView mTextView = new TextView(getApplicationContext());
-            mTextView.setText(lst.get(position).getValue());
-            mTextView.setTextSize(35);
-//            mTextView.setTextColor(getColor(R.color.colorPrimary));
-            mTextView.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorPrimary));
-            return mTextView;
-        }
-    }
-
     private void getExperiments(){
         new Task(this).execute(new PapaDataBaseManager.LessonRequest(courseId));
     }
@@ -191,7 +158,7 @@ public class ExperimentActivity extends AppCompatActivity {
     void setExperiments(final PapaDataBaseManager.LessonReply rlt)
     {
         final ListView ExperimentListView = (ListView)findViewById(R.id.experiment_list);
-        ExperimentListView.setAdapter(new MyAdapter(rlt.lesson));
+        ExperimentListView.setAdapter(new ExperimentsListAdapter(rlt.lesson,getApplicationContext()));
         ExperimentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
