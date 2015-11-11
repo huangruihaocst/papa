@@ -20,6 +20,7 @@ import android.widget.ListView;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
+import com.Settings.Settings;
 
 public class MessageActivity extends AppCompatActivity {
     static final String TAG = "MessageActivity";
@@ -103,8 +104,8 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(bound) {
-                    messagePullService.clearMessageCache();
-                    flushMessages();
+                    Settings.clearCache(MessageActivity.this);
+                            flushMessages();
                 }
                 Snackbar.make(view, getString(R.string.notification_clear_all), Snackbar.LENGTH_LONG).show();
             }

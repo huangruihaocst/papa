@@ -1,9 +1,15 @@
 package com.Activities.papa.attendance;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import com.Activities.papa.settings.Settings;
+import com.Activities.papa.R;
+import com.Settings.Settings;
 
 import java.util.Calendar;
 
@@ -16,6 +22,22 @@ public class Attendance {
         if (theInstance == null)
             theInstance = new Attendance();
         return theInstance;
+    }
+
+    /**
+     * Happily use this function in other activities to try sign in.
+     * @param activity current activity
+     */
+    public static void startSignInByGPS(Activity activity) {
+        // TODO: shouldn't clear cache every time
+        Settings.clearCache(activity);
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        }
+        Intent intent = new Intent(activity, LocationService.class);
+        intent.putExtra(activity.getString(R.string.key_attendance_activity_command),
+                activity.getString(R.string.key_attendance_activity_start_sign_in));
+        activity.startService(intent);
     }
 
     /**

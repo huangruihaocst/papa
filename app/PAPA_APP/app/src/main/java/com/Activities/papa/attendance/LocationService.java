@@ -16,7 +16,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.Activities.papa.R;
-import com.Activities.papa.settings.Settings;
+import com.Settings.Settings;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -53,6 +53,7 @@ public class LocationService extends Service {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
             return true;
         }
         return false;
@@ -66,22 +67,26 @@ public class LocationService extends Service {
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             Log.w(TAG, "location changed");
+            Log.w(TAG, String.format("Location: %f, %f", location.getLatitude(), location.getLongitude()));
+            Log.w(TAG, String.format("Location accuracy: %f", location.getAccuracy()));
 
             // TODO 1
             // get center location and min distance from server
+            final String courseName = "Operating System";
+            final String userName = "Alex";
 
             // calculate location from center
             double dis = distanceToCenter(CenterLatitude, CenterLongitude, location);
 
-            // check distance,
-            if (dis <= MinDistance) {
+            // check distance + accuracy
+            if (dis <= MinDistance + location.getAccuracy()) {
                 // sign in
                 Log.w(TAG, "In classroom, distance: " + String.valueOf(dis));
                 Attendance.getInstance().trySignIn(new OnSignInSuccessListener() {
                     @Override
                     public void onSignInSuccess() {
                         stopTrackingPosition();
-                        notifySignInSuccessful("Operating System", Calendar.getInstance(), "Alex", "GPS");
+                        notifySignInSuccessful(courseName, Calendar.getInstance(), userName, "GPS");
                     }
                 }, LocationService.this);
             }
@@ -115,7 +120,10 @@ public class LocationService extends Service {
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle(String.format(getString(R.string.title_attendance_activity_sign_in_successful), name, lesson))
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                .setContentText("Time: " + time.getTime().toString() + " method: " + method)
+                .setContentText(String.format(getString(
+                                        R.string.title_attendance_activity_sign_in_content),
+                                        Calendar.getInstance().toString(),
+                                        method))
                 .build();
 
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

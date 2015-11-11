@@ -71,7 +71,8 @@ class StudentsController < ApplicationController
       if json
         puts json
         students = JSON.parse(json)
-        if students.is_a?(Array)
+        if students.is_a?(Array) || students.is_a?(Hash)
+          students = [students] if students.is_a?(Hash)
           invalid_students = []
           students.each do |student|
             raise RequestException.new(REASON_INVALID_FIELD) unless student['student_number']

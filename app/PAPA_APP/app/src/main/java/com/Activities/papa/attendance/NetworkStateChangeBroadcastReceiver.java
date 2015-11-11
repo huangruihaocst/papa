@@ -16,6 +16,10 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+/**
+ * This class is deprecated.
+ */
+
 public class NetworkStateChangeBroadcastReceiver extends BroadcastReceiver {
     static final String TAG = "WifiStateChangeBR";
     public NetworkStateChangeBroadcastReceiver() {
@@ -23,16 +27,16 @@ public class NetworkStateChangeBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ConnectivityManager cm =
-                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        if (isConnected) {
-            checkGatewayAndSignIn(context);
-        }
-        Log.w(TAG, "wifi changed");
+//        ConnectivityManager cm =
+//                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+//        boolean isConnected = activeNetwork != null &&
+//                activeNetwork.isConnectedOrConnecting();
+//        if (isConnected) {
+//            checkGatewayAndSignIn(context);
+//        }
+//        Log.w(TAG, "wifi changed");
     }
 
     private static String intToIp(int i) {

@@ -14,4 +14,15 @@ class Lesson < ActiveRecord::Base
   has_many :lesson_statuses
   has_many :student_attendences
   has_many :signed_in_students, through: :student_attendences, source: :user
+
+  def latitude
+    40.004564
+  end
+  def longitude
+    116.327893
+  end
+  def radius
+    1000
+  end
+
 end
