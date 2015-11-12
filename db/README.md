@@ -324,6 +324,13 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     POST   /android/current_version.json 上传apk            version=xx apk                              Admin
         permission_denied: 当前用户不是管理员
         
+    # 快捷查询
+    GET    /courses/1.json?full=true
+        { status: successful,
+          course: { xx, 和从前一样, ..., students: [{ id: 1, name: '123', email: , phone: ,
+           comment: { score: , content: , creator_name  } } ]} 
+    GET    /lessons/1.json?full=true
+       
 Deprecated APIs:
 
     #!POST   /lessons/1/comments.json  添加学生对课程的评价(当前登陆用户)  lesson comment parameters        Student
