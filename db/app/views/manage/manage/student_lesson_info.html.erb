@@ -1,11 +1,5 @@
  <script src="/video/video.js" type="text/javascript" charset="utf-8"></script>
   <script src="/jquery.form.js" type="text/javascript" charset="utf-8"></script>
-  <script type="text/javascript">
-      // 这段代码必须放在video.js后面ss
-      // 页面加载完成  才加载VideoJS的标签
-      VideoJS.setupAllWhenReady();
-  </script>
-  <!-- 皮肤 -->
   <link rel="stylesheet" href="/video/video-js.css" type="text/css" media="screen" title="Video JS">
 
   <div class="container-fluid">
@@ -139,7 +133,10 @@
       }
       function submit_form()
       {
-          $("#teacher-form").ajaxSubmit(function(data){console.log(data)});
+          $("#teacher-form").ajaxSubmit(function(d){
+              alert("修改成功!");
+              location.reload(true);
+          });
           return false;
       }
   </script>
