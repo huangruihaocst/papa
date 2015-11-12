@@ -167,8 +167,8 @@ puts 'student comments created...'
 courses.each do |course|
   NOTIFICATION_COUNT.times do |x|
     course.messages.create(
-        title: "期中考试#{x}",
-        content: '五教-5' + Random.rand(999).to_s,
+        title: MessageBuilder.build_notification,
+        content: '同学们千万不要忘了!',
         deadline: Time.now,
         creator: teachers[0],
         message_type: :notification)
@@ -181,8 +181,8 @@ HOMEWORK_COUNT = 5
 courses.each do |course|
   HOMEWORK_COUNT.times do |x|
     course.messages.create(
-        title: "作业#{x}",
-        content: '实验xxxx报告',
+        title: MessageBuilder.build_homework,
+        content: '请同学们尽快完成',
         deadline: Time.now,
         creator: teachers[0],
         message_type: :homework)
@@ -197,7 +197,7 @@ teachers.each do |teacher|
     UserMessage.create(sender_id: student.id,
                        receiver_id: teacher.id,
                        title: '老师我请个假行吗',
-                       content: '原因很复杂...',
+                       content: '生病了...',
                        status: MESSAGE_STATUS_UNREAD)
     UserMessage.create(sender_id: teacher.id,
                        receiver_id: student.id,
