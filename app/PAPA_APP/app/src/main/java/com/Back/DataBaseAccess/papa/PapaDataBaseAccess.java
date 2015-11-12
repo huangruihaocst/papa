@@ -37,8 +37,7 @@ public class PapaDataBaseAccess
     public String getDataBaseReplyAsString(PapaAbstractHttpClient.HttpMethod method, String url)
             throws PapaHttpClientException
     {
-        url = "http://" + host + ":" + port + url;
-        return client.getHttpReply(method, url, new HashMap<String, Object>());
+        return getDataBaseReplyAsString(method, url, new HashMap<String, Object>());
     }
 
     public JSONObject getDataBaseReplyAsJson(PapaAbstractHttpClient.HttpMethod method, String url, HashMap<String, Object> parameters)

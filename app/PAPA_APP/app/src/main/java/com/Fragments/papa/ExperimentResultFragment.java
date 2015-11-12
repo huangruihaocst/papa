@@ -265,7 +265,7 @@ public class ExperimentResultFragment extends Fragment {
                                     bundleHelper.getToken(),
                                     file,
                                     file.getName(),
-                                    "image"
+                                    "video"
                             )
                     );
                 }
@@ -293,7 +293,7 @@ public class ExperimentResultFragment extends Fragment {
                                         bundleHelper.getToken(),
                                         file,
                                         file.getName(),
-                                        "image"
+                                        "picture"
                                 )
                         );
                     }

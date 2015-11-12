@@ -39,7 +39,6 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
         HttpConnectionParams.setConnectionTimeout(httpParams, 3 * 1000);
         HttpConnectionParams.setSoTimeout(httpParams, 3 * 1000);
         HttpClient httpClient = new DefaultHttpClient(httpParams);
-
         try {
             HttpResponse response = httpClient.execute(request);
 
