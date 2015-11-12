@@ -13,10 +13,9 @@ SEMESTER_FALL = '秋季'
 
 COURSE_COUNT = 10
 TEACHER_COUNT = 10
-ASSISTANT_COUNT = 20
-STUDENT_COUNT = 20
-AS_COUNT = 10
-LESSON_COMMENT_COUNT = 5
+ASSISTANT_COUNT = 12
+STUDENT_COUNT = 12
+AS_COUNT = 5
 NOTIFICATION_COUNT = 5
 
 name_reader = NameReader.new
@@ -154,12 +153,12 @@ students.each do |student|
     course.lessons.each do |lesson|
       course_teachers = course.teachers
       teacher = course_teachers[Random.rand(course_teachers.size)]
-      lesson.lesson_comments.create(score: Random.rand(10),
+      lesson.lesson_comments.create(score: Random.rand(0..10),
                                     content: '这个课程真好呀!',
                                     creator_id: student.id)
       lesson.student_comments.create(creator_id: teacher.id,
                                      student_id: student.id,
-                                     score: Random.rand(100),
+                                     score: Random.rand(0..100),
                                      content: '实验做的不错')
     end
   end
@@ -210,16 +209,14 @@ assistant_students.each do |user, his_courses|
   # 作为学生时, 给每一个实验评分, 而且在每门课上被老师评分
   his_courses[:student_courses].each do |course|
     course.lessons.each do |lesson|
-      LESSON_COMMENT_COUNT.times do
-        teacher = teachers[Random.rand(teachers.size)]
-        lesson.lesson_comments.create(score: Random.rand(10),
-                                      content: '这个课程真好呀!',
-                                      creator_id: user.id)
-        lesson.student_comments.create(creator_id: teacher.id,
-                                       student_id: user.id,
-                                       score: Random.rand(100),
-                                       content: '实验做的不错')
-      end
+      teacher = teachers[Random.rand(teachers.size)]
+      lesson.lesson_comments.create(score: Random.rand(10),
+                                    content: '这个课程真好呀!',
+                                    creator_id: user.id)
+      lesson.student_comments.create(creator_id: teacher.id,
+                                     student_id: user.id,
+                                     score: Random.rand(100),
+                                     content: '实验做的不错')
     end
   end
 end
