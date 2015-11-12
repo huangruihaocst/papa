@@ -67,6 +67,7 @@
     <string name="new_message">创建新信息</string>
     <string name="title">标题</string>
     <string name="body">正文</string>
+    <string name="recipient">收件人</string>
     <string name="username">用户名</string>
     <string name="mail">邮箱</string>
     <string name="change_password">修改密码</string>

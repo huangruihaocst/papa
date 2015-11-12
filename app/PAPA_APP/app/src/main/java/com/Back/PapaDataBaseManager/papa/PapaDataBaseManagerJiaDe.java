@@ -200,4 +200,8 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request) throws PapaHttpClientException {
 
     }
+
+    @Override
+    public void postAttendance(PostAttendance request) throws PapaHttpClientException {
+    }
 }

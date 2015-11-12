@@ -406,5 +406,34 @@ public abstract class PapaDataBaseManager {
             throws PapaHttpClientException;
 
 
+    //////////////////////////////////////////////////////////////////////////
+    // 学生签到
+
+    static public class PostAttendance
+    {
+        public String token;
+        public double latitude;
+        public double longitude;
+        public boolean locationServiceAvailable;
+        public String personId;
+        public String lessonId;
+
+        public PostAttendance(
+                String token, String personId, String lessonId,
+                double latitude, double longitude, boolean locationServiceAvailable
+        )
+        {
+            this.token = token;
+            this.personId = personId;
+            this.lessonId = lessonId;
+
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.locationServiceAvailable = locationServiceAvailable;
+        }
+    }
+
+    public abstract void postAttendance(PostAttendance request)
+            throws PapaHttpClientException;
 
 }

@@ -87,4 +87,17 @@ public class PapaDataBaseManagerRealTest extends InstrumentationTestCase {
         );
 
     }
+    
+    public void test4() throws Exception {
+        PapaDataBaseManager papaDataBaseManager = new PapaDataBaseManagerReal();
+
+        PapaDataBaseManager.SignInReply r = papaDataBaseManager.signIn(
+                new PapaDataBaseManager.SignInRequest("21", "123" )
+        );
+
+
+        papaDataBaseManager.postAttendance(new PapaDataBaseManager.PostAttendance(
+                r.token, r.personId + "", "5", 120.0123456, 30.0123456, true)
+        );
+    }
 }
