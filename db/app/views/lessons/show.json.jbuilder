@@ -9,4 +9,8 @@ json.lesson do
   json.latitude   @lesson.latitude
   json.longitude  @lesson.longitude
   json.radius     @lesson.radius
+
+  if @students
+    json.students @students
+  end
 end

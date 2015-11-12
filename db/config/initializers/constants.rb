@@ -29,3 +29,6 @@ ALLOWED_FILE_SUFFIXES = %w"jpg gif png mp4 mpg avi"
 
 MESSAGE_STATUS_UNREAD = 'unread'
 MESSAGE_STATUS_READ   = 'read'
+
+FILE_TYPE_VIDEO   = 'video'
+FILE_TYPE_IMAGE   = 'image'
