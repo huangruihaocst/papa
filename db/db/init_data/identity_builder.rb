@@ -5,7 +5,7 @@ class IdentityBuilder
   def self.build_department_and_class
     index = Random.rand(DEPARTMENTS.size)
     { department: DEPARTMENTS[index],
-      class:      CLASSES[index] + Random.rand(10).to_s + Random.rand(1..10).to_s }
+      class:      CLASSES[index] + Random.rand(10).to_s + Random.rand(1..9).to_s }
   end
 
 end

@@ -8,6 +8,15 @@ class UsersController < ApplicationController
     end
   end
 
+  def update
+    user = check_login
+    if user.update(params.require(:user).permit(:phone, :email, :name, :password, :password_confirmation, :department, :class_name, :avator_id))
+      json_successful
+    else
+      json_failed
+    end
+  end
+
   def show
     begin
       @user = User.find(params[:id])

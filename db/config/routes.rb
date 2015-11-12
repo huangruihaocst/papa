@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
   get 'users/current' => 'users#current'
   get 'users/:id' => 'users#show'
+  put 'users/:id' => 'users#update'
 
   resources :semesters, only: [:index, :create, :update, :destroy] do
     resources :courses, only: [:index]

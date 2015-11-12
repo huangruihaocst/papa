@@ -19,9 +19,19 @@ module Users
     # end
 
     # PUT /resource
-    # def update
-    #   super
-    # end
+    def update
+      respond_to do |format|
+        format.html { super }
+        format.json {
+          user = User.find(params[:id])
+          if user.update(params.require(:user).permit(:phone, :email, :name, :password, :avator_id, :description, ))
+            render json: { status: STATUS_SUCCESS }
+          else
+            render json: { status: STATUS_FAIL }
+          end
+        }
+      end
+    end
 
     # DELETE /resource
     # def destroy

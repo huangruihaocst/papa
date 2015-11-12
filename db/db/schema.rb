@@ -168,10 +168,10 @@ ActiveRecord::Schema.define(version: 20151106135008) do
     t.boolean  "is_teacher",             default: false
     t.boolean  "is_admin",               default: false
     t.integer  "avator_id"
-    t.string   "student_number"
-    t.string   "class_name"
-    t.string   "department"
-    t.text     "description"
+    t.string   "student_number",         default: "",    null: false
+    t.string   "class_name",             default: "",    null: false
+    t.string   "department",             default: "",    null: false
+    t.text     "description",            default: "",    null: false
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
   end
