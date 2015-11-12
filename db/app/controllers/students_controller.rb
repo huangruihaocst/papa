@@ -69,10 +69,13 @@ class StudentsController < ApplicationController
       must_be_a_teacher_of(params[:token], course)
       json = params[:json]
       if json
-        puts json
-        students = JSON.parse(json)
-        if students.is_a?(Array) || students.is_a?(Hash)
-          students = [students] if students.is_a?(Hash)
+        if json.is_a?(ActionController::Parameters)
+          students = [ json ]
+        else
+          students = JSON.parse(json)
+        end
+
+        if students.is_a?(Array)
           invalid_students = []
           students.each do |student|
             raise RequestException.new(REASON_INVALID_FIELD) unless student['student_number']
