@@ -194,18 +194,7 @@ end
 puts 'assistant and student created...'
 
 assistant_students.each do |user, his_courses|
-  # 作为助教时, 给每一个学生评分
-  his_courses[:assistant_courses].each do |course|
-    course.lessons.each do |lesson|
-      students.each do |student|
-        lesson.student_comments.create(creator_id: user.id,
-                                       student_id: student.id,
-                                       score: Random.rand(100),
-                                       content: '实验做的不错')
-      end
-    end
-  end
-
+  # 作为助教时, 什么都不用做
   # 作为学生时, 给每一个实验评分, 而且在每门课上被老师评分
   his_courses[:student_courses].each do |course|
     course.lessons.each do |lesson|

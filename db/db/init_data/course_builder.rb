@@ -1,4 +1,7 @@
 class CourseBuilder
+
+  LESSON_COUNT = 8
+
   def initialize
     f = open('db/init_data/courses', 'r')
     @courses = []
@@ -22,7 +25,7 @@ class CourseBuilder
   def self.build_lessons
     lessons = []
     lesson_str = LESSON_KINDS[Random.rand(LESSON_KINDS.size)]
-    16.times do |x|
+    LESSON_COUNT.times do |x|
        lessons.push(lesson_str % (x+1))
     end
     lessons
