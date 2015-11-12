@@ -56,14 +56,19 @@ teacher_names = ['张三', '张四', '王大卫']
 teachers = []
 
 i = 0
+teacher_names.each do |t|
+  teacher = User.create(name: t, phone: "1#{i}", email: "teacher#{i}@b.c", password:'123', password_confirmation:'123',
+                        student_number: "1#{i}", class_name: '4x', department: '计算机系', description: 'xxx', is_admin: false, is_teacher: true)
+  i += 1
+  teachers.push(teacher)
+end
+
+i = 0
 courses.each do |course|
-  teacher = User.create(name: teacher_names[i], phone: "1#{i}", email: "teacher#{i}@b.c", password:'123', password_confirmation:'123',
-                         student_number: "1#{i}", class_name: '4x', department: '计算机系', description: 'xxx', is_admin: false, is_teacher: true)
-  TeachingCourse.create(user_id: teacher.id, course_id: course.id)
+  TeachingCourse.create(user_id: teachers[i].id, course_id: course.id)
 
   i += 1
   i %= teacher_names.size
-  teachers.push(teacher)
 end
 puts 'teachers created...'
 
@@ -111,11 +116,12 @@ puts 'files created...'
 
 ## create lesson comments
 #l11.student_files.create(student_id: u3.id, file_resource_id: f1.id)
-LESSON_COMMENT_COUNT = 10
+LESSON_COMMENT_COUNT = 5
 courses[0].lessons.each do |lesson|
   LESSON_COMMENT_COUNT.times do |x|
     lesson.course.students.each do |student|
-      lesson.student_comments.create(creator_id: teachers[Random.rand(teachers.size)].id,
+      teacher = teachers[Random.rand(teachers.size)]
+      lesson.student_comments.create(creator_id: teacher.id,
                                      student_id: student.id,
                                      score: Random.rand(100),
                                      content: '实验做的不错')
