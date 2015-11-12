@@ -6,4 +6,7 @@ json.lesson do
   json.start_time @lesson.start_time
   json.end_time   @lesson.end_time
   json.location   @lesson.location
+  json.latitude   @lesson.latitude
+  json.longitude  @lesson.longitude
+  json.radius     @lesson.radius
 end

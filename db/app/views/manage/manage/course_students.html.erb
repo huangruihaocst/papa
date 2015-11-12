@@ -14,11 +14,39 @@
         <p>2014011002,李四,计算机系,计46,lisi@mails.tsinghua.edu.cn,17888888889</p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" onclick="parse_csv()" data-dismiss="modal">修改</button>
+        <button class="btn btn-primary" onclick="parse_csv()" data-dismiss="modal">提交</button>
+        <button class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div> 
+  </div>
+</div>
+
+<div class="modal fade" id="modal-add-one" tabindex="-1" role="dialog" aria-hidden="true">
+  <form action="/courses/<%=@course_id%>/students.json" method="post">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" type="button" data-dismiss="modal">×</button>
+        <h3>添加学生</h3>
+      </div>
+      <div class="modal-body">
+        <label>学号<input name="json[student_number]" type="text"></label>
+        <label>姓名<input name="json[name]" type="text"></label>
+        <label>系别<input name="json[department]" type="text"></label>
+        <label>班级<input name="json[class_name]" type="text"></label>
+        <label>邮箱<input name="json[email]" type="text"></label>
+        <label>电话<input name="json[phone]" type="text"></label>
+        <h4>输入样例</h4>
+        <p>2014011001,张三,计算机系,计46,zhangsan@mails.tsinghua.edu.cn,17888888888</p>
+        <p>2014011002,李四,计算机系,计46,lisi@mails.tsinghua.edu.cn,17888888889</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="submit">提交</button>
         <button class="btn btn-default" data-dismiss="modal">取消</button>
       </div>
     </div>
   </div>
+  </form>
 </div>
 <div class="container">
   <div class="row">
@@ -30,7 +58,9 @@
       <div class="col-md-6">
         <p></p>
         <p>目前已经有<span id="student-number">0</span>人在学这门课!</p>
-        <button class="btn btn-block btn-sm" id="readButton">添加学生</button>
+        <button class="btn btn-sm" id="readButton">批量添加学生</button>
+        <button class="btn btn-sm" id="addOneButton">添加单个学生</button>
+
       </div>
       <table class="table table-striped table-hover table-bordered">
         <thead>
@@ -70,6 +100,7 @@
     }
     (function(){
         $("#readButton").click(function(){$("#modal-add").modal('show');});
+        $("#addOneButton").click(function(){$("#modal-add-one").modal('show');});
         $.get("/courses/<%=@course_id%>/students.json",{},function(data){
             console.log(data);
             str = "";

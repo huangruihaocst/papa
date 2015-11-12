@@ -1,0 +1,2 @@
+json.status STATUS_SUCCESS
+json.user_message_count @user_messages.count

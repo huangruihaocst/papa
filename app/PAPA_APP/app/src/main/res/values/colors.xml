@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#1976D2</color>
-    <color name="colorAccent">#E040FB</color>
+    <color name="colorAccent">#FFC107</color>
     <color name="colorToolBar">#E7790D</color>
     <color name="colorToolBarDark">#D06D0C</color>
     <color name="color_message_nearing_deadline">#FF0000</color>

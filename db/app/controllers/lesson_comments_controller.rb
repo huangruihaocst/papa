@@ -16,8 +16,11 @@ class LessonCommentsController < ApplicationController
     lesson = Lesson.find(params[:lesson_id])
     raise RequestException.new(REASON_PERMISSION_DENIED) unless lesson.course.students.include?(user)
 
-    comment = lesson.lesson_comments.create(params.require(:lesson_comment).permit(:content, :score))
-    if comment
+    comment = lesson.lesson_comments.create(
+        params.require(:lesson_comment).permit(:content, :score)
+                                        .merge(creator_id: user.id)
+    )
+    if comment && comment.valid?
       json_successful(id: comment.id)
     else
       json_failed

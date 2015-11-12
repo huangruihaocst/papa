@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,10 +33,13 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -174,7 +176,7 @@ public class ExperimentResultFragment extends Fragment {
                         if(which == 0){//camera
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
+                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to commit the image
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
 
                             // start the image capture Intent
@@ -182,7 +184,7 @@ public class ExperimentResultFragment extends Fragment {
                         }else if(which == 1){//video
                             Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
-                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to save the video
+                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to commit the video
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
                             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
 
@@ -190,7 +192,7 @@ public class ExperimentResultFragment extends Fragment {
                             startActivityForResult(intent, CAPTURE_VIDEO);
                         }else if(which == 2){//gallery
                             Intent intent = new Intent(Intent.ACTION_PICK);
-                            intent.setType("image/*,video/*");
+                            intent.setType("*/*");
                             startActivityForResult(intent, IMAGE_PICKER_SELECT);
                         }
                     }
@@ -250,13 +252,31 @@ public class ExperimentResultFragment extends Fragment {
             if (path != null) {
                 File file = new File(path);
                 if(file.exists()){
-                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    Uri returnUri = data.getData();
+                    String mimeType = getContext().getContentResolver().getType(returnUri);
+                    if(mimeType != null){
+                        if(mimeType.contains("video")){
+                            Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
+                                    (path,MediaStore.Video.Thumbnails.MINI_KIND);
+                            bitmapArrayList.add(thumbnail);
+                            pathArrayList.add(path);
+                            isImageArrayList.add(0);
+                            imageAdapter.notifyDataSetChanged();
+                        }else if(mimeType.contains("image")){
+                            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
-                    bitmapArrayList.add(bitmap);
-                    pathArrayList.add(path);
-                    isImageArrayList.add(1);
-                    imageAdapter.notifyDataSetChanged();
-                    // byte[] bytes = toByteArray(file);
+                            bitmap = ThumbnailUtils.extractThumbnail(bitmap,200,200);
+                            bitmapArrayList.add(bitmap);
+                            pathArrayList.add(path);
+                            isImageArrayList.add(1);
+                            imageAdapter.notifyDataSetChanged();
+                            // byte[] bytes = toByteArray(file);
+                        }else{
+                            Toast.makeText(getContext(),getString(R.string.no_media),Toast.LENGTH_LONG).show();
+                        }
+                    }else{
+                        Toast.makeText(getContext(),getString(R.string.no_media),Toast.LENGTH_LONG).show();
+                    }
 
                     new UploadTask(getContext()).execute(
                             new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
@@ -280,6 +300,7 @@ public class ExperimentResultFragment extends Fragment {
                     if(file.exists()){
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                        selectedImage.setImageBitmap(bitmap);
+                        bitmap = ThumbnailUtils.extractThumbnail(bitmap,200,200);
                         bitmapArrayList.add(bitmap);
                         pathArrayList.add(path);
                         isImageArrayList.add(1);
@@ -442,22 +463,22 @@ public class ExperimentResultFragment extends Fragment {
         return mediaFile;
     }
 
-    public byte[] toByteArray(File file){
-        int size = (int) file.length();
-        byte[] bytes = new byte[size];
-        try {
-            BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
-            buf.read(bytes, 0, bytes.length);
-            buf.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return bytes;
-    }
+//    public byte[] toByteArray(File file){
+//        int size = (int) file.length();
+//        byte[] bytes = new byte[size];
+//        try {
+//            BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+//            buf.read(bytes, 0, bytes.length);
+//            buf.close();
+//        } catch (FileNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        return bytes;
+//    }
 
     public class ImageAdapter extends BaseAdapter{
 

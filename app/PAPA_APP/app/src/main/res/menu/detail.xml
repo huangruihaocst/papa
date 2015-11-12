@@ -16,4 +16,9 @@
         <!--android:orderInCategory="100"-->
         <!--android:icon="@drawable/ic_comment_white_36dp"-->
         <!--app:showAsAction="ifRoom" />-->
+    <item android:id="@+id/action_comment"
+        android:title="@string/action_make_comments"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_comment_white_36dp"
+        app:showAsAction="always" />
 </menu>

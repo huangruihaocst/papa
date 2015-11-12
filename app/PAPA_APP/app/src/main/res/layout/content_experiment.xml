@@ -8,7 +8,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_experiment_temp"
-    tools:context="com.Activities.papa.ExperimentActivity">
+    tools:context="com.Activities.papa.experiments.ExperimentActivity">
 
     <ListView
         android:layout_width="fill_parent"

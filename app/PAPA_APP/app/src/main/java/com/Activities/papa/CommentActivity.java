@@ -5,10 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -27,7 +23,7 @@ public class CommentActivity extends AppCompatActivity {
 
     BundleHelper bundleHelper;
     String course_name;
-    String identity;
+    BundleHelper.Identity identity;
     RatingBar ratingBar;
     EditText editText;
 
@@ -38,15 +34,17 @@ public class CommentActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String key_experiment_detail_comment = getString(R.string.key_experiment_detail_comment);
-        bundleHelper = data.getParcelable(key_experiment_detail_comment);
+        String key_to_comment = getString(R.string.key_to_comment);
+        bundleHelper = data.getParcelable(key_to_comment);
         course_name = bundleHelper.getCourseName();
         identity = bundleHelper.getIdentity();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (identity.equals("teacher_assistant")) {
-            toolbar.setTitle(getString(R.string.view_comment,bundleHelper.getCourseName()));
-        } else if (identity.equals("student")) {
+        if (identity == BundleHelper.Identity.teacher_assistant) {
+            toolbar.setTitle(String.format(getString(R.string.view_comment),
+                            bundleHelper.getStudentName(),
+                            bundleHelper.getCourseName()));
+        } else if (identity == BundleHelper.Identity.student) {
             toolbar.setTitle(getString(R.string.for_course) + course_name);
         }
         setSupportActionBar(toolbar);
@@ -62,7 +60,7 @@ public class CommentActivity extends AppCompatActivity {
         TextView textView_hint_comment = (TextView)findViewById(R.id.hint_comment);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         editText = (EditText) findViewById(R.id.editText);
-        if (identity.equals("teacher_assistant")) {
+        if (identity == BundleHelper.Identity.teacher_assistant) {
             ratingBar.setEnabled(false);
             editText.setEnabled(false);
             editText.setHint(getString(R.string.no_comment));
@@ -81,7 +79,7 @@ public class CommentActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.comment, menu);
         MenuItem item = menu.getItem(0);
-        if(identity.equals("teacher_assistant"))item.setVisible(false);
+        if(identity == BundleHelper.Identity.teacher_assistant)item.setVisible(false);
         return true;
     }
 

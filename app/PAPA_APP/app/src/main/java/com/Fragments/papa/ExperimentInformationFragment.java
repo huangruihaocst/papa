@@ -135,7 +135,7 @@ public class ExperimentInformationFragment extends Fragment {
         textView.setText(str);
     }
 
-    // ☆愛-same-CRIER　愛撫-save-LIAR
+    // ☆愛-same-CRIER　愛撫-commit-LIAR
     // Eid-聖-Rising HELL
     // 愛してる Game世界のDay
     // Don't-生-War Lie-兵士-War-World

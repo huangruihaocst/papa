@@ -2,6 +2,7 @@ module  Manage
 class ManageController < ApplicationController
   layout "application"
   before_action :authenticate_user!
+  before_action :prepare_data
   def index
   end
   def main_page
@@ -40,6 +41,16 @@ class ManageController < ApplicationController
   def course_students
     @course_id = params[:id]
     @course_name = Course.find(@course_id).name;
+  end
+  def message
+  end
+
+  private
+  def prepare_data
+    @message_number =
+        current_user.user_messages
+                         .where(status: MESSAGE_STATUS_UNREAD)
+                         .where(receiver_deleted: false).count
   end
 end
 end

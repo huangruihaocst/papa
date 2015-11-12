@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_new_message"
+    tools:context="com.Activities.papa.send_message.NewMessageActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_title"
+        android:text="@string/title"
+        android:theme="@style/DetailHead"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/content_title"
+        android:inputType="text"
+        android:layout_toRightOf="@+id/text_title"
+        android:layout_toEndOf="@+id/text_title"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/text_title"
+        android:background="@drawable/edit_text_selector"
+        android:textSize="25sp"
+        android:layout_marginRight="3sp"
+        android:layout_marginTop="0sp"
+        android:layout_marginBottom="0sp" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/content_body"
+        android:gravity="start"
+        android:inputType="text"
+        android:textSize="25sp"
+        android:hint="@string/body"
+        android:textColorHint="@color/colorAccent"
+        android:background="@drawable/edit_text_selector"
+        android:lines="10"
+        android:layout_below="@+id/text_title"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10sp"
+        android:padding="@dimen/edit_text_padding"/>
+
+</RelativeLayout>

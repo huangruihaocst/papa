@@ -27,8 +27,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.Activities.papa.message.MessageActivity;
-import com.Activities.papa.message.MessagePullService;
+import com.Activities.papa.profile.ProfileActivity;
+import com.Activities.papa.send_message.SentListActivity;
+import com.Activities.papa.receive_message.MessageActivity;
+import com.Activities.papa.receive_message.MessagePullService;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Fragments.papa.CourseFragment;
@@ -123,7 +125,7 @@ public class CourseActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if (bundleHelper.getIdentity().equals("teacher_assistant")) {
+        if (bundleHelper.getIdentity() == BundleHelper.Identity.teacher_assistant) {
             Menu menu = navigationView.getMenu();
             MenuItem item = menu.findItem(R.id.nav_upload_history);
             item.setVisible(false);
@@ -263,8 +265,15 @@ public class CourseActivity extends AppCompatActivity
         } else if (id == R.id.nav_notification) {
             Intent intent = new Intent(CourseActivity.this, MessageActivity.class);
             Bundle data = new Bundle();
-            String key_to_notification = getString(R.string.key_to_message);
+            String key_to_notification = getString(R.string.key_to_notification);
             data.putParcelable(key_to_notification, bundleHelper);
+            intent.putExtras(data);
+            startActivity(intent);
+        }else if(id == R.id.nav_send_message){
+            Intent intent = new Intent(CourseActivity.this, SentListActivity.class);
+            Bundle data = new Bundle();
+            String key_to_send_message = getString(R.string.key_to_sent_list);
+            data.putParcelable(key_to_send_message, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
         }

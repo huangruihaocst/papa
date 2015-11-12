@@ -33,12 +33,14 @@
 		{
 			font-size:20px;
 			margin-top:30px;
+			margin-left:10px;
 			text-align:left;
 		}
 		.author
 		{
 			font-size:12px;
 			margin-top:2px;
+			margin-left:15px;
 			text-align:left;
 		}
 		#comment
@@ -66,13 +68,13 @@
 		</div>
 		<div id="comment">
 		</div>
-		<div id="contentbutton">
+		<div id="content-button">
 		</div>
 	</div>
 	<script>
 		var courseId,classId;
 		
-		function getId()
+		function getId()    //获取当前查看的课程和实验id
 		{
 			var p=window.location.href.split("/");
 			p=p[p.length-1];
@@ -86,14 +88,13 @@
 		$("#chart2")[0].height=$("#chart2")[0].width;
 		var totalPages,nowPage,numberPerPage=10;
 		
-		function loadInfo()
+		function loadInfo()    //加载实验信息
 		{
 			getId();
 			for (i=0;i<11;++i) score[i]=0;
 			var i;
 			n=0;
 			nowPage=1;
-			showComments();
 			var p1=false,p2=false,p3=false;
 			function deal()
 			{
@@ -107,16 +108,13 @@
 				if (data.status=="failed")
 				{
 					alert("获取实验信息失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
 					classInfo=data.lesson.name;
 					p1=true;
 					if (p1&&p2&&p3) deal();
-					return;
 				}
-				alert("unexpected: /lessons/id.json");
 			});
 			$.get("/courses/"+courseId+"/students.json",{},
 			function(data)
@@ -124,16 +122,13 @@
 				if (data.status=="failed")
 				{
 					alert("获取课程人数失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
 					people.tot=data.students.length;
 					p2=true;
 					if (p1&&p2&&p3) deal();
-					return;
 				}
-				alert("unexpected: /courses/id/students.json");
 			});
 			$.get("/lessons/"+classId+"/comments.json",{},
 			function(data)
@@ -141,7 +136,6 @@
 				if (data.status=="failed")
 				{
 					alert("获取评论失败");
-					return;
 				}
 				if (data.status=="successful")
 				{
@@ -155,9 +149,7 @@
 					}
 					p3=true;
 					if (p1&&p2&&p3) deal();
-					return;
 				}
-				alert("unexpected: /lessons/id/comments.json");
 			});
 		}
 		
@@ -169,24 +161,31 @@
 			showComments();
 		}
 		
-		function showComments()
+		function showComments()    //显示评论
 		{
 			var text="",t1,t2;
-			t1=(nowPage-1)*numberPerPage;
-			t2=nowPage*numberPerPage;
-			if (t2>n) t2=n;
-			for (i=t1;i<t2;++i)
+			if (totalPages<=0)
 			{
-				text+='<div class="comment">'+comments[i].content+'</div>';
-				text+='<div class="author">'+comments[i].creator_name+'</div>';
+				text='<div class="comment">无评论</div>';
+				$("#comment")[0].innerHTML=text;
+			}else
+			{
+				t1=(nowPage-1)*numberPerPage;
+				t2=nowPage*numberPerPage;
+				if (t2>n) t2=n;
+				for (i=t1;i<t2;++i)
+				{
+					text+='<div class="comment">'+comments[i].content+'</div>';
+					text+='<div class="author">'+comments[i].creator_name+'</div>';
+				}
+				$("#comment")[0].innerHTML=text;
+				text='<button class="btn btn-default" onclick="changePage(-1)">上一页</button>';
+				text+='第'+nowPage+'页 共'+totalPages+'页<button class="btn btn-default" onclick="changePage(1)">下一页</button>';
+				$("#content-button")[0].innerHTML=text;
 			}
-			$("#comment")[0].innerHTML=text;
-			text='<button class="btn btn-default" onclick="changePage(-1)">上一页</button>';
-			text+='第'+nowPage+'页 共'+totalPages+'页<button class="btn btn-default" onclick="changePage(1)">下一页</button>';
-			$("#contentbutton")[0].innerHTML=text;
 		}
 		
-		function showInfo()
+		function showInfo()    //显示信息
 		{
 			var data,data2,text="",i;
 			$("#title")[0].innerHTML=classInfo;

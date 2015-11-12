@@ -22,6 +22,7 @@
 /db/.idea
 
 *~
+*.swp
 # ignore mp4
 /db/public/*.mp4
 
