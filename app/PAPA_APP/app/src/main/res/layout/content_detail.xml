@@ -75,6 +75,7 @@
                 android:background="#FAFAFA"
                 android:layout_alignTop="@+id/textView3"
                 android:layout_alignLeft="@+id/user_class"
+                android:hint="@string/not_graded"
                 android:layout_alignStart="@+id/user_class" />
             <TextView
                 android:layout_width="wrap_content"
@@ -98,6 +99,7 @@
                 android:layout_alignTop="@+id/textView4"
                 android:layout_alignLeft="@+id/user_class"
                 android:layout_alignStart="@+id/user_class"
+                android:hint="@string/not_graded"
                 android:scrollbars="vertical"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -118,6 +120,7 @@
                 android:id="@+id/user_evaluator"
                 android:layout_alignParentBottom="true"
                 android:layout_toRightOf="@+id/user_class"
+                android:hint="@string/not_graded"
                 android:layout_toEndOf="@+id/user_class" />
         </RelativeLayout>
     </ScrollView>

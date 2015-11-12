@@ -336,8 +336,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 return new GetCommentsReply(
                         reply_2.getString("student_number"),
                         reply_2.getString("department") + " " + reply_2.getString("class_name"),
-                        "未评",
-                        "未评 =w="
+                        null, null, null
                 );
             }
 
@@ -349,7 +348,8 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                     reply_2.getString("student_number"),
                     reply_2.getString("department") + " " + reply_2.getString("class_name"),
                     reply_1.getString("score"),
-                    reply_1.getString("content")
+                    reply_1.getString("content"),
+                    reply_1.getString("creator_name")
             );
         }
         catch(org.json.JSONException e) {

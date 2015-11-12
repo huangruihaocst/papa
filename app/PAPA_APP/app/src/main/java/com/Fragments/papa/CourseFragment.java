@@ -262,7 +262,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         bundleHelper.setCourseName(courseName);
         bundleHelper.setCourseId(courseId);
         bundleHelper.setIdentity(identity);
-        if(identity.equals("student")) {
+        if(identity == BundleHelper.Identity.student) {
             bundleHelper.setStudentId(bundleHelper.getId());
             bundleHelper.setStudentName(bundleHelper.getUsername());
         }

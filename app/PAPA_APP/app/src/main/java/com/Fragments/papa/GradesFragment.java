@@ -139,6 +139,7 @@ public class GradesFragment extends Fragment {
         user_class.setText(reply.className);
         user_grades.setText(reply.score);
         user_comment.setText(reply.comments);
+        user_evaluator.setText(reply.creatorName);
     }
 
     class GetCommentTask extends

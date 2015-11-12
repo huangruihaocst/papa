@@ -134,9 +134,13 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     @Override
     public GetCommentsReply getComments(GetCommentsRequest request) throws
             PapaHttpClientException {
+        // return new GetCommentsReply(
+        //         "(stuId) 0800092000", "LaoBi's class",
+        //         zero, zeroComment
+        // );
         return new GetCommentsReply(
                 "(stuId) 0800092000", "LaoBi's class",
-                zero, zeroComment
+                null, null, "Laobi"
         );
     }
 

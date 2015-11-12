@@ -80,6 +80,7 @@
     <string name="action_settings">设置</string>
     <string name="action_search">搜索</string>
     <string name="action_edit_grades">编辑成绩</string>
+    <string name="not_graded">未评分喵</string>
     <string name="action_student_information">学生信息</string>
     <string name="action_generate_QR_code">生成二维码</string>
     <string name="action_make_comments">评价该课程</string>

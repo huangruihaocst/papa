@@ -250,12 +250,16 @@ public abstract class PapaDataBaseManager {
         public String className;
         public String score;
         public String comments;
-        public GetCommentsReply(String stuId, String className, String score, String comments)
+        public String creatorName;
+
+        public GetCommentsReply(
+                String stuId, String className, String score, String comments, String creatorName)
         {
             this.stuId = stuId;
             this.className = className;
             this.score = score;
             this.comments = comments;
+            this.creatorName = creatorName;
         }
     }
 

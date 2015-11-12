@@ -157,6 +157,7 @@ public class DetailActivity extends AppCompatActivity {
 
         user_grades.setText(reply.score);
         user_comment.setText(reply.comments);
+        user_evaluator.setText(reply.creatorName);
 
     }
 
