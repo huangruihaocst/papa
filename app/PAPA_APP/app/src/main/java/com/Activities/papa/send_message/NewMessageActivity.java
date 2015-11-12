@@ -14,6 +14,7 @@ public class NewMessageActivity extends AppCompatActivity {
 
     EditText edit_title;
     EditText edit_body;
+    EditText edit_recipient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class NewMessageActivity extends AppCompatActivity {
 
         edit_title = (EditText)findViewById(R.id.content_title);
         edit_body = (EditText)findViewById(R.id.content_body);
+        edit_recipient = (EditText)findViewById(R.id.content_recipient);
 
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -71,6 +73,7 @@ public class NewMessageActivity extends AppCompatActivity {
     public void send(){
         String title = edit_title.getText().toString();
         String body = edit_body.getText().toString();
+        String recipient = edit_recipient.getText().toString();
         //TODO:send message here, you may like to do it in a new thread
         //TODO:Toast according to different conditions
         //call finish() if succeed

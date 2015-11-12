@@ -272,7 +272,7 @@ public class ExperimentResultFragment extends Fragment {
                             imageAdapter.notifyDataSetChanged();
                             // byte[] bytes = toByteArray(file);
                         }else{
-                            Toast.makeText(getContext(),getString(R.string.no_media),Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(),getString(R.string.invalid_file),Toast.LENGTH_LONG).show();
                         }
                     }else{
                         Toast.makeText(getContext(),getString(R.string.no_media),Toast.LENGTH_LONG).show();
