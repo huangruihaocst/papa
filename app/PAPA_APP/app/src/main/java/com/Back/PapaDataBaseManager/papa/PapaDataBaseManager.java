@@ -465,4 +465,55 @@ public abstract class PapaDataBaseManager {
     public abstract void postAttendance(PostAttendance request)
             throws PapaHttpClientException;
 
+    //////////////////////////////////////////////////////////////////////////
+    // 获取聊天(互动交流)信息
+
+    static public class ChatMessage
+    {
+        public String id;
+        public String senderId;
+        public String senderName;
+        public String title;
+        public String content;
+        public String status;
+
+        public ChatMessage(
+                String id, String senderId, String senderName,
+                String title, String content, String status)
+        {
+            this.id = id;
+            this.senderId = senderId;
+            this.senderName = senderName;
+            this.title = title;
+            this.content = content;
+            this.status = status;
+
+        }
+    }
+
+    static public class GetChatMessageRequest
+    {
+        public String token;
+
+        public GetChatMessageRequest(String token)
+        {
+            this.token = token;
+
+        }
+    }
+
+    static public class GetChatMessageReply
+    {
+        public List<ChatMessage> list;
+
+        public GetChatMessageReply(List<ChatMessage> list)
+        {
+            this.list = list;
+        }
+
+    }
+
+    public abstract GetChatMessageReply getChatMessages(GetChatMessageRequest request)
+            throws PapaHttpClientException;
+
 }

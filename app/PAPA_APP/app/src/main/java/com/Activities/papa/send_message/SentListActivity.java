@@ -1,15 +1,22 @@
 package com.Activities.papa.send_message;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 public class SentListActivity extends AppCompatActivity {
 
@@ -56,10 +63,79 @@ public class SentListActivity extends AppCompatActivity {
     }
 
     private void setSentMessages(){
+        new Task(this).execute(
+                new PapaDataBaseManager.GetChatMessageRequest(bundleHelper.getToken())
+        );
+    }
+
+    class Task extends AsyncTask<
+            PapaDataBaseManager.GetChatMessageRequest,
+            Exception,
+            PapaDataBaseManager.GetChatMessageReply>
+    {
+        ProgressDialog proDialog;
+
+        public Task(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.show();
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute(){
+            // UI
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetChatMessageReply doInBackground
+                (PapaDataBaseManager.GetChatMessageRequest... params)
+        {
+            // 在后台
+            try {
+                return bundleHelper.getPapaDataBaseManager().getChatMessages(params[0]);
+            } catch(PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Log.e("SignInAct", e[0].getMessage());
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetChatMessageReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if(rlt != null) processReply(rlt);
+        }
+    }
+
+    private void processReply(PapaDataBaseManager.GetChatMessageReply reply)
+    {
+        String s = "";
+        for(int i = 0; i < reply.list.size(); i++)
+        {
+            PapaDataBaseManager.ChatMessage chatMessage =
+                reply.list.get(i);
+
+            s += "id = " + chatMessage.id;
+            s += ", senderId = " + chatMessage.senderId;
+            s += ", senderName = " + chatMessage.senderName;
+            s += ", title = " + chatMessage.title;
+            s += ", content = " + chatMessage.content;
+            s += ", status = " + chatMessage.status;
+            s += "\n";
+
+        }
 
 
-
-
-        //TODO: get sent messages here. You may like to do it in a new thread. Extends BaseAdapter.
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }
 }

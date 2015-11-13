@@ -560,4 +560,44 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 h
         );
     }
+
+    @Override
+    public GetChatMessageReply getChatMessages(GetChatMessageRequest request) throws PapaHttpClientException {
+        try
+        {
+            HashMap<String, Object> h = new HashMap<>();
+            h.put("token", request.token);
+            JSONObject obj = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/messages.json", h
+            );
+
+            ArrayList<ChatMessage> lst = new ArrayList<>();
+
+            JSONArray array = obj.getJSONArray("user_messages");
+
+            for (int i = 0; i < array.length(); i++)
+            {
+                JSONObject object = array.getJSONObject(i);
+
+                lst.add(new ChatMessage(
+                        object.getString("id"),
+                        object.getString("sender_id"),
+                        object.getString("sender_name"),
+                        object.getString("title"),
+                        object.getString("content"),
+                        object.getString("status")
+
+                ));
+
+                Log.i(tag, "get chat msg where sender_name = " +  object.getString("sender_name"));
+            }
+
+            return new GetChatMessageReply(lst);
+        }
+        catch(org.json.JSONException e) {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+        }
+    }
 }

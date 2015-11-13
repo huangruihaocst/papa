@@ -209,4 +209,10 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public void putUsrInfo(PutUsrInfoRequest request) throws PapaHttpClientException {
 
     }
+
+
+    @Override
+    public GetChatMessageReply getChatMessages(GetChatMessageRequest request) throws PapaHttpClientException {
+        return null;
+    }
 }
