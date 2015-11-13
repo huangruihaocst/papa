@@ -18,16 +18,15 @@
         android:theme="@style/DetailHead"/>
 
     <EditText
+        style="@style/EditTextSelector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/content_title"
-        android:inputType="text"
         android:layout_toEndOf="@+id/text_title"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignBottom="@+id/text_title"
         android:background="@drawable/edit_text_selector"
-        android:textSize="25sp"
         android:layout_marginTop="0sp"
         android:layout_marginBottom="0sp"
         android:layout_toRightOf="@+id/text_title"
@@ -43,32 +42,25 @@
         android:layout_marginTop="5sp"/>
 
     <EditText
+        style="@style/EditTextSelector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/content_recipient"
-        android:inputType="text"
         android:layout_toEndOf="@+id/text_recipient"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignBottom="@+id/text_recipient"
-        android:background="@drawable/edit_text_selector"
-        android:textSize="25sp"
         android:layout_marginTop="0sp"
         android:layout_marginBottom="0sp"
         android:layout_toRightOf="@+id/text_recipient"
         android:layout_marginLeft="7sp"/>
 
     <EditText
+        style="@style/EditTextSelector"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/content_body"
-        android:gravity="start"
-        android:inputType="text"
-        android:textSize="25sp"
         android:hint="@string/body"
-        android:textColorHint="#CCCCCC"
-        android:background="@drawable/edit_text_selector"
-        android:lines="10"
         android:layout_below="@+id/text_recipient"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

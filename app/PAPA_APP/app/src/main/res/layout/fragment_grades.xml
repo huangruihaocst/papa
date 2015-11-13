@@ -17,8 +17,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/user_id"
                 android:id="@+id/textView1"
-                android:theme="@style/DetailHead"/>
+                style="@style/DetailHead"/>
             <TextView
+                style="@style/DetailContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
@@ -27,13 +28,12 @@
                 android:layout_toEndOf="@+id/textView1"
                 android:layout_marginLeft="27dp"
                 android:layout_marginStart="27dp"
-                android:theme="@style/DetailContent"
                 android:id="@+id/user_id" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/user_class"
-                android:theme="@style/DetailHead"
+                style="@style/DetailHead"
                 android:layout_below="@+id/user_id"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:theme="@style/DetailContent"
+                style="@style/DetailContent"
                 android:layout_alignTop="@+id/textView2"
                 android:layout_alignLeft="@+id/user_id"
                 android:layout_alignStart="@+id/user_id"
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/user_grade"
-                android:theme="@style/DetailHead"
+                style="@style/DetailHead"
                 android:layout_below="@+id/user_class"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -61,7 +61,7 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/DetailContent"
+                style="@style/DetailContent"
                 android:textColor="@color/colorPrimary"
                 android:inputType="number"
                 android:maxLines="1"
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/user_comment"
-                android:theme="@style/DetailHead"
+                style="@style/DetailHead"
                 android:layout_below="@+id/user_grade"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -85,7 +85,7 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/DetailContent"
+                style="@style/DetailContent"
                 android:textColor="@color/colorPrimary"
                 android:inputType="textMultiLine"
                 android:text=""
@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/user_evaluator"
-                android:theme="@style/DetailHead"
+                style="@style/DetailHead"
                 android:layout_below="@+id/user_comment"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -108,7 +108,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/DetailContent"
+                style="@style/DetailContent"
                 android:textColor="@color/colorPrimary"
                 android:text=""
                 android:id="@+id/user_evaluator"
