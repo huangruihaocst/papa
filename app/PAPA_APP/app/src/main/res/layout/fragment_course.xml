@@ -6,7 +6,7 @@
     tools:context="com.Fragments.CourseFragment"
     android:background="#FAFAFA"
     android:orientation="vertical">
-    
+
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

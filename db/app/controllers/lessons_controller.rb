@@ -48,8 +48,10 @@ class LessonsController < ApplicationController
               phone:  student.phone,
               student_number:   student.student_number,
               comment:          comment_hash,
-              video_count:      video_file_count,
-              image_file_count: image_file_count
+              files_number: {
+                  videos:      video_file_count,
+                  images:   image_file_count
+              }
           }
           @students.push(student_info)
         end
