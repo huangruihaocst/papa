@@ -37,7 +37,7 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class CourseFragment extends android.support.v4.app.Fragment {
-    private static final String tag = "CourseFragment";
+    private static final String TAG = "CourseFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "ARG_PARAM1";
@@ -83,7 +83,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.i(tag, "onCreate");
+        Log.i(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -226,6 +226,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
         @Override
         public int getCount() {
+            Log.i(TAG, "adapt size = " + lst.size());
             return lst.size();
         }
 
@@ -241,6 +242,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            Log.i(TAG, "adapt position = " + position);
             TextView mTextView = new TextView(getContext());
             mTextView.setText(lst.get(position).getValue());
             mTextView.setTextSize(35);
@@ -254,7 +256,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
     private void startExperimentActivity(String courseName, int courseId, BundleHelper.Identity identity){
 
-        Log.i(tag, courseName + "=" + courseId);
+        Log.i(TAG, courseName + "=" + courseId);
 
         Intent intent = new Intent(getActivity(), ExperimentActivity.class);
         Bundle data = new Bundle();
