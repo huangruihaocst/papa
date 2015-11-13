@@ -10,6 +10,7 @@ import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -327,6 +328,13 @@ public class CourseFragment extends android.support.v4.app.Fragment {
                         BundleHelper.Identity.student);
             }
         });
+        CourseStudentListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
     }
 
 
@@ -339,6 +347,13 @@ public class CourseFragment extends android.support.v4.app.Fragment {
                 startExperimentActivity(rlt.course.get(position).getValue(),
                         rlt.course.get(position).getKey(),
                         BundleHelper.Identity.teacher_assistant);
+            }
+        });
+        CourseTeacherAssistantListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
             }
         });
     }
