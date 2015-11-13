@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.Activities.papa.R;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 import java.util.List;
 import java.util.Map;
@@ -16,10 +17,10 @@ import java.util.Map;
  * Created by huang on 15-11-13.
  */
 public class SentListAdapter extends BaseAdapter {
-    private List<Map.Entry<Integer, String>> lst;
+    private List<PapaDataBaseManager.ChatMessage> lst;
     Context context;
 
-    public SentListAdapter(List<Map.Entry<Integer, String>> lst, Context context) {
+    public SentListAdapter(List<PapaDataBaseManager.ChatMessage> lst, Context context) {
         this.lst = lst;
         this.context = context;
     }
@@ -42,7 +43,8 @@ public class SentListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         TextView mTextView = new TextView(context);
-        mTextView.setText(lst.get(position).getValue());
+        PapaDataBaseManager.ChatMessage chatMessage = lst.get(position);
+        mTextView.setText(chatMessage.senderName);
         mTextView.setTextSize(25);
         mTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
         return mTextView;

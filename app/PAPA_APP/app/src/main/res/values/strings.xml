@@ -81,6 +81,10 @@
     <string name="password_too_short">密码不能少于6位ww</string>
     <string name="error_double_check">密码不一致TAT</string>
     <string name="change_password_success">修改成功O_O</string>
+    <string name="course_name">课程名称</string>
+    <string name="course_start_time">开始时间</string>
+    <string name="course_end_time">结束时间</string>
+    <string name="course_place">上课地点</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -113,6 +117,7 @@
     <string name="key_to_comment">key_to_comment</string>
     <string name="key_to_sent_list">key_to_sent_lit</string>
     <string name="key_sent_list_new_message">key_sent_list_new_message</string>
+    <string name="key_sent_list_sent_detail">key_sent_list_sent_detail</string>
 
     <!--<string name="color_primary">#2196F3</string>-->
     <!--<string name="color_primary_dark">#1976D2</string>-->
@@ -206,5 +211,6 @@
     <string name="key_settings_file_name">settings.dat</string>
     <string name="title_activity_send_message">SendMessageActivity</string>
     <string name="title_activity_new_message">NewMessageActivity</string>
+    <string name="title_activity_sent_detail_acitivity">SentDetailAcitivity</string>
 
 </resources>
