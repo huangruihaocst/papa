@@ -48,6 +48,10 @@ public class ProfileActivity extends AppCompatActivity {
     EditText edit_username;
     EditText edit_mail;
 
+
+    AlertDialog alertDialog;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +127,7 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 });
-                final AlertDialog alertDialog = builder.create();
+                alertDialog = builder.create();
                 alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(DialogInterface dialog) {
@@ -143,11 +147,13 @@ public class ProfileActivity extends AppCompatActivity {
                                             getString(R.string.error_double_check),
                                             Toast.LENGTH_LONG).show();
                                 }else{
-                                    //TODO:upload new password
-                                    Toast.makeText(getApplicationContext(),
-                                            getString(R.string.change_password_success),
-                                            Toast.LENGTH_LONG).show();
-                                    alertDialog.dismiss();
+                                    new PutUsrPasswordTask().execute(
+                                            new PapaDataBaseManager.PutUsrPasswordRequest(
+                                                    bundleHelper.getToken(),
+                                                    String.valueOf(bundleHelper.getId()),
+                                                    new_password
+                                            )
+                                    );
                                 }
                             }
                         });
@@ -347,6 +353,47 @@ public class ProfileActivity extends AppCompatActivity {
 
             proDialog.dismiss();
         }
+    }
+
+    class PutUsrPasswordTask extends
+            AsyncTask<PapaDataBaseManager.PutUsrPasswordRequest, Exception,
+                    Boolean> {
+
+        @Override
+        protected Boolean doInBackground
+                (PapaDataBaseManager.PutUsrPasswordRequest... params) {
+            // 在后台
+            try {
+                BundleHelper.getPapaDataBaseManager().PutUsrPassword(params[0]);
+                return true;
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+                return false;
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            e[0].printStackTrace();
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean ok) {
+            // UI
+            if (ok)
+                afterChangePassword();
+        }
+    }
+
+    private void afterChangePassword() {
+        alertDialog.dismiss();
+        Toast.makeText(
+                getApplicationContext(),
+                getString(R.string.change_password_success),
+                Toast.LENGTH_LONG
+        ).show();
     }
 
 }
