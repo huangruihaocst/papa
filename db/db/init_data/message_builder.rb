@@ -15,4 +15,8 @@ class MessageBuilder
     NOTIFICATIONS[Random.rand(NOTIFICATIONS.size)]
   end
 
+  def self.build_time
+    Time.now + Random.rand(100) * 1.hours
+  end
+
 end

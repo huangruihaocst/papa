@@ -1,5 +1,4 @@
 #!/bin/bash -l
-cd db
 rvm use 2.2.2
 
 while true

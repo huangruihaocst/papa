@@ -95,7 +95,7 @@ courses.each do |course|
     course.messages.create(
         title: MessageBuilder.build_notification,
         content: '同学们千万不要忘了!',
-        deadline: Time.now,
+        deadline: MessageBuilder.build_time,
         creator: teachers[0],
         message_type: :notification)
   end
@@ -109,7 +109,7 @@ courses.each do |course|
     course.messages.create(
         title: MessageBuilder.build_homework,
         content: '请同学们尽快完成',
-        deadline: Time.now,
+        deadline: MessageBuilder.build_time,
         creator: teachers[0],
         message_type: :homework)
   end
