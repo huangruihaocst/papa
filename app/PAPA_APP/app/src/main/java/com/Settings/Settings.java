@@ -1,8 +1,6 @@
 package com.Settings;
 
 import android.content.Context;
-import android.location.Location;
-import android.util.Pair;
 
 import com.Activities.papa.R;
 import com.Activities.papa.receive_message.MessageList;
@@ -16,8 +14,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
 
 /**
  * User settings for Activities and Services in com.Activities.papa
@@ -37,7 +33,7 @@ public class Settings implements Serializable {
 
         this.messageList = new MessageList();
 
-        this.lessons.add(new Lesson("1", 0, 0));
+        this.lessons.add(new Lesson("1", 0, 0, "1", "中国通史"));
     }
 
     // this lock avoids different thread instantiate different objs.
@@ -73,15 +69,20 @@ public class Settings implements Serializable {
     String      token;
     String      userId;
 
-    class Lesson implements Serializable {
-        public Lesson(String lessonId, double latitude, double longitude) {
+    public static class Lesson implements Serializable {
+        public Lesson(String lessonId, double latitude, double longitude, String courseId, String courseName) {
             this.lessonId = lessonId;
             this.latitude = latitude;
-            this.longtitude = longitude;
+            this.longitude = longitude;
+            this.courseId = courseId;
+            this.courseName = courseName;
         }
         public String lessonId = "0";
         public double latitude = 0 ;
-        public double longtitude = 0;
+        public double longitude = 0;
+        public String lessonName = "";
+        public String courseId = "0";
+        public String courseName = "";
     }
     ArrayList<Lesson> lessons = new ArrayList<>();
 
@@ -123,14 +124,17 @@ public class Settings implements Serializable {
     public synchronized void        clearLessons() {
         lessons = new ArrayList<>();
     }
-    public synchronized void        addLesson(String lessonId, double latitude, double longitude) {
-        lessons.add(new Lesson(lessonId, latitude, longitude));
+    public synchronized void        addLesson(String lessonId, double latitude, double longitude,
+                                              String courseId, String courseName) {
+        lessons.add(new Lesson(lessonId, latitude, longitude, courseId, courseName));
     }
-    public synchronized String      getLessonByLocation(double latitude, double longitude, double radius) {
+    public synchronized Lesson      getLessonByLocation(double latitude, double longitude, double radius) {
+        // TODO check real location
         for (int i = 0; i < lessons.size(); ++i) {
-            double dis = distanceToCenter(latitude, longitude, lessons.get(i).latitude, lessons.get(i).longtitude);
-            if (dis < radius) {
-                return lessons.get(i).lessonId;
+            double dis = distanceToCenter(latitude, longitude, lessons.get(i).latitude, lessons.get(i).longitude);
+            if (true) {
+            //if (dis < radius) {
+                return lessons.get(i);
             }
         }
         return null;

@@ -120,12 +120,9 @@ public class Attendance {
                             settings.getToken(),
                             settings.getUserId(),
                             lessonId, 0, 0, true));
-                    // TODO: how to check whether the post is successful
-                    if (true) {
-                        // these should move into network success callback
-                        listener.onSignInSuccess();
-                        setNextLessonTime(settings, context);
-                    }
+                    // these should move into network success callback
+                    listener.onSignInSuccess();
+                    setNextLessonTime(settings, context);
                 } catch (PapaHttpClientException e) {
                     e.printStackTrace();
                 }

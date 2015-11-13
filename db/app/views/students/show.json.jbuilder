@@ -1,5 +1,5 @@
 json.status STATUS_SUCCESS
-json.student do
+json.student_info do
   json.id     @student.id
   json.name   @student.name
   json.phone  @student.phone

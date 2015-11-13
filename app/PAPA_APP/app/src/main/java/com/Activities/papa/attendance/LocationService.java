@@ -72,25 +72,22 @@ public class LocationService extends Service {
 
             // TODO 1
             // get center location and min distance from server
-            final String courseName = "Operating System";
-            final String userName = "Alex";
 
-            // calculate location from center
-            String lessonId = settings.getLessonByLocation(
+            // get local lesson
+            final Settings.Lesson lesson = settings.getLessonByLocation(
                     location.getLatitude(),
                     location.getLongitude(),
                     MinDistance + location.getAccuracy());
 
-            // check distance + accuracy
-            if (lessonId != null) {
+            if (lesson != null) {
                 // sign in
                 Attendance.getInstance().trySignIn(new OnSignInSuccessListener() {
                     @Override
                     public void onSignInSuccess() {
                         stopTrackingPosition();
-                        notifySignInSuccessful(courseName, Calendar.getInstance(), userName, "GPS");
+                        notifySignInSuccessful(lesson.courseName, Calendar.getInstance(), "GPS");
                     }
-                }, LocationService.this, lessonId);
+                }, LocationService.this, lesson.lessonName);
             }
             else {
                 Log.w(TAG, "Out of classroom");
@@ -114,18 +111,16 @@ public class LocationService extends Service {
      * Notify the user that he has successfully signed in.
      * @param lesson the lesson he has signed in
      * @param time the time of the sign in request
-     * @param name user name
      * @param method sign in method
      */
-    void notifySignInSuccessful(String lesson, Calendar time, String name, String method) {
+    void notifySignInSuccessful(String lesson, Calendar time, String method) {
         time.setTimeZone(TimeZone.getDefault());
         Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle(String.format(getString(R.string.title_attendance_activity_sign_in_successful), name, lesson))
+                .setContentTitle(String.format(getString(R.string.title_attendance_activity_sign_in_successful), lesson))
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentText(String.format(getString(
                                         R.string.title_attendance_activity_sign_in_content),
-                                        Calendar.getInstance().toString(),
-                        method))
+                                        Calendar.getInstance().toString(), method))
                 .build();
 
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

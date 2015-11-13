@@ -59,7 +59,6 @@ public class CourseListAdapter extends BaseAdapter {
             textView = new TextView(context);
         }
 
-
         if (position == 0) {
             textView.setText("Student Courses");
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));

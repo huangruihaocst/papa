@@ -101,6 +101,16 @@ class LessonsController < ApplicationController
     end
   end
 
+  # GET /teachers/1/lessons.json
+  def from_teacher
+    teacher = User.find(params[:teacher_id])
+    lessons = Lesson.none
+    teacher.courses.each do |course|
+      lessons <<= course.lessons
+    end
+    @lessons
+  end
+
   # DELETE /lessons/1.json
   def destroy
     if @lesson

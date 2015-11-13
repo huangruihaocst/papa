@@ -73,6 +73,7 @@ Rails.application.routes.draw do
 
   resources :teachers, only: [:index, :show, :create, :update, :destroy] do
     resources :courses, only: [:index, :create, :update, :destroy]
+    get 'lessons' => 'lessons#from_teacher'
   end
 
   resources :files, only: [:show, :create, :destroy]

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.Activities.papa.BundleHelper;
@@ -193,6 +194,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
     private void setCourses(List<Map.Entry<Integer, String>> studentCourses, List<Map.Entry<Integer, String>> taCourses) {
         course_list.setAdapter(new CourseListAdapter(studentCourses, taCourses, getContext(), bundleHelper));
+//        setListViewHeightBasedOnChildren(course_list);
         course_list.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -200,5 +202,24 @@ public class CourseFragment extends android.support.v4.app.Fragment {
                 return false;
             }
         });
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 }

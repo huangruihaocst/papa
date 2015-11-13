@@ -1,17 +1,13 @@
-<RelativeLayout
+<ListView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
     tools:context="com.Fragments.CourseFragment"
     android:background="#FAFAFA"
-    android:orientation="vertical">
-
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/course_list"
-        >
-    </ListView>
-
-</RelativeLayout>
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/course_list"
+    android:layout_weight="1"
+    android:scrollbars="vertical"
+    android:scrollbarFadeDuration="1000000"
+    >
+</ListView>
