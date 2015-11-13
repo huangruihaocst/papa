@@ -34,7 +34,7 @@ import com.Activities.papa.receive_message.MessageActivity;
 import com.Activities.papa.receive_message.MessagePullService;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Fragments.papa.CourseFragment;
+import com.Fragments.papa.course.CourseFragment;
 
 import java.util.Iterator;
 import java.util.List;
