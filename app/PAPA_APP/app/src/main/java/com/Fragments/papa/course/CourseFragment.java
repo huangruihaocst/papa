@@ -1,8 +1,6 @@
 package com.Fragments.papa.course;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,12 +10,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
-import com.Activities.papa.experiments.ExperimentActivity;
 import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
@@ -94,9 +89,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         papaDataBaseManager = BundleHelper.getPapaDataBaseManager();
     }
 
-
-    ListView course_student_list;
-    ListView course_teacher_assistant_list;
+    ListView course_list;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,9 +97,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         if(rootView == null){
             rootView  = inflater.inflate(R.layout.fragment_course, container, false);
-            course_teacher_assistant_list =
-                    (ListView)rootView.findViewById(R.id.course_teacher_assistant_list);
-            course_student_list = (ListView)rootView.findViewById(R.id.course_student_list);
+            course_list = (ListView)rootView.findViewById(R.id.course_list);
             getCourses();
         }else{
             ((ViewGroup)rootView.getParent()).removeView(rootView);
@@ -202,7 +193,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
     }
 
     private void setCourses(List<Map.Entry<Integer, String>> studentCourses, List<Map.Entry<Integer, String>> taCourses) {
-        ListView CourseTeacherAssistantListView = course_teacher_assistant_list;
+        ListView CourseTeacherAssistantListView = course_list;
         CourseTeacherAssistantListView.setAdapter(new CourseListAdapter(studentCourses, taCourses, getContext(), bundleHelper));
         CourseTeacherAssistantListView.setOnTouchListener(new View.OnTouchListener() {
             @Override

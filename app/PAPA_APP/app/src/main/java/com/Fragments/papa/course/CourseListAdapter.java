@@ -51,15 +51,24 @@ public class CourseListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        TextView mTextView = new TextView(context);
+        TextView textView;
+        if (convertView != null) {
+            textView = (TextView) convertView;
+        }
+        else {
+            textView = new TextView(context);
+        }
+
 
         if (position == 0) {
-            mTextView.setText("Student Courses");
+            textView.setText("Student Courses");
+            textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+            textView.setTextSize(40);
         }
         else if (position <= studentCourses.size()) {
             final int index = position - 1;
-            mTextView.setText(studentCourses.get(index - 1).getValue());
-            mTextView.setOnClickListener(new View.OnClickListener() {
+            textView.setText(studentCourses.get(index - 1).getValue());
+            textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startExperimentActivity(
@@ -72,12 +81,16 @@ public class CourseListAdapter extends BaseAdapter {
             });
         }
         else if (position == studentCourses.size() + 1) {
-            mTextView.setText("TA Courses");
+            textView.setText("TA Courses");
+            textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+            textView.setTextSize(40);
         }
         else {
             final int index = position - 2 - studentCourses.size();
-            mTextView.setText(taCourses.get(index).getValue());
-            mTextView.setOnClickListener(new View.OnClickListener() {
+            textView.setText(taCourses.get(index).getValue());
+            textView.setTextSize(35);
+            textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startExperimentActivity(
@@ -89,10 +102,8 @@ public class CourseListAdapter extends BaseAdapter {
                 }
             });
         }
-
-        mTextView.setTextSize(35);
-        mTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        return mTextView;
+        
+        return textView;
     }
 
     private void startExperimentActivity(Context context, String courseName, int courseId, BundleHelper bundleHelper, BundleHelper.Identity identity){
