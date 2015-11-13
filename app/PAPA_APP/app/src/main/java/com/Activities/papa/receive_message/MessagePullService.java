@@ -15,13 +15,6 @@ import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 import com.Settings.Settings;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOError;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -49,7 +42,7 @@ public class MessagePullService extends Service {
             return new MessageList();
 
         // get local message list
-        MessageList messageList = Settings.getInstance(this).getMessageList();
+        MessageList messageList = Settings.begin(this).getMessageList();
 
         // get remote message list
         // get all message ids
@@ -87,7 +80,7 @@ public class MessagePullService extends Service {
         }
 
         // commit to the file
-        Settings settings = Settings.getInstance(this);
+        Settings settings = Settings.begin(this);
         settings.setMessageList(messageList);
         settings.commit(this);
 
@@ -100,7 +93,7 @@ public class MessagePullService extends Service {
      * @param list: the message list to synchronize.
      */
     public void syncFromApp(MessageList list) {
-        Settings settings = Settings.getInstance(this);
+        Settings settings = Settings.begin(this);
         settings.setMessageList(list);
         settings.commit(this);
     }

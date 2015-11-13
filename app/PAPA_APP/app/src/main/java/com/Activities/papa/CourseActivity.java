@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Activities.papa.attendance.Attendance;
 import com.Activities.papa.profile.ProfileActivity;
 import com.Activities.papa.send_message.SentListActivity;
 import com.Activities.papa.receive_message.MessageActivity;
@@ -133,6 +134,9 @@ public class CourseActivity extends AppCompatActivity
         linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
 
         getHeaderView(navigationView);
+
+        // Added by Alex Wang 2015-11-13. Move attendance service to course activity.
+        Attendance.startSignInByGPS(this);
     }
 
 

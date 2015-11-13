@@ -28,6 +28,12 @@ admin0.avator_id = default_avator.id
 admin0.save
 puts 'admin created...'
 
+# create files
+files = []
+files.push FileResource.create(name: '1.jpg', file_type: 'jpg', path: '/uploads/1.jpg', creator_id: admin0.id)
+files.push FileResource.create(name: '2.jpg', file_type: 'jpg', path: '/uploads/2.jpg', creator_id: admin0.id)
+puts 'files created...'
+
 # create semesters
 semesters = []
 SEMESTER_COUNT.times do |x|
@@ -49,10 +55,12 @@ COURSE_COUNT.times do
                          semester_id: semesters[0].id)
   i = 0
   CourseBuilder.build_lessons.each do |lesson_name|
-    course.lessons.create(name: lesson_name,
+    lesson = course.lessons.create(name: lesson_name,
                           start_time: start_time + (2+i).hours,
                           end_time: start_time + (3+i).hours,
                           location: LocationBuilder.build)
+    lesson.attached_files << files[Random.rand(files.size)]
+    lesson.save
     i += 1
   end
   courses.push(course)
@@ -148,7 +156,7 @@ puts 'students created...'
 
 # create lesson_comments and student_comments for student
 students.each do |student|
-  # 学生在每门课程上的每门实验课上被评分, 给实验课评分
+  # 学生在每门课程上的每门实验课上被评分, 给实验课评分, 有一定概率签到
   student.courses.each do |course|
     course.lessons.each do |lesson|
       course_teachers = course.teachers
@@ -160,6 +168,12 @@ students.each do |student|
                                      student_id: student.id,
                                      score: Random.rand(0..100),
                                      content: '实验做的不错')
+      if Random.rand(3) == 1
+        lesson.student_attendences.create(user_id: student.id,
+                                          lesson_id: lesson.id,
+                                          sign_up_method: 'GPS',
+                                          description: '40,166')
+      end
     end
   end
 end
@@ -210,11 +224,6 @@ assistant_students.each do |user, his_courses|
   end
 end
 puts 'assistant and student comments created...'
-
-# create files
-f1 = FileResource.create(name: '1.jpg', file_type: 'jpg', path: '/uploads/1.jpg', creator_id: admin0.id)
-f2 = FileResource.create(name: '2.jpg', file_type: 'jpg', path: '/uploads/2.jpg', creator_id: admin0.id)
-puts 'files created...'
 
 # user messages
 USER_MESSAGES_COUNT = 5
