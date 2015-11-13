@@ -19,6 +19,7 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 public class SentListActivity extends AppCompatActivity {
+    static public String TAG = "SentListActivity";
 
     ListView list_sent;
     BundleHelper bundleHelper;
@@ -63,19 +64,19 @@ public class SentListActivity extends AppCompatActivity {
     }
 
     private void setSentMessages(){
-        new Task(this).execute(
+        new GetMessagesTask(this).execute(
                 new PapaDataBaseManager.GetChatMessageRequest(bundleHelper.getToken())
         );
     }
 
-    class Task extends AsyncTask<
+    class GetMessagesTask extends AsyncTask<
             PapaDataBaseManager.GetChatMessageRequest,
             Exception,
             PapaDataBaseManager.GetChatMessageReply>
     {
         ProgressDialog proDialog;
 
-        public Task(Context context) {
+        public GetMessagesTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
             proDialog.setMessage("稍等喵 =w=");
             proDialog.show();
@@ -117,6 +118,57 @@ public class SentListActivity extends AppCompatActivity {
         }
     }
 
+    class ReadMessagesTask extends AsyncTask<
+            PapaDataBaseManager.ReadChatMessageRequest,
+            Exception,
+            Boolean>
+    {
+        ProgressDialog proDialog;
+
+        public ReadMessagesTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.show();
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute(){
+            // UI
+        }
+
+        @Override
+        protected Boolean doInBackground
+                (PapaDataBaseManager.ReadChatMessageRequest... params)
+        {
+            // 在后台
+            try {
+                bundleHelper.getPapaDataBaseManager().readChatMessages(params[0]);
+
+                return true;
+            } catch(PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Log.e("SignInAct", e[0].getMessage());
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean ok) {
+            // UI
+
+            proDialog.dismiss();
+            Log.i(TAG, "已设置为已读");
+        }
+    }
+
     private void processReply(PapaDataBaseManager.GetChatMessageReply reply)
     {
         String s = "";
@@ -135,6 +187,13 @@ public class SentListActivity extends AppCompatActivity {
 
         }
 
+        ////////////////////开始读最后一条信息
+        new ReadMessagesTask(this).execute(new PapaDataBaseManager.ReadChatMessageRequest(
+                        bundleHelper.getToken(),
+                        reply.list.get(reply.list.size() - 1).id
+            )
+        );
+        ////////////////////读完最后一条信息
 
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }

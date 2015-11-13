@@ -516,4 +516,24 @@ public abstract class PapaDataBaseManager {
     public abstract GetChatMessageReply getChatMessages(GetChatMessageRequest request)
             throws PapaHttpClientException;
 
+    //////////////////////////////////////////////////////////////////////////
+    // 标志已读
+
+    static public class ReadChatMessageRequest
+    {
+        public String token;
+        public String messageId;
+
+        public ReadChatMessageRequest(String token, String messageId)
+        {
+            this.token = token;
+            this.messageId = messageId;
+
+        }
+    }
+
+    public abstract void readChatMessages(ReadChatMessageRequest request)
+            throws PapaHttpClientException;
+
+
 }

@@ -97,7 +97,23 @@ public class PapaDataBaseManagerRealTest extends InstrumentationTestCase {
 
 
         papaDataBaseManager.postAttendance(new PapaDataBaseManager.PostAttendance(
-                r.token, r.personId + "", "5", 120.0123456, 30.0123456, true)
+                        r.token, r.personId + "", "5", 120.0123456, 30.0123456, true)
+        );
+    }
+
+
+    public void test5() throws Exception {
+        PapaDataBaseManager papaDataBaseManager = new PapaDataBaseManagerReal();
+
+        PapaDataBaseManager.SignInReply r = papaDataBaseManager.signIn(
+                new PapaDataBaseManager.SignInRequest("33", "123" )
+        );
+
+        papaDataBaseManager.readChatMessages(
+                new PapaDataBaseManager.ReadChatMessageRequest(
+                        r.token,
+                        "56"
+                )
         );
     }
 }
