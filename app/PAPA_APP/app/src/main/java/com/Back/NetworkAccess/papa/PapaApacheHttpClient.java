@@ -5,6 +5,8 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,8 +15,10 @@ import java.util.Iterator;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -26,6 +30,7 @@ import org.apache.http.entity.mime.content.StringBody;
 
 /**
  * Created by shyo on 15-10-16.
+ * Apache Http Adapter
  */
 public class PapaApacheHttpClient extends PapaAbstractHttpClient
 {
@@ -98,11 +103,20 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
         return reply;
     }
 
-    @Override
-    protected String getHttpReplyByPost(String url, HashMap<String, Object> parameter)
+    private String getHttpReply(
+            String url, HashMap<String, Object> parameter,
+            HttpEntityEnclosingRequestBase post
+    )
         throws PapaHttpClientException
     {
-        HttpPost post = new HttpPost(url);
+        try {
+            post.setURI(new URI(url));
+        }
+        catch(URISyntaxException e) {
+            e.printStackTrace();
+
+            throw new PapaHttpClientIOErrorException();
+        }
 
         Log.i(TAG, "post = " + post.getURI().toString() + ", postData ");
 
@@ -145,6 +159,19 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
         Log.i(TAG, "ret = " + (reply = executeRequest(post)));
         Log.i(TAG, reply.toString());
         return reply;
+    }
+
+    protected String getHttpReplyByPost(String url, HashMap<String, Object> parameter)
+            throws PapaHttpClientException
+    {
+        return getHttpReply(url, parameter, new HttpPost());
+    }
+
+
+    protected String getHttpReplyByPut(String url, HashMap<String, Object> parameter)
+            throws PapaHttpClientException
+    {
+        return getHttpReply(url, parameter, new HttpPut());
     }
 
     // 单件

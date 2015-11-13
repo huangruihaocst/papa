@@ -249,7 +249,8 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
 
     @Override
-    public UsrInfoReply getUsrInfo(UsrInfoRequest request) throws PapaHttpClientException {
+    public UsrInfoReply getUsrInfo(UsrInfoRequest request) throws PapaHttpClientException
+    {
         try
         {
             HashMap<String, Object> h = new HashMap<>();
@@ -261,13 +262,30 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             JSONObject obj = reply.getJSONObject("user");
 
             return new UsrInfoReply(
-                    obj.getInt("id"), obj.getString("name"),
-                    obj.getString("email"), obj.getString("phone")
+                    obj.getInt("id"),
+                    new UsrInfo(
+                            obj.getString("name"), obj.getString("email"), obj.getString("phone")
+                    )
             );
         }
         catch(org.json.JSONException e) {
             throw new PapaDataBaseJsonError();
         }
+    }
+
+
+    @Override
+    public void putUsrInfo(PutUsrInfoRequest request) throws PapaHttpClientException
+    {
+        HashMap<String, Object> h = new HashMap<>();
+        h.put("token", request.token);
+        h.put("user[email]", request.usrInfo.mail);
+        h.put("user[phone]", request.usrInfo.phone);
+        h.put("user[name]", request.usrInfo.usrName);
+
+        JSONObject reply = dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.put, "/users/" + request.id + ".json", h
+        );
     }
 
     @Override

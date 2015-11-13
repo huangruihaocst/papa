@@ -56,6 +56,10 @@ public class SentListActivity extends AppCompatActivity {
     }
 
     private void setSentMessages(){
+
+
+
+
         //TODO: get sent messages here. You may like to do it in a new thread. Extends BaseAdapter.
     }
 }

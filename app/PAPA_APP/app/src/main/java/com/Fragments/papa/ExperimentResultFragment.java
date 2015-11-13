@@ -262,6 +262,18 @@ public class ExperimentResultFragment extends Fragment {
                             pathArrayList.add(path);
                             isImageArrayList.add(0);
                             imageAdapter.notifyDataSetChanged();
+
+                            new UploadTask(getContext()).execute(
+                                    new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                                            bundleHelper.getExperimentId(),
+                                            bundleHelper.getStudentId(),
+                                            bundleHelper.getToken(),
+                                            file,
+                                            file.getName(),
+                                            "video"
+                                    )
+                            );
+
                         }else if(mimeType.contains("image")){
                             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
@@ -271,6 +283,17 @@ public class ExperimentResultFragment extends Fragment {
                             isImageArrayList.add(1);
                             imageAdapter.notifyDataSetChanged();
                             // byte[] bytes = toByteArray(file);
+
+                            new UploadTask(getContext()).execute(
+                                    new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                                            bundleHelper.getExperimentId(),
+                                            bundleHelper.getStudentId(),
+                                            bundleHelper.getToken(),
+                                            file,
+                                            file.getName(),
+                                            "picture"
+                                    )
+                            );
                         }else{
                             Toast.makeText(getContext(),getString(R.string.invalid_file),Toast.LENGTH_LONG).show();
                         }
@@ -278,16 +301,6 @@ public class ExperimentResultFragment extends Fragment {
                         Toast.makeText(getContext(),getString(R.string.no_media),Toast.LENGTH_LONG).show();
                     }
 
-                    new UploadTask(getContext()).execute(
-                            new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
-                                    bundleHelper.getExperimentId(),
-                                    bundleHelper.getStudentId(),
-                                    bundleHelper.getToken(),
-                                    file,
-                                    file.getName(),
-                                    "video"
-                            )
-                    );
                 }
             }
         }else if(requestCode == CAPTURE_IMAGE){

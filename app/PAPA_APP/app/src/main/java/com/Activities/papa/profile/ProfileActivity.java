@@ -2,6 +2,7 @@ package com.Activities.papa.profile;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,8 +10,12 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,21 +24,37 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
 import com.Activities.papa.SignInActivity;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Fragments.papa.CourseFragment;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private static final int IMAGE_PICKER_SELECT = 999;
 
+    BundleHelper bundleHelper;
+
+    PapaDataBaseManager.UsrInfo usrInfo;
+
+    EditText edit_username;
+    EditText edit_mail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+        bundleHelper = data.getParcelable(getString(R.string.key_to_edit_profile));
+
         setContentView(R.layout.activity_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.profile));
@@ -46,6 +67,10 @@ public class ProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+        edit_username = (EditText)findViewById(R.id.edit_username);
+        edit_mail = (EditText)findViewById(R.id.edit_mail);
 
         Button button_log_out = (Button)findViewById(R.id.log_out);
         button_log_out.setOnClickListener(new View.OnClickListener() {
@@ -74,11 +99,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        EditText edit_username = (EditText)findViewById(R.id.edit_username);
-        EditText edit_mail = (EditText)findViewById(R.id.edit_mail);
         Button button_chage_password = (Button)findViewById(R.id.button_change_password);
         Button button_change_photo = (Button)findViewById(R.id.button_change_photo);
 
+        usrInfo = null;
         setProfile();
 
         button_chage_password.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +123,7 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivityForResult(intent, IMAGE_PICKER_SELECT);
             }
         });
+
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -137,7 +162,10 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setProfile(){
-        //TODO:initialize the profile in another thread
+        new GetUsrInfoTask(this).execute(new PapaDataBaseManager.UsrInfoRequest(
+                bundleHelper.getId(),
+                bundleHelper.getToken()
+        ));
     }
 
     @Override
@@ -155,12 +183,156 @@ public class ProfileActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_save) {
-            //TODO:upload the profile
-            return true;
+        if (id == R.id.action_search) {
+            usrInfo.usrName = edit_username.getText().toString();
+            usrInfo.mail = edit_mail.getText().toString();
+
+
+            new PutUsrInfoTask(this).execute(new PapaDataBaseManager.PutUsrInfoRequest(
+                    bundleHelper.getId(),
+                    bundleHelper.getToken(),
+                    usrInfo
+            ));
+
+
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    class GetUsrInfoTask extends
+            AsyncTask<PapaDataBaseManager.UsrInfoRequest, Exception,
+                    PapaDataBaseManager.UsrInfoReply> {
+        ProgressDialog proDialog;
+
+        public GetUsrInfoTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.UsrInfoReply doInBackground
+                (PapaDataBaseManager.UsrInfoRequest... params) {
+            // 在后台
+            try {
+                return BundleHelper.getPapaDataBaseManager().getUsrInfo(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.UsrInfoReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setUsrInfo(rlt);
+        }
+    }
+
+    private void setUsrInfo(PapaDataBaseManager.UsrInfoReply reply)
+    {
+        usrInfo = reply.usrInfo;
+
+        edit_username.setText(usrInfo.usrName);
+        edit_mail.setText(usrInfo.mail);
+    }
+
+    class PutUsrInfoTask extends
+            AsyncTask<PapaDataBaseManager.PutUsrInfoRequest, Exception,
+                    Boolean> {
+        ProgressDialog proDialog;
+
+        public PutUsrInfoTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground
+                (PapaDataBaseManager.PutUsrInfoRequest... params) {
+            // 在后台
+            try {
+                BundleHelper.getPapaDataBaseManager().putUsrInfo(params[0]);
+                return true;
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+                return false;
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            e[0].printStackTrace();
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean ok) {
+            // UI
+
+            proDialog.dismiss();
+        }
+    }
+
+    public class CourseViewPagerAdapter extends FragmentStatePagerAdapter {
+        int tabs_amount;
+        int id;
+        String token;
+        List<Map.Entry<Integer, String>> lst;
+
+
+        public CourseViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        public CourseViewPagerAdapter(
+                FragmentManager fm, int count, List<Map.Entry<Integer, String>> lst,
+                int id, String token
+        ) {
+            this(fm);
+            this.tabs_amount = count;
+            this.id = id;
+            this.token = token;
+            this.lst = lst;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return CourseFragment.newInstance(id, lst.get(position).getKey(), token, bundleHelper);
+        }
+
+        @Override
+        public int getCount() {
+            return tabs_amount;
+        }
+
     }
 
 }

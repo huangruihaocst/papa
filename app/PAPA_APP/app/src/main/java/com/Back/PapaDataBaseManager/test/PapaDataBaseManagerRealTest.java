@@ -87,7 +87,7 @@ public class PapaDataBaseManagerRealTest extends InstrumentationTestCase {
         );
 
     }
-    
+
     public void test4() throws Exception {
         PapaDataBaseManager papaDataBaseManager = new PapaDataBaseManagerReal();
 

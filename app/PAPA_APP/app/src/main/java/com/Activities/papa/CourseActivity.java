@@ -363,8 +363,8 @@ public class CourseActivity extends AppCompatActivity
         TextView mail_label = (TextView)findViewById(R.id.mail_label);
         ImageView image_label = (ImageView)findViewById(R.id.image_label);
 
-        username_label.setText(r.usrName);
-        mail_label.setText(r.mail);
+        username_label.setText(r.usrInfo.usrName);
+        mail_label.setText(r.usrInfo.mail);
     }
 
 

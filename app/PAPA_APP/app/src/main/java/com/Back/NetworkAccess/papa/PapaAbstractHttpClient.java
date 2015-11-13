@@ -5,9 +5,10 @@ import java.util.HashMap;
 public abstract class PapaAbstractHttpClient{
     protected abstract String getHttpReplyByGet(String url, HashMap<String, Object> parameter) throws PapaHttpClientException;
     protected abstract String getHttpReplyByPost(String url, HashMap<String, Object> parameter) throws PapaHttpClientException;
+    protected abstract String getHttpReplyByPut(String url, HashMap<String, Object> parameter) throws PapaHttpClientException;
 
     public enum HttpMethod {
-        get, post
+        get, post, put
     }
 
     public String getHttpReply(HttpMethod method, String url, HashMap<String, Object> parameter)
@@ -17,6 +18,8 @@ public abstract class PapaAbstractHttpClient{
             return getHttpReplyByGet(url, parameter);
         else if(method == HttpMethod.post)
             return getHttpReplyByPost(url, parameter);
+        else if(method == HttpMethod.put)
+            return getHttpReplyByPut(url, parameter);
         else
             throw new PapaHttpUnknownMethodException();
     }

@@ -74,7 +74,7 @@ public class NewMessageActivity extends AppCompatActivity {
         String title = edit_title.getText().toString();
         String body = edit_body.getText().toString();
         String recipient = edit_recipient.getText().toString();
-        //TODO:send message here, you may like to do it in a new thread
+        //oTODO:send message here, you may like to do it in a new thread
         //TODO:Toast according to different conditions
         //call finish() if succeed
     }

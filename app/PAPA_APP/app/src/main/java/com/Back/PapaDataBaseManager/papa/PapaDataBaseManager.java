@@ -122,7 +122,6 @@ public abstract class PapaDataBaseManager {
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////
-
     // 获取用户信息
     static public class UsrInfoRequest
     {
@@ -136,24 +135,54 @@ public abstract class PapaDataBaseManager {
         }
     }
 
-    static public class UsrInfoReply
+    static public class UsrInfo
     {
-        public int id;
         public String usrName;
         public String mail;
         public String phone;
 
-        public UsrInfoReply(int id, String usrName, String mail, String phone)
+        public UsrInfo(String usrName, String mail, String phone)
         {
-            this.id = id;
             this.usrName = usrName;
             this.mail = mail;
             this.phone = phone;
         }
     }
 
+    static public class UsrInfoReply
+    {
+        public int id;
+        public UsrInfo usrInfo;
+
+        public UsrInfoReply(int id, UsrInfo usrInfo)
+        {
+            this.id = id;
+            this.usrInfo = usrInfo;
+        }
+    }
+
     // 使用 POST 方法登录 返回是否成功
     public abstract UsrInfoReply getUsrInfo(UsrInfoRequest request) throws PapaHttpClientException;
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // 获取用户信息
+    static public class PutUsrInfoRequest
+    {
+        public int id;
+        public String token;
+        public UsrInfo usrInfo;
+
+        public PutUsrInfoRequest(int id, String token, UsrInfo usrInfo)
+        {
+            this.id = id;
+            this.token = token;
+            this.usrInfo = usrInfo;
+        }
+    }
+
+    // 使用 POST 方法登录 返回是否成功
+    public abstract void putUsrInfo(PutUsrInfoRequest request) throws PapaHttpClientException;
 
 
     //////////////////////////////////////////////////////////////////////////
