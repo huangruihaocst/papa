@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,7 +29,7 @@ import com.Activities.papa.R;
 import com.Activities.papa.SignInActivity;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Fragments.papa.CourseFragment;
+import com.Fragments.papa.course.CourseFragment;
 
 import java.io.File;
 import java.util.List;

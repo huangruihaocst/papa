@@ -1,4 +1,4 @@
-package com.Fragments.papa;
+package com.Fragments.papa.course;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -7,16 +7,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
@@ -24,9 +21,6 @@ import com.Activities.papa.experiments.ExperimentActivity;
 import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -38,7 +32,7 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class CourseFragment extends android.support.v4.app.Fragment {
-    private static final String tag = "CourseFragment";
+    private static final String TAG = "CourseFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "ARG_PARAM1";
@@ -84,7 +78,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.i(tag, "onCreate");
+        Log.i(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -217,45 +211,9 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         }
     }
 
-
-    private class MyAdapter extends BaseAdapter {
-        private List<Map.Entry<Integer, String>> lst;
-
-        public MyAdapter(List<Map.Entry<Integer, String>> lst) {
-            this.lst = lst;
-        }
-
-        @Override
-        public int getCount() {
-            return lst.size();
-        }
-
-        @Override
-        public Object getItem(int arg0) {
-            return arg0;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView mTextView = new TextView(getContext());
-            mTextView.setText(lst.get(position).getValue());
-            mTextView.setTextSize(35);
-//            mTextView.setTextColor(getColor(R.color.colorPrimary));
-            mTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.colorPrimary));
-            return mTextView;
-        }
-    }
-
-
-
     private void startExperimentActivity(String courseName, int courseId, BundleHelper.Identity identity){
 
-        Log.i(tag, courseName + "=" + courseId);
+        Log.i(TAG, courseName + "=" + courseId);
 
         Intent intent = new Intent(getActivity(), ExperimentActivity.class);
         Bundle data = new Bundle();
@@ -319,7 +277,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
     private void setStudentCourses(final PapaDataBaseManager.CourseReply rlt) {
         ListView CourseStudentListView = course_student_list;
-        CourseStudentListView.setAdapter(new MyAdapter(rlt.course));
+        CourseStudentListView.setAdapter(new CourseListAdapter(rlt.course, getContext()));
         CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -340,13 +298,20 @@ public class CourseFragment extends android.support.v4.app.Fragment {
 
     private void setTeacherCourses(final PapaDataBaseManager.CourseReply rlt) {
         ListView CourseTeacherAssistantListView = course_teacher_assistant_list;
-        CourseTeacherAssistantListView.setAdapter(new MyAdapter(rlt.course));
+        CourseTeacherAssistantListView.setAdapter(new CourseListAdapter(rlt.course, getContext()));
         CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 startExperimentActivity(rlt.course.get(position).getValue(),
                         rlt.course.get(position).getKey(),
                         BundleHelper.Identity.teacher_assistant);
+            }
+        });
+        CourseTeacherAssistantListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
             }
         });
     }

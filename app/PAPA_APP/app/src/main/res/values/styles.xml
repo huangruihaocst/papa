@@ -17,9 +17,16 @@
         <item name="android:textSize">25sp</item>
         <item name="android:textColor">@color/colorAccent</item>
     </style>
-    <style name="DetailContent">
+    <style name="DetailContent" parent="android:TextAppearance.Widget.TextView">
         <item name="android:textSize">25sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+    <style name="EditTextSelector" parent="android:Widget.EditText">
+        <item name="android:textSize">25sp</item>
+        <item name="android:gravity">start</item>
+        <item name="android:inputType">text</item>
+        <item name="android:background">@drawable/edit_text_selector</item>
+        <item name="android:textColorHint">#CCCCCC</item>
     </style>
 
 </resources>

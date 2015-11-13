@@ -64,7 +64,10 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public CourseReply getStuCourse(CourseRequest request) throws PapaHttpClientException {
         kaSi();
         CourseReply r = new CourseReply();
-        r.course.add(new AbstractMap.SimpleEntry<>(2, "模拟电路实验"));
+        r.course.add(new AbstractMap.SimpleEntry<>(2, "模拟电路实验1"));
+        r.course.add(new AbstractMap.SimpleEntry<>(20, "模拟电路实验2"));
+        r.course.add(new AbstractMap.SimpleEntry<>(200, "模拟电路实验3"));
+        r.course.add(new AbstractMap.SimpleEntry<>(2000, "模拟电路实验4"));
         return r;
     }
 
@@ -74,6 +77,10 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
         CourseReply r = new CourseReply();
         if(request.semesterId == 2)
             r.course.add(new AbstractMap.SimpleEntry<>(1, "数字电路实验"));
+        r.course.add(new AbstractMap.SimpleEntry<>(1, "数字电路实验2"));
+        r.course.add(new AbstractMap.SimpleEntry<>(10, "数字电路实验3"));
+        r.course.add(new AbstractMap.SimpleEntry<>(100, "数字电路实验4"));
+        r.course.add(new AbstractMap.SimpleEntry<>(1000, "数字电路实验5"));
         if(request.semesterId == 0)
             r.course.add(new AbstractMap.SimpleEntry<>(10, "数字电路实验 2"));
         if(request.semesterId == 4)
@@ -225,5 +232,10 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public void postChatMessages(PostChatMessageRequest request) throws PapaHttpClientException {
 
 
+    }
+
+    @Override
+    public GetTeachersInfoReply getTeachersInfo(GetTeachersInfoRequest request) throws PapaHttpClientException {
+        return null;
     }
 }

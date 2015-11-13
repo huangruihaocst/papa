@@ -13,7 +13,7 @@ import java.util.List;
  * Created by shyo on 15-11-3.
  */
 public class PapaDataBaseManagerRealTest extends InstrumentationTestCase {
-    static final String Tag = "PapaDataBaseManagerRealTest";
+    static final String TAG = "PapaDataBaseManagerRealTest";
 
     public void test1() throws Exception {
         PapaDataBaseManager papaDataBaseManager = new PapaDataBaseManagerReal();
@@ -31,7 +31,7 @@ public class PapaDataBaseManagerRealTest extends InstrumentationTestCase {
 
         assertTrue(lst.size() >= 0);
 
-        Log.i(Tag, lst.toString());
+        Log.i(TAG, lst.toString());
 
     }
 
@@ -53,7 +53,7 @@ public class PapaDataBaseManagerRealTest extends InstrumentationTestCase {
         assertNotNull(msg);
 
         Log.i(
-                Tag,
+                TAG,
                 msg.getId() + " " + msg.getTitle() + " " + msg.getDeadline().toString() + " " +
                         msg.getContent() + " " + msg.getCreatorName() + " " + msg.getCourseName() +
                         " " + msg.getType()
@@ -80,7 +80,7 @@ public class PapaDataBaseManagerRealTest extends InstrumentationTestCase {
         assertNotNull(msg);
 
         Log.i(
-                Tag,
+                TAG,
                 msg.getId() + " " + msg.getTitle() + " " + msg.getDeadline().toString() + " " +
                         msg.getContent() + " " + msg.getCreatorName() + " " + msg.getCourseName() +
                         " " + msg.getType()
@@ -115,5 +115,29 @@ public class PapaDataBaseManagerRealTest extends InstrumentationTestCase {
                         "56"
                 )
         );
+    }
+
+
+
+    public void test6() throws Exception {
+        PapaDataBaseManager papaDataBaseManager = new PapaDataBaseManagerReal();
+
+        PapaDataBaseManager.SignInReply r = papaDataBaseManager.signIn(
+                new PapaDataBaseManager.SignInRequest("33", "123" )
+        );
+
+        List<PapaDataBaseManager.TeacherInfo> info =
+                papaDataBaseManager.getTeachersInfo(new PapaDataBaseManager.GetTeachersInfoRequest(
+                        r.token, String.valueOf(r.personId)
+                )).list;
+
+        for(int i = 0; i < info.size(); i++)
+        {
+            Log.i(TAG, info.get(i).toString());
+        }
+
+
+
+
     }
 }

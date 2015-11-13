@@ -34,7 +34,7 @@ import com.Activities.papa.receive_message.MessageActivity;
 import com.Activities.papa.receive_message.MessagePullService;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Fragments.papa.CourseFragment;
+import com.Fragments.papa.course.CourseFragment;
 
 import java.util.Iterator;
 import java.util.List;
@@ -64,6 +64,8 @@ public class CourseActivity extends AppCompatActivity
 
     LinearLayout linearLayout;
 
+    List<PapaDataBaseManager.TeacherInfo> teachersInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +86,10 @@ public class CourseActivity extends AppCompatActivity
 
         this.papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
 
+        teachersInfo = null;
+
         getSemester();
+        getTeachers();
 
         tabLayout = (TabLayout) findViewById(R.id.semester_tab);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -449,5 +454,64 @@ public class CourseActivity extends AppCompatActivity
             return tabs_amount;
         }
 
+    }
+
+
+    class GetTeachersInfoTask extends
+            AsyncTask<PapaDataBaseManager.GetTeachersInfoRequest,
+                    Exception, PapaDataBaseManager.GetTeachersInfoReply> {
+        ProgressDialog proDialog;
+
+        public GetTeachersInfoTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetTeachersInfoReply doInBackground
+                (PapaDataBaseManager.GetTeachersInfoRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getTeachersInfo(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetTeachersInfoReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setTeachers(rlt.list);
+        }
+    }
+
+    void getTeachers()
+    {
+        new GetTeachersInfoTask(this).execute(new PapaDataBaseManager.GetTeachersInfoRequest(
+                token, String.valueOf(id)
+        ));
+    }
+
+    void setTeachers(List<PapaDataBaseManager.TeacherInfo> lst)
+    {
+        teachersInfo = lst;
     }
 }
