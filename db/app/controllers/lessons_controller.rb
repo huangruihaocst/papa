@@ -18,39 +18,41 @@ class LessonsController < ApplicationController
 
   # GET /lessons/1.json
   def show
-    if @lesson && params[:full]
-      @students = []
-      @lesson.course.students.each do |student|
-        comments = StudentComment.where(lesson_id: @lesson, student_id: student.id)
-        comment_hash = {}
-        if comments.count > 0
-          comment = comments[0]
-          comment_hash = {
-              score:      comment.score,
-              content:    comment.content,
-              creator_id: comment.creator_id,
-              creator_name: comment.creator.name,
-              created_at: comment.created_at
-          }
-        end
-        video_file_count, image_file_count = 0, 0
-        student_files = @lesson.student_files
-        student_files.each do |file|
-          video_file_count += 1 if file.file_resource.type == FILE_TYPE_VIDEO
-          image_file_count += 1 if file.file_resource.type == FILE_TYPE_IMAGE
-        end
+    if @lesson
+      if params[:full]
+        @students = []
+        @lesson.course.students.each do |student|
+          comments = StudentComment.where(lesson_id: @lesson, student_id: student.id)
+          comment_hash = {}
+          if comments.count > 0
+            comment = comments[0]
+            comment_hash = {
+                score:      comment.score,
+                content:    comment.content,
+                creator_id: comment.creator_id,
+                creator_name: comment.creator.name,
+                created_at: comment.created_at
+            }
+          end
+          video_file_count, image_file_count = 0, 0
+          student_files = @lesson.student_files
+          student_files.each do |file|
+            video_file_count += 1 if file.file_resource.type == FILE_TYPE_VIDEO
+            image_file_count += 1 if file.file_resource.type == FILE_TYPE_IMAGE
+          end
 
-        student_info = {
-            id:     student.id,
-            name:   student.name,
-            email:  student.email,
-            phone:  student.phone,
-            student_number:   student.student_number,
-            comment:          comment_hash,
-            video_count:      video_file_count,
-            image_file_count: image_file_count
-        }
-        @students.push(student_info)
+          student_info = {
+              id:     student.id,
+              name:   student.name,
+              email:  student.email,
+              phone:  student.phone,
+              student_number:   student.student_number,
+              comment:          comment_hash,
+              video_count:      video_file_count,
+              image_file_count: image_file_count
+          }
+          @students.push(student_info)
+        end
       end
     else
       json_failed(REASON_RESOURCE_NOT_FOUND)
