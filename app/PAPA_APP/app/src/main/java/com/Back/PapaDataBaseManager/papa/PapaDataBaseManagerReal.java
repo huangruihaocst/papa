@@ -692,4 +692,24 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
         }
     }
+
+    /*
+     我操你妈比的软工例会
+     我操你妈比的软工例会
+     我操你妈比的软工例会
+     我操你妈比的软工例会
+     我操你妈比的软工例会
+     我操你妈比的软工例会
+      */
+
+    @Override
+    public void PutUsrPassword(PutUsrPasswordRequest request) throws PapaHttpClientException {
+        HashMap<String, Object> h = new HashMap<>();
+        h.put("token", request.token);
+        h.put("user[password]", request.password);
+
+        dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.put, "/users/" + request.personId + ".json", h
+        );
+    }
 }

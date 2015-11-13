@@ -184,6 +184,24 @@ public abstract class PapaDataBaseManager {
     // 使用 POST 方法登录 返回是否成功
     public abstract void putUsrInfo(PutUsrInfoRequest request) throws PapaHttpClientException;
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // 换密码
+    static public class PutUsrPasswordRequest
+    {
+        public String token;
+        public String personId;
+        public String password;
+
+        public PutUsrPasswordRequest(String token, String personId, String password)
+        {
+            this.token = token;
+            this.password = password;
+        }
+    }
+
+    // 使用 POST 方法登录 返回是否成功
+    public abstract void PutUsrPassword(PutUsrPasswordRequest request) throws PapaHttpClientException;
+
 
     //////////////////////////////////////////////////////////////////////////
 

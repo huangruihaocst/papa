@@ -184,15 +184,16 @@ public class SentListActivity extends AppCompatActivity {
             s += ", content = " + chatMessage.content;
             s += ", status = " + chatMessage.status;
             s += "\n";
-
         }
 
         ////////////////////开始读最后一条信息
+        /*
         new ReadMessagesTask(this).execute(new PapaDataBaseManager.ReadChatMessageRequest(
                         bundleHelper.getToken(),
                         reply.list.get(reply.list.size() - 1).id
             )
         );
+        */
         ////////////////////读完最后一条信息
 
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();

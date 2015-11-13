@@ -238,4 +238,9 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public GetTeachersInfoReply getTeachersInfo(GetTeachersInfoRequest request) throws PapaHttpClientException {
         return null;
     }
+
+    @Override
+    public void PutUsrPassword(PutUsrPasswordRequest request) throws PapaHttpClientException {
+
+    }
 }
