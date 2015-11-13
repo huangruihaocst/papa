@@ -559,4 +559,67 @@ public abstract class PapaDataBaseManager {
             throws PapaHttpClientException;
 
 
+    //////////////////////////////////////////////////////////////////////////
+    // 获取相关老师的信息
+
+
+    static public class GetTeachersInfoRequest
+    {
+        public String token;
+        public String personId;
+
+        public GetTeachersInfoRequest(String token, String personId)
+        {
+            this.token = token;
+            this.personId = personId;
+        }
+    }
+
+    static public class TeacherInfo
+    {
+        String teacherName;
+        String courseName;
+        String teacherTelephone;
+        String teacherMail;
+        String teacherId;
+
+        @Override
+        public String toString() {
+            String s = "teacher: ";
+            s += teacherName + " ";
+            s += courseName + " ";
+            s += teacherTelephone + " ";
+            s += teacherMail + " ";
+            s += teacherId + "\n";
+            return s;
+        }
+
+        public TeacherInfo(
+                String teacherName, String courseName, String teacherTelephone,
+                String teacherMail, String teacherId
+        )
+        {
+            this.teacherName = teacherName;
+            this.courseName = courseName;
+            this.teacherTelephone = teacherTelephone;
+            this.teacherMail = teacherMail;
+            this.teacherId = teacherId;
+        }
+    }
+
+
+    static public class GetTeachersInfoReply
+    {
+        public List<TeacherInfo> list;
+
+        public GetTeachersInfoReply(List<TeacherInfo> list)
+        {
+            this.list = list;
+        }
+    }
+
+
+    public abstract GetTeachersInfoReply getTeachersInfo(GetTeachersInfoRequest request)
+            throws PapaHttpClientException;
+
 }
