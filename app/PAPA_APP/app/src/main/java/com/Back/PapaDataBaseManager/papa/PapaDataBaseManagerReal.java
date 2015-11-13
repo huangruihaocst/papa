@@ -12,6 +12,7 @@ import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -625,5 +627,68 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 "/users/" + request.receiverId + "/messages.json",
                 h
         );
+    }
+
+    @Override
+    public GetTeachersInfoReply getTeachersInfo(GetTeachersInfoRequest request)
+            throws PapaHttpClientException
+    {
+        try {
+            List<TeacherInfo> lst = new ArrayList<>();
+
+            HashMap<String, Object> h = new HashMap<>();
+
+            h.put("token", request.token);
+
+            JSONArray courses = new JSONArray();
+
+            JSONArray studentCourses = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/students/" + request.personId + "/courses.json", h
+            ).getJSONArray("courses");
+
+            JSONArray assistantCourses = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/assistants/" + request.personId + "/courses.json", h
+            ).getJSONArray("courses");
+
+            for (int i = 0; i < studentCourses.length(); i++) {
+                courses.put(studentCourses.get(i));
+            }
+            for (int i = 0; i < assistantCourses.length(); i++) {
+                courses.put(assistantCourses.get(i));
+            }
+
+            for (int i = 0; i < courses.length(); i++) {
+                JSONObject courseObject = courses.getJSONObject(i);
+                String courseId = courseObject.getString("id");
+                String courseName = courseObject.getString("name");
+
+                JSONArray teacherArray = dbAccess.getDataBaseReplyAsJson(
+                        PapaAbstractHttpClient.HttpMethod.get,
+                        "/courses/" + courseId + "/teachers.json", null
+                ).getJSONArray("teachers");
+
+                for(int j = 0; j < teacherArray.length(); j++)
+                {
+                    JSONObject teacherObject = teacherArray.getJSONObject(j);
+                    lst.add(new TeacherInfo(
+                                    teacherObject.getString("name"),
+                                    courseName,
+                                    teacherObject.getString("phone"),
+                                    teacherObject.getString("email"),
+                                    teacherObject.getString("id")
+                            )
+                    );
+                }
+            }
+            return new GetTeachersInfoReply(lst);
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+
+        }
     }
 }
