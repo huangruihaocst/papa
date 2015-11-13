@@ -166,7 +166,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
                     PapaDataBaseManager.CourseReply taCourseReply =
                         papaDataBaseManager.getTACourse(new PapaDataBaseManager.CourseRequest(id, semesterId, token));
                     PapaDataBaseManager.CourseReply studentCourseReply =
-                            papaDataBaseManager.getStuCourse(new PapaDataBaseManager.CourseRequest(id, semesterId, toString()));
+                            papaDataBaseManager.getStuCourse(new PapaDataBaseManager.CourseRequest(id, semesterId, token));
 
                     return new Object[] {
                             studentCourseReply,
@@ -181,7 +181,6 @@ public class CourseFragment extends android.support.v4.app.Fragment {
             @Override
             protected void onPostExecute(Object[] rlt) {
                 // UI
-
                 proDialog.dismiss();
                 if (rlt != null) {
                     PapaDataBaseManager.CourseReply studentCourseReply = (PapaDataBaseManager.CourseReply) rlt[0];
@@ -189,13 +188,12 @@ public class CourseFragment extends android.support.v4.app.Fragment {
                     setCourses(studentCourseReply.course, taCourseReply.course);
                 }
             }
-        };
+        }.execute();
     }
 
     private void setCourses(List<Map.Entry<Integer, String>> studentCourses, List<Map.Entry<Integer, String>> taCourses) {
-        ListView CourseTeacherAssistantListView = course_list;
-        CourseTeacherAssistantListView.setAdapter(new CourseListAdapter(studentCourses, taCourses, getContext(), bundleHelper));
-        CourseTeacherAssistantListView.setOnTouchListener(new View.OnTouchListener() {
+        course_list.setAdapter(new CourseListAdapter(studentCourses, taCourses, getContext(), bundleHelper));
+        course_list.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.getParent().requestDisallowInterceptTouchEvent(true);

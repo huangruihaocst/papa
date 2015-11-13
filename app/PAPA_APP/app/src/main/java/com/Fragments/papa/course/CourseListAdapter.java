@@ -67,7 +67,9 @@ public class CourseListAdapter extends BaseAdapter {
         }
         else if (position <= studentCourses.size()) {
             final int index = position - 1;
-            textView.setText(studentCourses.get(index - 1).getValue());
+            textView.setText(studentCourses.get(index).getValue());
+            textView.setTextSize(30);
+            textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -88,7 +90,7 @@ public class CourseListAdapter extends BaseAdapter {
         else {
             final int index = position - 2 - studentCourses.size();
             textView.setText(taCourses.get(index).getValue());
-            textView.setTextSize(35);
+            textView.setTextSize(30);
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
