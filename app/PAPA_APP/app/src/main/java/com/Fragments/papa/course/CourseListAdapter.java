@@ -1,13 +1,18 @@
 package com.Fragments.papa.course;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
+import com.Activities.papa.experiments.ExperimentActivity;
 
 import java.util.List;
 import java.util.Map;
@@ -16,17 +21,22 @@ import java.util.Map;
  * Created by huang on 15-11-13.
  */
 public class CourseListAdapter extends BaseAdapter {
-    private List<Map.Entry<Integer, String>> lst;
+    private List<Map.Entry<Integer, String>> studentCourses;
+    private List<Map.Entry<Integer, String>> taCourses;
     Context context;
+    BundleHelper bundleHelper;
 
-    public CourseListAdapter(List<Map.Entry<Integer, String>> lst, Context context) {
-        this.lst = lst;
+    public CourseListAdapter(List<Map.Entry<Integer, String>> studentCourses, List<Map.Entry<Integer, String>> taCourses, Context context, BundleHelper bundleHelper) {
+        this.studentCourses = studentCourses;
+        this.taCourses = taCourses;
         this.context = context;
+        this.bundleHelper = bundleHelper;
     }
 
+    // 2 means table name
     @Override
     public int getCount() {
-        return lst.size();
+        return studentCourses.size() + taCourses.size() + 2;
     }
 
     @Override
@@ -40,12 +50,64 @@ public class CourseListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         TextView mTextView = new TextView(context);
-        mTextView.setText(lst.get(position).getValue());
+
+        if (position == 0) {
+            mTextView.setText("Student Courses");
+        }
+        else if (position <= studentCourses.size()) {
+            final int index = position - 1;
+            mTextView.setText(studentCourses.get(index - 1).getValue());
+            mTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startExperimentActivity(
+                            context,
+                            studentCourses.get(index).getValue(),
+                            studentCourses.get(index).getKey(),
+                            bundleHelper,
+                            BundleHelper.Identity.student);
+                }
+            });
+        }
+        else if (position == studentCourses.size() + 1) {
+            mTextView.setText("TA Courses");
+        }
+        else {
+            final int index = position - 2 - studentCourses.size();
+            mTextView.setText(taCourses.get(index).getValue());
+            mTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startExperimentActivity(
+                            context,
+                            taCourses.get(index).getValue(),
+                            taCourses.get(index).getKey(),
+                            bundleHelper,
+                            BundleHelper.Identity.teacher_assistant);
+                }
+            });
+        }
+
         mTextView.setTextSize(35);
-//            mTextView.setTextColor(getColor(R.color.colorPrimary));
         mTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
         return mTextView;
+    }
+
+    private void startExperimentActivity(Context context, String courseName, int courseId, BundleHelper bundleHelper, BundleHelper.Identity identity){
+        Intent intent = new Intent(context, ExperimentActivity.class);
+        Bundle data = new Bundle();
+        String key_course_experiment = context.getString(R.string.key_course_experiment);
+        bundleHelper.setCourseName(courseName);
+        bundleHelper.setCourseId(courseId);
+        bundleHelper.setIdentity(identity);
+        if(identity == BundleHelper.Identity.student) {
+            bundleHelper.setStudentId(bundleHelper.getId());
+            bundleHelper.setStudentName(bundleHelper.getUsername());
+        }
+        data.putParcelable(key_course_experiment,bundleHelper);
+        intent.putExtras(data);
+        context.startActivity(intent);
     }
 }

@@ -22,6 +22,9 @@ import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -104,8 +107,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
             course_teacher_assistant_list =
                     (ListView)rootView.findViewById(R.id.course_teacher_assistant_list);
             course_student_list = (ListView)rootView.findViewById(R.id.course_student_list);
-            getStudentCourses();
-            getTeacherCourses();
+            getCourses();
         }else{
             ((ViewGroup)rootView.getParent()).removeView(rootView);
         }
@@ -151,162 +153,57 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    private void getCourses() {
+        new AsyncTask<Object[], Exception, Object[]>() {
+            ProgressDialog proDialog;
 
-
-    // Courses
-    private void getStudentCourses() {
-        new GetStudentCourseTask(getContext()).execute(
-                new PapaDataBaseManager.CourseRequest(id, semesterId, token)
-        );
-    }
-
-    private void getTeacherCourses() {
-        new GetTeacherCourseTask(getContext()).execute(
-                new PapaDataBaseManager.CourseRequest(id, semesterId, token)
-        );
-    }
-
-    class GetStudentCourseTask extends
-            AsyncTask<PapaDataBaseManager.CourseRequest, Exception, PapaDataBaseManager.CourseReply> {
-        ProgressDialog proDialog;
-
-        public GetStudentCourseTask(Context context) {
-            proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
-            proDialog.setCancelable(false);
-            proDialog.setCanceledOnTouchOutside(false);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // UI
-
-            proDialog.show();
-        }
-
-        @Override
-        protected PapaDataBaseManager.CourseReply doInBackground
-                (PapaDataBaseManager.CourseRequest... params) {
-            // 在后台
-            try {
-                return papaDataBaseManager.getStuCourse(params[0]);
-            } catch (PapaHttpClientException e) {
-                publishProgress(e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Exception... e) {
-            // UI
-            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        protected void onPostExecute(PapaDataBaseManager.CourseReply rlt) {
-            // UI
-
-            proDialog.dismiss();
-            if (rlt != null) setStudentCourses(rlt);
-        }
-    }
-
-    private void startExperimentActivity(String courseName, int courseId, BundleHelper.Identity identity){
-
-        Log.i(TAG, courseName + "=" + courseId);
-
-        Intent intent = new Intent(getActivity(), ExperimentActivity.class);
-        Bundle data = new Bundle();
-        String key_course_experiment = getString(R.string.key_course_experiment);
-        bundleHelper.setCourseName(courseName);
-        bundleHelper.setCourseId(courseId);
-        bundleHelper.setIdentity(identity);
-        if(identity == BundleHelper.Identity.student) {
-            bundleHelper.setStudentId(bundleHelper.getId());
-            bundleHelper.setStudentName(bundleHelper.getUsername());
-        }
-        data.putParcelable(key_course_experiment,bundleHelper);
-        intent.putExtras(data);
-        startActivity(intent);
-    }
-
-    class GetTeacherCourseTask extends
-            AsyncTask<PapaDataBaseManager.CourseRequest, Exception, PapaDataBaseManager.CourseReply> {
-        ProgressDialog proDialog;
-
-        public GetTeacherCourseTask(Context context) {
-            proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
-            proDialog.setCancelable(false);
-            proDialog.setCanceledOnTouchOutside(false);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // UI
-
-            proDialog.show();
-        }
-
-        @Override
-        protected PapaDataBaseManager.CourseReply doInBackground
-                (PapaDataBaseManager.CourseRequest... params) {
-            // 在后台
-            try {
-                return papaDataBaseManager.getTACourse(params[0]);
-            } catch (PapaHttpClientException e) {
-                publishProgress(e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Exception... e) {
-            // UI
-            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        protected void onPostExecute(PapaDataBaseManager.CourseReply rlt) {
-            // UI
-
-            proDialog.dismiss();
-            if (rlt != null) setTeacherCourses(rlt);
-        }
-    }
-
-    private void setStudentCourses(final PapaDataBaseManager.CourseReply rlt) {
-        ListView CourseStudentListView = course_student_list;
-        CourseStudentListView.setAdapter(new CourseListAdapter(rlt.course, getContext()));
-        CourseStudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(rlt.course.get(position).getValue(),
-                        rlt.course.get(position).getKey(),
-                        BundleHelper.Identity.student);
+            protected void onPreExecute() {
+                // UI
+                proDialog = new ProgressDialog(getContext(), 0);
+                proDialog.setMessage("稍等喵 =w=");
+                proDialog.setCancelable(false);
+                proDialog.setCanceledOnTouchOutside(false);
+                proDialog.show();
             }
-        });
-        CourseStudentListView.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
+            protected Object[] doInBackground
+            (Object[] ...params) {
+                // 在后台
+                try {
+                    PapaDataBaseManager.CourseReply taCourseReply =
+                        papaDataBaseManager.getTACourse(new PapaDataBaseManager.CourseRequest(id, semesterId, token));
+                    PapaDataBaseManager.CourseReply studentCourseReply =
+                            papaDataBaseManager.getStuCourse(new PapaDataBaseManager.CourseRequest(id, semesterId, toString()));
+
+                    return new Object[] {
+                            studentCourseReply,
+                            taCourseReply
+                    };
+                } catch (PapaHttpClientException e) {
+                    publishProgress(e);
+                }
+                return null;
             }
-        });
+
+            @Override
+            protected void onPostExecute(Object[] rlt) {
+                // UI
+
+                proDialog.dismiss();
+                if (rlt != null) {
+                    PapaDataBaseManager.CourseReply studentCourseReply = (PapaDataBaseManager.CourseReply) rlt[0];
+                    PapaDataBaseManager.CourseReply taCourseReply = (PapaDataBaseManager.CourseReply) rlt[1];
+                    setCourses(studentCourseReply.course, taCourseReply.course);
+                }
+            }
+        };
     }
 
-
-    private void setTeacherCourses(final PapaDataBaseManager.CourseReply rlt) {
+    private void setCourses(List<Map.Entry<Integer, String>> studentCourses, List<Map.Entry<Integer, String>> taCourses) {
         ListView CourseTeacherAssistantListView = course_teacher_assistant_list;
-        CourseTeacherAssistantListView.setAdapter(new CourseListAdapter(rlt.course, getContext()));
-        CourseTeacherAssistantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startExperimentActivity(rlt.course.get(position).getValue(),
-                        rlt.course.get(position).getKey(),
-                        BundleHelper.Identity.teacher_assistant);
-            }
-        });
+        CourseTeacherAssistantListView.setAdapter(new CourseListAdapter(studentCourses, taCourses, getContext(), bundleHelper));
         CourseTeacherAssistantListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
