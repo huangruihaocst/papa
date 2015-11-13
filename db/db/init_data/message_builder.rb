@@ -16,7 +16,7 @@ class MessageBuilder
   end
 
   def self.build_time
-    Time.now + Random.rand(100) * 1.hours
+    Time.now + Random.rand(-10..100) * 1.hours
   end
 
 end

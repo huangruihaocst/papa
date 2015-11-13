@@ -189,10 +189,11 @@ public class Settings implements Serializable {
      * @return whether cached settings exist.
      */
     public static boolean           clearCache(Context context) {
-        File file = new File(
-                context.getFilesDir().getPath() + "/" +
-                        context.getString(R.string.key_settings_file_name));
-        return file.delete();
+        File file = new File(context.getFilesDir().getPath() + "/" +
+                context.getString(R.string.key_settings_file_name));
+        boolean ret = file.delete();
+        reload(context);
+        return ret;
     }
 
     static double EarthRadius = 6371000;

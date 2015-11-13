@@ -16,7 +16,8 @@ TEACHER_COUNT = 10
 ASSISTANT_COUNT = 12
 STUDENT_COUNT = 12
 AS_COUNT = 5
-NOTIFICATION_COUNT = 5
+NOTIFICATION_COUNT = 2
+HOMEWORK_COUNT = 2
 
 name_reader = NameReader.new
 
@@ -103,7 +104,6 @@ end
 puts 'notifications created...'
 
 # homework
-HOMEWORK_COUNT = 5
 courses.each do |course|
   HOMEWORK_COUNT.times do
     course.messages.create(
