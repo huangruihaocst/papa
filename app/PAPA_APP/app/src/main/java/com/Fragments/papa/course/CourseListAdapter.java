@@ -2,6 +2,7 @@ package com.Fragments.papa.course;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -54,21 +55,18 @@ public class CourseListAdapter extends BaseAdapter {
         TextView textView;
         if (convertView != null) {
             textView = (TextView) convertView;
-        }
-        else {
+        } else {
             textView = new TextView(context);
         }
 
-
         if (position == 0) {
-            textView.setText("Student Courses");
+            textView.setText(context.getString(R.string.student_course));
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
             textView.setTextSize(40);
-        }
-        else if (position <= studentCourses.size()) {
+        } else if (position <= studentCourses.size()) {
             final int index = position - 1;
             textView.setText(studentCourses.get(index).getValue());
-            textView.setTextSize(30);
+            textView.setTextSize(25);
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -81,16 +79,14 @@ public class CourseListAdapter extends BaseAdapter {
                             BundleHelper.Identity.student);
                 }
             });
-        }
-        else if (position == studentCourses.size() + 1) {
-            textView.setText("TA Courses");
+        } else if (position == studentCourses.size() + 1) {
+            textView.setText(context.getString(R.string.teacher_assistant_course));
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
             textView.setTextSize(40);
-        }
-        else {
+        } else {
             final int index = position - 2 - studentCourses.size();
             textView.setText(taCourses.get(index).getValue());
-            textView.setTextSize(30);
+            textView.setTextSize(25);
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -108,7 +104,11 @@ public class CourseListAdapter extends BaseAdapter {
         return textView;
     }
 
-    private void startExperimentActivity(Context context, String courseName, int courseId, BundleHelper bundleHelper, BundleHelper.Identity identity){
+    private void startExperimentActivity(Context context,
+                                         String courseName,
+                                         int courseId,
+                                         BundleHelper bundleHelper,
+                                         BundleHelper.Identity identity){
         Intent intent = new Intent(context, ExperimentActivity.class);
         Bundle data = new Bundle();
         String key_course_experiment = context.getString(R.string.key_course_experiment);

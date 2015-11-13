@@ -16,8 +16,7 @@
         android:id="@+id/experiment_list"
         android:divider="#FFFFFF"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp">
+        android:layout_centerHorizontal="true">
     </ListView>
 
 </RelativeLayout>

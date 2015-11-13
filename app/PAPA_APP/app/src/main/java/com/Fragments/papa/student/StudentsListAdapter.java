@@ -1,6 +1,5 @@
-package com.Activities.papa.experiments;
+package com.Fragments.papa.student;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -14,13 +13,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by huang on 15-11-12.
+ * Created by huang on 15-11-13.
  */
-public class ExperimentsListAdapter extends BaseAdapter {
+public class StudentsListAdapter extends BaseAdapter {
     private List<Map.Entry<Integer, String>> lst;
     Context context;
 
-    public ExperimentsListAdapter(List<Map.Entry<Integer, String>> lst, Context context) {
+    public StudentsListAdapter(List<Map.Entry<Integer, String>> lst, Context context) {
         this.lst = lst;
         this.context = context;
     }
@@ -31,7 +30,7 @@ public class ExperimentsListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Map.Entry<Integer, String> getItem(int position) {
         return lst.get(position);
     }
 
@@ -41,10 +40,11 @@ public class ExperimentsListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         TextView mTextView = new TextView(context);
         mTextView.setText(lst.get(position).getValue());
         mTextView.setTextSize(25);
+//            mTextView.setTextColor(getColor(R.color.colorPrimary));
         mTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
         return mTextView;
     }

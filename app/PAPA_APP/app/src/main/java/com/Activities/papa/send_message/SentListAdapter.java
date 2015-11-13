@@ -1,6 +1,5 @@
-package com.Activities.papa.experiments;
+package com.Activities.papa.send_message;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -14,13 +13,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by huang on 15-11-12.
+ * Created by huang on 15-11-13.
  */
-public class ExperimentsListAdapter extends BaseAdapter {
+public class SentListAdapter extends BaseAdapter {
     private List<Map.Entry<Integer, String>> lst;
     Context context;
 
-    public ExperimentsListAdapter(List<Map.Entry<Integer, String>> lst, Context context) {
+    public SentListAdapter(List<Map.Entry<Integer, String>> lst, Context context) {
         this.lst = lst;
         this.context = context;
     }

@@ -19,7 +19,7 @@ import com.Activities.papa.R;
 import com.Fragments.papa.ExperimentInformationFragment;
 import com.Fragments.papa.ExperimentResultFragment;
 import com.Fragments.papa.GradesFragment;
-import com.Fragments.papa.StudentsFragment;
+import com.Fragments.papa.student.StudentsFragment;
 
 public class ExperimentDetailActivity extends AppCompatActivity {
 

@@ -19,8 +19,8 @@
     <string name="hint_sign_in_2">您可以使用学号、手机号或者邮箱进行登录</string>
     <string name="portrait">头像</string>
     <string name="comment_area">请在此输入您的评论</string>
-    <string name="teacher_assistant">助教课程</string>
-    <string name="student">学生课程</string>
+    <string name="teacher_assistant_course">助教课程</string>
+    <string name="student_course">学生课程</string>
     <string name="help">帮助</string>
     <string name="settings">设置</string>
     <string name="favorite">喜欢的实验</string>

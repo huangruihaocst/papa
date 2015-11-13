@@ -1,4 +1,4 @@
-package com.Fragments.papa;
+package com.Fragments.papa.student;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -124,39 +124,6 @@ public class StudentsFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    private class MyAdapter extends BaseAdapter {
-        private List<Map.Entry<Integer, String>> lst;
-
-        public MyAdapter(List<Map.Entry<Integer, String>> lst) {
-            this.lst = lst;
-        }
-
-        @Override
-        public int getCount() {
-            return lst.size();
-        }
-
-        @Override
-        public Map.Entry<Integer, String> getItem(int position) {
-            return lst.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView mTextView = new TextView(getContext());
-            mTextView.setText(lst.get(position).getValue());
-            mTextView.setTextSize(35);
-//            mTextView.setTextColor(getColor(R.color.colorPrimary));
-            mTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.colorPrimary));
-            return mTextView;
-        }
-    }
-
     //
     // Leben, was ist das?
     // Signal, Siehst du das?
@@ -180,7 +147,7 @@ public class StudentsFragment extends Fragment {
     void setStudents(PapaDataBaseManager.StudentsReply rlt)
     {
         final ListView StudentListView = (ListView)getView().findViewById(R.id.student_list);
-        StudentListView.setAdapter(new MyAdapter(rlt.students));
+        StudentListView.setAdapter(new StudentsListAdapter(rlt.students, getContext()));
         StudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
