@@ -5,10 +5,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.Activities.papa.R;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 import com.Settings.Settings;
 
 import java.util.Calendar;
@@ -17,6 +21,11 @@ public class Attendance {
     static final String TAG = "Attendance";
     static final int InterLessonPeriod = 1073741824;
 
+    // don't need to serialize.
+    transient PapaDataBaseManager papaDataBaseManager;
+    private Attendance() {
+        papaDataBaseManager = new PapaDataBaseManagerReal();
+    }
     private static Attendance theInstance;
     public static Attendance getInstance() {
         if (theInstance == null)
@@ -45,14 +54,14 @@ public class Attendance {
      * If we can sign in, notify the user and
      *  send sign in request and set a flag so that we won't sign in too many times.
      */
-    public synchronized void trySignIn(OnSignInSuccessListener listener, Context context) {
-        Settings settings = Settings.getInstance(context);
+    public synchronized void trySignIn(OnSignInSuccessListener listener, Context context, String lessonId) {
+        Settings settings = Settings.begin(context);
         if (canSignIn(settings)) {
             // send sign in request
             Log.w(TAG, "can sign in");
 
             // sign in and set signed in flags
-            signIn(listener, settings, context);
+            signIn(listener, settings, context, lessonId);
         }
         else if (haveSignedIn(settings)) {
             // already signed in
@@ -102,11 +111,26 @@ public class Attendance {
     /**
      * Send real sign in request
      */
-    private void signIn(OnSignInSuccessListener listener, Settings settings, Context context) {
-        // TODO 2 access the network
-
-        // these should move into network success callback
-        listener.onSignInSuccess();
-        setNextLessonTime(settings, context);
+    private void signIn(final OnSignInSuccessListener listener, final Settings settings, final Context context, final String lessonId) {
+        new AsyncTask<Object, Exception, Object>() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                try {
+                    papaDataBaseManager.postAttendance(new PapaDataBaseManager.PostAttendance(
+                            settings.getToken(),
+                            settings.getUserId(),
+                            lessonId, 0, 0, true));
+                    // TODO: how to check whether the post is successful
+                    if (true) {
+                        // these should move into network success callback
+                        listener.onSignInSuccess();
+                        setNextLessonTime(settings, context);
+                    }
+                } catch (PapaHttpClientException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
     }
 }

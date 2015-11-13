@@ -34,7 +34,5 @@ public class EnterActivity extends AppCompatActivity {
             }
         };
         timer.schedule(timerTask,1000);
-
-        Attendance.startSignInByGPS(this);
     }
 }

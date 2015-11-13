@@ -16,6 +16,7 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
+import com.Settings.Settings;
 
 public class SignInActivity extends AppCompatActivity {
     final public String tag = "SignInActivity";
@@ -101,6 +102,13 @@ public class SignInActivity extends AppCompatActivity {
 
         bundleHelper.setId(reply.personId);
         bundleHelper.setToken(reply.token);
+
+        // Add by Alex Wang 2015-11-13. Save token and user id to settings.
+        // TODO: set token and user id to null when signed out.
+        Settings settings = Settings.begin(this);
+        settings.setUserId(String.valueOf(reply.personId));
+        settings.setToken(reply.token);
+        settings.commit(this);
 
         Log.e(tag, reply.personId + "," + reply.token);
 

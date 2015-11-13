@@ -550,15 +550,16 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     public void postAttendance(PostAttendance request) throws PapaHttpClientException {
         HashMap<String, Object> h = new HashMap<>();
         h.put("token", request.token);
-        h.put("attendance[longitude]", String.valueOf(request.longitude));
-        h.put("attendance[latitude]", String.valueOf(request.latitude));
-        h.put("attendance[locationServiceAvailable]",
-                String.valueOf(request.locationServiceAvailable));
+//        h.put("attendance[longitude]", String.valueOf(request.longitude));
+//        h.put("attendance[latitude]", String.valueOf(request.latitude));
+//        h.put("attendance[locationServiceAvailable]",
+//                String.valueOf(request.locationServiceAvailable));
 
+        // Edited by Alex Wang 2015-11-13. Change URL to predefined URL.
         dbAccess.getDataBaseReplyAsJson(
                 PapaAbstractHttpClient.HttpMethod.post,
                 "/lessons/" + request.lessonId +
-                        "/students/" + request.personId + "/attendance.json",
+                        "/students/" + request.personId + ".json",
                 h
         );
     }

@@ -24,13 +24,9 @@ import java.util.TimeZone;
 
 public class LocationService extends Service {
     static final String TAG = "LocationService";
-    static double EarthRadius = 6371000;
-    static final double CenterLongitude = 0;
-    static final double CenterLatitude = 0;
+
     static final double MinDistance = 10000000;
     static final int RetryInterval = 1000;
-    // it means the lesson starts only once.
-    static final int InterLessonPeriod = 1073741824;
 
     Settings settings;
 
@@ -42,7 +38,7 @@ public class LocationService extends Service {
 
         String command = intent.getStringExtra(getString(R.string.key_attendance_activity_command));
         if (command != null && command.equals(getString(R.string.key_attendance_activity_start_sign_in))) {
-            settings = Settings.getInstance(this);
+            settings = Settings.begin(this);
             startTrackingPosition();
         }
 
@@ -52,8 +48,12 @@ public class LocationService extends Service {
     public boolean startTrackingPosition() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            try {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
             return true;
         }
         return false;
@@ -76,22 +76,24 @@ public class LocationService extends Service {
             final String userName = "Alex";
 
             // calculate location from center
-            double dis = distanceToCenter(CenterLatitude, CenterLongitude, location);
+            String lessonId = settings.getLessonByLocation(
+                    location.getLatitude(),
+                    location.getLongitude(),
+                    MinDistance + location.getAccuracy());
 
             // check distance + accuracy
-            if (dis <= MinDistance + location.getAccuracy()) {
+            if (lessonId != null) {
                 // sign in
-                Log.w(TAG, "In classroom, distance: " + String.valueOf(dis));
                 Attendance.getInstance().trySignIn(new OnSignInSuccessListener() {
                     @Override
                     public void onSignInSuccess() {
                         stopTrackingPosition();
                         notifySignInSuccessful(courseName, Calendar.getInstance(), userName, "GPS");
                     }
-                }, LocationService.this);
+                }, LocationService.this, lessonId);
             }
             else {
-                Log.w(TAG, "Out of classroom distance: " + String.valueOf(dis));
+                Log.w(TAG, "Out of classroom");
             }
         }
 
@@ -123,29 +125,11 @@ public class LocationService extends Service {
                 .setContentText(String.format(getString(
                                         R.string.title_attendance_activity_sign_in_content),
                                         Calendar.getInstance().toString(),
-                                        method))
+                        method))
                 .build();
 
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         nm.notify(getResources().getInteger(R.integer.key_message_pull_notification_id), notification);
-    }
-
-    /**
-     * Helper function, calculates the distance by latitude and longitude
-     * @param latA src latitude
-     * @param longA source longitude
-     * @param l current location
-     * @return distance
-     */
-    static double distanceToCenter(double latA, double longA, Location l) {
-        // R*arccos[sin(wA)sin(wB)+cos(wA)cos(wB)*cos(jA-jB)]
-        double latB = l.getLatitude();
-        double longB = l.getLongitude();
-
-        return EarthRadius * Math.acos(
-                Math.sin(longA) * Math.sin(latB) +
-                        Math.cos(longA) * Math.cos(latB) * Math.cos(latA - longB)
-        );
     }
 
     /**

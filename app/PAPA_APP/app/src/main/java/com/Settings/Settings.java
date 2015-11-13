@@ -1,6 +1,8 @@
 package com.Settings;
 
 import android.content.Context;
+import android.location.Location;
+import android.util.Pair;
 
 import com.Activities.papa.R;
 import com.Activities.papa.receive_message.MessageList;
@@ -12,7 +14,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * User settings for Activities and Services in com.Activities.papa
@@ -31,12 +36,14 @@ public class Settings implements Serializable {
         nextSignInEndTime.add(Calendar.SECOND, 50);
 
         this.messageList = new MessageList();
+
+        this.lessons.add(new Lesson("1", 0, 0));
     }
 
     // this lock avoids different thread instantiate different objs.
     private final static Object staticLock = new Object();
     private static Settings theInstance;
-    public static Settings getInstance(Context context) {
+    public static Settings begin(Context context) {
         synchronized (staticLock) {
             if (theInstance == null) {
                 theInstance = load(context);
@@ -63,6 +70,21 @@ public class Settings implements Serializable {
     Calendar    nextSignInStartTime;
     Calendar    nextSignInEndTime;
 
+    String      token;
+    String      userId;
+
+    class Lesson implements Serializable {
+        public Lesson(String lessonId, double latitude, double longitude) {
+            this.lessonId = lessonId;
+            this.latitude = latitude;
+            this.longtitude = longitude;
+        }
+        public String lessonId = "0";
+        public double latitude = 0 ;
+        public double longtitude = 0;
+    }
+    ArrayList<Lesson> lessons = new ArrayList<>();
+
     // TODO: these copy by references may cause racing conditions.
     public synchronized Calendar    getNextSignInStartTime() {
         return nextSignInStartTime;
@@ -85,6 +107,34 @@ public class Settings implements Serializable {
         this.messageList = messageList;
     }
 
+    // For attendance
+    public synchronized String      getToken() {
+        return token;
+    }
+    public synchronized void        setToken(String token) {
+        this.token = token;
+    }
+    public synchronized String      getUserId() {
+        return userId;
+    }
+    public synchronized void        setUserId(String userId) {
+        this.userId = userId;
+    }
+    public synchronized void        clearLessons() {
+        lessons = new ArrayList<>();
+    }
+    public synchronized void        addLesson(String lessonId, double latitude, double longitude) {
+        lessons.add(new Lesson(lessonId, latitude, longitude));
+    }
+    public synchronized String      getLessonByLocation(double latitude, double longitude, double radius) {
+        for (int i = 0; i < lessons.size(); ++i) {
+            double dis = distanceToCenter(latitude, longitude, lessons.get(i).latitude, lessons.get(i).longtitude);
+            if (dis < radius) {
+                return lessons.get(i).lessonId;
+            }
+        }
+        return null;
+    }
 
     /**
      * Save the settings to some persistent storage
@@ -143,5 +193,20 @@ public class Settings implements Serializable {
                 context.getFilesDir().getPath() + "/" +
                         context.getString(R.string.key_settings_file_name));
         return file.delete();
+    }
+
+    static double EarthRadius = 6371000;
+    /**
+     * Helper function, calculates the distance by latitude and longitude
+     * @param latA src latitude
+     * @param longA source longitude
+     * @return distance
+     */
+    static double distanceToCenter(double latA, double longA, double latB, double longB) {
+        // R*arccos[sin(wA)sin(wB)+cos(wA)cos(wB)*cos(jA-jB)]
+        return EarthRadius * Math.acos(
+                Math.sin(longA) * Math.sin(latB) +
+                        Math.cos(longA) * Math.cos(latB) * Math.cos(latA - longB)
+        );
     }
 }
