@@ -612,4 +612,18 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 h
         );
     }
+
+    @Override
+    public void postChatMessages(PostChatMessageRequest request) throws PapaHttpClientException {
+        HashMap<String, Object> h = new HashMap<>();
+        h.put("token", request.token);
+        h.put("title", request.title);
+        h.put("content", request.content);
+
+        dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.post,
+                "/users/" + request.receiverId + "/messages.json",
+                h
+        );
+    }
 }

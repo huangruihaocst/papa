@@ -1,20 +1,31 @@
 package com.Activities.papa.send_message;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
+import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 public class NewMessageActivity extends AppCompatActivity {
 
     EditText edit_title;
     EditText edit_body;
     EditText edit_recipient;
+
+    BundleHelper bundleHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +42,11 @@ public class NewMessageActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        String key_sent_list_new_message = getString(R.string.key_sent_list_new_message);
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+        bundleHelper = data.getParcelable(key_sent_list_new_message);
 
         edit_title = (EditText)findViewById(R.id.content_title);
         edit_body = (EditText)findViewById(R.id.content_body);
@@ -74,8 +90,66 @@ public class NewMessageActivity extends AppCompatActivity {
         String title = edit_title.getText().toString();
         String body = edit_body.getText().toString();
         String recipient = edit_recipient.getText().toString();
-        //oTODO:send message here, you may like to do it in a new thread
-        //TODO:Toast according to different conditions
-        //call finish() if succeed
+
+        new Task(this).execute(new PapaDataBaseManager.PostChatMessageRequest(
+                bundleHelper.getToken(), title, body, "3"));
+    }
+
+    class Task extends AsyncTask<
+            PapaDataBaseManager.PostChatMessageRequest,
+            Exception,
+            Boolean>
+    {
+        ProgressDialog proDialog;
+
+        public Task(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.show();
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute(){
+            // UI
+        }
+
+        @Override
+        protected Boolean doInBackground
+                (PapaDataBaseManager.PostChatMessageRequest... params)
+        {
+            // 在后台
+            try {
+                bundleHelper.getPapaDataBaseManager().postChatMessages(params[0]);
+
+                return true;
+            } catch(PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Log.e("SignInAct", e[0].getMessage());
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean ok) {
+            // UI
+
+            proDialog.dismiss();
+            if(ok)
+                successAndReturn();
+        }
+    }
+
+    private void successAndReturn()
+    {
+        finish();
+        Toast.makeText(getApplicationContext(), "发送成功 =w=", Toast.LENGTH_SHORT).show();
     }
 }

@@ -536,4 +536,27 @@ public abstract class PapaDataBaseManager {
             throws PapaHttpClientException;
 
 
+    //////////////////////////////////////////////////////////////////////////
+    // 发送消息
+    static public class PostChatMessageRequest
+    {
+        public String token;
+        public String title;
+        public String content;
+        public String receiverId;
+
+        public PostChatMessageRequest(String token, String title, String content, String receiverId)
+        {
+            this.token = token;
+            this.title = title;
+            this.content = content;
+            this.receiverId = receiverId;
+
+        }
+    }
+
+    public abstract void postChatMessages(PostChatMessageRequest request)
+            throws PapaHttpClientException;
+
+
 }

@@ -165,7 +165,7 @@ public class SentListActivity extends AppCompatActivity {
             // UI
 
             proDialog.dismiss();
-            Log.i(TAG, "已设置为已读");
+            if(ok) Log.i(TAG, "已设置为已读");
         }
     }
 

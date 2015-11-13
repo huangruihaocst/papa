@@ -220,4 +220,10 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public void readChatMessages(ReadChatMessageRequest request) throws PapaHttpClientException {
 
     }
+
+    @Override
+    public void postChatMessages(PostChatMessageRequest request) throws PapaHttpClientException {
+
+
+    }
 }
