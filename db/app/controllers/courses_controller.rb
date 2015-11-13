@@ -50,7 +50,12 @@ class CoursesController < ApplicationController
               id: student.id,
               name: student.name,
               email: student.email,
-              phone: student.phone
+              phone: student.phone,
+              student_number:   student.student_number,
+              department:       student.department,
+              class_name:       student.class_name,
+              avator_id:        student.avator_id,
+              description:      student.description
           }
           lesson_info_of_student = []
           @course.lessons.each do |lesson|
