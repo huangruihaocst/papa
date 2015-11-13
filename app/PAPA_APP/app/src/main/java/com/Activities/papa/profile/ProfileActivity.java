@@ -16,7 +16,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -97,18 +99,66 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        Button button_chage_password = (Button)findViewById(R.id.button_change_password);
+        Button button_change_password = (Button)findViewById(R.id.button_change_password);
         Button button_change_photo = (Button)findViewById(R.id.button_change_photo);
 
         usrInfo = null;
         setProfile();
 
-        button_chage_password.setOnClickListener(new View.OnClickListener() {
+        button_change_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-                builder.setMessage("在这里修改密码");
-                AlertDialog alertDialog = builder.create();
+                LayoutInflater inflater = getLayoutInflater();
+                View rootView = inflater.inflate(R.layout.set_password_dialog, null);
+                builder.setView(rootView);
+                final EditText edit_text_new_password = (EditText)rootView.findViewById(R.id.new_password);
+                final EditText edit_text_password_double_check = (EditText)rootView.findViewById(R.id.password_double_check);
+                builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        Button button_positive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                        Button button_negative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                        button_positive.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String new_password = edit_text_new_password.getText().toString();
+                                String password_double_check = edit_text_password_double_check.getText().toString();
+                                if(new_password.length() < 6 || password_double_check.length() < 6){
+                                    Toast.makeText(getApplicationContext(),
+                                            getString(R.string.password_too_short),
+                                            Toast.LENGTH_LONG).show();
+                                }else if(!new_password.equals(password_double_check)){
+                                    Toast.makeText(getApplicationContext(),
+                                            getString(R.string.error_double_check),
+                                            Toast.LENGTH_LONG).show();
+                                }else{
+                                    //TODO:upload new password
+                                    Toast.makeText(getApplicationContext(),
+                                            getString(R.string.change_password_success),
+                                            Toast.LENGTH_LONG).show();
+                                    alertDialog.dismiss();
+                                }
+                            }
+                        });
+                        button_negative.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.dismiss();
+                            }
+                        });
+                    }
+                });
                 alertDialog.show();
             }
         });
@@ -297,40 +347,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             proDialog.dismiss();
         }
-    }
-
-    public class CourseViewPagerAdapter extends FragmentStatePagerAdapter {
-        int tabs_amount;
-        int id;
-        String token;
-        List<Map.Entry<Integer, String>> lst;
-
-
-        public CourseViewPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        public CourseViewPagerAdapter(
-                FragmentManager fm, int count, List<Map.Entry<Integer, String>> lst,
-                int id, String token
-        ) {
-            this(fm);
-            this.tabs_amount = count;
-            this.id = id;
-            this.token = token;
-            this.lst = lst;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return CourseFragment.newInstance(id, lst.get(position).getKey(), token, bundleHelper);
-        }
-
-        @Override
-        public int getCount() {
-            return tabs_amount;
-        }
-
     }
 
 }

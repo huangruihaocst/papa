@@ -74,6 +74,13 @@
     <string name="change_photo">修改头像</string>
     <string name="no_media">找不到对象T_T</string>
     <string name="invalid_file">不合法的文件格式QAQ</string>
+    <string name="new_password">请输入新密码</string>
+    <string name="password_double_check">请重新输入新密码</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="password_too_short">密码不能少于6位ww</string>
+    <string name="error_double_check">密码不一致TAT</string>
+    <string name="change_password_success">修改成功O_O</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
