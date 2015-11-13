@@ -1,4 +1,5 @@
 <script src="/csv.js"></script>
+<script src="/jquery.form.js" type="text/javascript" charset="utf-8"></script>
 <div class="modal fade" id="modal-add" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -22,7 +23,7 @@
 </div>
 
 <div class="modal fade" id="modal-add-one" tabindex="-1" role="dialog" aria-hidden="true">
-  <form action="/courses/<%=@course_id%>/students.json" method="post">
+  <form id="addOneForm" action="/courses/<%=@course_id%>/students.json" method="post" onsubmit="return addOne()">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -95,6 +96,7 @@
             data:{},
             success:function(d){
              alert("删除成功!");
+             location.reload(true);
             }
         })
     }
@@ -146,9 +148,22 @@
                     data:"json="+JSON.stringify(students),
                     dataType: "json",
                     success:function(d){
-                    alert(d.status);}
-                })
-            }
+                        if(d.invalid_fields.length){
+                            alert("添加失败,请仔细检查格式");
+                        }
+                        else { alert("添加成功!");location.reload(true);}
+                }});
+            };
             r.readAsText($("#csvfile")[0].files[0]);
         }
+    function addOne()
+    {
+        $("#addOneForm").ajaxSubmit(function(d){
+            if(d.invalid_fields.length){
+                alert("添加失败,请仔细检查格式");
+            }
+            else { alert("添加成功!");location.reload(true);}
+        });
+        return false;
+    }
 </script>

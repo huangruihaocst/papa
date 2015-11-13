@@ -25,10 +25,10 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.boolean  :is_teacher, default: false
       t.boolean  :is_admin,   default: false
       t.integer  :avator_id
-      t.string   :student_number
-      t.string   :class_name
-      t.string   :department
-      t.text     :description
+      t.string   :student_number, null: false, default: ''
+      t.string   :class_name, null: false, default: ''
+      t.string   :department, null: false, default: ''
+      t.text     :description, null: false, default: ''
 
       t.timestamps null: false
     end

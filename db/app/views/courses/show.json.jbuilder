@@ -4,4 +4,8 @@ json.course do
   json.name   @course.name
   json.semester_id @course.semester_id
   json.description @course.description
+
+  if @students
+    json.students @students
+  end
 end

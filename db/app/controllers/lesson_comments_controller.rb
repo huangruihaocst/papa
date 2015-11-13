@@ -5,6 +5,7 @@ class LessonCommentsController < ApplicationController
   def index
     if params[:lesson_id]
       @lesson_comments = Lesson.find(params[:lesson_id]).lesson_comments
+      puts @lesson_comment.inspect
     else
       json_failed(REASON_NOT_IMPLEMENTED)
     end
@@ -37,6 +38,7 @@ class LessonCommentsController < ApplicationController
     raise RequestException.new(REASON_RESOURCE_NOT_FOUND) unless comments.count > 0
 
     @lesson_comment = comments.last
+    puts @lesson_comment.inspect
   end
 
 end

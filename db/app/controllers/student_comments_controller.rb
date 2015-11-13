@@ -23,6 +23,7 @@ class StudentCommentsController < ApplicationController
     end
   end
 
+  # GET /lessons/1/students/1/comment.json
   def default
     raise RequestException.new(REASON_INVALID_OPERATION) unless params[:lesson_id] && params[:student_id]
     @student_comment = StudentComment.where(lesson_id: params[:lesson_id]).where(student_id: params[:student_id]).last

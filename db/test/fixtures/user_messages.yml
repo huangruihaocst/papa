@@ -1,0 +1,5 @@
+alex_send_to_betty:
+  sender: alex
+  receiver: betty
+  title: 'haha'
+  content: 'des'

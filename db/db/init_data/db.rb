@@ -1,3 +1,8 @@
+require './db/init_data/name_reader'
+require './db/init_data/location_builder'
+require './db/init_data/identity_builder'
+require './db/init_data/course_builder'
+require './db/init_data/message_builder'
 
 # create semesters
 SEMESTER_BEGIN = 2008
@@ -6,6 +11,24 @@ SEMESTER_SPRING = '春季'
 SEMESTER_SUMMER = '夏季'
 SEMESTER_FALL = '秋季'
 
+COURSE_COUNT = 10
+TEACHER_COUNT = 10
+ASSISTANT_COUNT = 12
+STUDENT_COUNT = 12
+AS_COUNT = 5
+NOTIFICATION_COUNT = 5
+
+name_reader = NameReader.new
+
+# create default admin and default avator
+admin0 = User.create(name:'admin', phone:'0123', email:'a@b.c', password:'123', password_confirmation:'123',
+                     student_number: '1230', description: '123', is_admin: true, avator_id: 1)
+default_avator = FileResource.create(path: '/uploads/default_avator.jpg', name: 'default_avator.jpg', file_type: 'jpg', creator_id: admin0.id)
+admin0.avator_id = default_avator.id
+admin0.save
+puts 'admin created...'
+
+# create semesters
 semesters = []
 SEMESTER_COUNT.times do |x|
   semesters.push(
@@ -16,125 +39,54 @@ SEMESTER_COUNT.times do |x|
 end
 puts 'semesters created...'
 
-# create courses
-course_names = {
-    '操作系统' => ['实验1', '实验2', '实验3', '实验4'],
-    '计算机组成原理' => ['实验1', '实验2', '实验3', '实验4'],
-    '程序设计基础' => ['实验1', '实验2', '实验3', '实验4'],
-    '离散数学' => ['实验1', '实验2', '实验3', '实验4']
-}
+# create courses and lessons
 start_time = Time.new(2000, 1, 1, 8, 0, 0)
-
 courses = []
-course_names.each do |course_name, lesson_names|
-  course = Course.create(name: course_name,
-                         description: course_name + ', 计算机基础课程',
+course_builder = CourseBuilder.new
+COURSE_COUNT.times do
+  course = Course.create(name: course_builder.build,
+                         description: '基础课程',
                          semester_id: semesters[0].id)
   i = 0
-  lesson_names.each do |lesson_name|
+  CourseBuilder.build_lessons.each do |lesson_name|
     course.lessons.create(name: lesson_name,
                           start_time: start_time + (2+i).hours,
                           end_time: start_time + (3+i).hours,
-                          location: '五教5201')
+                          location: LocationBuilder.build)
     i += 1
   end
   courses.push(course)
-
 end
-puts 'courses created...'
-
-# create default admin and default avator
-admin0 = User.create(name:'admin', phone:'0123', email:'a@b.c', password:'123', password_confirmation:'123',
-                 student_number: '1230', class_name: '44', department: '计算机系', description: '123', is_admin: true, avator_id: 1)
-default_avator = FileResource.create(path: '/uploads/default_avator.jpg', name: 'default_avator.jpg', file_type: 'jpg', creator_id: admin0.id)
-admin0.avator_id = default_avator.id
-admin0.save
-puts 'admin created...'
+puts 'courses and lessons created...'
 
 # create teachers
-teacher_names = ['张三', '张四', '王大卫']
 teachers = []
-
-i = 0
-courses.each do |course|
-  teacher = User.create(name: teacher_names[i], phone: "1#{i}", email: "teacher#{i}@b.c", password:'123', password_confirmation:'123',
-                         student_number: "1#{i}", class_name: '4x', department: '计算机系', description: 'xxx', is_admin: false, is_teacher: true)
-  TeachingCourse.create(user_id: teacher.id, course_id: course.id)
-
-  i += 1
-  i %= teacher_names.size
+TEACHER_COUNT.times do |i|
+  teacher = User.create(name: name_reader.read,
+                        phone: "1#{i}",
+                        email: "teacher#{i}@b.c",
+                        password:'123', password_confirmation:'123',
+                        student_number: "1#{i}",
+                        description: '教师简介',
+                        is_admin: false, is_teacher: true)
   teachers.push(teacher)
+end
+
+# insert teachers into courses
+courses.each do |course|
+  teachers.each do |teacher|
+    TeachingCourse.create(user_id: teacher.id, course_id: course.id)
+  end
 end
 puts 'teachers created...'
 
-# create assistant for course 0
-assistant_names = %w"了数量 进口的 分类时 开机 的分类 开始 解放路 凯沙 罗顿发送"
-assistant_names.each do |assistant_name|
-  user =  User.create(name: assistant_name,
-                      phone: "2#{i}",
-                      email:"assistant#{i}@b.c",
-                      password:'123', password_confirmation:'123',
-                      student_number: "2#{i}",
-                      class_name: '4x',
-                      department: '计算机系',
-                      description: 'xxx',
-                      is_admin: false, is_teacher: false)
-  Participation.create(user_id: user.id, course_id: courses[0].id, role: ROLE_ASSISTANT)
-  i += 1
-end
-puts 'assistants created...'
-
-# create students for course 0
-student_names = %w'顺 路快 递非农 阿森纳费 哦司机 的愤怒 死定就分io s就发 送始发 地就'
-students = []
-i = 0
-student_names.each do |student_name|
-  user = User.create(name: student_name,
-                     phone: "3#{i}",
-                     email:"student#{i}@b.c",
-                     password:'123', password_confirmation:'123',
-                     student_number: "3#{i}",
-                     class_name: '4x',
-                     department: '计算机系',
-                     description: '123',
-                     is_admin: false, is_teacher: false)
-  Participation.create(user_id: user.id, course_id: courses[0].id, role: ROLE_STUDENT)
-  students.push(user)
-  i += 1
-end
-puts 'students created...'
-
-# create files
-f1 = FileResource.create(name: '1.jpg', file_type: 'jpg', path: '/uploads/1.jpg', creator_id: admin0.id)
-f2 = FileResource.create(name: '2.jpg', file_type: 'jpg', path: '/uploads/2.jpg', creator_id: admin0.id)
-puts 'files created...'
-
-## create lesson comments
-#l11.student_files.create(student_id: u3.id, file_resource_id: f1.id)
-LESSON_COMMENT_COUNT = 10
-courses[0].lessons.each do |lesson|
-  LESSON_COMMENT_COUNT.times do |x|
-    lesson.course.students.each do |student|
-      lesson.student_comments.create(creator_id: teachers[Random.rand(teachers.size)].id,
-                                     student_id: student.id,
-                                     score: Random.rand(100),
-                                     content: '实验做的不错')
-    end
-  end
-  lesson.lesson_comments.create(score: Random.rand(10),
-                                content: '这个课程真好呀!',
-                                creator_id: teachers[Random.rand(teachers.size)].id)
-end
-puts 'student comments created...'
-
 # create messages
 # notification
-NOTIFICATION_COUNT = 5
 courses.each do |course|
   NOTIFICATION_COUNT.times do |x|
     course.messages.create(
-        title: "期中考试#{x}",
-        content: '五教-5' + Random.rand(999).to_s,
+        title: MessageBuilder.build_notification,
+        content: '同学们千万不要忘了!',
         deadline: Time.now,
         creator: teachers[0],
         message_type: :notification)
@@ -145,16 +97,124 @@ puts 'notifications created...'
 # homework
 HOMEWORK_COUNT = 5
 courses.each do |course|
-  HOMEWORK_COUNT.times do |x|
+  HOMEWORK_COUNT.times do
     course.messages.create(
-        title: "作业#{x}",
-        content: '实验xxxx报告',
+        title: MessageBuilder.build_homework,
+        content: '请同学们尽快完成',
         deadline: Time.now,
         creator: teachers[0],
         message_type: :homework)
   end
 end
 puts 'homework created...'
+
+# create assistant for course 0
+ASSISTANT_COUNT.times do |i|
+  identity = IdentityBuilder.build_department_and_class
+  user =  User.create(name: name_reader.read,
+                      phone: "2#{i}",
+                      email:"assistant#{i}@b.c",
+                      password:'123', password_confirmation:'123',
+                      student_number: "2#{i}",
+                      class_name: identity[:class],
+                      department: identity[:department],
+                      description: 'xxx',
+                      is_admin: false, is_teacher: false)
+  courses.each do |course|
+    Participation.create(user_id: user.id, course_id: course.id, role: ROLE_ASSISTANT)
+  end
+end
+puts 'assistants created...'
+
+# create students for courses
+students = []
+STUDENT_COUNT.times do |x|
+  identity = IdentityBuilder.build_department_and_class
+  user = User.create(name: name_reader.read,
+                     phone: "3#{x}",
+                     email:"student#{x}@b.c",
+                     password:'123', password_confirmation:'123',
+                     student_number: "3#{x}",
+                     class_name: identity[:class],
+                     department: identity[:department],
+                     description: '123',
+                     is_admin: false, is_teacher: false)
+  students.push(user)
+  courses.each do |course|
+    Participation.create(user_id: user.id, course_id: course.id, role: ROLE_STUDENT)
+  end
+end
+puts 'students created...'
+
+# create lesson_comments and student_comments for student
+students.each do |student|
+  # 学生在每门课程上的每门实验课上被评分, 给实验课评分
+  student.courses.each do |course|
+    course.lessons.each do |lesson|
+      course_teachers = course.teachers
+      teacher = course_teachers[Random.rand(course_teachers.size)]
+      lesson.lesson_comments.create(score: Random.rand(0..10),
+                                    content: '这个课程真好呀!',
+                                    creator_id: student.id)
+      lesson.student_comments.create(creator_id: teacher.id,
+                                     student_id: student.id,
+                                     score: Random.rand(0..100),
+                                     content: '实验做的不错')
+    end
+  end
+end
+puts 'student comments and lesson comments for students created...'
+
+# create student and assistant
+assistant_students = {}
+AS_COUNT.times do |x|
+  identity = IdentityBuilder.build_department_and_class
+  user = User.create(name: name_reader.read,
+                     phone: "4#{x}",
+                     email:"as#{x}@b.c",
+                     password:'123', password_confirmation:'123',
+                     student_number: "4#{x}",
+                     class_name: identity[:class],
+                     department: identity[:department],
+                     description: '123',
+                     is_admin: false, is_teacher: false)
+  assistant_courses = []
+  student_courses = []
+  courses.each do |course|
+    if course.id % 2 == 0
+      Participation.create(user_id: user.id, course_id: course.id, role: ROLE_ASSISTANT)
+      assistant_courses.push(course)
+    else
+      Participation.create(user_id: user.id, course_id: course.id, role: ROLE_STUDENT)
+      student_courses.push(course)
+    end
+  end
+  assistant_students[user] = { student_courses: student_courses, assistant_courses: assistant_courses }
+end
+puts 'assistant and student created...'
+
+assistant_students.each do |user, his_courses|
+  # 作为助教时, 什么都不用做
+  # 作为学生时, 给每一个实验评分, 而且在每门课上被老师评分
+  his_courses[:student_courses].each do |course|
+    course.lessons.each do |lesson|
+      teacher = teachers[Random.rand(teachers.size)]
+      lesson.lesson_comments.create(score: Random.rand(10),
+                                    content: '这个课程真好呀!',
+                                    creator_id: user.id)
+      lesson.student_comments.create(creator_id: teacher.id,
+                                     student_id: user.id,
+                                     score: Random.rand(100),
+                                     content: '实验做的不错')
+    end
+  end
+end
+puts 'assistant and student comments created...'
+
+# create files
+f1 = FileResource.create(name: '1.jpg', file_type: 'jpg', path: '/uploads/1.jpg', creator_id: admin0.id)
+f2 = FileResource.create(name: '2.jpg', file_type: 'jpg', path: '/uploads/2.jpg', creator_id: admin0.id)
+puts 'files created...'
 
 # user messages
 USER_MESSAGES_COUNT = 5
@@ -163,7 +223,7 @@ teachers.each do |teacher|
     UserMessage.create(sender_id: student.id,
                        receiver_id: teacher.id,
                        title: '老师我请个假行吗',
-                       content: '原因很复杂...',
+                       content: '生病了...',
                        status: MESSAGE_STATUS_UNREAD)
     UserMessage.create(sender_id: teacher.id,
                        receiver_id: student.id,

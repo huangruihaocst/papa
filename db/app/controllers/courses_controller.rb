@@ -36,7 +36,35 @@ class CoursesController < ApplicationController
 
   # GET /courses/1.json
   def show
-    unless @course
+    if @course
+      if params[:full]
+        @students = []
+        students = @course.students
+        students.each do |student|
+          student_info = {
+              id: student.id,
+              name: student.name,
+              email: student.email,
+              phone: student.phone
+          }
+          lesson_info_of_student = []
+          @course.lessons.each do |lesson|
+            comments = StudentComment.where(lesson_id: lesson.id).where(student_id: student.id)
+            if comments.count > 0
+              comment = comments[0]
+              lesson_info_of_student.push({
+                      id:           comment.id,
+                      content:      comment.content,
+                      score:        comment.score,
+                      creator_id:   comment.creator_id,
+                      creator_name: comment.creator.name
+                  })
+            end
+          end
+          @students.push({ student_info: student_info, lessons: lesson_info_of_student })
+        end
+      end
+    else
       json_failed(REASON_RESOURCE_NOT_FOUND)
     end
   end
