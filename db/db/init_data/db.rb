@@ -16,7 +16,8 @@ TEACHER_COUNT = 10
 ASSISTANT_COUNT = 12
 STUDENT_COUNT = 12
 AS_COUNT = 5
-NOTIFICATION_COUNT = 5
+NOTIFICATION_COUNT = 2
+HOMEWORK_COUNT = 2
 
 name_reader = NameReader.new
 
@@ -95,7 +96,7 @@ courses.each do |course|
     course.messages.create(
         title: MessageBuilder.build_notification,
         content: '同学们千万不要忘了!',
-        deadline: Time.now,
+        deadline: MessageBuilder.build_time,
         creator: teachers[0],
         message_type: :notification)
   end
@@ -103,13 +104,12 @@ end
 puts 'notifications created...'
 
 # homework
-HOMEWORK_COUNT = 5
 courses.each do |course|
   HOMEWORK_COUNT.times do
     course.messages.create(
         title: MessageBuilder.build_homework,
         content: '请同学们尽快完成',
-        deadline: Time.now,
+        deadline: MessageBuilder.build_time,
         creator: teachers[0],
         message_type: :homework)
   end

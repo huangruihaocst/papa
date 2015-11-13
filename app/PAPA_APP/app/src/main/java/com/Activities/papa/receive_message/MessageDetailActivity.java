@@ -55,7 +55,7 @@ public class MessageDetailActivity extends AppCompatActivity {
         message_content.setText(message.getContent());
 
         // deadline format
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.CHINA);
         deadline.setText(dateFormat.format(message.getDeadline().getTime()));
         long delta = message.getDeadline().getTimeInMillis() - System.currentTimeMillis();
         if (delta > 0 && delta < this.getResources().getInteger(R.integer.min_deadline_warning_in_milliseconds)) {
