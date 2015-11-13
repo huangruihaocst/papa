@@ -10,7 +10,12 @@ class CoursesController < ApplicationController
     begin
       case
         when params[:semester_id]
-          @courses = Semester.find(params[:semester_id]).courses
+          if params[:my_courses]
+            user = check_login
+            @courses = user.courses.where(semester_id: params[:semester_id])
+          else
+            @courses = Semester.find(params[:semester_id]).courses
+          end
         when params[:teacher_id]
           check_token(params[:teacher_id], params[:token], true)
           @courses = User.find(params[:teacher_id]).real_teaching_courses

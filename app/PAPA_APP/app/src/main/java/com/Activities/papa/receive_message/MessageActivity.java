@@ -106,8 +106,8 @@ public class MessageActivity extends AppCompatActivity {
                 if(bound) {
                     Settings.clearCache(MessageActivity.this);
                             flushMessages();
+                    Snackbar.make(view, getString(R.string.notification_clear_all), Snackbar.LENGTH_LONG).show();
                 }
-                Snackbar.make(view, getString(R.string.notification_clear_all), Snackbar.LENGTH_LONG).show();
             }
         });
     }
