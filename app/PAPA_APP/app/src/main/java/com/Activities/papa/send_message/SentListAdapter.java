@@ -1,6 +1,5 @@
-package com.Activities.papa.experiments;
+package com.Activities.papa.send_message;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -9,18 +8,19 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.Activities.papa.R;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by huang on 15-11-12.
+ * Created by huang on 15-11-13.
  */
-public class ExperimentsListAdapter extends BaseAdapter {
-    private List<Map.Entry<Integer, String>> lst;
+public class SentListAdapter extends BaseAdapter {
+    private List<PapaDataBaseManager.ChatMessage> lst;
     Context context;
 
-    public ExperimentsListAdapter(List<Map.Entry<Integer, String>> lst, Context context) {
+    public SentListAdapter(List<PapaDataBaseManager.ChatMessage> lst, Context context) {
         this.lst = lst;
         this.context = context;
     }
@@ -43,7 +43,8 @@ public class ExperimentsListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         TextView mTextView = new TextView(context);
-        mTextView.setText(lst.get(position).getValue());
+        PapaDataBaseManager.ChatMessage chatMessage = lst.get(position);
+        mTextView.setText(chatMessage.senderName);
         mTextView.setTextSize(25);
         mTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
         return mTextView;

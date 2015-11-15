@@ -3,13 +3,11 @@
   	<meta name="author" content="oscar999">
   	<link href="/common.css" rel=stylesheet type="text/css">
 	<style type="text/css">
-		.custombutton
+		.keep-line
 		{
-			width:100%;
-			height:100%;
-		}
-		.custominput
-		{
+			white-space:nowrap;
+			overflow:hidden;
+			text-overflow:ellipsis;
 		}
 	</style>
 	<script>
@@ -35,7 +33,7 @@
 		function loadInfo()    //获取实验成绩信息
 		{
 			getId();
-			var i;
+			var i,j,k;
 			n1=4;n2=5;m=0;
 			items=new Object();
 			items.peopleInfo=new Array();
@@ -45,12 +43,51 @@
 			items.scoreInfo[0]="成绩";items.scoreInfo[1]="图片数";items.scoreInfo[2]="视频数";
 			items.scoreInfo[3]="打分助教";items.scoreInfo[4]="跳转查看";
 			info=new Array();
-			var p1=false,p2=false;
-			function deal()
+			$.get('/lessons/'+classId+'.json?full=true',{},
+			function(data)
 			{
-				showInfo();
-			}
-			$.get("/lessons/"+classId+".json",{},
+				if (data.status=="failed")
+				{
+					alert("成绩加载失败");
+				}
+				if (data.status=="successful")
+				{
+					data=data.lesson;
+					console.log(data);
+					classInfo=data.name;
+					data=data.students;
+					m=data.length;
+					for (i=0;i<m;++i)
+					{
+						info[i]=new Object();
+						info[i].scoreInfo=new Object();
+						if (data[i].comment)
+						{
+							info[i].scoreInfo.score=data[i].comment.score;
+							info[i].scoreInfo.creator_name=data[i].comment.creator_name;
+						}
+						if (!info[i].scoreInfo.score)
+						{
+							info[i].scoreInfo.score="未登记";
+						}
+						if (!info[i].scoreInfo.creator_name)
+						{
+							info[i].scoreInfo.creator_name="未定";
+						}
+						if (data[i].files_number)
+						{
+							info[i].scoreInfo.picture_number=data[i].files_number.images;
+							info[i].scoreInfo.video_number=data[i].files_number.videos;
+						}else
+						{
+							info[i].scoreInfo.picture_number=info[i].scoreInfo.video_number=0;
+						}
+						info[i].people=data[i];
+					}
+					showInfo();
+				}
+			});
+		/*	$.get("/lessons/"+classId+".json",{},
 			function(data)
 			{
 				if (data.status=="failed")
@@ -121,7 +158,7 @@
 					p2=true;
 					if (p1&&p2) deal();
 				}
-			});
+			});*/
 		}
 		
 		function compare(x,y,o,p)
@@ -288,7 +325,7 @@
 				{
 					text2+='&#12288;';
 				}
-				text+='<th onclick="option('+i+')">'+text2+'</th>';
+				text+='<th class="keep-line" onclick="option('+i+')">'+text2+'</th>';
 			}
 			for (i=0;i<n2;++i)
 			{
@@ -309,26 +346,26 @@
 				}
 				if (i<n2-1)
 				{
-					text+='<th onclick="option('+(n1+i)+')">'+text2+'</th>';
+					text+='<th class="keep-line" onclick="option('+(n1+i)+')">'+text2+'</th>';
 				}
 				else
 				{
-					text+='<th>'+text2+'</th>';
+					text+='<th class="keep-line">'+text2+'</th>';
 				}
 			}
 			text+='</thread><tbody>';
 			for (i=0;i<m;++i)
 			{
 				text+='<tr>';
-				text+='<td>'+info[i].people.student_number+'</td>';
-				text+='<td>'+info[i].people.name+'</td>';
-				text+='<td>'+info[i].people.department+'</td>';
-				text+='<td>'+info[i].people.class_name+'</td>';
-				text+='<td>'+info[i].scoreInfo.score+'</td>';
-				text+='<td>'+info[i].scoreInfo.picture_number+'</td>';
-				text+='<td>'+info[i].scoreInfo.video_number+'</td>';
-				text+='<td>'+info[i].scoreInfo.creator_name+'</td>';
-				text+='<td><a href="/manage/student/'+info[i].people.id+'/lesson/'+classId+'" target="_blank">查看</a></td>';
+				text+='<td class="keep-line">'+info[i].people.student_number+'</td>';
+				text+='<td class="keep-line">'+info[i].people.name+'</td>';
+				text+='<td class="keep-line">'+info[i].people.department+'</td>';
+				text+='<td class="keep-line">'+info[i].people.class_name+'</td>';
+				text+='<td class="keep-line">'+info[i].scoreInfo.score+'</td>';
+				text+='<td class="keep-line">'+info[i].scoreInfo.picture_number+'</td>';
+				text+='<td class="keep-line">'+info[i].scoreInfo.video_number+'</td>';
+				text+='<td class="keep-line">'+info[i].scoreInfo.creator_name+'</td>';
+				text+='<td class="keep-line"><a href="/manage/student/'+info[i].people.id+'/lesson/'+classId+'" target="_blank">查看</a></td>';
 				text+='</tr>';
 			}
 			text+='</tbody></table>';

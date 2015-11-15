@@ -62,10 +62,10 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        user_id = (TextView) findViewById(R.id.user_id);
-        user_class = (TextView) findViewById(R.id.user_class);
+        user_id = (TextView) findViewById(R.id.course_name);
+        user_class = (TextView) findViewById(R.id.course_start_time);
         user_grades = (EditText) findViewById(R.id.user_grade);
-        user_comment = (EditText) findViewById(R.id.user_comment);
+        user_comment = (EditText) findViewById(R.id.course_place);
         user_evaluator = (TextView) findViewById(R.id.user_evaluator);
 
         fab = (FloatingActionButton) findViewById(R.id.fab_edit_detail);
@@ -158,7 +158,6 @@ public class DetailActivity extends AppCompatActivity {
         user_grades.setText(reply.score);
         user_comment.setText(reply.comments);
         user_evaluator.setText(reply.creatorName);
-        user_evaluator.setText("123");
     }
 
     class GetCommentTask extends

@@ -55,7 +55,6 @@ public class ExperimentActivity extends AppCompatActivity {
         this.papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.help));
         toolbar.setTitle(course_name);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

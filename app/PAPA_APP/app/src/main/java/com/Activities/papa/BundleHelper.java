@@ -28,6 +28,7 @@ public class BundleHelper implements Parcelable{
     private Identity identity;
     private int id;
     private String token;
+    private String sender_name;
 //    private JSONObject jsonObject;
 //    private String getter_string;
 
@@ -43,6 +44,7 @@ public class BundleHelper implements Parcelable{
         identity = Identity.no_identity;
         id = -1;
         token = "";
+        sender_name = "";
 //        jsonObject = new JSONObject();
 //        getter_string = jsonObject.toString();
     }
@@ -80,6 +82,9 @@ public class BundleHelper implements Parcelable{
     }
     public String getToken(){
         return token;
+    }
+    public String getSenderName(){
+        return sender_name;
     }
 //    public PapaTelephoneNumberGetter getPapaTelephoneNumberGetter(){
 //        try{
@@ -132,6 +137,9 @@ public class BundleHelper implements Parcelable{
     public void setToken(String token){
         this.token = token;
     }
+    public void setSenderName(String sender_name){
+        this.sender_name = sender_name;
+    }
 //    public void setPapaTelephoneNumberGetter(PapaTelephoneNumberGetter papaTelephoneNumberGetter){
 //        try{
 //            jsonObject.putOpt("getter",papaTelephoneNumberGetter);
@@ -157,6 +165,7 @@ public class BundleHelper implements Parcelable{
         out.writeString(identity.toString());
         out.writeInt(id);
         out.writeString(token);
+        out.writeString(sender_name);
 //        out.writeString(getter_string);
     }
 
@@ -193,6 +202,7 @@ public class BundleHelper implements Parcelable{
         }
         id = in.readInt();
         token = in.readString();
+        sender_name = in.readString();
 //        getter_string = in.readString();
     }
 

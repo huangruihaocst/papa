@@ -3,6 +3,12 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
   	<meta name="author" content="oscar999">
 	<style type="text/css">
+		.keep-line
+		{
+			white-space:nowrap;
+			overflow:hidden;
+			text-overflow:ellipsis;
+		}
 	</style>
 	<script>
 		var KEYCODE_ENTER=13,KEYCODE_ESC=27;
@@ -26,7 +32,7 @@
 		function loadInfo()   //获取当前课程学生各个实验的成绩
 		{
 			getId();
-			var i;
+			var i,j,k;
 			info=new Array();
 			n1=4;n2=0;m=0;
 			items=new Object();
@@ -34,68 +40,7 @@
 			items.classNames=new Array();
 			items.peopleInfo[0]="学号";items.peopleInfo[1]="姓名";
 			items.peopleInfo[2]="系";items.peopleInfo[3]="班级";
-			var p1=false,p2=false;
-			function deal()
-			{
-				$.get("/courses/"+courseId+"/students.json",{},
-				function(data)
-				{
-					if (data.status=="failed")
-					{
-						alert("学生名单加载失败");
-					}
-					if (data.status=="successful")
-					{
-						var i,j;data=data.students;
-						for (i=0;i<data.length;++i)
-						{
-							info[m]=new Object();
-							info[m].classScore=new Array();
-							var p=true;
-							$.ajax({url:"/students/"+data[i].id+".json",data:{},type:"GET",async:false,success:function(data)
-							{
-								if (data.status=="successful")
-								{
-									info[m].people=data.student;
-								}else
-								{
-									p=false;
-								}
-							}});
-							for (j=0;j<n2;++j)
-							{
-								$.ajax({url:"/lessons/"+classId[j]+"/students/"+data[i].id+"/comment.json",data:{},type:"GET",async:false,success:function(data)
-								{
-									info[m].classScore[j]=j;
-									if (data.status=="successful")
-									{
-										info[m].classScore[j]=data.student_comment.score;
-									}else
-									{
-										info[m].classScore[j]="未登记";
-									}
-								}});
-							}
-							if (p) ++m;
-						}
-						showInfo();
-					}
-				});
-			}
-			$.get("/courses/"+courseId+".json",{},
-			function(data)
-			{
-				if (data.status=="failed")
-				{
-					alert("获取课程信息失败");
-				}
-				if (data.status=="successful")
-				{
-					courseInfo=data.course.name;
-					p1=true;
-					if (p1&&p2) deal();
-				}
-			});
+
 			$.get("/courses/"+courseId+"/lessons.json",{},
 			function(data)
 			{
@@ -107,13 +52,47 @@
 				{
 					data=data.lessons;
 					var i;n2=data.length;
-					for (i=0;i<data.length;++i)
+					for (i=0;i<n2;++i)
 					{
 						classId[i]=data[i].id;
 						items.classNames[i]=data[i].name;
 					}
-					p2=true;
-					if (p1&&p2) deal();
+					$.get('/courses/'+courseId+'.json?full=true',{},
+					function(data)
+					{
+						if (data.status=="failed")
+						{
+							alert("加载成绩失败");
+						}
+						if (data.status=="successful")
+						{
+							console.log(data);
+							data=data.course;
+							courseInfo=data.name;
+							data=data.students;
+							m=data.length;
+							for (i=0;i<m;++i)
+							{
+								info[i]=new Object();
+								info[i].classScore=new Array();
+								info[i].people=data[i].student_info;
+								for (j=0;j<n2;++j)
+								{
+									info[i].classScore[j]="未登记";
+								}
+								for (j=0;j<data[i].lessons.length;++j)
+								{
+									for (k=0;k<n2;++k)
+									if (data[i].lessons[j].id==classId[k])
+									{
+										info[i].classScore[k]=data[i].lessons[j].score;
+										break;
+									}
+								}
+							}
+							showInfo();
+						}
+					});
 				}
 			});
 		}
@@ -245,7 +224,7 @@
 		
 		function showInfo()    //显示学生成绩
 		{
-			var i,j,text="",text2;
+			var i,j,text="",text2,len=parseInt(screen.width*0.8/(n1+n2));
 			text+='<h3>课程成绩</h3>';
 			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
 			text+='<thread><tr><th colspan="'+(n1+n2-1)+'">'+courseInfo+'</th>';
@@ -269,7 +248,7 @@
 				{
 					text2+='&#12288;';
 				}
-				text+='<th onclick="option('+i+')">'+text2+'</th>';
+				text+='<th class="keep-line" style="max-width:'+len+'px;" onclick="option('+i+')">'+text2+'</th>';
 			}
 			for (i=0;i<n2;++i)
 			{
@@ -288,19 +267,20 @@
 				{
 					text2+='&#12288;';
 				}
-				text+='<th onclick="option('+(n1+i)+')">'+text2+'</th>';
+				text+='<th class="keep-line" style="max-width:'+len+'px;" onclick="option('+(n1+i)+')">'+text2+'</th>';
 			}
 			text+='</thread><tbody>';
 			for (i=0;i<m;++i)
 			{
 				text+='<tr>';
-				text+='<td>'+info[i].people.student_number+'</td>';
-				text+='<td>'+info[i].people.name+'</td>';
-				text+='<td>'+info[i].people.department+'</td>';
-				text+='<td>'+info[i].people.class_name+'</td>';
+				text+='<td class="keep-line" style="max-width:'+len+'px;">'+info[i].people.student_number+'</td>';
+				text+='<td class="keep-line" style="max-width:'+len+'px;">'+info[i].people.name+'</td>';
+				text+='<td class="keep-line" style="max-width:'+len+'px;">'+info[i].people.department+'</td>';
+				text+='<td class="keep-line" style="max-width:'+len+'px;">'+info[i].people.class_name+'</td>';
 				for (j=0;j<n2;++j)
 				{
-					text+='<td><a href="/manage/student/'+info[i].people.id+'/lesson/'+classId[j]+'" target="_blank">'+info[i].classScore[j]+'</a></td>';
+					text+='<td class="keep-line" style="max-width:'+len+'px;">';
+					text+='<a href="/manage/student/'+info[i].people.id+'/lesson/'+classId[j]+'" target="_blank">'+info[i].classScore[j]+'</a></td>';
 				}
 				text+='</tr>';
 			}

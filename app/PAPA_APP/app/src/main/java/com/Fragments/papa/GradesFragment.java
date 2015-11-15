@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,10 +74,10 @@ public class GradesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_grades, container, false);
-        user_id = (TextView)rootView.findViewById(R.id.user_id);
-        user_class = (TextView)rootView.findViewById(R.id.user_class);
+        user_id = (TextView)rootView.findViewById(R.id.course_name);
+        user_class = (TextView)rootView.findViewById(R.id.course_start_time);
         user_grades = (TextView)rootView.findViewById(R.id.user_grade);
-        user_comment = (TextView)rootView.findViewById(R.id.user_comment);
+        user_comment = (TextView)rootView.findViewById(R.id.course_place);
         user_evaluator = (TextView)rootView.findViewById(R.id.user_evaluator);
         return rootView;
     }

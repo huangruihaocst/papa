@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -121,8 +122,7 @@ public class SentListActivity extends AppCompatActivity {
     class ReadMessagesTask extends AsyncTask<
             PapaDataBaseManager.ReadChatMessageRequest,
             Exception,
-            Boolean>
-    {
+            Boolean> {
         ProgressDialog proDialog;
 
         public ReadMessagesTask(Context context) {
@@ -169,11 +169,9 @@ public class SentListActivity extends AppCompatActivity {
         }
     }
 
-    private void processReply(PapaDataBaseManager.GetChatMessageReply reply)
-    {
+    private void processReply(final PapaDataBaseManager.GetChatMessageReply reply) {
         String s = "";
-        for(int i = 0; i < reply.list.size(); i++)
-        {
+        for(int i = 0; i < reply.list.size(); i++) {
             PapaDataBaseManager.ChatMessage chatMessage =
                 reply.list.get(i);
 
@@ -196,6 +194,19 @@ public class SentListActivity extends AppCompatActivity {
         */
         ////////////////////读完最后一条信息
 
-        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+        list_sent.setAdapter(new SentListAdapter(reply.list, getApplicationContext()));
+        list_sent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String sender_name = reply.list.get(position).senderName;
+                Intent intent = new Intent(SentListActivity.this, SentDetailActivity.class);
+                bundleHelper.setSenderName(sender_name);
+                Bundle data = new Bundle();
+                String key_sent_list_sent_detail = getString(R.string.key_sent_list_sent_detail);
+                data.putParcelable(key_sent_list_sent_detail, bundleHelper);
+                intent.putExtras(data);
+                startActivity(intent);
+            }
+        });
     }
 }

@@ -7,14 +7,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_send_message"
-    tools:context="com.Activities.papa.send_message.SentListActivity">
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/list_sent"
-        android:divider="#FFFFFF">
-    </ListView>
+    tools:showIn="@layout/activity_sent_detail_acitivity"
+    tools:context="com.Activities.papa.send_message.SentDetailActivity">
 
 </RelativeLayout>

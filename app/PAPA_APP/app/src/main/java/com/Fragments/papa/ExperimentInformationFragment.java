@@ -28,9 +28,14 @@ import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
  */
 public class ExperimentInformationFragment extends Fragment {
     private static final String TAG = "ExperimentInformationFragment";
-    private static final String ARG_BUNDLEHELPER = "bundleHelper";
+    private static final String ARG_BUNDLE_HELPER = "bundleHelper";
 
     private BundleHelper bundleHelper;
+    View rootView;
+    TextView textView_course_name;
+    TextView textView_course_start_time;
+    TextView textView_course_end_time;
+    TextView textView_place;
 
     private OnFragmentInteractionListener mListener;
 
@@ -43,7 +48,7 @@ public class ExperimentInformationFragment extends Fragment {
     public static ExperimentInformationFragment newInstance(BundleHelper bundleHelper) {
         ExperimentInformationFragment fragment = new ExperimentInformationFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_BUNDLEHELPER, bundleHelper);
+        args.putParcelable(ARG_BUNDLE_HELPER, bundleHelper);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,7 +63,7 @@ public class ExperimentInformationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bundleHelper = getArguments().getParcelable(ARG_BUNDLEHELPER);
+            bundleHelper = getArguments().getParcelable(ARG_BUNDLE_HELPER);
             papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
             get();
         }
@@ -68,7 +73,8 @@ public class ExperimentInformationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_experiment_information, container, false);
+        rootView = inflater.inflate(R.layout.fragment_experiment_information, container, false);
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -120,19 +126,16 @@ public class ExperimentInformationFragment extends Fragment {
     }
 
     // A-Z 想像High-de-Siehst YOU das?
-    void set(PapaDataBaseManager.GetLessonInfoReply rlt)
-    {
-        final TextView textView = (TextView)getView().findViewById(R.id.experiment_info);
+    void set(PapaDataBaseManager.GetLessonInfoReply rlt) {
+        textView_course_name = (TextView)rootView.findViewById(R.id.course_name);
+        textView_course_start_time = (TextView)rootView.findViewById(R.id.course_start_time);
+        textView_course_end_time = (TextView)rootView.findViewById(R.id.course_end_time);
+        textView_place = (TextView)rootView.findViewById(R.id.course_place);
 
-        String str = "name = " + rlt.name +
-                "\n" +
-                "start /*dash*/ = " + rlt.startTime +
-                "\n" +
-                "end = " + rlt.endTime + /*" (LaoBi: Every good thing has an end. Time's up.)" +*/
-                "\n" +
-                "where = " + rlt.location;
-
-        textView.setText(str);
+        textView_course_name.setText(rlt.name);
+        textView_course_start_time.setText(rlt.startTime);
+        textView_course_end_time.setText(rlt.endTime);
+        textView_place.setText(rlt.location);
     }
 
     // ☆愛-same-CRIER　愛撫-commit-LIAR
