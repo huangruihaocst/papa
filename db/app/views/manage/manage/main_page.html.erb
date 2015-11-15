@@ -6,6 +6,13 @@
 	<script src="/jquery-ui-1.11.4/jquery-ui.js" type="text/javascript"></script>
 	<script src="/jquery-ui-timepicker/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
 	<style type="text/css">
+		.keep-line
+		{
+			white-space:nowrap;
+			overflow:hidden;
+			text-overflow:ellipsis;
+		}
+		
 		.rectangle-semester
 		{
 			width:100%;
@@ -298,6 +305,10 @@
 			var text1,text2,i,p;
 			text1=$("#input-add-course-1")[0].value;
 			text2=$("#input-add-course-2")[0].value;
+			if (text1=="")
+			{
+				text1="无标题";
+			}
 			p=new Object();
 			p.course=new Object();
 			p.course.name=text1;
@@ -332,6 +343,10 @@
     		p.course=info.semesters[choosei].courses[choosej];
     		text1=$("#input-modify-course-1")[0].value;
 			text2=$("#input-modify-course-2")[0].value;
+			if (text1=="")
+			{
+				text1="无标题";
+			}
 			p.course.name=text1;
 			p.course.description=text2;
 			$.ajax({url:'/courses/'+p.course.id+'.json',data:p,type:"PUT",async:false,success:function(data)
@@ -357,6 +372,14 @@
 			text3=$("#input-add-class-3")[0].value;
 			text4=$("#input-add-class-4")[0].value;
 			text5=$("#input-add-class-5")[0].value;
+			if (text1=="")
+			{
+				text1="无标题";
+			}
+			if (text5=="")
+			{
+				text5="未定";
+			}
 			p.lesson=new Object();
 			p.lesson.name=text1;
 			p.lesson.description=text2;
@@ -393,6 +416,14 @@
 			text3=$("#input-modify-class-3")[0].value;
 			text4=$("#input-modify-class-4")[0].value;
 			text5=$("#input-modify-class-5")[0].value;
+			if (text1=="")
+			{
+				text1="无标题";
+			}
+			if (text5=="")
+			{
+				text5="未定";
+			}
 			p.lesson.name=text1;
 			p.lesson.description=text2;
 			p.lesson.start_time=text3;
@@ -410,7 +441,6 @@
     				info.semesters[choosei].courses[choosej].lessons[choosek]=p.lesson;
     				showInfo();
     			}
-    			alert("unexpected: modifyClass");
     		}});
 		}
 		
@@ -466,6 +496,10 @@
 			text1=$("#input-message-1")[0].value;
 			text2=$("#input-message-2")[0].value;
 			text3=$("#input-message-3")[0].value;
+			if (text1=="")
+			{
+				text1="无标题";
+			}
 			q=$("input[name='input-message-4']");
 			for (i=0;i<q.length;++i)
 			if (q[i].checked)
@@ -664,7 +698,7 @@
 					}
 					usersId=data2.id;
 					
-					$.ajax({url:"/teachers/"+usersId+"/courses.json",data:{},async:false,type:"GET",success:function(data)    //#modify
+					$.ajax({url:"/teachers/"+usersId+"/courses.json",data:{},async:false,type:"GET",success:function(data)
 					{
 						if (data.status=="failed")
 						{
@@ -690,7 +724,7 @@
 								info.semesters[i].courses[j].tot=0;
 								info.semesters[i].courses[j].lessons=new Array();
 								info.semesters[i].courses[j].clicked=false;
-								$.ajax({url:"/courses/"+data[p1].id+"/lessons.json",data:{},async:false,type:"GET",success:function(data)   //#modify
+								$.ajax({url:"/courses/"+data[p1].id+"/lessons.json",data:{},async:false,type:"GET",success:function(data)
 								{
 									if (data.status=="failed")
 									{
@@ -866,9 +900,26 @@
 			event.stopPropagation();
 		}
 		
+		function startSignIn(event,i,j,k)  //发起实验的签到
+		{
+		/*	$.post('/lessons/'+info.semesters[i].courses[j].lessons[k].id+'/sign_in.json',{},
+			function(data)
+			{
+				if (data.status=="failed")
+				{
+					alert("发起签到失败");
+				}
+				if (data.status=="successful")
+				{
+					alert("发起签到成功");
+				}
+			});*/
+			event.stopPropagation();
+		}
+		
 		function showInfo()  //显示课程信息
 		{
-			var i,j=-1,k=-1,text="",text2,text3,p=0;j=k=-1;
+			var i,j=-1,k=-1,text="",text2,text3,p=0;j=k=-1,len=parseInt(screen.width*0.8*0.13);
 			
 			for (i=0;i<info.tot;++i)
 			{
@@ -883,7 +934,7 @@
 					text2+=' animation1';
 				}
 				text+='<div id="'+text3+'" class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
-				text+='<div class="names">'+info.semesters[i].name+'</div>';
+				text+='<div class="names keep-line" style="max-width:'+len+'px;">'+info.semesters[i].name+'</div>';
 				text+='<div class="btn btn-info custom-button '+text3+'" onclick="addCourse(event,'+i+')">添加课程</div>';
 				text+='</div>';
 				k=-1;
@@ -901,7 +952,7 @@
 						text2+=' animation1';
 					}
 					text+='<div id="'+text3+'" class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
-					text+='<div class="names">'+info.semesters[i].courses[j].name+'</div>';
+					text+='<div class="names keep-line" style="max-width:'+len+'px;">'+info.semesters[i].courses[j].name+'</div>';
 					text+='<div class="custom-button custom-font-size '+text3+'" onclick="deleteCourse(event,'+i+','+j+')">×</div>';
 					text+='<div class="btn btn-info custom-button '+text3+'" onclick="addClass(event,'+i+','+j+')">添加实验</div>';
 					text+='<div class="btn btn-info custom-button '+text3+'" onclick="changeCourseInfo(event,'+i+','+j+')">编辑</div>';
@@ -925,12 +976,13 @@
 								text2+=' animation1';
 							}
 							text+='<div id="'+text3+'" class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
-							text+='<div class="names">'+info.semesters[i].courses[j].lessons[k].name+'</div>';
+							text+='<div class="names keep-line" style="max-width:'+len+'px;">'+info.semesters[i].courses[j].lessons[k].name+'</div>';
 							text+='<div class="custom-button custom-font-size '+text3+'" onclick="deleteClass(event,'+i+','+j+','+k+')">×</div>';
 							text+='<div class="btn btn-info custom-button '+text3+'" onclick="changeClassInfo(event,'+i+','+j+','+k+')">编辑</div>';
 							text+='<div class="btn btn-info custom-button '+text3+'" onclick="showClassScore(event,'+i+','+j+','+k+')">成绩</div>';
 							text+='<div class="btn btn-info custom-button '+text3+'" onclick="showClassInfo(event,'+i+','+j+','+k+')">反馈</div>';
 							text+='<div class="btn btn-info custom-button '+text3+'" onclick="modifyFiles(event,'+i+','+j+','+k+')">文件</div>';
+							text+='<div class="btn btn-info custom-button '+text3+'" onclick="startSignIn(event,'+i+','+j+','+k+')">发起签到</div>';
 							text+='</div>';
 						}
 					}
