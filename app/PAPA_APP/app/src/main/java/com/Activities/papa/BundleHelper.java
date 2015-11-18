@@ -8,6 +8,9 @@ import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by huang on 15-10-10.
  */
@@ -18,7 +21,6 @@ public class BundleHelper implements Parcelable{
         no_identity
     }
     private String username;
-    private String password;//not used
     private String course_name;
     private int course_id;
     private String experiment_name;
@@ -29,12 +31,12 @@ public class BundleHelper implements Parcelable{
     private int id;
     private String token;
     private String sender_name;
+    private ArrayList<PapaDataBaseManager.TeacherInfo> teachers_info;
 //    private JSONObject jsonObject;
 //    private String getter_string;
 
     public BundleHelper(){
         username = "";
-        password = "";
         course_name = "";
         course_id = -1;
         experiment_name = "";
@@ -47,14 +49,12 @@ public class BundleHelper implements Parcelable{
         sender_name = "";
 //        jsonObject = new JSONObject();
 //        getter_string = jsonObject.toString();
+        teachers_info = new ArrayList<>();
     }
 
 
     public String getUsername(){
         return username;
-    }
-    public String getPassword(){
-        return password;
     }
     public String getCourseName(){
         return course_name;
@@ -86,6 +86,9 @@ public class BundleHelper implements Parcelable{
     public String getSenderName(){
         return sender_name;
     }
+    public ArrayList<PapaDataBaseManager.TeacherInfo> getTeachersInfo(){
+        return teachers_info;
+    }
 //    public PapaTelephoneNumberGetter getPapaTelephoneNumberGetter(){
 //        try{
 //            jsonObject = new JSONObject(getter_string);
@@ -106,9 +109,6 @@ public class BundleHelper implements Parcelable{
 
     public void setUsername(String username){
         this.username = username;
-    }
-    public void setPassword(String password){
-        this.password = password;
     }
     public void setCourseName(String course_name){
         this.course_name = course_name;
@@ -140,6 +140,9 @@ public class BundleHelper implements Parcelable{
     public void setSenderName(String sender_name){
         this.sender_name = sender_name;
     }
+    public void setTeachersInfo(List<PapaDataBaseManager.TeacherInfo> teachers_info){
+        this.teachers_info = (ArrayList<PapaDataBaseManager.TeacherInfo>)teachers_info;
+    }
 //    public void setPapaTelephoneNumberGetter(PapaTelephoneNumberGetter papaTelephoneNumberGetter){
 //        try{
 //            jsonObject.putOpt("getter",papaTelephoneNumberGetter);
@@ -155,7 +158,6 @@ public class BundleHelper implements Parcelable{
 
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(username);
-        out.writeString(password);
         out.writeString(course_name);
         out.writeInt(course_id);
         out.writeString(experiment_name);
@@ -166,6 +168,7 @@ public class BundleHelper implements Parcelable{
         out.writeInt(id);
         out.writeString(token);
         out.writeString(sender_name);
+        out.writeTypedList(teachers_info);
 //        out.writeString(getter_string);
     }
 
@@ -181,7 +184,6 @@ public class BundleHelper implements Parcelable{
 
     private BundleHelper(Parcel in){
         username = in.readString();
-        password = in.readString();
         course_name = in.readString();
         course_id = in.readInt();
         experiment_name = in.readString();
@@ -203,7 +205,8 @@ public class BundleHelper implements Parcelable{
         id = in.readInt();
         token = in.readString();
         sender_name = in.readString();
-//        getter_string = in.readString();
+        teachers_info = new ArrayList<>();
+        in.readTypedList(teachers_info, PapaDataBaseManager.TeacherInfo.CREATOR);
     }
 
     static public PapaDataBaseManager getPapaDataBaseManager()

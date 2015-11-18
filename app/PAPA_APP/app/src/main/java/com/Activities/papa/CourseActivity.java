@@ -503,15 +503,14 @@ public class CourseActivity extends AppCompatActivity
         }
     }
 
-    void getTeachers()
-    {
+    void getTeachers() {
         new GetTeachersInfoTask(this).execute(new PapaDataBaseManager.GetTeachersInfoRequest(
                 token, String.valueOf(id)
         ));
     }
 
-    void setTeachers(List<PapaDataBaseManager.TeacherInfo> lst)
-    {
+    void setTeachers(List<PapaDataBaseManager.TeacherInfo> lst) {
         teachersInfo = lst;
+        bundleHelper.setTeachersInfo(teachersInfo);
     }
 }

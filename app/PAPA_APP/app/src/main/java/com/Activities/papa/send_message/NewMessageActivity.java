@@ -19,6 +19,8 @@ import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
+import java.util.ArrayList;
+
 public class NewMessageActivity extends AppCompatActivity {
 
     EditText edit_title;
@@ -26,6 +28,8 @@ public class NewMessageActivity extends AppCompatActivity {
     EditText edit_recipient;
 
     BundleHelper bundleHelper;
+
+    ArrayList<PapaDataBaseManager.TeacherInfo> teacherInfos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +51,14 @@ public class NewMessageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         bundleHelper = data.getParcelable(key_sent_list_new_message);
+        teacherInfos = bundleHelper.getTeachersInfo();
+        for(int i = 0;i < teacherInfos.size();i ++){
+            Log.i("teacher", "kuso = " + teacherInfos.get(i).toString());
+        }
 
         edit_title = (EditText)findViewById(R.id.content_title);
         edit_body = (EditText)findViewById(R.id.content_body);
         edit_recipient = (EditText)findViewById(R.id.content_recipient);
-
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
