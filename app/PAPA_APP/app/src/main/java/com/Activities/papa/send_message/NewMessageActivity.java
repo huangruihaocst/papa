@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -32,6 +33,7 @@ public class NewMessageActivity extends AppCompatActivity {
     BundleHelper bundleHelper;
 
     ArrayList<PapaDataBaseManager.TeacherInfo> teacherInfo;
+    String recipient_id;
 
     private static String[] TEACHERS_NAME;
 
@@ -74,6 +76,12 @@ public class NewMessageActivity extends AppCompatActivity {
 
         edit_recipient.setAdapter(adapter);
         edit_recipient.setThreshold(1);
+        edit_recipient.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                recipient_id = teacherInfo.get(position).getTeacherId();
+            }
+        });
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +119,7 @@ public class NewMessageActivity extends AppCompatActivity {
     public void send(){
         String title = edit_title.getText().toString();
         String body = edit_body.getText().toString();
-        String recipient = edit_recipient.getText().toString();
+        //use recipient for address
 
         new Task(this).execute(new PapaDataBaseManager.PostChatMessageRequest(
                 bundleHelper.getToken(), title, body, "3"));
