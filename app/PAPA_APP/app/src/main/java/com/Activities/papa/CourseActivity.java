@@ -88,15 +88,12 @@ public class CourseActivity extends AppCompatActivity
 
         teachersInfo = null;
 
-        getSemester();
-        getTeachers();
 
         tabLayout = (TabLayout) findViewById(R.id.semester_tab);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-
         viewPager = (ViewPager)findViewById(R.id.course_viewpager);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
+        viewPager.requestDisallowInterceptTouchEvent(true);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -114,14 +111,11 @@ public class CourseActivity extends AppCompatActivity
             }
         });
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        // Edit by Alex Wang 11-17, change the order to make sure tabLayout and
+        //  viewPager are initialized before used in getSemester()
+        getSemester();
+        getTeachers();
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -337,12 +331,10 @@ public class CourseActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(PapaDataBaseManager.SemesterReply rlt) {
             // UI
-
             proDialog.dismiss();
             if (rlt != null) setSemester(rlt.semester);
         }
     }
-
 
     void setSemester(List<Map.Entry<Integer, String>> h) {
         for(Iterator i = h.iterator(); i.hasNext();)
@@ -375,7 +367,6 @@ public class CourseActivity extends AppCompatActivity
         username_label.setText(r.usrInfo.usrName);
         mail_label.setText(r.usrInfo.mail);
     }
-
 
     class GetUsrInfoTask extends
             AsyncTask<PapaDataBaseManager.UsrInfoRequest, Exception, PapaDataBaseManager.UsrInfoReply> {

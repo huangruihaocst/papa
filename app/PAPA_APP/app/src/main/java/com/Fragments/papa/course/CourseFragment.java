@@ -5,6 +5,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -12,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
@@ -55,8 +60,6 @@ public class CourseFragment extends android.support.v4.app.Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment CourseFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -90,7 +93,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         papaDataBaseManager = BundleHelper.getPapaDataBaseManager();
     }
 
-    ListView course_list;
+    RecyclerView courseList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,9 +101,25 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         if(rootView == null){
             rootView  = inflater.inflate(R.layout.fragment_course, container, false);
-            course_list = (ListView)rootView.findViewById(R.id.course_list);
+
+            // Set RecyclerView style: Would this be better ?
+            // +--------+
+            // | ##  ## |
+            // | ##  ## |
+            // | ##  ## |
+            // +--------+
+            courseList = (RecyclerView) rootView.findViewById(R.id.course_list);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            courseList.setLayoutManager(layoutManager);
+
+            int spanCount = getContext().getResources().getInteger(R.integer.course_item_spans);
+            int spacing = getContext().getResources().getInteger(R.integer.course_item_width);
+            //courseList.addItemDecoration(new CourseRecyclerAdapter.GridSpacingItemDecoration(spanCount, spacing, true));
+
             getCourses();
-        }else{
+        }
+        else {
             ((ViewGroup)rootView.getParent()).removeView(rootView);
         }
         return rootView;
@@ -193,9 +212,9 @@ public class CourseFragment extends android.support.v4.app.Fragment {
     }
 
     private void setCourses(List<Map.Entry<Integer, String>> studentCourses, List<Map.Entry<Integer, String>> taCourses) {
-        course_list.setAdapter(new CourseListAdapter(studentCourses, taCourses, getContext(), bundleHelper));
-//        setListViewHeightBasedOnChildren(course_list);
-        course_list.setOnTouchListener(new View.OnTouchListener() {
+        courseList.setAdapter(new CourseRecyclerAdapter(studentCourses, taCourses, getContext(), bundleHelper));
+//        setListViewHeightBasedOnChildren(courseList);
+        courseList.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.getParent().requestDisallowInterceptTouchEvent(true);

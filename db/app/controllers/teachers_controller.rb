@@ -88,4 +88,15 @@ class TeachersController < ApplicationController
     end
   end
 
+  # POST /lessons/1/start_sign_up.json
+  def start_sign_up
+    teacher = check_teacher
+    lesson = Lesson.find(params[:lesson_id])
+    if lesson.course.teachers.include?(teacher)
+      json_successful
+    else
+      json_failed(REASON_PERMISSION_DENIED)
+    end
+  end
+
 end

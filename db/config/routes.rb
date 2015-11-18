@@ -37,17 +37,20 @@ Rails.application.routes.draw do
   resources :lessons, only: [:show, :destroy, :update] do
     # students' comments to the lesson
     resources :comments, controller: 'lesson_comments', only: [:index, :create]
+    post 'attendance' => 'attendance#create'
 
     # for comment and score
     resources :students, only: [:show] do
       # assistants' comments to the student
       resources :comments, controller: 'student_comments', only: [:index, :create]
       get 'comment' => 'student_comments#default'
+
     end
 
     # for attendence
     resources :students, only: [:index, :create]
     post 'students/:id' => 'students#create'
+    post 'start_sign_up' => 'teachers#start_sign_up'
 
     resources :files, only: [:index, :create, :delete]
   end
