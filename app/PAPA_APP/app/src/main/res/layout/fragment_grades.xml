@@ -58,14 +58,11 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="23dp"
                 android:id="@+id/textView3" />
-            <EditText
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/DetailContent"
                 android:textColor="@color/colorPrimary"
-                android:inputType="number"
-                android:maxLines="1"
-                android:maxLength="3"
                 android:text=""
                 android:id="@+id/user_grades"
                 android:background="#FAFAFA"
@@ -82,12 +79,11 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="23dp"
                 android:id="@+id/textView4"/>
-            <EditText
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/DetailContent"
                 android:textColor="@color/colorPrimary"
-                android:inputType="textMultiLine"
                 android:text=""
                 android:id="@+id/course_place"
                 android:background="#FAFAFA"
