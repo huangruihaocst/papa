@@ -12,9 +12,4 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin">
-<<<<<<< HEAD
 </android.support.v7.widget.RecyclerView>
-=======
-
-</ListView>
->>>>>>> a63f2a855f3c85addefcf6711ad2181d96073640
