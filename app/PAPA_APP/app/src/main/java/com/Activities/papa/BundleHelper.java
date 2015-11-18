@@ -89,23 +89,6 @@ public class BundleHelper implements Parcelable{
     public ArrayList<PapaDataBaseManager.TeacherInfo> getTeachersInfo(){
         return teachers_info;
     }
-//    public PapaTelephoneNumberGetter getPapaTelephoneNumberGetter(){
-//        try{
-//            jsonObject = new JSONObject(getter_string);
-//        }catch (JSONException e){
-//            Log.e("parse", e.getMessage());
-//        }
-//        PapaTelephoneNumberGetter papaTelephoneNumberGetter = null;
-//        try{
-//            Object object = jsonObject.get("getter");
-//            papaTelephoneNumberGetter = (PapaTelephoneNumberGetter)object;
-//        }catch (JSONException e){
-//            Log.e("parse", e.getMessage());
-//        }
-//        return papaTelephoneNumberGetter;
-//    }
-
-
 
     public void setUsername(String username){
         this.username = username;
@@ -143,14 +126,6 @@ public class BundleHelper implements Parcelable{
     public void setTeachersInfo(List<PapaDataBaseManager.TeacherInfo> teachers_info){
         this.teachers_info = (ArrayList<PapaDataBaseManager.TeacherInfo>)teachers_info;
     }
-//    public void setPapaTelephoneNumberGetter(PapaTelephoneNumberGetter papaTelephoneNumberGetter){
-//        try{
-//            jsonObject.putOpt("getter",papaTelephoneNumberGetter);
-//        }catch (JSONException e){
-//            Log.e("serialize", e.getMessage());
-//        }
-//        getter_string = jsonObject.toString();
-//    }
 
     public int describeContents() {
         return 0;
@@ -169,7 +144,6 @@ public class BundleHelper implements Parcelable{
         out.writeString(token);
         out.writeString(sender_name);
         out.writeTypedList(teachers_info);
-//        out.writeString(getter_string);
     }
 
     public static final Parcelable.Creator<BundleHelper> CREATOR = new Parcelable.Creator<BundleHelper>() {

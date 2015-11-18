@@ -609,6 +609,22 @@ public abstract class PapaDataBaseManager{
             return 0;
         }
 
+        public String getTeacherName(){
+            return teacherName;
+        }
+        public String getCourseName(){
+            return courseName;
+        }
+        public String getTeacherTelephone(){
+            return teacherTelephone;
+        }
+        public String getTeacherMail(){
+            return teacherMail;
+        }
+        public String getTeacherId(){
+            return teacherId;
+        }
+
         @Override
         public String toString() {
             String s = "teacher: ";

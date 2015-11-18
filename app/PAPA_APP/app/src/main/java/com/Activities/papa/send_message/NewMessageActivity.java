@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -25,11 +27,13 @@ public class NewMessageActivity extends AppCompatActivity {
 
     EditText edit_title;
     EditText edit_body;
-    EditText edit_recipient;
+    AutoCompleteTextView edit_recipient;
 
     BundleHelper bundleHelper;
 
-    ArrayList<PapaDataBaseManager.TeacherInfo> teacherInfos;
+    ArrayList<PapaDataBaseManager.TeacherInfo> teacherInfo;
+
+    private static String[] TEACHERS_NAME;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +55,25 @@ public class NewMessageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         bundleHelper = data.getParcelable(key_sent_list_new_message);
-        teacherInfos = bundleHelper.getTeachersInfo();
-        for(int i = 0;i < teacherInfos.size();i ++){
-            Log.i("teacher", "kuso = " + teacherInfos.get(i).toString());
+        teacherInfo = bundleHelper.getTeachersInfo();
+
+        int size = teacherInfo.size();
+        TEACHERS_NAME = new String[size];
+        Log.i("size", String.valueOf(size));
+
+        for(int i = 0;i < size;i ++){
+            TEACHERS_NAME[i] = teacherInfo.get(i).getTeacherName();
         }
 
         edit_title = (EditText)findViewById(R.id.content_title);
         edit_body = (EditText)findViewById(R.id.content_body);
-        edit_recipient = (EditText)findViewById(R.id.content_recipient);
+        edit_recipient = (AutoCompleteTextView)findViewById(R.id.content_recipient);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, TEACHERS_NAME);
+
+        edit_recipient.setAdapter(adapter);
+        edit_recipient.setThreshold(1);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
