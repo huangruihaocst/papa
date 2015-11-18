@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.KeyListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView user_evaluator;
     boolean editable;
     FloatingActionButton fab;
+    KeyListener keyListener_grades;
+    KeyListener keyListener_comment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String key_to_detail = getString(R.string.key_to_detail);
+        final String key_to_detail = getString(R.string.key_to_detail);
         bundleHelper = data.getParcelable(key_to_detail);
         experiment_name = bundleHelper.getExperimentName();
         identity = bundleHelper.getIdentity();
@@ -64,14 +67,17 @@ public class DetailActivity extends AppCompatActivity {
 
         user_id = (TextView) findViewById(R.id.course_name);
         user_class = (TextView) findViewById(R.id.course_start_time);
-        user_grades = (EditText) findViewById(R.id.user_grade);
+        user_grades = (EditText) findViewById(R.id.user_grades);
         user_comment = (EditText) findViewById(R.id.course_place);
         user_evaluator = (TextView) findViewById(R.id.user_evaluator);
-
         fab = (FloatingActionButton) findViewById(R.id.fab_edit_detail);
+        keyListener_grades = user_grades.getKeyListener();
+        keyListener_comment = user_comment.getKeyListener();
+
         if (identity == BundleHelper.Identity.student) {
             fab.setVisibility(View.GONE);
         }
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,10 +85,12 @@ public class DetailActivity extends AppCompatActivity {
 
                 if (!editable) {
                     editable = true;
-                    user_grades.setEnabled(true);
-                    user_grades.setFocusable(true);
-                    user_comment.setEnabled(true);
-                    user_comment.setFocusable(true);
+//                    user_grades.setEnabled(true);
+//                    user_grades.setFocusable(true);
+//                    user_comment.setEnabled(true);
+//                    user_comment.setFocusable(true);
+                    user_grades.setKeyListener(keyListener_grades);
+                    user_comment.setKeyListener(keyListener_comment);
                     Snackbar.make(
                             view, getString(R.string.now_editable),
                             Snackbar.LENGTH_LONG
@@ -95,6 +103,7 @@ public class DetailActivity extends AppCompatActivity {
                             Snackbar.LENGTH_LONG
                     ).setAction("Action", null).show();
                     fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_36dp));
+                    editable = false;
                 }
 
             }
@@ -103,8 +112,8 @@ public class DetailActivity extends AppCompatActivity {
         getComment();
 
         editable = false;
-        user_grades.setEnabled(false);
-        user_comment.setEnabled(false);
+        user_grades.setKeyListener(null);
+        user_comment.setKeyListener(null);
     }
 
     @Override
@@ -220,10 +229,12 @@ public class DetailActivity extends AppCompatActivity {
 
     private void afterPostComment() {
         editable = false;
-        user_grades.setEnabled(false);
-        user_grades.setFocusable(false);
-        user_comment.setEnabled(false);
-        user_comment.setFocusable(false);
+//        user_grades.setEnabled(false);
+//        user_grades.setFocusable(false);
+//        user_comment.setEnabled(false);
+//        user_comment.setFocusable(false);
+        user_grades.setKeyListener(null);
+        user_comment.setKeyListener(null);
     }
 
     class PostCommentTask extends
@@ -273,8 +284,9 @@ public class DetailActivity extends AppCompatActivity {
             // UI
 
             proDialog.dismiss();
-            if (rlt)
+            if (rlt){
                 afterPostComment();
+            }
         }
     }
 
