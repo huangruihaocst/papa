@@ -85,10 +85,6 @@ public class DetailActivity extends AppCompatActivity {
 
                 if (!editable) {
                     editable = true;
-//                    user_grades.setEnabled(true);
-//                    user_grades.setFocusable(true);
-//                    user_comment.setEnabled(true);
-//                    user_comment.setFocusable(true);
                     user_grades.setKeyListener(keyListener_grades);
                     user_comment.setKeyListener(keyListener_comment);
                     Snackbar.make(
@@ -229,10 +225,6 @@ public class DetailActivity extends AppCompatActivity {
 
     private void afterPostComment() {
         editable = false;
-//        user_grades.setEnabled(false);
-//        user_grades.setFocusable(false);
-//        user_comment.setEnabled(false);
-//        user_comment.setFocusable(false);
         user_grades.setKeyListener(null);
         user_comment.setKeyListener(null);
     }
