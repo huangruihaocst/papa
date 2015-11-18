@@ -7,6 +7,8 @@
  */
 package com.Back.PapaDataBaseManager.papa;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.Activities.papa.receive_message.Message;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class PapaDataBaseManager {
+public abstract class PapaDataBaseManager{
 
 
     // 登录
@@ -577,8 +579,9 @@ public abstract class PapaDataBaseManager {
             throws PapaHttpClientException;
 
 
-    //////////////////////////////////////////////////////////////////////////
-    // 获取相关老师的信息
+    /**
+       获取相关老师的信息
+    **/
 
 
     static public class GetTeachersInfoRequest
@@ -593,13 +596,34 @@ public abstract class PapaDataBaseManager {
         }
     }
 
-    static public class TeacherInfo
+    static public class TeacherInfo implements Parcelable
     {
         String teacherName;
         String courseName;
         String teacherTelephone;
         String teacherMail;
         String teacherId;
+
+        @Override
+        public int describeContents(){
+            return 0;
+        }
+
+        public String getTeacherName(){
+            return teacherName;
+        }
+        public String getCourseName(){
+            return courseName;
+        }
+        public String getTeacherTelephone(){
+            return teacherTelephone;
+        }
+        public String getTeacherMail(){
+            return teacherMail;
+        }
+        public String getTeacherId(){
+            return teacherId;
+        }
 
         @Override
         public String toString() {
@@ -614,15 +638,37 @@ public abstract class PapaDataBaseManager {
 
         public TeacherInfo(
                 String teacherName, String courseName, String teacherTelephone,
-                String teacherMail, String teacherId
-        )
-        {
+                String teacherMail, String teacherId) {
             this.teacherName = teacherName;
             this.courseName = courseName;
             this.teacherTelephone = teacherTelephone;
             this.teacherMail = teacherMail;
             this.teacherId = teacherId;
         }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.teacherName);
+            dest.writeString(this.courseName);
+            dest.writeString(this.teacherTelephone);
+            dest.writeString(this.teacherMail);
+            dest.writeString(this.teacherId);
+        }
+
+        // 添加一个静态成员,名为CREATOR,该对象实现了Parcelable.Creator接口  
+        public static final Parcelable.Creator<PapaDataBaseManager.TeacherInfo> CREATOR = new Parcelable.Creator<PapaDataBaseManager.TeacherInfo>() {
+            @Override
+            public PapaDataBaseManager.TeacherInfo createFromParcel(Parcel source) {
+                // 从Parcel中读取数据，返回PapaDataBaseManager.TeacherInfo对象  
+                return new PapaDataBaseManager.TeacherInfo(source.readString(),
+                        source.readString() ,source.readString(), source.readString(), source.readString());
+            }
+
+            @Override
+            public PapaDataBaseManager.TeacherInfo[] newArray(int size) {
+                return new PapaDataBaseManager.TeacherInfo[size];
+            }
+        };
     }
 
 
@@ -639,5 +685,4 @@ public abstract class PapaDataBaseManager {
 
     public abstract GetTeachersInfoReply getTeachersInfo(GetTeachersInfoRequest request)
             throws PapaHttpClientException;
-
 }

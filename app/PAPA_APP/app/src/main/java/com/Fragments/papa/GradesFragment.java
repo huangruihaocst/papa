@@ -27,7 +27,7 @@ import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
  */
 public class GradesFragment extends Fragment {
     private static final String TAG = "GradesFragment";
-    private static final String ARG_BUNDLEHELPER = "bundleHelper";
+    private static final String ARG_BUNDLE_HELPER = "bundleHelper";
 
     private BundleHelper bundleHelper;
 
@@ -48,7 +48,7 @@ public class GradesFragment extends Fragment {
     public static GradesFragment newInstance(BundleHelper bundleHelper) {
         GradesFragment fragment = new GradesFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_BUNDLEHELPER, bundleHelper);
+        args.putParcelable(ARG_BUNDLE_HELPER, bundleHelper);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,7 +63,7 @@ public class GradesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bundleHelper = getArguments().getParcelable(ARG_BUNDLEHELPER);
+            bundleHelper = getArguments().getParcelable(ARG_BUNDLE_HELPER);
             papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
             getComment();
         }
@@ -76,7 +76,7 @@ public class GradesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_grades, container, false);
         user_id = (TextView)rootView.findViewById(R.id.course_name);
         user_class = (TextView)rootView.findViewById(R.id.course_start_time);
-        user_grades = (TextView)rootView.findViewById(R.id.user_grade);
+        user_grades = (TextView)rootView.findViewById(R.id.user_grades);
         user_comment = (TextView)rootView.findViewById(R.id.course_place);
         user_evaluator = (TextView)rootView.findViewById(R.id.user_evaluator);
         return rootView;

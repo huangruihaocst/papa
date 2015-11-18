@@ -8,16 +8,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
@@ -26,7 +23,6 @@ import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
-import java.util.List;
 import java.util.Map;
 
 //
@@ -53,11 +49,13 @@ import java.util.Map;
  */
 public class StudentsFragment extends Fragment {
     private static final String TAG = "StudentsFragment";
-    private static final String ARG_BUNDLEHELPER = "bundleHelper";
+    private static final String ARG_BUNDLE_HELPER = "bundleHelper";
 
     private BundleHelper bundleHelper;
 
     private OnFragmentInteractionListener mListener;
+
+    View rootView;
 
     /**
      * Use this factory method to create a new instance of
@@ -68,7 +66,7 @@ public class StudentsFragment extends Fragment {
     public static StudentsFragment newInstance(BundleHelper bundleHelper) {
         StudentsFragment fragment = new StudentsFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_BUNDLEHELPER, bundleHelper);
+        args.putParcelable(ARG_BUNDLE_HELPER, bundleHelper);
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,7 +81,7 @@ public class StudentsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bundleHelper = getArguments().getParcelable(ARG_BUNDLEHELPER);
+            bundleHelper = getArguments().getParcelable(ARG_BUNDLE_HELPER);
             papaDataBaseManager = bundleHelper.getPapaDataBaseManager();
             getStudents();
         }
@@ -93,7 +91,8 @@ public class StudentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_students, container, false);
+        rootView = inflater.inflate(R.layout.fragment_students, container, false);
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -146,7 +145,7 @@ public class StudentsFragment extends Fragment {
 
     void setStudents(PapaDataBaseManager.StudentsReply rlt)
     {
-        final ListView StudentListView = (ListView)getView().findViewById(R.id.student_list);
+        final ListView StudentListView = (ListView)rootView.findViewById(R.id.student_list);
         StudentListView.setAdapter(new StudentsListAdapter(rlt.students, getContext()));
         StudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
