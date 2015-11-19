@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.Activities.papa.R;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
@@ -53,15 +54,13 @@ public class SentListAdapter extends BaseAdapter {
         TextView send_time = (TextView)convertView.findViewById(R.id.send_time);
         PapaDataBaseManager.ChatMessage chatMessage = lst.get(position);
         send_name.setText(chatMessage.senderName);
-        String send_content = chatMessage.content;
         int max_length = context.getResources().getInteger(R.integer.send_overview_max_length);
-        if(send_content.length() <= max_length){
-            send_overview.setText(send_content);
-        }else{
-            String over_view = send_content.substring(0, max_length - 3) + "...";
-            send_overview.setText(over_view);
+        String overview = chatMessage.title + ":" + chatMessage.content;
+        if(overview.length() > max_length){
+            overview = overview.substring(0, max_length - 3) + "...";
         }
-        send_time.setText("fake time");
+        send_overview.setText(overview);
+        send_time.setText("faked time");
         return convertView;
     }
 }

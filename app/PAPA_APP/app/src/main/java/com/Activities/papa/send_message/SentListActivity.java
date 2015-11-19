@@ -36,7 +36,7 @@ public class SentListActivity extends AppCompatActivity {
         bundleHelper = data.getParcelable(key_to_send_message);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.send_message));
+        toolbar.setTitle(getString(R.string.send_message_list));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -198,9 +198,9 @@ public class SentListActivity extends AppCompatActivity {
         list_sent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String sender_name = reply.list.get(position).senderName;
+                PapaDataBaseManager.ChatMessage chatMessage = reply.list.get(position);
                 Intent intent = new Intent(SentListActivity.this, SentDetailActivity.class);
-                bundleHelper.setSenderName(sender_name);
+                bundleHelper.setChatMessage(chatMessage);
                 Bundle data = new Bundle();
                 String key_sent_list_sent_detail = getString(R.string.key_sent_list_sent_detail);
                 data.putParcelable(key_sent_list_sent_detail, bundleHelper);

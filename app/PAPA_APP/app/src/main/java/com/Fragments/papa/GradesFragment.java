@@ -74,11 +74,11 @@ public class GradesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_grades, container, false);
-        user_id = (TextView)rootView.findViewById(R.id.course_name);
-        user_class = (TextView)rootView.findViewById(R.id.course_start_time);
-        user_grades = (TextView)rootView.findViewById(R.id.user_grades);
-        user_comment = (TextView)rootView.findViewById(R.id.course_place);
-        user_evaluator = (TextView)rootView.findViewById(R.id.user_evaluator);
+        user_id = (TextView)rootView.findViewById(R.id.sender);
+        user_class = (TextView)rootView.findViewById(R.id.recipient);
+        user_grades = (TextView)rootView.findViewById(R.id.sent_time);
+        user_comment = (TextView)rootView.findViewById(R.id.title);
+        user_evaluator = (TextView)rootView.findViewById(R.id.body);
         return rootView;
     }
 

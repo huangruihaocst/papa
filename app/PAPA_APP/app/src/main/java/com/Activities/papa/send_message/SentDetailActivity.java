@@ -2,14 +2,15 @@ package com.Activities.papa.send_message;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 public class SentDetailActivity extends AppCompatActivity {
 
@@ -18,15 +19,16 @@ public class SentDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sent_detail_acitivity);
+        setContentView(R.layout.activity_sent_detail_activity);
 
         String key_sent_list_sent_detail = getString(R.string.key_sent_list_sent_detail);
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         bundleHelper = data.getParcelable(key_sent_list_sent_detail);
+        PapaDataBaseManager.ChatMessage chatMessage = bundleHelper.getChatMessage();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(bundleHelper.getSenderName());
+        toolbar.setTitle(String.format(getString(R.string.message_from), chatMessage.senderName));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -36,6 +38,18 @@ public class SentDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        TextView sender = (TextView)findViewById(R.id.sender);
+        TextView recipient = (TextView)findViewById(R.id.recipient);
+        TextView sent_time = (TextView)findViewById(R.id.sent_time);
+        TextView title = (TextView)findViewById(R.id.title);
+        TextView body = (TextView)findViewById(R.id.body);
+
+        sender.setText(chatMessage.senderName);
+        recipient.setText("知不道");
+        sent_time.setText("知不道");
+        title.setText(chatMessage.title);
+        body.setText(chatMessage.content);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
