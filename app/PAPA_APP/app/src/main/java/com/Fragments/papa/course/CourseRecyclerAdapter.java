@@ -100,17 +100,17 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
             textView.setText(taCourses.get(index).getValue());
             textView.setTextSize(25);
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-//            cardView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    startExperimentActivity(
-//                            context,
-//                            taCourses.get(index).getValue(),
-//                            taCourses.get(index).getKey(),
-//                            bundleHelper,
-//                            BundleHelper.Identity.teacher_assistant);
-//                }
-//            });
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startExperimentActivity(
+                            context,
+                            taCourses.get(index).getValue(),
+                            taCourses.get(index).getKey(),
+                            bundleHelper,
+                            BundleHelper.Identity.teacher_assistant);
+                }
+            });
         }
     }
 

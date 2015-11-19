@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -103,9 +104,6 @@ public class ExperimentResultFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ExperimentResultFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -300,7 +298,7 @@ public class ExperimentResultFragment extends Fragment {
                                             bundleHelper.getToken(),
                                             file,
                                             file.getName(),
-                                            "picture"
+                                            "image"
                                     )
                             );
                         }else{
@@ -336,7 +334,7 @@ public class ExperimentResultFragment extends Fragment {
                                         bundleHelper.getToken(),
                                         file,
                                         file.getName(),
-                                        "picture"
+                                        "image"
                                 )
                         );
                     }

@@ -64,13 +64,15 @@ class FilesController < ApplicationController
       return
     end
 
-    rel_loc = File.join('uploads', temp_file.original_filename)
+    suffix = temp_file.original_filename.split('.')[-1]
+    new_file_name = Random.rand(TOKEN_MAX_RAND).to_s + '.' + suffix
+    rel_loc = File.join('uploads', new_file_name)
     loc = Rails.root.join('public', rel_loc)
     File.open(loc, 'wb') do |file|
       file.write(temp_file.read)
     end
 
-    @file = FileResource.create(file_type: p[:type], name: temp_file.original_filename, path: File.join('', rel_loc), creator_id: user.id)
+    @file = FileResource.create(file_type: p[:type], name: new_file_name, path: File.join('', rel_loc), creator_id: user.id)
     if @file.valid?
       begin
         if params[:student_id] && params[:lesson_id]

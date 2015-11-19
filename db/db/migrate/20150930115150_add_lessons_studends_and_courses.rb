@@ -48,8 +48,10 @@ class AddLessonsStudendsAndCourses < ActiveRecord::Migration
     create_table :participations do |t|
       t.integer :course_id
       t.integer :user_id
-      t.string  :role, default: ROLE_STUDENT # student/assitant
+      t.string  :role, default: ROLE_STUDENT # student/assistant
     end
+    add_index :participations, :course_id
+    add_index :participations, :user_id
 
     create_table :teaching_courses do |t|
       t.integer :user_id

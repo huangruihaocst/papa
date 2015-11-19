@@ -35,10 +35,10 @@ class LessonsController < ApplicationController
             }
           end
           video_file_count, image_file_count = 0, 0
-          student_files = @lesson.student_files
+          student_files = @lesson.student_files.where(student_id: student.id)
           student_files.each do |file|
-            video_file_count += 1 if file.file_resource.type == FILE_TYPE_VIDEO
-            image_file_count += 1 if file.file_resource.type == FILE_TYPE_IMAGE
+            video_file_count += 1 if file.file_resource.file_type == FILE_TYPE_VIDEO
+            image_file_count += 1 if file.file_resource.file_type == FILE_TYPE_IMAGE
           end
 
           student_attendances = @lesson.student_attendences.where(user_id: student.id)
@@ -112,9 +112,9 @@ class LessonsController < ApplicationController
   # GET /teachers/1/lessons.json
   def from_teacher
     teacher = User.find(params[:teacher_id])
-    lessons = Lesson.none
-    teacher.courses.each do |course|
-      lessons <<= course.lessons
+    @lessons = Lesson.none
+    teacher.teaching_courses.each do |teaching_course|
+      @lessons.merge(teaching_course.course.lessons)
     end
     @lessons
   end

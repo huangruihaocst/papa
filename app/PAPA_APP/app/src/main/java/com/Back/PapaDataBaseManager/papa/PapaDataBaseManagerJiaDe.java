@@ -163,7 +163,7 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     @Override
     public GetLessonInfoReply getLessonInfo(GetLessonInfoRequest request) throws
             PapaHttpClientException {
-        return new GetLessonInfoReply("watashi", "kyou", "ashita", "koko");
+        return new GetLessonInfoReply("watashi", null, null, "koko");
     }
 
     @Override
