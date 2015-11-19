@@ -900,7 +900,7 @@
 			event.stopPropagation();
 		}
 		
-		function startSignIn(event,i,j,k)  //发起实验的签到
+		function startSignUp(event,i,j,k)  //发起实验的签到
 		{
 			$.post('/lessons/'+info.semesters[i].courses[j].lessons[k].id+'/start_sign_up.json',{},
 			function(data)
@@ -988,7 +988,7 @@
 							text+='<div class="btn btn-info custom-button '+text3+'" onclick="showClassScore(event,'+i+','+j+','+k+')">成绩</div>';
 							text+='<div class="btn btn-info custom-button '+text3+'" onclick="showClassInfo(event,'+i+','+j+','+k+')">反馈</div>';
 							text+='<div class="btn btn-info custom-button '+text3+'" onclick="modifyFiles(event,'+i+','+j+','+k+')">文件</div>';
-							text+='<div class="btn btn-info custom-button '+text3+'" onclick="startSignIn(event,'+i+','+j+','+k+')">发起签到</div>';
+							text+='<div class="btn btn-info custom-button '+text3+'" onclick="startSignUp(event,'+i+','+j+','+k+')">发起签到</div>';
 							text+='</div>';
 						}
 					}

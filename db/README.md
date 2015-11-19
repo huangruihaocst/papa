@@ -292,6 +292,8 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         permission_denied: teacher_id和当前登陆用户不匹配
         resource_not_found: teacher_id不存在
         internal_error: 其他内部错误, 如果遇到请联系我
+    GET    /teachers/1/lessons.json     获得一个老师的所有实验课
+        resource_not_found: teacher_id不存在
 
     # 消息推送
     GET    /students/1/messages.json  查询学生的所有消息     "messages": [message ...]                   Student

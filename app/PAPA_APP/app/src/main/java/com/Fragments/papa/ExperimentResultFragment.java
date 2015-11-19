@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -103,9 +104,6 @@ public class ExperimentResultFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ExperimentResultFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -198,7 +196,19 @@ public class ExperimentResultFragment extends Fragment {
                             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
 
                             // start the Video Capture Intent
-                            startActivityForResult(intent, CAPTURE_VIDEO);
+//                            startActivityForResult(intent, CAPTURE_VIDEO);
+                            MediaRecorder recorder = new MediaRecorder();
+                            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+                            recorder.setOutputFile(getContext().getExternalCacheDir().getAbsolutePath() + "123.mp4");
+                            try {
+                                recorder.prepare();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            recorder.start();   // Recording is now started
+
                         }else if(which == 2){//gallery
                             Intent intent = new Intent(Intent.ACTION_PICK);
                             intent.setType("*/*");
@@ -300,7 +310,7 @@ public class ExperimentResultFragment extends Fragment {
                                             bundleHelper.getToken(),
                                             file,
                                             file.getName(),
-                                            "picture"
+                                            "image"
                                     )
                             );
                         }else{
@@ -336,7 +346,7 @@ public class ExperimentResultFragment extends Fragment {
                                         bundleHelper.getToken(),
                                         file,
                                         file.getName(),
-                                        "picture"
+                                        "image"
                                 )
                         );
                     }
