@@ -34,14 +34,14 @@
 		{
 			getId();
 			var i,j,k;
-			n1=4;n2=5;m=0;
+			n1=4;n2=6;m=0;
 			items=new Object();
 			items.peopleInfo=new Array();
 			items.scoreInfo=new Array();
 			items.peopleInfo[0]="学号";items.peopleInfo[1]="姓名";
 			items.peopleInfo[2]="系";items.peopleInfo[3]="班级";
 			items.scoreInfo[0]="成绩";items.scoreInfo[1]="图片数";items.scoreInfo[2]="视频数";
-			items.scoreInfo[3]="打分助教";items.scoreInfo[4]="跳转查看";
+			items.scoreInfo[3]="打分助教";items.scoreInfo[4]="签到状态";items.scoreInfo[5]="跳转查看";
 			info=new Array();
 			$.get('/lessons/'+classId+'.json?full=true',{},
 			function(data)
@@ -59,12 +59,13 @@
 					m=data.length;
 					for (i=0;i<m;++i)
 					{
+						var data2=data[i].student_info;
 						info[i]=new Object();
 						info[i].scoreInfo=new Object();
-						if (data[i].comment)
+						if (data2.comment)
 						{
-							info[i].scoreInfo.score=data[i].comment.score;
-							info[i].scoreInfo.creator_name=data[i].comment.creator_name;
+							info[i].scoreInfo.score=data2.comment.score;
+							info[i].scoreInfo.creator_name=data2.comment.creator_name;
 						}
 						if (!info[i].scoreInfo.score)
 						{
@@ -74,15 +75,24 @@
 						{
 							info[i].scoreInfo.creator_name="未定";
 						}
-						if (data[i].files_number)
+						if (data2.files_number)
 						{
-							info[i].scoreInfo.picture_number=data[i].files_number.images;
-							info[i].scoreInfo.video_number=data[i].files_number.videos;
+							info[i].scoreInfo.picture_number=data2.files_number.images;
+							info[i].scoreInfo.video_number=data2.files_number.videos;
 						}else
 						{
 							info[i].scoreInfo.picture_number=info[i].scoreInfo.video_number=0;
 						}
-						info[i].people=data[i];
+						info[i].people=data2;
+						if (data2.attendance)
+						{
+							info[i].attendance="已签到";
+							info[i].addition=data2.attendance;
+						}
+						else
+						{
+							info[i].attendance="未签到";
+						}
 					}
 					showInfo();
 				}
@@ -124,6 +134,10 @@
 				case 7:
 					x=x.scoreInfo.creator_name;
 					y=y.scoreInfo.creator_name;
+					break;
+				case 8:
+					x=x.attendance;
+					y=y.attendance;
 					break;
 				default:
 			}
@@ -191,7 +205,7 @@
 		{
 			if (focusi!=-1&&focusj!=-1) return; 
 			var p=$("#table1")[0],i,j,n=p.rows.length,m=p.rows[2].cells.length,data="",text="";
-			data="学号,姓名,系,班级,成绩,图片数,视频数,打分助教\n";
+			data="学号,姓名,系,班级,成绩,图片数,视频数,打分助教,签到状态\n";
 			for (i=3;i<n;++i)
 			{
 				text=p.rows[i].cells[0].textContent;
@@ -293,6 +307,13 @@
 				text+='<td class="keep-line">'+info[i].scoreInfo.picture_number+'</td>';
 				text+='<td class="keep-line">'+info[i].scoreInfo.video_number+'</td>';
 				text+='<td class="keep-line">'+info[i].scoreInfo.creator_name+'</td>';
+				if (info[i].addition)
+				{
+					text+='<td class="keep-line" title="'+info[i].addition+'">'+info[i].attendance+'</td>';
+				}else
+				{
+					text+='<td class="keep-line">'+info[i].attendance+'</td>';
+				}
 				text+='<td class="keep-line"><a href="/manage/student/'+info[i].people.id+'/lesson/'+classId+'" target="_blank">查看</a></td>';
 				text+='</tr>';
 			}
