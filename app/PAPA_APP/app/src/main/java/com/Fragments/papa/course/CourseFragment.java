@@ -113,10 +113,6 @@ public class CourseFragment extends android.support.v4.app.Fragment {
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             courseList.setLayoutManager(layoutManager);
 
-            int spanCount = getContext().getResources().getInteger(R.integer.course_item_spans);
-            int spacing = getContext().getResources().getInteger(R.integer.course_item_width);
-            //courseList.addItemDecoration(new CourseRecyclerAdapter.GridSpacingItemDecoration(spanCount, spacing, true));
-
             getCourses();
         }
         return rootView;

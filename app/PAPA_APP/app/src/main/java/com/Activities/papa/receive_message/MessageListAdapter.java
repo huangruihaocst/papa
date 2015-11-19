@@ -192,6 +192,7 @@ public class MessageListAdapter extends BaseAdapter {
         mapStatusColor.put(Message.Status.Ignored, ContextCompat.getColor(context, R.color.color_message_after_deadline));
 
         title.setTextColor(mapStatusColor.get(message.getStatus()));
+        title.setTextColor(mapStatusColor.get(message.getStatus()));
 
         // content
         TextView content = (TextView)layout.findViewById(R.id.text_view_message_list_view_item_content);

@@ -78,7 +78,8 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
         }
         catch(java.io.IOException e) {
             e.printStackTrace();
-            Log.e(TAG, e.getMessage().toString());
+            if (e.getMessage() != null)
+                Log.e(TAG, e.getMessage());
             throw new PapaHttpClientIOErrorException();
         }
     }
