@@ -179,7 +179,7 @@ public class ExperimentResultFragment extends Fragment {
                 if(bundleHelper.getIdentity() == BundleHelper.Identity.teacher_assistant){
                     AlertDialog.Builder builder = new AlertDialog().Builder(getActivity());
                     builder.setTitle(getString(R.string.select_student));
-                    String students[];
+                    String students[];//TODO:ko ti
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
