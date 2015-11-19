@@ -1,14 +1,15 @@
 <nav class="nav navbar-inverse" role="navigation"
      style="padding-left: 5%;padding-right: 5%;">
-    <div class="row">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="">网络原理实验管理系统</a>
-      </div>
-      <ul class="nav navbar-nav pull-right">
-          <li class="user_msg"><a id="user_name"></a></li>
-          <li class="user_msg">
-            <%= link_to "Sign out",destroy_user_session_path , method: :delete %>
-          </li>
-      </ul>
+  <div class="row">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="<%= manage_main_page_path%>">网络原理实验管理系统</a>
     </div>
+    <ul class="nav navbar-nav pull-right">
+      <li class="user_msg"><a id="user_name" href="<%=edit_user_registration_path%>"><%= current_user ? current_user.name : :未登录 %></a></li>
+      <li class="user_msg">
+        <%= link_to "Sign out",destroy_user_session_path , method: :delete %>
+      </li>
+    </ul>
+  </div>
 </nav>
+
