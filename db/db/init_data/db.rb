@@ -81,8 +81,8 @@ TEACHER_COUNT.times do |i|
                         student_number: "1#{i}",
                         description: '教师简介',
                         is_admin: false, is_teacher: true)
-  teacher.avator = image_files.sample
-  teacher.save
+  #teacher.avator = image_files.sample
+  #teacher.save
   teachers.push(teacher)
 end
 
@@ -152,8 +152,8 @@ STUDENT_COUNT.times do |x|
                      department: identity[:department],
                      description: '123',
                      is_admin: false, is_teacher: false)
-  user.avator = image_files.sample
-  user.save
+  #user.avator = image_files.sample
+  #user.save
 
   students.push(user)
   courses.each do |course|
