@@ -30,9 +30,9 @@ admin0.save
 puts 'admin created...'
 
 # create files
-files = []
-files.push FileResource.create(name: '1.jpg', file_type: FILE_TYPE_IMAGE, path: '/uploads/1.jpg', creator_id: admin0.id)
-files.push FileResource.create(name: '2.jpg', file_type: FILE_TYPE_IMAGE, path: '/uploads/2.jpg', creator_id: admin0.id)
+image_files = []
+image_files.push FileResource.create(name: '1.jpg', file_type: FILE_TYPE_IMAGE, path: '/uploads/1.jpg', creator_id: admin0.id)
+image_files.push FileResource.create(name: '2.jpg', file_type: FILE_TYPE_IMAGE, path: '/uploads/2.jpg', creator_id: admin0.id)
 puts 'files created...'
 
 # create semesters
@@ -60,7 +60,7 @@ COURSE_COUNT.times do
                           start_time: start_time + (2+i).hours,
                           end_time: start_time + (3+i).hours,
                           location: LocationBuilder.build)
-    lesson.attached_files << files.sample
+    lesson.attached_files << image_files.sample
     lesson.save
     i += 1
   end
@@ -77,6 +77,7 @@ TEACHER_COUNT.times do |i|
                         password:'123', password_confirmation:'123',
                         student_number: "1#{i}",
                         description: '教师简介',
+                        avator_id: image_files.sample,
                         is_admin: false, is_teacher: true)
   teachers.push(teacher)
 end
@@ -146,12 +147,13 @@ STUDENT_COUNT.times do |x|
                      class_name: identity[:class],
                      department: identity[:department],
                      description: '123',
+                     avator_id: image_files.sample,
                      is_admin: false, is_teacher: false)
   students.push(user)
   courses.each do |course|
     Participation.create(user_id: user.id, course_id: course.id, role: ROLE_STUDENT)
     course.lessons.each do |lesson|
-      lesson.student_files.create(student_id: user.id, creator_id: user.id, file_resource_id: files.sample.id)
+      lesson.student_files.create(student_id: user.id, creator_id: user.id, file_resource_id: image_files.sample.id)
     end
   end
 end

@@ -112,9 +112,9 @@ class LessonsController < ApplicationController
   # GET /teachers/1/lessons.json
   def from_teacher
     teacher = User.find(params[:teacher_id])
-    lessons = Lesson.none
-    teacher.courses.each do |course|
-      lessons <<= course.lessons
+    @lessons = Lesson.none
+    teacher.teaching_courses.each do |teaching_course|
+      @lessons.merge(teaching_course.course.lessons)
     end
     @lessons
   end
