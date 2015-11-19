@@ -108,10 +108,7 @@ public class CommentActivity extends AppCompatActivity {
                         bundleHelper.getExperimentId(),
                         bundleHelper.getStudentId(),
                         bundleHelper.getToken(),
-                        Float.toString(ratingBar.getRating() * 2
-
-                        +++
-                        ),
+                        Float.toString(ratingBar.getRating() * 2),
                         editText.getText().toString()
                 )
         );
