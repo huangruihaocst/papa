@@ -17,8 +17,8 @@
 2.重构http client，用url connection（net）
 8.签到签出（net）
 9.使用新的数据库接口（net）
-19.CourseActivity不能滑（UI）
-4.H.264的转换（雷）
+//19.CourseActivity不能滑（UI）
+//4.H.264的转换（雷）
 3.使用settings做图片视频头像的缓存（优化）
 21.数据库压力测试
 23.各种崩溃

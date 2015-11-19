@@ -180,6 +180,8 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         internal_error: 其他内部错误, 如果遇到请联系我
     GET    /lessons/1/comments.json  获得某门课程的评价    "lesson_comments": [lesson_comment, ...]     Teacher
         暂时不检查错误
+    POST   /lessons/1/start_sign_up.json      发起签到                                                  Teacher
+        not_in_lesson_time: 当前不是实验课时间
 
     GET   /lessons/1/students/1/comment.json  助教对学生的评价 "student_comment": student_comment
         暂时不检查错误
@@ -187,8 +189,13 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
         暂时不检查错误
     GET    /lessons/1/students.json  某门实验课的到课学生列表 students id                                Teacher
         not_implemented
-    POST   /lessons/1/students/1.json 学生签到                                                          Student
-        not_implemented
+    #!POST   /lessons/1/students/1.json 学生签到                                                          Student
+        resource_not_found: lesson_id或者student_id找不到
+        permission_denied: 当前学生id不匹配
+    ?POST   /lessons/1/attendance.json 学生签到                                                          Student
+        resource_not_found: lesson_id或者student_id找不到
+        permission_denied: 当前学生id不匹配
+        
     GET    /lessons/1/files.json     获得该门实验课的简介文件
         resource_not_found: lesson_id不存在
         invalid_fields: file参数或type参数未指定或者格式不正确

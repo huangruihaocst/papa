@@ -41,19 +41,27 @@ class LessonsController < ApplicationController
             image_file_count += 1 if file.file_resource.type == FILE_TYPE_IMAGE
           end
 
+          student_attendances = @lesson.student_attendences.where(user_id: student.id)
+          attendance = student_attendances.size > 0 ? student_attendances[0] : nil
+
           student_info = {
               id:     student.id,
               name:   student.name,
               email:  student.email,
               phone:  student.phone,
               student_number:   student.student_number,
+              department:   student.department,
+              avator_id:    student.avator_id,
+              description:  student.description,
+              class_name:   student.class_name,
               comment:          comment_hash,
               files_number: {
                   videos:      video_file_count,
                   images:   image_file_count
-              }
+              },
+              attendance: attendance ? attendance.created_at : ''
           }
-          @students.push(student_info)
+          @students.push(student_info: student_info)
         end
       end
     else

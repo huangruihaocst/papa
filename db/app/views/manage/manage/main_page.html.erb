@@ -88,7 +88,7 @@
 			width:200px;
 			height:1px;
 			border:none;
-			border-top:1px solid #222222;
+			border-top:1px solid #BBB;
 		}
 
 		.animation1
@@ -902,18 +902,24 @@
 		
 		function startSignIn(event,i,j,k)  //发起实验的签到
 		{
-		/*	$.post('/lessons/'+info.semesters[i].courses[j].lessons[k].id+'/sign_in.json',{},
+			$.post('/lessons/'+info.semesters[i].courses[j].lessons[k].id+'/start_sign_up.json',{},
 			function(data)
 			{
 				if (data.status=="failed")
 				{
-					alert("发起签到失败");
+					if (data.reason=="not_in_lesson_time")
+					{
+						alert("不在实验课时间内");
+					}else
+					{
+						alert("发起签到失败");
+					}
 				}
 				if (data.status=="successful")
 				{
 					alert("发起签到成功");
 				}
-			});*/
+			});
 			event.stopPropagation();
 		}
 		

@@ -484,6 +484,8 @@ public abstract class PapaDataBaseManager{
 
     public abstract void postAttendance(PostAttendance request)
             throws PapaHttpClientException;
+    public abstract void postAttendanceOut(PostAttendance request)
+            throws PapaHttpClientException;
 
     //////////////////////////////////////////////////////////////////////////
     // 获取聊天(互动交流)信息

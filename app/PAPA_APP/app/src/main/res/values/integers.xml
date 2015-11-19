@@ -6,4 +6,6 @@
     <integer name="min_deadline_warning_in_milliseconds">172800</integer>
     <integer name="max_displayed_content_length">10</integer>
     <integer name="message_pull_service_polling_interval_milliseconds">6000</integer>
+    <integer name="course_item_width">50</integer>
+    <integer name="course_item_spans">2</integer>
 </resources>

@@ -193,6 +193,12 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
     {
         return getHttpReply(url, parameter, new HttpPut());
     }
+//
+//    protected String getHttpReplyByDelete(String url, HashMap<String, Object> parameter)
+//        throws PapaHttpClientException
+//    {
+//        return getHttpReply(url, parameter, new HttpDelete());
+//    }
 
     protected String getHttpReplyByDelete(String url, HashMap<String, Object> parameter)
             throws PapaHttpClientException

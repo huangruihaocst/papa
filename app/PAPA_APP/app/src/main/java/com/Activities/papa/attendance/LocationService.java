@@ -18,7 +18,9 @@ import android.util.Log;
 import com.Activities.papa.R;
 import com.Settings.Settings;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 
@@ -29,23 +31,71 @@ public class LocationService extends Service {
     static final int RetryInterval = 1000;
 
     Settings settings;
+    GeoFence geoFence;
 
     public LocationService() {
     }
 
+    public OnEnterFenceListener enterFenceListener = new OnEnterFenceListener() {
+        @Override
+        public void onEnterFence(GeoFence.Fence fence) {
+            final Settings.Lesson lesson = (Settings.Lesson) fence.additional;
+            // sign in
+            if (lesson != null) {
+                // sign in
+                // TODO should try more times
+                Attendance.getInstance().trySignIn(new OnSignInSuccessListener() {
+                    @Override
+                    public void onSignInSuccess() {
+                        notifySignInSuccessful(lesson.courseName, Calendar.getInstance(), "GPS");
+                    }
+                }, LocationService.this, lesson);
+            }
+        }
+    };
+    public OnLeaveFenceListener leaveFenceListener = new OnLeaveFenceListener() {
+        @Override
+        public void onLeaveFence(GeoFence.Fence fence) {
+            Settings.Lesson lesson = (Settings.Lesson) fence.additional;
+            // sign out
+            if (lesson != null) {
+                // sign in
+                // TODO should try more times
+                Attendance.getInstance().trySignOut(new OnSignOutSuccessListener() {
+                    @Override
+                    public void onSignOutSuccess(Settings.Lesson theLesson) {
+                        notifySignInSuccessful(theLesson.courseName, Calendar.getInstance(), "GPS");
+                    }
+                }, LocationService.this, lesson);
+            }
+        }
+    };
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         String command = intent.getStringExtra(getString(R.string.key_attendance_activity_command));
         if (command != null && command.equals(getString(R.string.key_attendance_activity_start_sign_in))) {
             settings = Settings.begin(this);
-            startTrackingPosition();
+
+            // TODO check whether this throws an exception
+            // initialize geofence
+            stopTrackingLocation();
+            List<Settings.Lesson> lessons = settings.getLessons();
+            List<GeoFence.Fence> fences = new ArrayList<>();
+            for (Settings.Lesson lesson : lessons) {
+                fences.add(new GeoFence.Fence(lesson.latitude, lesson.longitude, MinDistance, lesson));
+            }
+            geoFence = new GeoFence(fences);
+            geoFence.setOnEnterFenceListener(enterFenceListener);
+            geoFence.setOnLeaveFenceListener(leaveFenceListener);
+
+            startTrackingLocation();
         }
 
         return START_NOT_STICKY;
     }
 
-    public boolean startTrackingPosition() {
+    boolean startTrackingLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             try {
@@ -58,7 +108,7 @@ public class LocationService extends Service {
         }
         return false;
     }
-    void stopTrackingPosition() {
+    void stopTrackingLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationManager.removeUpdates(locationListener);
     }
@@ -66,32 +116,12 @@ public class LocationService extends Service {
     // Define a listener that responds to location updates
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
-            Log.w(TAG, "location changed");
-            Log.w(TAG, String.format("Location: %f, %f", location.getLatitude(), location.getLongitude()));
-            Log.w(TAG, String.format("Location accuracy: %f", location.getAccuracy()));
-
-            // TODO 1
-            // get center location and min distance from server
-
-            // get local lesson
-            final Settings.Lesson lesson = settings.getLessonByLocation(
+            Log.w(TAG, String.format("Location: %f, %f, Accuracy: %f",
                     location.getLatitude(),
                     location.getLongitude(),
-                    MinDistance + location.getAccuracy());
+                    location.getAccuracy()));
 
-            if (lesson != null) {
-                // sign in
-                Attendance.getInstance().trySignIn(new OnSignInSuccessListener() {
-                    @Override
-                    public void onSignInSuccess() {
-                        stopTrackingPosition();
-                        notifySignInSuccessful(lesson.courseName, Calendar.getInstance(), "GPS");
-                    }
-                }, LocationService.this, lesson.lessonName);
-            }
-            else {
-                Log.w(TAG, "Out of classroom");
-            }
+            geoFence.flushLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy());
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
