@@ -177,7 +177,7 @@ public class ExperimentResultFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(bundleHelper.getIdentity() == BundleHelper.Identity.teacher_assistant){
-                    AlertDialog.Builder builder = new AlertDialog().Builder(getActivity());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getString(R.string.select_student));
                     String students[];//TODO:ko ti
                 }else{

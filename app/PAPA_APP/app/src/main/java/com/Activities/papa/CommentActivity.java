@@ -134,7 +134,7 @@ public class CommentActivity extends AppCompatActivity {
     private void afterGetComment(PapaDataBaseManager.GetStudentCommentsReply rlt)
     {
         ratingBar.setRating(Float.parseFloat(rlt.score) * 0.5f);
-        ratingBar.setStepSize(Float.parseFloat(rlt.score) * 0.5f);
+        Toast.makeText(getApplicationContext(), getString(R.string.hint_rating_bar_error_on_low_API_level), Toast.LENGTH_LONG).show();
 
         editText.setText(rlt.comments);
     }
