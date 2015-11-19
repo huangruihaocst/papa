@@ -67,6 +67,8 @@ OptionParser.new do |opts|
     options[:velocity] = v
   end
 
+  
+
 end.parse!
 
 p options
