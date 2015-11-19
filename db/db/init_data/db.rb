@@ -33,6 +33,8 @@ puts 'admin created...'
 image_files = []
 image_files.push FileResource.create(name: '1.jpg', file_type: FILE_TYPE_IMAGE, path: '/uploads/1.jpg', creator_id: admin0.id)
 image_files.push FileResource.create(name: '2.jpg', file_type: FILE_TYPE_IMAGE, path: '/uploads/2.jpg', creator_id: admin0.id)
+video_files = []
+video_files.push FileResource.create(name: 'sample.mp4', file_type: FILE_TYPE_VIDEO, path: '/uploads/sample.mp4', creator_id: admin0.id)
 puts 'files created...'
 
 # create semesters
@@ -154,6 +156,7 @@ STUDENT_COUNT.times do |x|
     Participation.create(user_id: user.id, course_id: course.id, role: ROLE_STUDENT)
     course.lessons.each do |lesson|
       lesson.student_files.create(student_id: user.id, creator_id: user.id, file_resource_id: image_files.sample.id)
+      lesson.student_files.create(student_id: user.id, creator_id: user.id, file_resource_id: video_files.sample.id)
     end
   end
 end
