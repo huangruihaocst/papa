@@ -6,10 +6,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +20,11 @@ import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.logging.SimpleFormatter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +44,7 @@ public class ExperimentInformationFragment extends Fragment {
     TextView textView_course_start_time;
     TextView textView_course_end_time;
     TextView textView_place;
+    TextView textView_download;
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,6 +83,14 @@ public class ExperimentInformationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_experiment_information, container, false);
+        ScrollView scrollView = (ScrollView)rootView.findViewById(R.id.scrollView);
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
         return rootView;
     }
 
@@ -130,12 +147,25 @@ public class ExperimentInformationFragment extends Fragment {
         textView_course_name = (TextView)rootView.findViewById(R.id.sender);
         textView_course_start_time = (TextView)rootView.findViewById(R.id.recipient);
         textView_course_end_time = (TextView)rootView.findViewById(R.id.course_end_time);
-        textView_place = (TextView)rootView.findViewById(R.id.title);
+        textView_place = (TextView)rootView.findViewById(R.id.place);
+        textView_download = (TextView)rootView.findViewById(R.id.download);
 
         textView_course_name.setText(rlt.name);
-        textView_course_start_time.setText(rlt.startTime.toString());
-        textView_course_end_time.setText(rlt.endTime.toString());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+        simpleDateFormat.setTimeZone(rlt.startTime.getTimeZone());
+        String time = (simpleDateFormat.format(rlt.startTime.getTime()));
+        textView_course_start_time.setText(time);
+        time = (simpleDateFormat.format(rlt.endTime.getTime()));
+        textView_course_end_time.setText(time);
         textView_place.setText(rlt.location);
+        textView_download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "123", Toast.LENGTH_LONG).show();
+                textView_download.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+                //TODO:click here to download
+            }
+        });
     }
 
     // ☆愛-same-CRIER　愛撫-commit-LIAR
