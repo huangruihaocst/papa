@@ -213,6 +213,10 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     }
 
     @Override
+    public void postAttendanceOut(PostAttendance request) throws PapaHttpClientException {
+    }
+
+    @Override
     public void putUsrInfo(PutUsrInfoRequest request) throws PapaHttpClientException {
 
     }

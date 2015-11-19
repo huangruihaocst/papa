@@ -56,7 +56,7 @@ public class Attendance {
      * If we can sign in, notify the user and
      *  send sign in request and set a flag so that we won't sign in too many times.
      */
-    public synchronized void trySignIn(final OnSignInSuccessListener listener, final Context context, final String lessonId) {
+    public synchronized void trySignIn(final OnSignInSuccessListener listener, final Context context, final Settings.Lesson lesson) {
         new Thread() {
             @Override
             public void run() {
@@ -67,7 +67,7 @@ public class Attendance {
                         Log.w(TAG, "sign in");
 
                         // sign in and set signed in flags
-                        signIn(listener, settings, context, lessonId);
+                        signIn(listener, settings, context, lesson.lessonId);
                     }
                     else if (haveSignedIn(settings)) {
                         // already signed in
@@ -84,8 +84,17 @@ public class Attendance {
         }.start();
     }
 
-    public synchronized void trySignOut(OnSignOutSuccessListener listener, Context context, String lessonId) {
-        // TODO send sign out requests
+    public synchronized void trySignOut(final OnSignOutSuccessListener listener, final Context context, final Settings.Lesson lesson) {
+        new Thread() {
+            @Override
+            public void run() {
+                for (int i = 0; i < TryTimes; ++i) {
+                    Settings settings = Settings.begin(context);
+                    // sign in and set signed in flags
+                    signOut(listener, settings, context, lesson);
+                }
+            }
+        }.start();
     }
 
     // TODO: should use lesson time
@@ -136,6 +145,25 @@ public class Attendance {
                     // these should move into network success callback
                     listener.onSignInSuccess();
                     setNextLessonTime(settings, context);
+                } catch (PapaHttpClientException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+    }
+
+    private void signOut(final OnSignOutSuccessListener listener, final Settings settings, final Context context, final Settings.Lesson lesson) {
+        new AsyncTask<Object, Exception, Object>() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                try {
+                    papaDataBaseManager.postAttendanceOut(new PapaDataBaseManager.PostAttendance(
+                            settings.getToken(),
+                            settings.getUserId(),
+                            lesson.lessonId, 0, 0, true));
+                    // these should move into network success callback
+                    listener.onSignOutSuccess(lesson);
                 } catch (PapaHttpClientException e) {
                     e.printStackTrace();
                 }

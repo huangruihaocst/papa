@@ -49,7 +49,7 @@ public class LocationService extends Service {
                     public void onSignInSuccess() {
                         notifySignInSuccessful(lesson.courseName, Calendar.getInstance(), "GPS");
                     }
-                }, LocationService.this, lesson.lessonName);
+                }, LocationService.this, lesson);
             }
         }
     };
@@ -66,7 +66,7 @@ public class LocationService extends Service {
                     public void onSignOutSuccess(Settings.Lesson theLesson) {
                         notifySignInSuccessful(theLesson.courseName, Calendar.getInstance(), "GPS");
                     }
-                }, LocationService.this, lesson.lessonName);
+                }, LocationService.this, lesson);
             }
         }
     };
