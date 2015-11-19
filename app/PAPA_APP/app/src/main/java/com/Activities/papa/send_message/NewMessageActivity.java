@@ -79,7 +79,11 @@ public class NewMessageActivity extends AppCompatActivity {
         edit_recipient.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                recipient_id = teacherInfo.get(position).getTeacherId();
+                for(int i = 0;i < teacherInfo.size();i ++){
+                    if(teacherInfo.get(i).getTeacherName().equals(parent.getItemAtPosition(position))){
+                        recipient_id = teacherInfo.get(i).getTeacherId();
+                    }
+                }
             }
         });
 
