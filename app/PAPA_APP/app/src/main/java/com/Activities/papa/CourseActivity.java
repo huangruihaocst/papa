@@ -36,6 +36,7 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Fragments.papa.course.CourseFragment;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,6 @@ public class CourseActivity extends AppCompatActivity
 
         teachersInfo = null;
 
-
         tabLayout = (TabLayout) findViewById(R.id.semester_tab);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         viewPager = (ViewPager)findViewById(R.id.course_viewpager);
@@ -115,7 +115,6 @@ public class CourseActivity extends AppCompatActivity
         //  viewPager are initialized before used in getSemester()
         getSemester();
         getTeachers();
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -258,13 +257,6 @@ public class CourseActivity extends AppCompatActivity
             data.putParcelable(key_to_help, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
-        } else if (id == R.id.nav_settings) {
-            Intent intent = new Intent(CourseActivity.this, SettingsActivity.class);
-            Bundle data = new Bundle();
-            String key_to_settings = getString(R.string.key_to_settings);
-            data.putParcelable(key_to_settings, bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
         } else if (id == R.id.nav_notification) {
             Intent intent = new Intent(CourseActivity.this, MessageActivity.class);
             Bundle data = new Bundle();
@@ -272,7 +264,7 @@ public class CourseActivity extends AppCompatActivity
             data.putParcelable(key_to_notification, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
-        }else if(id == R.id.nav_send_message){
+        } else if(id == R.id.nav_send_message){
             Intent intent = new Intent(CourseActivity.this, SentListActivity.class);
             Bundle data = new Bundle();
             String key_to_send_message = getString(R.string.key_to_sent_list);
@@ -337,18 +329,15 @@ public class CourseActivity extends AppCompatActivity
     }
 
     void setSemester(List<Map.Entry<Integer, String>> h) {
-        for(Iterator i = h.iterator(); i.hasNext();)
-        {
+        for(Iterator i = h.iterator(); i.hasNext();) {
             tabLayout.addTab(tabLayout.newTab().setText(
                     ((Map.Entry<Integer, String>) (i.next())).getValue())
             );
         }
         viewPager.setAdapter(
                 new CourseViewPagerAdapter(
-                        getSupportFragmentManager(), h.size(), h, id, token
-                )
+                        getSupportFragmentManager(), h.size(), h, id, token)
         );
-        viewPager.setOffscreenPageLimit(h.size());
     }
 
 
@@ -418,7 +407,7 @@ public class CourseActivity extends AppCompatActivity
         int id;
         String token;
         List<Map.Entry<Integer, String>> lst;
-
+        List<Fragment> fragment_cache;
 
         public CourseViewPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -433,11 +422,21 @@ public class CourseActivity extends AppCompatActivity
             this.id = id;
             this.token = token;
             this.lst = lst;
+            this.fragment_cache = new ArrayList<>();
+            for (int i = 0; i < lst.size(); ++i) {
+                fragment_cache.add(null);
+            }
         }
 
         @Override
         public Fragment getItem(int position) {
-            return CourseFragment.newInstance(id, lst.get(position).getKey(), token, bundleHelper);
+            Log.e("CourseActivity", "getItem");
+            Fragment cachedFragment = fragment_cache.get(position);
+            if (cachedFragment == null) {
+                cachedFragment = CourseFragment.newInstance(id, lst.get(position).getKey(), token, bundleHelper);
+                fragment_cache.set(position, cachedFragment);
+            }
+            return cachedFragment;
         }
 
         @Override

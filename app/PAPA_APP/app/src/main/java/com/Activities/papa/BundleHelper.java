@@ -1,11 +1,9 @@
 package com.Activities.papa;
 
-import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerJiaDe;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
 import java.util.ArrayList;
@@ -32,6 +30,7 @@ public class BundleHelper implements Parcelable{
     private String token;
     private String sender_name;
     private ArrayList<PapaDataBaseManager.TeacherInfo> teachers_info;
+    private PapaDataBaseManager.ChatMessage chat_message;
 //    private JSONObject jsonObject;
 //    private String getter_string;
 
@@ -50,6 +49,7 @@ public class BundleHelper implements Parcelable{
 //        jsonObject = new JSONObject();
 //        getter_string = jsonObject.toString();
         teachers_info = new ArrayList<>();
+        chat_message = new PapaDataBaseManager.ChatMessage("","","","","","");
     }
 
 
@@ -89,6 +89,9 @@ public class BundleHelper implements Parcelable{
     public ArrayList<PapaDataBaseManager.TeacherInfo> getTeachersInfo(){
         return teachers_info;
     }
+    public PapaDataBaseManager.ChatMessage getChatMessage(){
+        return chat_message;
+    }
 
     public void setUsername(String username){
         this.username = username;
@@ -126,6 +129,9 @@ public class BundleHelper implements Parcelable{
     public void setTeachersInfo(List<PapaDataBaseManager.TeacherInfo> teachers_info){
         this.teachers_info = (ArrayList<PapaDataBaseManager.TeacherInfo>)teachers_info;
     }
+    public void setChatMessage(PapaDataBaseManager.ChatMessage chat_message){
+        this.chat_message = chat_message;
+    }
 
     public int describeContents() {
         return 0;
@@ -144,6 +150,7 @@ public class BundleHelper implements Parcelable{
         out.writeString(token);
         out.writeString(sender_name);
         out.writeTypedList(teachers_info);
+        out.writeParcelable(chat_message,flags);
     }
 
     public static final Parcelable.Creator<BundleHelper> CREATOR = new Parcelable.Creator<BundleHelper>() {
@@ -181,6 +188,7 @@ public class BundleHelper implements Parcelable{
         sender_name = in.readString();
         teachers_info = new ArrayList<>();
         in.readTypedList(teachers_info, PapaDataBaseManager.TeacherInfo.CREATOR);
+        chat_message = in.readParcelable(PapaDataBaseManager.ChatMessage.class.getClassLoader());
     }
 
     static public PapaDataBaseManager getPapaDataBaseManager()
@@ -189,5 +197,6 @@ public class BundleHelper implements Parcelable{
 
         return new PapaDataBaseManagerReal();
     }
+
 }
 
