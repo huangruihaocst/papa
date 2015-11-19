@@ -195,7 +195,7 @@ public class ExperimentResultFragment extends Fragment {
 
                             fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to commit the video
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
-                            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
+                            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0.5); // set the video image quality to high
 
                             // start the Video Capture Intent
                             startActivityForResult(intent, CAPTURE_VIDEO);
@@ -300,7 +300,7 @@ public class ExperimentResultFragment extends Fragment {
                                             bundleHelper.getToken(),
                                             file,
                                             file.getName(),
-                                            "picture"
+                                            "image"
                                     )
                             );
                         }else{
@@ -336,7 +336,7 @@ public class ExperimentResultFragment extends Fragment {
                                         bundleHelper.getToken(),
                                         file,
                                         file.getName(),
-                                        "picture"
+                                        "image"
                                 )
                         );
                     }
