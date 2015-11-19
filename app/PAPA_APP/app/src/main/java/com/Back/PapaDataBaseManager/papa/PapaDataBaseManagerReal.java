@@ -341,7 +341,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                     "/students/" + request.personId + ".json",
                     h
             );
-            reply_2 = reply_2.getJSONObject("student");
+            reply_2 = reply_2.getJSONObject("student_info");
 
             try {
                 reply_1 = dbAccess.getDataBaseReplyAsJson(
@@ -373,6 +373,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             );
         }
         catch(org.json.JSONException e) {
+            e.printStackTrace();
             throw new PapaDataBaseJsonError();
         }
     }

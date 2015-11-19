@@ -14,7 +14,9 @@ import java.util.Iterator;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.annotation.NotThreadSafe;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -35,6 +37,24 @@ import org.apache.http.entity.mime.content.StringBody;
 public class PapaApacheHttpClient extends PapaAbstractHttpClient
 {
     final static String TAG = "PapaApacheHttpClient";
+
+    @NotThreadSafe
+    class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
+        public static final String METHOD_NAME = "DELETE";
+        public String getMethod() { return METHOD_NAME; }
+
+        public HttpDeleteWithBody(final String uri) {
+            super();
+            setURI(URI.create(uri));
+        }
+
+        public HttpDeleteWithBody(final URI uri) {
+            super();
+            setURI(uri);
+        }
+
+        public HttpDeleteWithBody() { super(); }
+    }
 
     // 执行 get / post 方法
     private static String executeRequest(HttpRequestBase request)
@@ -173,6 +193,14 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
     {
         return getHttpReply(url, parameter, new HttpPut());
     }
+
+    protected String getHttpReplyByDelete(String url, HashMap<String, Object> parameter)
+            throws PapaHttpClientException
+    {
+        return getHttpReply(url, parameter, new HttpDeleteWithBody());
+    }
+
+
 
     // 单件
     private static PapaApacheHttpClient instance = null;
