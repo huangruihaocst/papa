@@ -99,8 +99,8 @@ public class CourseFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        if(rootView == null){
-            rootView  = inflater.inflate(R.layout.fragment_course, container, false);
+        if(rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_course, container, false);
 
             // Set RecyclerView style: Would this be better ?
             // +--------+
@@ -118,9 +118,6 @@ public class CourseFragment extends android.support.v4.app.Fragment {
             //courseList.addItemDecoration(new CourseRecyclerAdapter.GridSpacingItemDecoration(spanCount, spacing, true));
 
             getCourses();
-        }
-        else {
-            ((ViewGroup)rootView.getParent()).removeView(rootView);
         }
         return rootView;
     }
@@ -163,6 +160,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
+
 
     private void getCourses() {
         new AsyncTask<Object[], Exception, Object[]>() {
