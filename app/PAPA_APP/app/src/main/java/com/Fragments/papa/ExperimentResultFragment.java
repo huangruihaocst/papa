@@ -177,7 +177,9 @@ public class ExperimentResultFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(bundleHelper.getIdentity() == BundleHelper.Identity.teacher_assistant){
-
+                    AlertDialog.Builder builder = new AlertDialog().Builder(getActivity());
+                    builder.setTitle(getString(R.string.select_student));
+                    String students[];
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
