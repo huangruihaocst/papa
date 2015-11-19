@@ -49,6 +49,28 @@
   </div>
   </form>
 </div>
+
+<div class="modal fade" id="modal-add-one-ass" tabindex="-1" role="dialog" aria-hidden="true">
+  <form id="addAssForm" action="/courses/<%=@course_id%>/assistants.json" method="post" onsubmit="return addOne()">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button class="close" type="button" data-dismiss="modal">×</button>
+          <h3>添加助教</h3>
+        </div>
+        <div class="modal-body">
+          <label>姓名<input name="json[name]" type="text"></label>
+          <label>邮箱<input name="json[email]" type="text"></label>
+          <label>电话<input name="json[phone]" type="text"></label>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" type="submit">提交</button>
+          <button class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </form>
+  </div>
 <div class="container">
   <div class="row">
     <div class="col-md-2"></div>
@@ -59,10 +81,12 @@
       <div class="col-md-6">
         <p></p>
         <p>目前已经有<span id="student-number">0</span>人在学这门课!</p>
+        <p>本课程目前一共有<span id="assistant-number">0</span>名助教!</p>
         <button class="btn btn-sm" id="readButton">批量添加学生</button>
         <button class="btn btn-sm" id="addOneButton">添加单个学生</button>
-
+        <button class="btn btn-sm" id="addAssButton">添加助教</button>
       </div>
+      <h4>学生名单</h4>
       <table class="table table-striped table-hover table-bordered">
         <thead>
         <tr>
@@ -75,9 +99,21 @@
         </tr>
         </thead>
         <tbody id = "student-list">
-
         </tbody>
       </table>
+      <h4>助教名单</h4>
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+          <th>姓名</th>
+          <th>邮箱</th>
+          <th>电话</th>
+        </tr>
+        </thead>
+        <tbody id = "assistant-list">
+        </tbody>
+      </table>
+
     </div>
     <div class="col-md-2" style="text-align: left"><button onclick='deleteStudent()'
                                   class='btn btn-danger btn-operator' style="display: none">删除学生</button>
@@ -103,8 +139,10 @@
     (function(){
         $("#readButton").click(function(){$("#modal-add").modal('show');});
         $("#addOneButton").click(function(){$("#modal-add-one").modal('show');});
+        $("#addAssButton").click(function(){$("#modal-add-one-ass").modal('show');});
+
         $.get("/courses/<%=@course_id%>/students.json",{},function(data){
-            console.log(data);
+            //console.log(data);
             str = "";
             for(var i in data.students)
             {
@@ -117,11 +155,25 @@
             }
             $("#student-list").html(str);
             $("#student-number").html(data.students.length);
-            $(".detect-tr").hover(function(){
-                activeSid = $(this).attr("sid");
-                var h=$(this).position().top;
-                $(".btn-operator").css({position:"absolute",top:h}).show();
-            },function(){});
+        });
+        $(".detect-tr").hover(function(){
+            activeSid = $(this).attr("sid");
+            var h=$(this).position().top;
+            $(".btn-operator").css({position:"absolute",top:h}).show();
+        },function(){});
+        //----------------------------
+        $.get("/courses/<%=@course_id%>/assistants.json",{},function(data){
+            console.log(data);
+            str = "";
+            for(var i in data.assistants)
+            {
+                str += "<tr class='' sid="+data.assistants[i].id+">"
+                        +"<td>"+ data.assistants[i].name.toString()+"</td>"
+                        +"<td>"+ data.assistants[i].email.toString()+"</td>"
+                        +"<td>"+ data.assistants[i].phone.toString()+"</td></tr>";
+            }
+            $("#assistant-list").html(str);
+            $("#assistant-number").html(data.assistants.length);
         });
     })();
         function parse_csv(){
