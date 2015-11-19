@@ -113,7 +113,7 @@
           $("#video-list").html(str);
           str= "";
           for(var i in data)
-          if(data[i].type == "picture")
+          if(data[i].type == "image")
           {
               str+="<span class='label label-default' style='margin-right: 10px;font-size: 16px'>"+data[i].name+"</span>";
               str+="<button class='btn btn-sm btn-primary' onclick=changePicture("+i.toString()+
