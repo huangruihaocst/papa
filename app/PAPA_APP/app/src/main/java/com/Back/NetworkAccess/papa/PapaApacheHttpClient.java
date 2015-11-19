@@ -15,6 +15,7 @@ import java.util.Iterator;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -173,6 +174,12 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
     {
         return getHttpReply(url, parameter, new HttpPut());
     }
+//
+//    protected String getHttpReplyByDelete(String url, HashMap<String, Object> parameter)
+//        throws PapaHttpClientException
+//    {
+//        return getHttpReply(url, parameter, new HttpDelete());
+//    }
 
     // 单件
     private static PapaApacheHttpClient instance = null;

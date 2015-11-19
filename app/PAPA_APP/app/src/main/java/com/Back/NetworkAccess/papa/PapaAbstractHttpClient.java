@@ -8,7 +8,7 @@ public abstract class PapaAbstractHttpClient{
     protected abstract String getHttpReplyByPut(String url, HashMap<String, Object> parameter) throws PapaHttpClientException;
 
     public enum HttpMethod {
-        get, post, put
+        get, post, put, delete
     }
 
     public String getHttpReply(HttpMethod method, String url, HashMap<String, Object> parameter)

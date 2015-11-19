@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.Activities.papa.R;
@@ -49,30 +50,42 @@ public class Attendance {
         activity.startService(intent);
     }
 
+    static final int TryTimes = 10;
     /**
      * Try to sign in.
      * If we can sign in, notify the user and
      *  send sign in request and set a flag so that we won't sign in too many times.
      */
-    public synchronized void trySignIn(OnSignInSuccessListener listener, Context context, String lessonId) {
-        Settings settings = Settings.begin(context);
-        if (canSignIn(settings)) {
-            // send sign in request
-            Log.w(TAG, "can sign in");
+    public synchronized void trySignIn(final OnSignInSuccessListener listener, final Context context, final String lessonId) {
+        new Thread() {
+            @Override
+            public void run() {
+                for (int i = 0; i < TryTimes; ++i) {
+                    Settings settings = Settings.begin(context);
+                    if (canSignIn(settings)) {
+                        // send sign in request
+                        Log.w(TAG, "sign in");
 
-            // sign in and set signed in flags
-            signIn(listener, settings, context, lessonId);
-        }
-        else if (haveSignedIn(settings)) {
-            // already signed in
-            // do nothing
-            Log.w(TAG, "already signed in");
-        }
-        else {
-            // missed a lesson
-            Log.w(TAG, "missed a lesson");
-            setNextLessonTime(settings, context);
-        }
+                        // sign in and set signed in flags
+                        signIn(listener, settings, context, lessonId);
+                    }
+                    else if (haveSignedIn(settings)) {
+                        // already signed in
+                        // do nothing
+                        Log.w(TAG, "already signed in");
+                    }
+                    else {
+                        // missed a lesson
+                        Log.w(TAG, "missed a lesson");
+                        setNextLessonTime(settings, context);
+                    }
+                }
+            }
+        }.start();
+    }
+
+    public synchronized void trySignOut(OnSignOutSuccessListener listener, Context context, String lessonId) {
+        // TODO send sign out requests
     }
 
     // TODO: should use lesson time
