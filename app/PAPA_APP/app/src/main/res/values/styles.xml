@@ -28,5 +28,14 @@
         <item name="android:background">@drawable/edit_text_selector</item>
         <item name="android:textColorHint">#CCCCCC</item>
     </style>
+    <style name="send_name" parent="DetailContent">
+        <item name="android:textSize">30sp</item>
+    </style>
+    <style name="send_overview" parent="TextAppearance.AppCompat.Widget.TextView.SpinnerItem">
+        <item name="android:textSize">12sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:maxLength">@integer/send_overview_max_length</item>
+        <item name="android:textColor">#AAAAAA</item>
+    </style>
 
 </resources>
