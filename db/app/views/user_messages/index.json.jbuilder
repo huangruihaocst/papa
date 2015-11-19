@@ -8,5 +8,6 @@ json.user_messages do
     json.extract! user_message, :title
     json.extract! user_message, :content
     json.extract! user_message, :status
+    json.extract! user_message, :created_at
   end
 end

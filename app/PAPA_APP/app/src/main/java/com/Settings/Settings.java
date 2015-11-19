@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * User settings for Activities and Services in com.Activities.papa
@@ -33,6 +34,7 @@ public class Settings implements Serializable {
 
         this.messageList = new MessageList();
 
+        // TODO: should delete this
         this.lessons.add(new Lesson("1", 0, 0, "1", "中国通史"));
     }
 
@@ -69,7 +71,7 @@ public class Settings implements Serializable {
     String      token;
     String      userId;
 
-    public static class Lesson implements Serializable {
+    public static class Lesson implements Serializable, Cloneable {
         public Lesson(String lessonId, double latitude, double longitude, String courseId, String courseName) {
             this.lessonId = lessonId;
             this.latitude = latitude;
@@ -128,16 +130,10 @@ public class Settings implements Serializable {
                                               String courseId, String courseName) {
         lessons.add(new Lesson(lessonId, latitude, longitude, courseId, courseName));
     }
-    public synchronized Lesson      getLessonByLocation(double latitude, double longitude, double radius) {
-        // TODO check real location
-        for (int i = 0; i < lessons.size(); ++i) {
-            double dis = distanceToCenter(latitude, longitude, lessons.get(i).latitude, lessons.get(i).longitude);
-            if (true) {
-            //if (dis < radius) {
-                return lessons.get(i);
-            }
-        }
-        return null;
+    @SuppressWarnings("unchecked")
+    public synchronized List<Lesson> getLessons() {
+        // I can make sure the lessons are cloneable
+        return (List<Lesson>) lessons.clone();
     }
 
     /**

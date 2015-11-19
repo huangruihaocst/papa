@@ -484,12 +484,13 @@ public abstract class PapaDataBaseManager{
 
     public abstract void postAttendance(PostAttendance request)
             throws PapaHttpClientException;
+    public abstract void postAttendanceOut(PostAttendance request)
+            throws PapaHttpClientException;
 
     //////////////////////////////////////////////////////////////////////////
     // 获取聊天(互动交流)信息
 
-    static public class ChatMessage
-    {
+    static public class ChatMessage implements Parcelable{
         public String id;
         public String senderId;
         public String senderName;
@@ -508,6 +509,46 @@ public abstract class PapaDataBaseManager{
             this.content = content;
             this.status = status;
 
+        }
+
+        @Override
+        public int describeContents(){
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags){
+            dest.writeString(id);
+            dest.writeString(senderId);
+            dest.writeString(senderName);
+            dest.writeString(title);
+            dest.writeString(content);
+            dest.writeString(status);
+        }
+
+        public static final Parcelable.Creator<ChatMessage> CREATOR
+                = new Parcelable.Creator<ChatMessage>() {
+            public ChatMessage createFromParcel(Parcel in) {
+                return new ChatMessage(in);
+            }
+
+            public ChatMessage[] newArray(int size) {
+                return new ChatMessage[size];
+            }
+        };
+
+        private ChatMessage(Parcel in) {
+            id = in.readString();
+            senderId = in.readString();
+            senderName = in.readString();
+            title = in.readString();
+            content = in.readString();
+            status = in.readString();
+        }
+
+        @Override
+        public String toString(){
+            return id + " " + senderId + " " + senderName + " " + title + " " + content + " " + status;
         }
     }
 

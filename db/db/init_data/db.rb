@@ -24,15 +24,15 @@ name_reader = NameReader.new
 # create default admin and default avator
 admin0 = User.create(name:'admin', phone:'0123', email:'a@b.c', password:'123', password_confirmation:'123',
                      student_number: '1230', description: '123', is_admin: true, avator_id: 1)
-default_avator = FileResource.create(path: '/uploads/default_avator.jpg', name: 'default_avator.jpg', file_type: 'jpg', creator_id: admin0.id)
+default_avator = FileResource.create(path: '/uploads/default_avator.jpg', name: 'default_avator.jpg', file_type: FILE_TYPE_IMAGE, creator_id: admin0.id)
 admin0.avator_id = default_avator.id
 admin0.save
 puts 'admin created...'
 
 # create files
 files = []
-files.push FileResource.create(name: '1.jpg', file_type: 'jpg', path: '/uploads/1.jpg', creator_id: admin0.id)
-files.push FileResource.create(name: '2.jpg', file_type: 'jpg', path: '/uploads/2.jpg', creator_id: admin0.id)
+files.push FileResource.create(name: '1.jpg', file_type: FILE_TYPE_IMAGE, path: '/uploads/1.jpg', creator_id: admin0.id)
+files.push FileResource.create(name: '2.jpg', file_type: FILE_TYPE_IMAGE, path: '/uploads/2.jpg', creator_id: admin0.id)
 puts 'files created...'
 
 # create semesters
@@ -60,7 +60,7 @@ COURSE_COUNT.times do
                           start_time: start_time + (2+i).hours,
                           end_time: start_time + (3+i).hours,
                           location: LocationBuilder.build)
-    lesson.attached_files << files[Random.rand(files.size)]
+    lesson.attached_files << files.sample
     lesson.save
     i += 1
   end
@@ -150,6 +150,9 @@ STUDENT_COUNT.times do |x|
   students.push(user)
   courses.each do |course|
     Participation.create(user_id: user.id, course_id: course.id, role: ROLE_STUDENT)
+    course.lessons.each do |lesson|
+      lesson.student_files.create(student_id: user.id, creator_id: user.id, file_resource_id: files.sample.id)
+    end
   end
 end
 puts 'students created...'

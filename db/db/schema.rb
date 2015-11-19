@@ -99,6 +99,9 @@ ActiveRecord::Schema.define(version: 20151106135008) do
     t.string  "role",      default: "student"
   end
 
+  add_index "participations", ["course_id"], name: "index_participations_on_course_id"
+  add_index "participations", ["user_id"], name: "index_participations_on_user_id"
+
   create_table "semesters", force: :cascade do |t|
     t.string "name"
   end

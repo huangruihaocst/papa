@@ -122,7 +122,7 @@ public class NewMessageActivity extends AppCompatActivity {
         //use recipient for address
 
         new Task(this).execute(new PapaDataBaseManager.PostChatMessageRequest(
-                bundleHelper.getToken(), title, body, "3"));
+                bundleHelper.getToken(), title, body, recipient_id));
     }
 
     class Task extends AsyncTask<

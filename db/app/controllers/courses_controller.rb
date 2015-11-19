@@ -11,8 +11,16 @@ class CoursesController < ApplicationController
       case
         when params[:semester_id]
           if params[:my_courses]
-            user = check_login
-            @courses = user.courses.where(semester_id: params[:semester_id])
+            @user = check_login
+            @student_courses = Course.none
+            @assistant_courses = Course.none
+            @user.participations.each do |participation|
+              if participation.role == ROLE_STUDENT
+                @student_courses <<= participation.course
+              elsif participation.role == ROLE_ASSISTANT
+                @assistant_courses <<= participation.course
+              end
+            end
           else
             @courses = Semester.find(params[:semester_id]).courses
           end

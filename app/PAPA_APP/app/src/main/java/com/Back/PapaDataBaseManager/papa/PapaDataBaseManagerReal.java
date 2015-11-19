@@ -341,7 +341,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                     "/students/" + request.personId + ".json",
                     h
             );
-            reply_2 = reply_2.getJSONObject("student");
+            reply_2 = reply_2.getJSONObject("student_info");
 
             try {
                 reply_1 = dbAccess.getDataBaseReplyAsJson(
@@ -373,6 +373,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             );
         }
         catch(org.json.JSONException e) {
+            e.printStackTrace();
             throw new PapaDataBaseJsonError();
         }
     }
@@ -558,11 +559,45 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         // Edited by Alex Wang 2015-11-13. Change URL to predefined URL.
         dbAccess.getDataBaseReplyAsJson(
                 PapaAbstractHttpClient.HttpMethod.post,
-                "/lessons/" + request.lessonId +
-                        "/students/" + request.personId + ".json",
+                "/lessons/" + request.lessonId + "/attendance.json",
                 h
         );
     }
+
+    @Override
+    public void postAttendanceOut(PostAttendance request) throws PapaHttpClientException {
+        HashMap<String, Object> h = new HashMap<>();
+        h.put("token", request.token);
+//        h.put("attendance[longitude]", String.valueOf(request.longitude));
+//        h.put("attendance[latitude]", String.valueOf(request.latitude));
+//        h.put("attendance[locationServiceAvailable]",
+//                String.valueOf(request.locationServiceAvailable));
+
+        // Edited by Alex Wang 2015-11-13. Change URL to predefined URL.
+        // TODO delete method not implemented
+        dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.delete,
+                "/lessons/" + request.lessonId + "/attendance.json",
+                h
+        );
+    }
+
+//    @Override
+//    public void postAttendanceOut(PostAttendance request) throws PapaHttpClientException {
+//        HashMap<String, Object> h = new HashMap<>();
+//        h.put("token", request.token);
+////        h.put("attendance[longitude]", String.valueOf(request.longitude));
+////        h.put("attendance[latitude]", String.valueOf(request.latitude));
+////        h.put("attendance[locationServiceAvailable]",
+////                String.valueOf(request.locationServiceAvailable));
+//
+//        // Edited by Alex Wang 2015-11-13. Change URL to predefined URL.
+//        dbAccess.getDataBaseReplyAsJson(
+//                PapaAbstractHttpClient.HttpMethod.delete,
+//                "/lessons/" + request.lessonId + "/attendance.json",
+//                h
+//        );
+//    }
 
     @Override
     public GetChatMessageReply getChatMessages(GetChatMessageRequest request) throws PapaHttpClientException {

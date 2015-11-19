@@ -64,6 +64,7 @@
     <string name="select_all">全选</string>
     <string name="reverse_select">反选</string>
     <string name="send_message">发信</string>
+    <string name="send_message_list">发信列表</string>
     <string name="new_message">创建新信息</string>
     <string name="title">标题</string>
     <string name="body">正文</string>
@@ -85,6 +86,9 @@
     <string name="course_start_time">开始时间</string>
     <string name="course_end_time">结束时间</string>
     <string name="course_place">上课地点</string>
+    <string name="sender">发件人</string>
+    <string name="sent_time">发信时间</string>
+    <string name="message_from">来自%s的信息</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -93,6 +97,7 @@
     <string name="action_search">搜索</string>
     <string name="action_edit_grades">编辑成绩</string>
     <string name="not_graded">未评分喵</string>
+    <string name="no_information">没有数据的说</string>
     <string name="action_student_information">学生信息</string>
     <string name="action_generate_QR_code">生成二维码</string>
     <string name="action_make_comments">评价该课程</string>

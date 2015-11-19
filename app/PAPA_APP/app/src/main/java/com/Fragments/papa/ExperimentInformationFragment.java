@@ -127,10 +127,10 @@ public class ExperimentInformationFragment extends Fragment {
 
     // A-Z 想像High-de-Siehst YOU das?
     void set(PapaDataBaseManager.GetLessonInfoReply rlt) {
-        textView_course_name = (TextView)rootView.findViewById(R.id.course_name);
-        textView_course_start_time = (TextView)rootView.findViewById(R.id.course_start_time);
+        textView_course_name = (TextView)rootView.findViewById(R.id.sender);
+        textView_course_start_time = (TextView)rootView.findViewById(R.id.recipient);
         textView_course_end_time = (TextView)rootView.findViewById(R.id.course_end_time);
-        textView_place = (TextView)rootView.findViewById(R.id.course_place);
+        textView_place = (TextView)rootView.findViewById(R.id.title);
 
         textView_course_name.setText(rlt.name);
         textView_course_start_time.setText(rlt.startTime);
