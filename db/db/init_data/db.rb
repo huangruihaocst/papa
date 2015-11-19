@@ -80,8 +80,9 @@ TEACHER_COUNT.times do |i|
                         password:'123', password_confirmation:'123',
                         student_number: "1#{i}",
                         description: '教师简介',
-                        avator_id: image_files.sample,
                         is_admin: false, is_teacher: true)
+  teacher.avator = image_files.sample
+  teacher.save
   teachers.push(teacher)
 end
 
@@ -150,8 +151,10 @@ STUDENT_COUNT.times do |x|
                      class_name: identity[:class],
                      department: identity[:department],
                      description: '123',
-                     avator_id: image_files.sample,
                      is_admin: false, is_teacher: false)
+  user.avator = image_files.sample
+  user.save
+
   students.push(user)
   courses.each do |course|
     Participation.create(user_id: user.id, course_id: course.id, role: ROLE_STUDENT)
