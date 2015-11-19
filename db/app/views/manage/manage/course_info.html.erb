@@ -4,7 +4,7 @@
 		.content
 		{
 			width:100%;
-			height:400px;
+			height:500px;
 		}
 		.texts
 		{
@@ -14,7 +14,7 @@
 		}
 		.chart
 		{
-			height:295px;
+			height:395px;
 			float:left;
 		}
 		#title
@@ -101,6 +101,8 @@
 							if (data.status=="successful")
 							{
 								lessons[n].name=data.lesson.name;
+								if (lessons[n].name.length>7)
+								lessons[n].name=lessons[n].name.substring(0,7)+'...';
 							}
 						}});
 						if (!p)

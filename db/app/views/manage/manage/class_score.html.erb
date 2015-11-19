@@ -244,6 +244,12 @@
 		function showInfo()    //显示实验成绩
 		{
 			var i,j,text="",text2;
+			if (m==0)
+			{
+				text='<h4 style="text-align:center">本实验暂无学生</h4>';
+				$("#content")[0].innerHTML=text;
+				return;
+			}
 			text+='<h3>实验成绩</h3>';
 			text+='<table id="table1" class="table table-bordered table-striped table-hover">';
 			text+='<thread><tr><th colspan="'+(n1+n2-1)+'">'+classInfo+'</th>';
