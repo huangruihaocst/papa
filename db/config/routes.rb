@@ -40,6 +40,7 @@ Rails.application.routes.draw do
     resources :comments, controller: 'lesson_comments', only: [:index, :create]
     post 'attendance' => 'attendance#create'
     delete 'attendance' => 'attendance#destroy'
+    get 'attendance' => 'attendance#index'
 
     # for comment and score
     resources :students, only: [:show] do
