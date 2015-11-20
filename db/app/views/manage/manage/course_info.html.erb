@@ -114,13 +114,12 @@
 							if (data.status=="failed")
 							{
 								score[i]=0;
-								lessons[i].attend=0;
+								p=false;
 							}
 							if (data.status=="successful")
 							{
 								var j;
 								data=data.lesson_comments;
-								lessons[i].attend=data.length;
 								for (j=0;j<data.length;++j)
 								{
 									score[i]+=parseInt(data[j].score);
@@ -133,6 +132,22 @@
 								{
 									score[i]=0;
 								}
+							}
+						}});
+						if (!p)
+						{
+							continue;
+						}
+						$.ajax({url:"/lessons/"+classId+"/attendance.json",data:{},type:"GET",async:false,success:function(data)
+						{
+							if (data.status=="failed")
+							{
+								lessons[i].attend=0;
+							}
+							if (data.status=="successful")
+							{
+								data=data.students;
+								lessons[i].attend=data.length;
 							}
 						}});
 						++n;
