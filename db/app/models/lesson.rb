@@ -5,7 +5,7 @@ class Lesson < ActiveRecord::Base
   validates :end_time,    presence: true
   validates :location,    presence: true
 
-  belongs_to :course
+  belongs_to :course, dependent: :destroy
   has_many :lesson_files
   has_many :attached_files, through: :lesson_files, source: :file_resource
   has_many :lesson_comments

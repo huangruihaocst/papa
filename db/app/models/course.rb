@@ -1,7 +1,7 @@
 class Course < ActiveRecord::Base
   validates :name, presence: true
 
-  belongs_to :semester
+  belongs_to :semester, dependent: :destroy
 
   has_many :lessons
 

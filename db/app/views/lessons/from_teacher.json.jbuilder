@@ -1,7 +1,6 @@
 json.status STATUS_SUCCESS
 json.lessons do
   json.array! @lessons do |lesson|
-    puts lesson.inspect
     json.extract!   lesson, :id
     json.extract!   lesson, :name
     json.extract!   lesson, :start_time

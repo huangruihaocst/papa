@@ -1,6 +1,6 @@
 class Message < ActiveRecord::Base
-  belongs_to :creator, class_name: 'User'
-  belongs_to :course
+  belongs_to :creator, class_name: 'User', dependent: :destroy
+  belongs_to :course, dependent: :destroy
 
   # string type, string title, datetime deadline, text content, timestamps
 
