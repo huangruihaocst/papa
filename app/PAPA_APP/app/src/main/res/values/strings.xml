@@ -99,6 +99,7 @@
         <item>没错</item>
         <item>没啥事</item>
     </string-array>
+    <string name="time_format">%1$s月%2$s日</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

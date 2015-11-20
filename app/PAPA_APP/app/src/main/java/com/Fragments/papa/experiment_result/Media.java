@@ -23,10 +23,7 @@ public class Media {
         this.type = type;
         id = "-1";
     }
-
-
-    Media()
-    {
+    public Media(){
         id = "-1";
     }
 }
