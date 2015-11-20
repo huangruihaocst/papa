@@ -262,4 +262,9 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public void deleteFile(DeleteFileRequest request) throws PapaHttpClientException {
 
     }
+
+    @Override
+    public GetFilesReply getFiles(GetFilesRequest request) throws PapaHttpClientException {
+        return null;
+    }
 }

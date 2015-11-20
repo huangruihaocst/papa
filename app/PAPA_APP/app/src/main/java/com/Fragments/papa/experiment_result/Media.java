@@ -17,16 +17,20 @@ public class Media {
     public String path;
     public Type type;//1 for image, 0 for video
 
-    public Media(Bitmap bitmap, String path, Type type){
+    private void init(Bitmap bitmap, String path, Type type, String id)
+    {
         this.bitmap = bitmap;
         this.path = path;
         this.type = type;
-        id = "-1";
+        this.id = id;
     }
 
+    public Media(Bitmap bitmap, String path, Type type){
+        init(bitmap, path, type, "-1");
+    }
 
-    Media()
+    public Media(Bitmap bitmap, String path, Type type, String id)
     {
-        id = "-1";
+        init(bitmap, path, type, id);
     }
 }

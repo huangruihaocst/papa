@@ -35,6 +35,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 // 赤より紅い夢！！！！！
@@ -118,6 +119,17 @@ public class ExperimentResultFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mediaArrayList = new ArrayList<>();
+
+        new GetFilesTask().execute(
+                new PapaDataBaseManager.GetFilesRequest(
+                        bundleHelper.getToken(),
+                        Integer.toString(bundleHelper.getExperimentId()),
+                        Integer.toString(
+                                bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                        bundleHelper.getStudentId() : student_id),
+                        getContext().getFilesDir()
+                )
+        );
     }
 
     @Override
@@ -132,11 +144,13 @@ public class ExperimentResultFragment extends Fragment {
         imageGridAdapter = new ImageGridAdapter(getContext(), mediaArrayList);
         gridView_image.setAdapter(imageGridAdapter);
 
+        /*
         for(int i = 0;i < imageId.length;i ++){
             mediaArrayList.add(new Media(BitmapFactory.decodeResource(getResources(), imageId[i]),
                     "",Media.Type.image));
 
         }
+        */
 
         gridView_image.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -542,7 +556,7 @@ public class ExperimentResultFragment extends Fragment {
         }
 
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             // UI
         }
 
@@ -569,10 +583,59 @@ public class ExperimentResultFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean rlt) {
             // UI
-
             if(rlt)
                 Toast.makeText(getContext(), "上传好了喵", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    class GetFilesTask extends AsyncTask
+            <PapaDataBaseManager.GetFilesRequest,
+                    Exception, PapaDataBaseManager.GetFilesReply>
+    {
+        public GetFilesTask() {
+        }
+
+        @Override
+        protected void onPreExecute(){
+            // UI
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetFilesReply doInBackground
+                (PapaDataBaseManager.GetFilesRequest... params)
+        {
+            // 在后台
+            try {
+                return bundleHelper.getPapaDataBaseManager().getFiles(params[0]);
+            } catch(PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetFilesReply rlt) {
+            // UI
+
+            if(rlt != null)
+                showFiles(rlt.mediaList);
+        }
+    }
+
+    private void showFiles(List<Media> mediaList)
+    {
+        Log.i(TAG, "cnt = " + mediaList.size() + "");
+        for(int i = 0; i < mediaList.size(); i++)
+        {
+            mediaArrayList.add(mediaList.get(i));
+        }
+        imageGridAdapter.notifyDataSetChanged();
     }
 
     public static String getPathFromCameraData(Intent data, Context context) {
