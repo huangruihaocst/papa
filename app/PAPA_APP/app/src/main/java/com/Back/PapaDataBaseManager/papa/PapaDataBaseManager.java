@@ -526,6 +526,40 @@ public abstract class PapaDataBaseManager{
             throws PapaHttpClientException;
 
 
+    /////////////////////////////////////////////////////////////////////
+    // 获取文件列表
+
+    static public class GetFilesRequest
+    {
+        public String token;
+        public String lessonId;
+        public String personId;
+        public File file;
+
+        public GetFilesRequest(String token, String lessonId, String personId, File file)
+        {
+            this.token = token;
+            this.lessonId = lessonId;
+            this.personId = personId;
+            this.file = file;
+        }
+    }
+
+    static public class GetFilesReply
+    {
+        public List<Media> mediaList;
+
+        GetFilesReply()
+        {
+            mediaList = new ArrayList<Media>();
+        }
+    }
+
+    public abstract GetFilesReply getFiles(GetFilesRequest request)
+            throws PapaHttpClientException;
+
+
+
     //////////////////////////////////////////////////////////////////////////
     // 学生课程评价
 

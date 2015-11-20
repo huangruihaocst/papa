@@ -4,6 +4,8 @@ json.user_messages do
     json.extract! user_message, :id
     json.creator_id user_message.sender.id
     json.creator_name user_message.sender.name
+    json.sender_id user_message.sender.id
+    json.sender_name user_message.sender.name
     json.extract! user_message, :title
     json.extract! user_message, :content
     json.extract! user_message, :status
