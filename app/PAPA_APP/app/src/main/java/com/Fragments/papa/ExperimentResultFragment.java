@@ -196,19 +196,7 @@ public class ExperimentResultFragment extends Fragment {
                             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
 
                             // start the Video Capture Intent
-//                            startActivityForResult(intent, CAPTURE_VIDEO);
-                            MediaRecorder recorder = new MediaRecorder();
-                            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-                            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-                            recorder.setOutputFile(getContext().getExternalCacheDir().getAbsolutePath() + "123.mp4");
-                            try {
-                                recorder.prepare();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            recorder.start();   // Recording is now started
-
+                            startActivityForResult(intent, CAPTURE_VIDEO);
                         }else if(which == 2){//gallery
                             Intent intent = new Intent(Intent.ACTION_PICK);
                             intent.setType("*/*");
