@@ -132,8 +132,6 @@ public class CourseActivity extends AppCompatActivity
         }
         linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
 
-        getHeaderView(navigationView);
-
         // Added by Alex Wang 2015-11-13. Move attendance service to course activity.
         Attendance.startSignInByGPS(this, token);
     }
@@ -173,6 +171,10 @@ public class CourseActivity extends AppCompatActivity
         bindService(new Intent(this, MessagePullService.class),
                 connection,
                 Context.BIND_AUTO_CREATE);
+
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        getHeaderView(navigationView);
     }
 
     /**
