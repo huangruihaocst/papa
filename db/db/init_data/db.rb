@@ -172,7 +172,7 @@ students.each do |student|
   student.courses.each do |course|
     course.lessons.each do |lesson|
       course_teachers = course.teachers
-      teacher = course_teachers[Random.rand(course_teachers.size)]
+      teacher = course_teachers.sample
       lesson.lesson_comments.create(score: Random.rand(0..10),
                                     content: '这个课程真好呀!',
                                     creator_id: student.id)

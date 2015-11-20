@@ -136,7 +136,7 @@ public class CourseActivity extends AppCompatActivity
         getHeaderView(navigationView);
 
         // Added by Alex Wang 2015-11-13. Move attendance service to course activity.
-        Attendance.startSignInByGPS(this);
+        Attendance.startSignInByGPS(this, token);
     }
 
 
