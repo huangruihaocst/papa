@@ -14,12 +14,16 @@ OptionParser.new do |opts|
   opts.on('-p', '--port PORT', 'Port') do |v|
     port = v
   end
+  opts.on('-v', '--verbose', 'Verbose Mode') do |v|
+    verbose = true
+  end
 end.parse!
 puts "host: #{host}, port: #{port}"
 
 REQUEST_COUNT_PER_LOOP = 100
 
 # initialize with token and user id
+verbose = false
 response = `curl -s "http://#{host}:#{port}/users/sign_in.json" -F "user[login]=41" -F "user[password]=123"`
 json = JSON.parse(response)
 id = json['id']
@@ -37,9 +41,9 @@ flow = 0
 time = TickTock.time do 
   REQUEST_COUNT_PER_LOOP.times do
     url = "#{REQUEST_POOL.sample}&token=#{token}"
-    puts "URL: #{url}"
+    puts "URL: #{url}" if verbose
     response = `curl -s #{url}`
-    puts "response: #{response}"
+    puts "response: #{response}" if verbose
     flow += response.size
   end
 end

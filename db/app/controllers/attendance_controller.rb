@@ -6,9 +6,8 @@ class AttendanceController < ApplicationController
     attendance = StudentAttendence.where(lesson_id: lesson.id)
     @students = User.none
     attendance.each do |att|
-      @students <<= att.user
+      @students <<= att.user unless @students.include?(att.user)
     end
-
   end
 
   # POST /lessons/1/attendance.json
