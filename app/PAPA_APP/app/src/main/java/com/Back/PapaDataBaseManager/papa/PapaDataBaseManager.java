@@ -463,7 +463,7 @@ public abstract class PapaDataBaseManager{
     //////////////////////////////////////////////////////////////////////////
     // 学生课程评价
 
-    static public class PostFileOnLessonAsStudentRequest
+    static public class PostFileOnLessonRequest
     {
         public int lessonId;
         public int personId;
@@ -473,7 +473,7 @@ public abstract class PapaDataBaseManager{
         public String fileName;
         public File file;
 
-        public PostFileOnLessonAsStudentRequest(
+        public PostFileOnLessonRequest(
                 int lessonId, int personId, String token, File file, String fileName, String fileType)
         {
             this.lessonId = lessonId;
@@ -486,7 +486,7 @@ public abstract class PapaDataBaseManager{
         }
     }
 
-    public abstract void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request)
+    public abstract void postFileOnLesson(PostFileOnLessonRequest request)
             throws PapaHttpClientException;
 
     //////////////////////////////////////////////////////////////////////////
