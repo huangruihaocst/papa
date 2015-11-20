@@ -36,6 +36,26 @@ import java.util.Set;
 
 public class PapaDataBaseManagerReal extends PapaDataBaseManager
 {
+    private Calendar getCalenderByString(String str)
+            throws PapaHttpClientException
+    {
+        final SimpleDateFormat sdf = new SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH);
+
+        Calendar ans = Calendar.getInstance();
+        try
+        {
+            ans.setTime(sdf.parse(str));
+        }
+        catch(java.text.ParseException e)
+        {
+            e.printStackTrace();
+            Log.e(tag, "Wrong date time format");
+            throw new PapaDataBaseJsonError();
+        }
+        return ans;
+    }
+
     final static String tag = "PapaDataBaseManagerReal";
 
     PapaDataBaseAccess dbAccess;
@@ -424,27 +444,10 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             );
             reply = reply.getJSONObject("lesson");
 
-
-            SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH);
-
-            Calendar startTime = Calendar.getInstance();
-            Calendar endTime = Calendar.getInstance();
-            try
-            {
-                startTime.setTime(sdf.parse(reply.getString("start_time")));
-                endTime.setTime(sdf.parse(reply.getString("end_time")));
-            }
-            catch(java.text.ParseException e)
-            {
-                e.printStackTrace();
-                Log.e(tag, "Wrong date time format");
-                throw new PapaDataBaseJsonError();
-            }
             return new GetLessonInfoReply(
                     reply.getString("name"),
-                    startTime,
-                    endTime,
+                    getCalenderByString(reply.getString("start_time")),
+                    getCalenderByString(reply.getString("end_time")),
                     reply.getString("location")
             );
         }
@@ -500,11 +503,6 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
             reply = reply.getJSONObject("message");
 
-            Calendar cal = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH);
-            cal.setTime(sdf.parse(reply.getString("deadline")));
-
 
             JSONObject reply_creator = dbAccess.getDataBaseReplyAsJson(
                     PapaAbstractHttpClient.HttpMethod.get,
@@ -527,7 +525,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                     reply.getString("title"),
                     reply.getString("message_type"),
                     reply.getString("content"),
-                    cal,
+                    getCalenderByString(reply.getString("deadline")),
                     reply_course.getString("name"),
                     reply_creator.getString("name")
             );
@@ -536,11 +534,6 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         }
         catch(org.json.JSONException e) {
             e.printStackTrace();
-            throw new PapaDataBaseJsonError();
-        }
-        catch(java.text.ParseException e) {
-            e.printStackTrace();
-            Log.e(tag, "Wrong date time format");
             throw new PapaDataBaseJsonError();
         }
     }
@@ -630,7 +623,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
         // Edited by Alex Wang 2015-11-13. Change URL to predefined URL.
         dbAccess.getDataBaseReplyAsJson(
-                PapaAbstractHttpClient.HttpMethod.post,
+                PapaAbstractHttpClient.HttpMethod.delete,
                 "/lessons/" + request.lessonId + "/attendance.json",
                 h
         );
@@ -672,14 +665,15 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             {
                 JSONObject object = array.getJSONObject(i);
 
+
                 lst.add(new ChatMessage(
                         object.getString("id"),
                         object.getString("sender_id"),
                         object.getString("sender_name"),
                         object.getString("title"),
                         object.getString("content"),
-                        object.getString("status")
-
+                        object.getString("status"),
+                        getCalenderByString(object.getString("created_at"))
                 ));
 
                 Log.i(tag, "get chat msg where sender_name = " +  object.getString("sender_name"));

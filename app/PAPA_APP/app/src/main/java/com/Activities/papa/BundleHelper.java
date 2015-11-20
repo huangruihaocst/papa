@@ -7,6 +7,7 @@ import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManagerReal;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -49,7 +50,8 @@ public class BundleHelper implements Parcelable{
 //        jsonObject = new JSONObject();
 //        getter_string = jsonObject.toString();
         teachers_info = new ArrayList<>();
-        chat_message = new PapaDataBaseManager.ChatMessage("","","","","","");
+        chat_message = new PapaDataBaseManager.ChatMessage(
+                "","","","","","", Calendar.getInstance());
     }
 
 
