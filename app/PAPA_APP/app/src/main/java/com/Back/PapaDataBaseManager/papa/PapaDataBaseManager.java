@@ -12,6 +12,7 @@ import android.os.Parcelable;
 
 import com.Activities.papa.receive_message.Message;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Fragments.papa.experiment_result.Media;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -130,11 +131,13 @@ public abstract class PapaDataBaseManager{
     {
         public int id;
         public String token;
+        public File file;
 
-        public UsrInfoRequest(int id, String token)
+        public UsrInfoRequest(int id, String token, File file)
         {
             this.id = id;
             this.token = token;
+            this.file = file;
         }
     }
 
@@ -143,12 +146,14 @@ public abstract class PapaDataBaseManager{
         public String usrName;
         public String mail;
         public String phone;
+        public File avatar;
 
-        public UsrInfo(String usrName, String mail, String phone)
+        public UsrInfo(String usrName, String mail, String phone, File avatar)
         {
             this.usrName = usrName;
             this.mail = mail;
             this.phone = phone;
+            this.avatar = avatar;
         }
     }
 
@@ -424,12 +429,42 @@ public abstract class PapaDataBaseManager{
     public abstract void postStudentComments(PostStudentCommentsRequest request)
             throws PapaHttpClientException;
 
+    static public class GetStudentCommentsRequest
+    {
+        public int lessonId;
+        public int personId;
+        public String token;
+
+        public GetStudentCommentsRequest(int lessonId, int personId, String token)
+        {
+            this.lessonId = lessonId;
+            this.personId = personId;
+            this.token = token;
+        }
+    }
+
+
+    static public class GetStudentCommentsReply
+    {
+        public String comments;
+        public String score;
+
+        public GetStudentCommentsReply(String score, String comments)
+        {
+            this.comments = comments;
+            this.score = score;
+        }
+    }
+
+    public abstract GetStudentCommentsReply getStudentComments(GetStudentCommentsRequest request)
+            throws PapaHttpClientException;
+
     // 赤い　紅い　アカイ
 
     //////////////////////////////////////////////////////////////////////////
-    // 学生课程评价
+    // 学生文件
 
-    static public class PostFileOnLessonAsStudentRequest
+    static public class PostFileOnLessonRequest
     {
         public int lessonId;
         public int personId;
@@ -439,10 +474,106 @@ public abstract class PapaDataBaseManager{
         public String fileName;
         public File file;
 
-        public PostFileOnLessonAsStudentRequest(
-                int lessonId, int personId, String token, File file, String fileName, String fileType)
+        public Media media;
+
+        public PostFileOnLessonRequest(
+                int lessonId, int personId, String token, File file, String fileName,
+                String fileType, Media media)
         {
             this.lessonId = lessonId;
+            this.personId = personId;
+            this.token = token;
+
+            this.fileType = fileType;
+            this.fileName = fileName;
+            this.file = file;
+            this.media = media;
+        }
+    }
+
+    static public class PostFileOnLessonReply
+    {
+        public String id;
+
+        public PostFileOnLessonReply(String id)
+        {
+            this.id = id;
+        }
+    }
+
+    public abstract PostFileOnLessonReply postFileOnLesson(PostFileOnLessonRequest request)
+            throws PapaHttpClientException;
+
+
+    static public class DeleteFileRequest
+    {
+        public String token;
+        public String fileId;
+        public String lessonId;
+        public String personId;
+
+        public DeleteFileRequest(String token, String lessonId, String personId, String fileId)
+        {
+            this.token = token;
+            this.lessonId = lessonId;
+            this.personId = personId;
+            this.fileId = fileId;
+        }
+    }
+
+    public abstract void deleteFile(DeleteFileRequest request)
+            throws PapaHttpClientException;
+
+
+    /////////////////////////////////////////////////////////////////////
+    // 获取文件列表
+
+    static public class GetFilesRequest
+    {
+        public String token;
+        public String lessonId;
+        public String personId;
+        public File file;
+
+        public GetFilesRequest(String token, String lessonId, String personId, File file)
+        {
+            this.token = token;
+            this.lessonId = lessonId;
+            this.personId = personId;
+            this.file = file;
+        }
+    }
+
+    static public class GetFilesReply
+    {
+        public List<Media> mediaList;
+
+        GetFilesReply()
+        {
+            mediaList = new ArrayList<Media>();
+        }
+    }
+
+    public abstract GetFilesReply getFiles(GetFilesRequest request)
+            throws PapaHttpClientException;
+
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // 学生课程评价
+
+    static public class PostAvatarRequest
+    {
+        public String token;
+        public int personId;
+
+        public String fileType;
+        public String fileName;
+        public File file;
+
+        public PostAvatarRequest(
+                int personId, String token, File file, String fileName, String fileType)
+        {
             this.personId = personId;
             this.token = token;
 
@@ -452,8 +583,9 @@ public abstract class PapaDataBaseManager{
         }
     }
 
-    public abstract void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request)
+    public abstract void postAvatar(PostAvatarRequest request)
             throws PapaHttpClientException;
+
 
 
     //////////////////////////////////////////////////////////////////////////
@@ -485,7 +617,7 @@ public abstract class PapaDataBaseManager{
 
     public abstract void postAttendance(PostAttendance request)
             throws PapaHttpClientException;
-    public abstract void postAttendanceOut(PostAttendance request)
+    public abstract void deleteAttendance(PostAttendance request)
             throws PapaHttpClientException;
 
     //////////////////////////////////////////////////////////////////////////
@@ -498,10 +630,11 @@ public abstract class PapaDataBaseManager{
         public String title;
         public String content;
         public String status;
+        public Calendar created_at;
 
         public ChatMessage(
                 String id, String senderId, String senderName,
-                String title, String content, String status)
+                String title, String content, String status, Calendar created_at)
         {
             this.id = id;
             this.senderId = senderId;
@@ -509,6 +642,7 @@ public abstract class PapaDataBaseManager{
             this.title = title;
             this.content = content;
             this.status = status;
+            this.created_at = created_at;
 
         }
 
@@ -545,11 +679,6 @@ public abstract class PapaDataBaseManager{
             title = in.readString();
             content = in.readString();
             status = in.readString();
-        }
-
-        @Override
-        public String toString(){
-            return id + " " + senderId + " " + senderName + " " + title + " " + content + " " + status;
         }
     }
 

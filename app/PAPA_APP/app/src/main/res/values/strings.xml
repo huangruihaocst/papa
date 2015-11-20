@@ -52,8 +52,10 @@
     <string name="experiment_result">实验结果</string>
     <string name="log_out">注销</string>
     <string name="confirm_log_out">真的要注销吗(·8·)</string>
-    <string name="confirm_log_out_yes">真的</string>
-    <string name="confirm_log_out_no">假的</string>
+    <string-array name="answer_confirm_log_out">
+        <item>真的</item>
+        <item>假的</item>
+    </string-array>
     <string name="no_comment">暂时还没有评价(·8·)</string>
     <string name="hint_comment">轻点星来评分>_&lt;</string>
     <string name="notification_clear_all">通知已清空</string>
@@ -90,6 +92,14 @@
     <string name="sent_time">发信时间</string>
     <string name="message_from">来自%s的信息</string>
     <string name="click_here_to_download"><u>点击此处下载课程文件</u></string>
+    <string name="select_student">请选择学生</string>
+    <string name="hint_rating_bar_error_on_low_API_level">在一些低安卓版本上星星的显示可能有问题</string>
+    <string name="alert_delete_media">真的要删除吗</string>
+    <string-array name="answer_alert_media">
+        <item>没错</item>
+        <item>没啥事</item>
+    </string-array>
+    <string name="time_format">%1$s月%2$s日</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

@@ -1,5 +1,7 @@
 package com.Activities.papa.attendance;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +23,7 @@ public class GeoFence {
     // 0: Confirm out of the fence.
     // Greater than 1: Times we are in the fence.
     // 1: Confirm in the fence.
-    static final int CONFIRMATION_COUNT = 10;
+    static final int CONFIRMATION_COUNT = 2;
     static final int IN_FENCE = 1;
     static final int OUT_OF_FENCE = 0;
     static final int INITIAL_CHECK_OUT_OF_FENCE = -1;
@@ -69,16 +71,16 @@ public class GeoFence {
         for (Fence fence : fences.keySet()) {
             int status = fences.get(fence);
             if (checkInFence(latitude, longitude, accuracy, fence)) {
+                Log.w("GeoFence", "In fence");
                 if (status <= OUT_OF_FENCE) {
-                    fences.put(fence, INITIAL_CHECK_OUT_OF_FENCE);
+                    fences.put(fence, INITIAL_CHECK_IN_FENCE);
                 }
                 else {
-                    int count = status - 1;
-                    if (count > CONFIRMATION_COUNT) {
+                    if (status >= CONFIRMATION_COUNT) {
                         enterFenceListener.onEnterFence(fence);
                         fences.put(fence, IN_FENCE);
                     }
-                    else if (count > 0) {
+                    else if (status > 0) {
                         fences.put(fence, addInCount(status));
                     }
                     else {
@@ -87,13 +89,14 @@ public class GeoFence {
                 }
             }
             else {
+                Log.w("GeoFence", "Out of fence");
                 // not in fence
-                if (status >= IN_FENCE) {
+                if (status > IN_FENCE) {
                     fences.put(fence, INITIAL_CHECK_OUT_OF_FENCE);
                 }
                 else {
                     int count = -status;
-                    if (count > CONFIRMATION_COUNT) {
+                    if (count >= CONFIRMATION_COUNT) {
                         // check out of fence many times. confirm leave
                         leaveFenceListener.onLeaveFence(fence);
                         fences.put(fence, OUT_OF_FENCE);
@@ -107,7 +110,6 @@ public class GeoFence {
                     }
                 }
             }
-
         }
     }
 
@@ -126,9 +128,15 @@ public class GeoFence {
      */
     static double distance(double latA, double longA, double latB, double longB) {
         // R*arccos[sin(wA)sin(wB)+cos(wA)cos(wB)*cos(jA-jB)]
+
+        double latARad = latA / 180 * Math.PI;
+        double longARad = longA / 180 * Math.PI;
+        double latBRad = latB / 180 * Math.PI;
+        double longBRad = longB / 180 * Math.PI;
+
         return EarthRadius * Math.acos(
-                Math.sin(longA) * Math.sin(latB) +
-                        Math.cos(longA) * Math.cos(latB) * Math.cos(latA - longB)
+                Math.sin(latARad) * Math.sin(latBRad) +
+                        Math.cos(latARad) * Math.cos(latBRad) * Math.cos(longARad - longBRad)
         );
     }
 }

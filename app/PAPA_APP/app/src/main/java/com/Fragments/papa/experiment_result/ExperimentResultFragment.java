@@ -1,4 +1,4 @@
-package com.Fragments.papa;
+package com.Fragments.papa.experiment_result;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -24,9 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
@@ -34,17 +31,11 @@ import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 // 赤より紅い夢！！！！！
@@ -88,7 +79,6 @@ public class ExperimentResultFragment extends Fragment {
 //    private ImageView selectedImage;
 //    private VideoView selectedVideo;
     GridView gridView_image;
-    byte[] bytes;
 
     private int[] imageId = {
             R.drawable.ic_file_upload_black_24dp,
@@ -96,10 +86,11 @@ public class ExperimentResultFragment extends Fragment {
             R.drawable.ic_info_black_24dp,
             R.drawable.ic_notifications_black_24dp,
     };
-    private ArrayList<Bitmap> bitmapArrayList;
-    private ArrayList<String> pathArrayList;
-    private ArrayList<Integer> isImageArrayList;//1 for image, 0 for video
-    private ImageAdapter imageAdapter;
+    private ArrayList<Media> mediaArrayList;
+    private ImageGridAdapter imageGridAdapter;
+
+    String students[];
+    int student_id;
 
     /**
      * Use this factory method to create a new instance of
@@ -127,9 +118,18 @@ public class ExperimentResultFragment extends Fragment {
             bundleHelper = getArguments().getParcelable(ARG_BUNDLE_HELPER);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        bitmapArrayList = new ArrayList<>();
-        pathArrayList = new ArrayList<>();
-        isImageArrayList = new ArrayList<>();
+        mediaArrayList = new ArrayList<>();
+
+        new GetFilesTask().execute(
+                new PapaDataBaseManager.GetFilesRequest(
+                        bundleHelper.getToken(),
+                        Integer.toString(bundleHelper.getExperimentId()),
+                        Integer.toString(
+                                bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                        bundleHelper.getStudentId() : student_id),
+                        getContext().getFilesDir()
+                )
+        );
     }
 
     @Override
@@ -141,27 +141,65 @@ public class ExperimentResultFragment extends Fragment {
 //        selectedImage = (ImageView)rootView.findViewById(R.id.selected_image);
 //        selectedVideo = (VideoView)rootView.findViewById(R.id.selected_video);
         gridView_image = (GridView)rootView.findViewById(R.id.gridView_image);
-        imageAdapter = new ImageAdapter(getContext());
-        gridView_image.setAdapter(imageAdapter);
+        imageGridAdapter = new ImageGridAdapter(getContext(), mediaArrayList);
+        gridView_image.setAdapter(imageGridAdapter);
 
+        /*
         for(int i = 0;i < imageId.length;i ++){
-            bitmapArrayList.add(BitmapFactory.decodeResource(getResources(), imageId[i]));
-            pathArrayList.add("");
-            isImageArrayList.add(1);
+            mediaArrayList.add(new Media(BitmapFactory.decodeResource(getResources(), imageId[i]),
+                    "",Media.Type.image));
+
         }
+        */
 
         gridView_image.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
-                File file = new File(pathArrayList.get(position));
-                if (isImageArrayList.get(position) == 1) {
+                File file = new File(mediaArrayList.get(position).path);
+                if (mediaArrayList.get(position).type == Media.Type.image) {
                     intent.setDataAndType(Uri.fromFile(file), "image/*");
                 } else {
                     intent.setDataAndType(Uri.fromFile(file), "video/*");
                 }
                 startActivity(intent);
+            }
+        });
+
+        gridView_image.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(getString(R.string.alert_delete_media));
+                builder.setPositiveButton(getResources().getStringArray(R.array.answer_alert_media)[0], new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Media media = mediaArrayList.get(position);
+
+                        mediaArrayList.remove(position);
+                        imageGridAdapter.notifyDataSetChanged();
+
+                        new DeleteFileTask(getContext()).execute(
+                                new PapaDataBaseManager.DeleteFileRequest(
+                                        bundleHelper.getToken(),
+                                        Integer.toString(bundleHelper.getExperimentId()),
+                                        Integer.toString(
+                                                bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                                bundleHelper.getStudentId() : student_id),
+                                        media.id
+                                )
+                        );
+                    }
+                });
+                builder.setNegativeButton(getResources().getStringArray(R.array.answer_alert_media)[1], new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                return true;
             }
         });
 
@@ -177,7 +215,10 @@ public class ExperimentResultFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(bundleHelper.getIdentity() == BundleHelper.Identity.teacher_assistant){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(getString(R.string.select_student));
 
+                    getStudents();
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
@@ -205,6 +246,7 @@ public class ExperimentResultFragment extends Fragment {
                                 intent.setType("*/*");
                                 startActivityForResult(intent, IMAGE_PICKER_SELECT);
                             }
+                            selectType(which);
                         }
                     });
                     AlertDialog alertDialog = builder.create();
@@ -251,7 +293,7 @@ public class ExperimentResultFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri);
     }
 
     @Override
@@ -269,19 +311,20 @@ public class ExperimentResultFragment extends Fragment {
                         if(mimeType.contains("video")){
                             Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
                                     (path,MediaStore.Video.Thumbnails.MINI_KIND);
-                            bitmapArrayList.add(thumbnail);
-                            pathArrayList.add(path);
-                            isImageArrayList.add(0);
-                            imageAdapter.notifyDataSetChanged();
+                            Media media = new Media(thumbnail, path, Media.Type.video);
+                            mediaArrayList.add(media);
+                            imageGridAdapter.notifyDataSetChanged();
 
-                            new UploadTask(getContext()).execute(
-                                    new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                            new UploadTask().execute(
+                                    new PapaDataBaseManager.PostFileOnLessonRequest(
                                             bundleHelper.getExperimentId(),
-                                            bundleHelper.getStudentId(),
+                                            bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                                    bundleHelper.getStudentId() : student_id,
                                             bundleHelper.getToken(),
                                             file,
                                             file.getName(),
-                                            "video"
+                                            "video",
+                                            media
                                     )
                             );
 
@@ -289,22 +332,24 @@ public class ExperimentResultFragment extends Fragment {
                             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
                             bitmap = ThumbnailUtils.extractThumbnail(bitmap,200,200);
-                            bitmapArrayList.add(bitmap);
-                            pathArrayList.add(path);
-                            isImageArrayList.add(1);
-                            imageAdapter.notifyDataSetChanged();
+                            Media media = new Media(bitmap, path, Media.Type.image);
+                            mediaArrayList.add(media);
+                            imageGridAdapter.notifyDataSetChanged();
                             // byte[] bytes = toByteArray(file);
 
-                            new UploadTask(getContext()).execute(
-                                    new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                            new UploadTask().execute(
+                                    new PapaDataBaseManager.PostFileOnLessonRequest(
                                             bundleHelper.getExperimentId(),
-                                            bundleHelper.getStudentId(),
+                                            bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                                    bundleHelper.getStudentId() : student_id,
                                             bundleHelper.getToken(),
                                             file,
                                             file.getName(),
-                                            "image"
+                                            "image",
+                                            media
                                     )
                             );
+
                         }else{
                             Toast.makeText(getContext(),getString(R.string.invalid_file),Toast.LENGTH_LONG).show();
                         }
@@ -325,20 +370,21 @@ public class ExperimentResultFragment extends Fragment {
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                        selectedImage.setImageBitmap(bitmap);
                         bitmap = ThumbnailUtils.extractThumbnail(bitmap,200,200);
-                        bitmapArrayList.add(bitmap);
-                        pathArrayList.add(path);
-                        isImageArrayList.add(1);
-                        imageAdapter.notifyDataSetChanged();
+                        Media media = new Media(bitmap, path, Media.Type.image);
+                        mediaArrayList.add(media);
+                        imageGridAdapter.notifyDataSetChanged();
                         // byte[] bytes = toByteArray(file);
 
-                        new UploadTask(getContext()).execute(
-                                new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                        new UploadTask().execute(
+                                new PapaDataBaseManager.PostFileOnLessonRequest(
                                         bundleHelper.getExperimentId(),
-                                        bundleHelper.getStudentId(),
+                                        bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                                bundleHelper.getStudentId() : student_id,
                                         bundleHelper.getToken(),
                                         file,
                                         file.getName(),
-                                        "image"
+                                        "image",
+                                        media
                                 )
                         );
                     }
@@ -361,19 +407,20 @@ public class ExperimentResultFragment extends Fragment {
                         // byte[] bytes = toByteArray(file);
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
                                 (path,MediaStore.Video.Thumbnails.MINI_KIND);
-                        bitmapArrayList.add(thumbnail);
-                        pathArrayList.add(path);
-                        isImageArrayList.add(0);
-                        imageAdapter.notifyDataSetChanged();
+                        Media media = new Media(thumbnail, path, Media.Type.video);
+                        mediaArrayList.add(media);
+                        imageGridAdapter.notifyDataSetChanged();
 
-                        new UploadTask(getContext()).execute(
-                                new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                        new UploadTask().execute(
+                                new PapaDataBaseManager.PostFileOnLessonRequest(
                                         bundleHelper.getExperimentId(),
-                                        bundleHelper.getStudentId(),
+                                        bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                                bundleHelper.getStudentId() : student_id,
                                         bundleHelper.getToken(),
                                         file,
                                         file.getName(),
-                                        "video"
+                                        "video",
+                                        media
                                 )
                         );
                     }
@@ -386,32 +433,140 @@ public class ExperimentResultFragment extends Fragment {
         }
     }
 
-    class UploadTask extends AsyncTask
-            <PapaDataBaseManager.PostFileOnLessonAsStudentRequest,
-                    Exception, Boolean>
-    {
+    void getStudents() {
+        new GetStudentsTask(getContext()).execute(new PapaDataBaseManager.StudentsRequest(
+                        bundleHelper.getCourseId(),
+                        bundleHelper.getToken())
+        );
+    }
+
+    void setStudents(final PapaDataBaseManager.StudentsReply rlt) {
+        int size = rlt.students.size();
+        students = new String[size];
+        for(int i = 0;i < size;i ++){
+            students[i] = rlt.students.get(i).getValue();
+        }
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getString(R.string.select_student));
+        builder.setItems(students, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int position) {
+                student_id = rlt.students.get(position).getKey();
+                builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        selectType(which);
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    class GetStudentsTask extends
+            AsyncTask<PapaDataBaseManager.StudentsRequest, Exception, PapaDataBaseManager.StudentsReply> {
         ProgressDialog proDialog;
 
-        public UploadTask(Context context) {
+        public GetStudentsTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
             proDialog.setMessage("稍等喵 =w=");
-            proDialog.show();
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
         }
 
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.StudentsReply doInBackground
+                (PapaDataBaseManager.StudentsRequest... params) {
+            // 在后台
+            try {
+                return bundleHelper.getPapaDataBaseManager().getStudents(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.StudentsReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setStudents(rlt);
+        }
+    }
+
+    class DeleteFileTask extends
+            AsyncTask<PapaDataBaseManager.DeleteFileRequest, Exception, Boolean> {
+
+        public DeleteFileTask(Context context) {
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Boolean doInBackground
+                (PapaDataBaseManager.DeleteFileRequest... params) {
+            // 在后台
+            try {
+                bundleHelper.getPapaDataBaseManager().deleteFile(params[0]);
+                return true;
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean rlt) {
+            // UI
+            if (rlt == true)
+                Toast.makeText(getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    class UploadTask extends AsyncTask
+            <PapaDataBaseManager.PostFileOnLessonRequest,
+                    Exception, Boolean>
+    {
+        public UploadTask() {
+        }
+
+        @Override
+        protected void onPreExecute() {
             // UI
         }
 
         @Override
         protected Boolean doInBackground
-                (PapaDataBaseManager.PostFileOnLessonAsStudentRequest... params)
+                (PapaDataBaseManager.PostFileOnLessonRequest... params)
         {
             // 在后台
             try {
-                bundleHelper.getPapaDataBaseManager().postFileOnLessonAsStudent(params[0]);
+                bundleHelper.getPapaDataBaseManager().postFileOnLesson(params[0]);
                 return true;
             } catch(PapaHttpClientException e) {
                 publishProgress(e);
@@ -422,18 +577,65 @@ public class ExperimentResultFragment extends Fragment {
         @Override
         protected void onProgressUpdate(Exception... e) {
             // UI
-            Log.e(TAG, e[0].getMessage());
             Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
         }
 
         @Override
         protected void onPostExecute(Boolean rlt) {
             // UI
-
-            proDialog.dismiss();
-            if(rlt != false)
+            if(rlt)
                 Toast.makeText(getContext(), "上传好了喵", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    class GetFilesTask extends AsyncTask
+            <PapaDataBaseManager.GetFilesRequest,
+                    Exception, PapaDataBaseManager.GetFilesReply>
+    {
+        public GetFilesTask() {
+        }
+
+        @Override
+        protected void onPreExecute(){
+            // UI
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetFilesReply doInBackground
+                (PapaDataBaseManager.GetFilesRequest... params)
+        {
+            // 在后台
+            try {
+                return bundleHelper.getPapaDataBaseManager().getFiles(params[0]);
+            } catch(PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetFilesReply rlt) {
+            // UI
+
+            if(rlt != null)
+                showFiles(rlt.mediaList);
+        }
+    }
+
+    private void showFiles(List<Media> mediaList)
+    {
+        Log.i(TAG, "cnt = " + mediaList.size() + "");
+        for(int i = 0; i < mediaList.size(); i++)
+        {
+            mediaArrayList.add(mediaList.get(i));
+        }
+        imageGridAdapter.notifyDataSetChanged();
     }
 
     public static String getPathFromCameraData(Intent data, Context context) {
@@ -504,42 +706,28 @@ public class ExperimentResultFragment extends Fragment {
 //        return bytes;
 //    }
 
-    public class ImageAdapter extends BaseAdapter{
+    public void selectType(int which){
+        if(which == 0){//camera
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        private Context context;
+            fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to commit the image
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
 
-        @Override
-        public int getCount() {
-            return bitmapArrayList.size();
-        }
+            // start the image capture Intent
+            startActivityForResult(intent, CAPTURE_IMAGE);
+        }else if(which == 1){//video
+            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
-        @Override
-        public Object getItem(int arg0) {
-            return arg0;
-        }
+            fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to commit the video
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); // set the video image quality to high
 
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView;
-            if(convertView == null){
-                imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
-                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                imageView.setPadding(4, 4, 4, 4);
-            }else{
-                imageView = (ImageView)convertView;
-            }
-            imageView.setImageBitmap(bitmapArrayList.get(position));
-            return imageView;
-        }
-
-        public ImageAdapter(Context context){
-            this.context = context;
+            // start the Video Capture Intent
+            startActivityForResult(intent, CAPTURE_VIDEO);
+        }else if(which == 2){//gallery
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("*/*");
+            startActivityForResult(intent, IMAGE_PICKER_SELECT);
         }
     }
 }

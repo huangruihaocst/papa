@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.Activities.papa.R;
@@ -38,9 +37,12 @@ public class Attendance {
      * Happily use this function in other activities to try sign in.
      * @param activity current activity
      */
-    public static void startSignInByGPS(Activity activity) {
+    public static void startSignInByGPS(Activity activity, String token) {
         // TODO: shouldn't clear cache every time
         Settings.clearCache(activity);
+        Settings settings = Settings.begin(activity);
+        settings.setToken(token);
+
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
@@ -50,7 +52,7 @@ public class Attendance {
         activity.startService(intent);
     }
 
-    static final int TryTimes = 10;
+    static final int TryTimes = 2;
     /**
      * Try to sign in.
      * If we can sign in, notify the user and
@@ -142,15 +144,17 @@ public class Attendance {
                             settings.getToken(),
                             settings.getUserId(),
                             lessonId, 0, 0, true));
-                    // these should move into network success callback
-                    listener.onSignInSuccess();
                     setNextLessonTime(settings, context);
                 } catch (PapaHttpClientException e) {
                     e.printStackTrace();
                 }
                 return null;
             }
-        };
+            @Override
+            protected void onPostExecute(Object obj) {
+                listener.onSignInSuccess();
+            }
+        }.execute();
     }
 
     private void signOut(final OnSignOutSuccessListener listener, final Settings settings, final Context context, final Settings.Lesson lesson) {
@@ -158,17 +162,19 @@ public class Attendance {
             @Override
             protected Object doInBackground(Object... params) {
                 try {
-                    papaDataBaseManager.postAttendanceOut(new PapaDataBaseManager.PostAttendance(
+                    papaDataBaseManager.deleteAttendance(new PapaDataBaseManager.PostAttendance(
                             settings.getToken(),
                             settings.getUserId(),
                             lesson.lessonId, 0, 0, true));
-                    // these should move into network success callback
-                    listener.onSignOutSuccess(lesson);
                 } catch (PapaHttpClientException e) {
                     e.printStackTrace();
                 }
                 return null;
             }
-        };
+            @Override
+            protected void onPostExecute(Object obj) {
+                listener.onSignOutSuccess(lesson);
+            }
+        }.execute();
     }
 }

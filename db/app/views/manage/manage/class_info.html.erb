@@ -95,7 +95,7 @@
 			var i;
 			n=0;
 			nowPage=1;
-			var p1=false,p2=false,p3=false;
+			var p1=false,p2=false,p3=false,p4=false;
 			function deal()
 			{
 				people.absense=people.tot-people.attend;
@@ -113,7 +113,7 @@
 				{
 					classInfo=data.lesson.name;
 					p1=true;
-					if (p1&&p2&&p3) deal();
+					if (p1&&p2&&p3&&p4) deal();
 				}
 			});
 			$.get("/courses/"+courseId+"/students.json",{},
@@ -127,7 +127,7 @@
 				{
 					people.tot=data.students.length;
 					p2=true;
-					if (p1&&p2&&p3) deal();
+					if (p1&&p2&&p3&&p4) deal();
 				}
 			});
 			$.get("/lessons/"+classId+"/comments.json",{},
@@ -141,14 +141,28 @@
 				{
 					var i;
 					data=data.lesson_comments;
-					people.attend=data.length;console.log(data);
 					for (i=0;i<data.length;++i)
 					{
 						if (data[i].content) comments[n++]=data[i];
 						score[parseInt(data[i].score)]++;
 					}
 					p3=true;
-					if (p1&&p2&&p3) deal();
+					if (p1&&p2&&p3&&p4) deal();
+				}
+			});
+			$.get("/lessons/"+classId+"/attendance.json",{},
+			function(data)
+			{
+				if (data.status=="failed")
+				{
+					alert("获取到课信息失败");
+				}
+				if (data.status=="successful")
+				{
+					data=data.students;
+					people.attend=data.length;
+					p4=true;
+					if (p1&&p2&&p3&&p4) deal();
 				}
 			});
 		}

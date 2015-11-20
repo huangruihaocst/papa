@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -28,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Activities.papa.attendance.Attendance;
-import com.Activities.papa.profile.ProfileActivity;
 import com.Activities.papa.send_message.SentListActivity;
 import com.Activities.papa.receive_message.MessageActivity;
 import com.Activities.papa.receive_message.MessagePullService;
@@ -131,10 +132,8 @@ public class CourseActivity extends AppCompatActivity
         }
         linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
 
-        getHeaderView(navigationView);
-
         // Added by Alex Wang 2015-11-13. Move attendance service to course activity.
-        Attendance.startSignInByGPS(this);
+        Attendance.startSignInByGPS(this, token);
     }
 
 
@@ -172,6 +171,10 @@ public class CourseActivity extends AppCompatActivity
         bindService(new Intent(this, MessagePullService.class),
                 connection,
                 Context.BIND_AUTO_CREATE);
+
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        getHeaderView(navigationView);
     }
 
     /**
@@ -345,7 +348,7 @@ public class CourseActivity extends AppCompatActivity
     //a function to change the profile in the navigation drawer, just call it in another thread
     private void getHeaderView(NavigationView navigationView){
         Log.i(tag, id + " " + token + " = id, token ");
-        new GetUsrInfoTask(this).execute(new PapaDataBaseManager.UsrInfoRequest(id, token));
+        new GetUsrInfoTask(this).execute(new PapaDataBaseManager.UsrInfoRequest(id, token, getFilesDir()));
     }
 
     private void setHeaderView(PapaDataBaseManager.UsrInfoReply r){
@@ -355,6 +358,10 @@ public class CourseActivity extends AppCompatActivity
 
         username_label.setText(r.usrInfo.usrName);
         mail_label.setText(r.usrInfo.mail);
+        if(r.usrInfo.avatar.exists()) {
+            Bitmap avatar = BitmapFactory.decodeFile(r.usrInfo.avatar.getAbsolutePath());
+            image_label.setImageBitmap(Bitmap.createScaledBitmap(avatar, 150, 150, false));
+        }
     }
 
     class GetUsrInfoTask extends
@@ -382,6 +389,7 @@ public class CourseActivity extends AppCompatActivity
             try {
                 return papaDataBaseManager.getUsrInfo(params[0]);
             } catch (PapaHttpClientException e) {
+                e.printStackTrace();
                 publishProgress(e);
             }
             return null;

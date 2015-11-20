@@ -170,20 +170,6 @@ public class SentListActivity extends AppCompatActivity {
     }
 
     private void processReply(final PapaDataBaseManager.GetChatMessageReply reply) {
-        String s = "";
-        for(int i = 0; i < reply.list.size(); i++) {
-            PapaDataBaseManager.ChatMessage chatMessage =
-                reply.list.get(i);
-
-            s += "id = " + chatMessage.id;
-            s += ", senderId = " + chatMessage.senderId;
-            s += ", senderName = " + chatMessage.senderName;
-            s += ", title = " + chatMessage.title;
-            s += ", content = " + chatMessage.content;
-            s += ", status = " + chatMessage.status;
-            s += "\n";
-        }
-
         ////////////////////开始读最后一条信息
         /*
         new ReadMessagesTask(this).execute(new PapaDataBaseManager.ReadChatMessageRequest(

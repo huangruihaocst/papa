@@ -158,9 +158,12 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
             invalid_fields: student_number未指定
         成功:
             部分学生添加失败 invalid_fields: ["123", "111"...] 数字为student_number
+        批量添加学生, 默认密码是学号
             
     POST   /courses/1/assistants/1.json 添加助教到指定课程                                              Teacher
-        not_implemented
+        和添加学生一样
+    POST   /courses/1/assistants.json
+        和批量添加学生一样, 但是默认密码是email
     GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]             Student
         resource_not_found: course_id不存在
     POST   /courses/1/lessons.json   向课程中添加实验课                                                  Teacher
@@ -195,6 +198,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     ?POST   /lessons/1/attendance.json 学生签到                                                          Student
         resource_not_found: lesson_id或者student_id找不到
         permission_denied: 当前学生id不匹配
+    DELETE /lessons/1/attendance.json 签出
         
     GET    /lessons/1/files.json     获得该门实验课的简介文件
         resource_not_found: lesson_id不存在

@@ -79,6 +79,8 @@
 					<textarea id="input-show-message-2" type="text" class="form-control"></textarea>
 					<h4>作者</h4>
 					<input id="input-show-message-3" type="text" class="form-control"></input>
+					<h4>发送时间</h4>
+					<input id="input-show-message-4" type="text" class="form-control"></input>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -141,6 +143,7 @@
 				}
 				if (data.status=="successful")
 				{
+					console.log(data);
 					data=data.user_messages;
 					n=data.length;
 					info=data;
@@ -149,17 +152,28 @@
 			});
 		}
 		
+		function modifyDateTime(text)    //修改后台获取的时间的格式
+		{
+			var i;
+			text=text.replace("T"," ");
+			for (i=0;i<text.length;++i)
+			{
+				if (text[i]=='.') return text.substring(0,i);
+			}
+			return "";
+		}
+		
 		function showMessage(i)    //显示消息信息
 		{
 			$("#input-show-message-1")[0].value=info[i].title;
 			$("#input-show-message-2")[0].value=info[i].content;
-			$("#input-show-message-3")[0].value=info[i].sender_name;
+			$("#input-show-message-3")[0].value=info[i].creator_name;
+			$("#input-show-message-4")[0].value=modifyDateTime(info[i].created_at);
 			if (info[i].status!="read")
 			{
 				$.post('/messages/'+info[i].id+'/read.json',{},
 				function(data)
 				{
-					console.log(data);
 					if (data.status=="failed")
 					{
 					}

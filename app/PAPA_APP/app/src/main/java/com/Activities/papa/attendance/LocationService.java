@@ -27,7 +27,7 @@ import java.util.TimeZone;
 public class LocationService extends Service {
     static final String TAG = "LocationService";
 
-    static final double MinDistance = 10000000;
+    static final double MinDistance = 3000000;
     static final int RetryInterval = 1000;
 
     Settings settings;
@@ -64,7 +64,7 @@ public class LocationService extends Service {
                 Attendance.getInstance().trySignOut(new OnSignOutSuccessListener() {
                     @Override
                     public void onSignOutSuccess(Settings.Lesson theLesson) {
-                        notifySignInSuccessful(theLesson.courseName, Calendar.getInstance(), "GPS");
+                        Log.w("LocationService", "Sign Out Success");
                     }
                 }, LocationService.this, lesson);
             }

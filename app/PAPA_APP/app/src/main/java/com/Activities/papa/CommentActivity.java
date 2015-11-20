@@ -15,11 +15,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 public class CommentActivity extends AppCompatActivity {
+
+    final static String TAG = "CommentActivity";
 
     BundleHelper bundleHelper;
     String course_name;
@@ -66,6 +67,8 @@ public class CommentActivity extends AppCompatActivity {
             editText.setHint(getString(R.string.no_comment));
             textView_hint_comment.setVisibility(View.GONE);
         }
+
+        getComment();
 
     }
 
@@ -114,6 +117,27 @@ public class CommentActivity extends AppCompatActivity {
         );
     }
 
+
+    private void getComment(){
+        new GetCommentTask(this).execute(
+                new PapaDataBaseManager.GetStudentCommentsRequest(
+                        bundleHelper.getExperimentId(),
+                        bundleHelper.getStudentId(),
+                        bundleHelper.getToken()
+                )
+        );
+    }
+
+
+    private void afterGetComment(PapaDataBaseManager.GetStudentCommentsReply rlt)
+    {
+        ratingBar.setRating(Float.parseFloat(rlt.score) * 0.5f);
+        Toast.makeText(getApplicationContext(), getString(R.string.hint_rating_bar_error_on_low_API_level), Toast.LENGTH_LONG).show();
+
+        editText.setText(rlt.comments);
+    }
+
+
     private void afterPostComment() {
         Toast.makeText(getApplicationContext(), "发送了喵", Toast.LENGTH_LONG).show();
     }
@@ -151,12 +175,6 @@ public class CommentActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(Exception... e) {
-
-            if(e[0] instanceof PapaDataBaseResourceNotFound)
-                onBackPressed();
-
-            // if(e)
-            // UI
             Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
         }
 
@@ -167,6 +185,52 @@ public class CommentActivity extends AppCompatActivity {
             proDialog.dismiss();
             if (rlt)
                 afterPostComment();
+        }
+    }
+
+    class GetCommentTask extends
+            AsyncTask<PapaDataBaseManager.GetStudentCommentsRequest,
+                    Exception, PapaDataBaseManager.GetStudentCommentsReply> {
+        ProgressDialog proDialog;
+
+        public GetCommentTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetStudentCommentsReply doInBackground
+                (PapaDataBaseManager.GetStudentCommentsRequest... params) {
+            // 在后台
+            try {
+                return bundleHelper.getPapaDataBaseManager().getStudentComments(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetStudentCommentsReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null)
+                afterGetComment(rlt);
         }
     }
 

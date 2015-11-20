@@ -1,5 +1,9 @@
 package com.Back.PapaDataBaseManager.papa;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.Activities.papa.receive_message.Message;
@@ -10,11 +14,13 @@ import com.Back.DataBaseAccess.papa.PapaDataBaseNotSuccessError;
 import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
 import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Fragments.papa.experiment_result.Media;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -35,6 +41,26 @@ import java.util.Set;
 
 public class PapaDataBaseManagerReal extends PapaDataBaseManager
 {
+    private Calendar getCalenderByString(String str)
+            throws PapaHttpClientException
+    {
+        final SimpleDateFormat sdf = new SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH);
+
+        Calendar ans = Calendar.getInstance();
+        try
+        {
+            ans.setTime(sdf.parse(str));
+        }
+        catch(java.text.ParseException e)
+        {
+            e.printStackTrace();
+            Log.e(tag, "Wrong date time format");
+            throw new PapaDataBaseJsonError();
+        }
+        return ans;
+    }
+
     final static String tag = "PapaDataBaseManagerReal";
 
     PapaDataBaseAccess dbAccess;
@@ -263,10 +289,22 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
             JSONObject obj = reply.getJSONObject("user");
 
+            JSONObject avartarInfo = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/files/" + obj.getString("avator_id") + ".json", h
+            );
+
+            avartarInfo = avartarInfo.getJSONObject("file");
+            String avaterURL = avartarInfo.getString("path");
+
+            File file = new File(request.file, avartarInfo.getString("name"));
+            dbAccess.getDataBaseAsFile(avaterURL, h, file);
+
             return new UsrInfoReply(
                     obj.getInt("id"),
                     new UsrInfo(
-                            obj.getString("name"), obj.getString("email"), obj.getString("phone")
+                            obj.getString("name"), obj.getString("email"), obj.getString("phone"),
+                            file
                     )
             );
         }
@@ -411,27 +449,10 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             );
             reply = reply.getJSONObject("lesson");
 
-
-            SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH);
-
-            Calendar startTime = Calendar.getInstance();
-            Calendar endTime = Calendar.getInstance();
-            try
-            {
-                startTime.setTime(sdf.parse(reply.getString("start_time")));
-                endTime.setTime(sdf.parse(reply.getString("end_time")));
-            }
-            catch(java.text.ParseException e)
-            {
-                e.printStackTrace();
-                Log.e(tag, "Wrong date time format");
-                throw new PapaDataBaseJsonError();
-            }
             return new GetLessonInfoReply(
                     reply.getString("name"),
-                    startTime,
-                    endTime,
+                    getCalenderByString(reply.getString("start_time")),
+                    getCalenderByString(reply.getString("end_time")),
                     reply.getString("location")
             );
         }
@@ -487,11 +508,6 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
             reply = reply.getJSONObject("message");
 
-            Calendar cal = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH);
-            cal.setTime(sdf.parse(reply.getString("deadline")));
-
 
             JSONObject reply_creator = dbAccess.getDataBaseReplyAsJson(
                     PapaAbstractHttpClient.HttpMethod.get,
@@ -514,7 +530,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                     reply.getString("title"),
                     reply.getString("message_type"),
                     reply.getString("content"),
-                    cal,
+                    getCalenderByString(reply.getString("deadline")),
                     reply_course.getString("name"),
                     reply_creator.getString("name")
             );
@@ -523,11 +539,6 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         }
         catch(org.json.JSONException e) {
             e.printStackTrace();
-            throw new PapaDataBaseJsonError();
-        }
-        catch(java.text.ParseException e) {
-            e.printStackTrace();
-            Log.e(tag, "Wrong date time format");
             throw new PapaDataBaseJsonError();
         }
     }
@@ -547,20 +558,62 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         );
     }
 
+
     @Override
-    public void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request) throws PapaHttpClientException {
+    public GetStudentCommentsReply getStudentComments(GetStudentCommentsRequest request) throws PapaHttpClientException {
+        HashMap<String, Object> h = new HashMap<>();
+        h.put("token", request.token);
+
+
+        JSONObject reply_creator = dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.get,
+                "/students/" + request.personId + "/lessons/" +
+                        request.lessonId + "/comment.json",
+                h
+        );
+
+        try
+        {
+            reply_creator = reply_creator.getJSONObject("lesson_comment");
+
+            return new GetStudentCommentsReply(
+                    reply_creator.getString("score"),
+                    reply_creator.getString("content")
+            );
+        }
+        catch(org.json.JSONException e)
+        {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+        }
+    }
+
+    @Override
+    public PostFileOnLessonReply postFileOnLesson(PostFileOnLessonRequest request) throws PapaHttpClientException {
         HashMap<String, Object> h = new HashMap<>();
         h.put("token", request.token);
         h.put("file[type]", request.fileType);
         h.put("file[name]", request.fileName);
         h.put("file[file]", request.file);
 
-        dbAccess.getDataBaseReplyAsJson(
+        JSONObject object = dbAccess.getDataBaseReplyAsJson(
                 PapaAbstractHttpClient.HttpMethod.post,
                 "/students/" + request.personId + "/lessons/" +
                         request.lessonId + "/files.json",
                 h
         );
+
+        try
+        {
+            String id = object.getString("id");
+            request.media.id = id;
+            return new PostFileOnLessonReply(id);
+        }
+        catch(org.json.JSONException e)
+        {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+        }
     }
 
     @Override
@@ -581,16 +634,11 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     }
 
     @Override
-    public void postAttendanceOut(PostAttendance request) throws PapaHttpClientException {
+    public void deleteAttendance(PostAttendance request) throws PapaHttpClientException {
         HashMap<String, Object> h = new HashMap<>();
         h.put("token", request.token);
-//        h.put("attendance[longitude]", String.valueOf(request.longitude));
-//        h.put("attendance[latitude]", String.valueOf(request.latitude));
-//        h.put("attendance[locationServiceAvailable]",
-//                String.valueOf(request.locationServiceAvailable));
 
         // Edited by Alex Wang 2015-11-13. Change URL to predefined URL.
-        // TODO delete method not implemented
         dbAccess.getDataBaseReplyAsJson(
                 PapaAbstractHttpClient.HttpMethod.delete,
                 "/lessons/" + request.lessonId + "/attendance.json",
@@ -599,7 +647,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     }
 
 //    @Override
-//    public void postAttendanceOut(PostAttendance request) throws PapaHttpClientException {
+//    public void deleteAttendance(PostAttendance request) throws PapaHttpClientException {
 //        HashMap<String, Object> h = new HashMap<>();
 //        h.put("token", request.token);
 ////        h.put("attendance[longitude]", String.valueOf(request.longitude));
@@ -634,17 +682,16 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             {
                 JSONObject object = array.getJSONObject(i);
 
+
                 lst.add(new ChatMessage(
                         object.getString("id"),
-                        object.getString("sender_id"),
-                        object.getString("sender_name"),
+                        object.getString("creator_id"),
+                        object.getString("creator_name"),
                         object.getString("title"),
                         object.getString("content"),
-                        object.getString("status")
-
+                        object.getString("status"),
+                        getCalenderByString(object.getString("created_at"))
                 ));
-
-                Log.i(tag, "get chat msg where sender_name = " +  object.getString("sender_name"));
             }
 
             return new GetChatMessageReply(lst);
@@ -764,5 +811,112 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         dbAccess.getDataBaseReplyAsJson(
                 PapaAbstractHttpClient.HttpMethod.put, "/users/" + request.personId + ".json", h
         );
+    }
+
+
+    @Override
+    public void postAvatar(PostAvatarRequest request) throws PapaHttpClientException {
+        HashMap<String, Object> h = new HashMap<>();
+        h.put("token", request.token);
+        h.put("file[type]", request.fileType);
+        h.put("file[name]", request.fileName);
+        h.put("file[file]", request.file);
+
+        JSONObject obj = dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.post,
+                "/files.json",
+                h
+        );
+
+        try
+        {
+            String id = obj.getString("id");
+            h.clear();
+            h.put("token", request.token);
+            h.put("user[avator_id]", id);
+
+            dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.put, "/users/" + request.personId + ".json", h
+            );
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+        }
+    }
+
+    @Override
+    public void deleteFile(DeleteFileRequest request) throws PapaHttpClientException {
+        HashMap<String, Object> h = new HashMap<>();
+        h.put("token", request.token);
+
+        JSONObject obj = dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.delete,
+                "/students/" + request.personId + "/lessons/" + request.lessonId + "/files/" +
+                        request.fileId + ".json",
+                h
+        );
+    }
+
+    @Override
+    public GetFilesReply getFiles(GetFilesRequest request) throws PapaHttpClientException {
+        try
+        {
+            HashMap<String, Object> h = new HashMap<>();
+            h.put("token", request.token);
+
+            JSONObject obj = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/students/" + request.personId + "/lessons/" + request.lessonId + "/files.json",
+                    h
+            );
+
+            JSONArray list = obj.getJSONArray("files");
+
+            GetFilesReply reply = new GetFilesReply();
+
+            for(int i = 0; i < list.length(); i++) {
+                JSONObject fileObject = list.getJSONObject(i);
+                String type = fileObject.getString("type");
+
+                File file = new File(request.file, fileObject.getString("name"));
+                dbAccess.getDataBaseAsFile(fileObject.getString("path"), h, file);
+
+                Bitmap thumbnail;
+
+                Media.Type t;
+                if(type.equals("image"))
+                {
+                    t = Media.Type.image;
+                    thumbnail = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    thumbnail = ThumbnailUtils.extractThumbnail(thumbnail,200,200);
+                }
+                else if(type.equals("video"))
+                {
+                    t = Media.Type.video;
+                    thumbnail = ThumbnailUtils.createVideoThumbnail
+                            (file.getPath(), MediaStore.Video.Thumbnails.MINI_KIND);
+                }
+                else continue;
+
+
+                reply.mediaList.add(
+                        new Media(
+                                thumbnail,
+                                file.getPath(),
+                                t,
+                                fileObject.getString("id")
+                        )
+                );
+            }
+
+            return reply;
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+        }
     }
 }

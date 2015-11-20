@@ -1,4 +1,4 @@
-package com.Activities.papa.profile;
+package com.Activities.papa;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,12 +11,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,16 +22,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.Activities.papa.BundleHelper;
-import com.Activities.papa.R;
-import com.Activities.papa.SignInActivity;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Fragments.papa.course.CourseFragment;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -82,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
                 builder.setMessage(R.string.confirm_log_out);
-                builder.setPositiveButton(R.string.confirm_log_out_yes, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getResources().getStringArray(R.array.answer_confirm_log_out)[0], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(ProfileActivity.this, SignInActivity.class);
@@ -93,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-                builder.setNegativeButton(R.string.confirm_log_out_no, new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getResources().getStringArray(R.array.answer_confirm_log_out)[1], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -197,7 +187,15 @@ public class ProfileActivity extends AppCompatActivity {
             if (path != null) {
                 File file = new File(path);
                 if (file.exists()) {
-                    //TODO:change the photo of the user, meanwhile change the one in the navigation drawer
+                    new PostAvatarTask(this).execute(
+                            new PapaDataBaseManager.PostAvatarRequest(
+                                    bundleHelper.getId(),
+                                    bundleHelper.getToken(),
+                                    file,
+                                    file.getName(),
+                                    "image"
+                            )
+                    );
                 }
             }
         }
@@ -218,7 +216,8 @@ public class ProfileActivity extends AppCompatActivity {
     private void setProfile(){
         new GetUsrInfoTask(this).execute(new PapaDataBaseManager.UsrInfoRequest(
                 bundleHelper.getId(),
-                bundleHelper.getToken()
+                bundleHelper.getToken(),
+                getFilesDir()
         ));
     }
 
@@ -252,6 +251,53 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    class PostAvatarTask extends
+            AsyncTask<PapaDataBaseManager.PostAvatarRequest, Exception,
+                    Boolean> {
+        ProgressDialog proDialog;
+
+        public PostAvatarTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground
+                (PapaDataBaseManager.PostAvatarRequest... params) {
+            // 在后台
+            try {
+                BundleHelper.getPapaDataBaseManager().postAvatar(params[0]);
+                return true;
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getApplicationContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean rlt) {
+            // UI
+
+            proDialog.dismiss();
+            //TODO: change the one in the navigation drawer
+        }
     }
 
     class GetUsrInfoTask extends
@@ -297,6 +343,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             proDialog.dismiss();
             if (rlt != null) setUsrInfo(rlt);
+
         }
     }
 

@@ -1,9 +1,11 @@
 package com.Back.NetworkAccess.papa;
 
+import java.io.File;
 import java.util.HashMap;
 
 public abstract class PapaAbstractHttpClient{
     protected abstract String getHttpReplyByGet(String url, HashMap<String, Object> parameter) throws PapaHttpClientException;
+    protected abstract void getHttpReplyByGet(String url, HashMap<String, Object> parameter, File file) throws PapaHttpClientException;
     protected abstract String getHttpReplyByPost(String url, HashMap<String, Object> parameter) throws PapaHttpClientException;
     protected abstract String getHttpReplyByPut(String url, HashMap<String, Object> parameter) throws PapaHttpClientException;
     protected abstract String getHttpReplyByDelete(String url, HashMap<String, Object> parameter) throws PapaHttpClientException;
@@ -26,6 +28,12 @@ public abstract class PapaAbstractHttpClient{
             return getHttpReplyByDelete(url, parameter);
         else
             throw new PapaHttpUnknownMethodException();
+    }
+
+    public void saveHttpContent(String url, HashMap<String, Object> parameter, File file)
+            throws PapaHttpClientException
+    {
+        getHttpReplyByGet(url, parameter, file);
     }
 
     /*
