@@ -18,6 +18,7 @@ import com.Fragments.papa.experiment_result.Media;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -689,6 +690,7 @@ public abstract class PapaDataBaseManager{
             dest.writeString(title);
             dest.writeString(content);
             dest.writeString(status);
+            dest.writeSerializable(created_at);
         }
 
         public static final Parcelable.Creator<ChatMessage> CREATOR
@@ -709,6 +711,7 @@ public abstract class PapaDataBaseManager{
             title = in.readString();
             content = in.readString();
             status = in.readString();
+            created_at = (Calendar)in.readSerializable();
         }
     }
 

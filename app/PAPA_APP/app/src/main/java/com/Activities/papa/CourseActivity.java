@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,6 +23,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -360,7 +362,14 @@ public class CourseActivity extends AppCompatActivity
         mail_label.setText(r.usrInfo.mail);
         if(r.usrInfo.avatar.exists()) {
             Bitmap avatar = BitmapFactory.decodeFile(r.usrInfo.avatar.getAbsolutePath());
-            image_label.setImageBitmap(Bitmap.createScaledBitmap(avatar, 150, 150, false));
+            //get window size
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x;
+            //resize
+            image_label.setImageBitmap(Bitmap.createScaledBitmap(avatar,
+                    (int)(width * 0.135), (int)(width * 0.135), false));
         }
     }
 
