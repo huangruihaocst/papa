@@ -82,7 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
                 builder.setMessage(R.string.confirm_log_out);
-                builder.setPositiveButton(R.string.confirm_log_out_yes, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getResources().getStringArray(R.array.answer_confirm_log_out)[0], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(ProfileActivity.this, SignInActivity.class);
@@ -93,7 +93,7 @@ public class ProfileActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-                builder.setNegativeButton(R.string.confirm_log_out_no, new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getResources().getStringArray(R.array.answer_confirm_log_out)[1], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }

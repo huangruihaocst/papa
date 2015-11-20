@@ -9,7 +9,6 @@ public class Media {
     public enum Type {
         image,
         video,
-        no_type
     }
     public Bitmap bitmap;
     public String path;
