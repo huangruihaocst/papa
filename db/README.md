@@ -198,6 +198,7 @@ Android客户端通过访问指定的URL获得一个JSON文件来访问数据库
     ?POST   /lessons/1/attendance.json 学生签到                                                          Student
         resource_not_found: lesson_id或者student_id找不到
         permission_denied: 当前学生id不匹配
+    DELETE /lessons/1/attendance.json 签出
         
     GET    /lessons/1/files.json     获得该门实验课的简介文件
         resource_not_found: lesson_id不存在

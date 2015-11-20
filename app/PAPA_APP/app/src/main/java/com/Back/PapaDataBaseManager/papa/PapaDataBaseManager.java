@@ -547,7 +547,7 @@ public abstract class PapaDataBaseManager{
 
     public abstract void postAttendance(PostAttendance request)
             throws PapaHttpClientException;
-    public abstract void postAttendanceOut(PostAttendance request)
+    public abstract void deleteAttendance(PostAttendance request)
             throws PapaHttpClientException;
 
     //////////////////////////////////////////////////////////////////////////
