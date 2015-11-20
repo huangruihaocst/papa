@@ -60,15 +60,18 @@ class AssistantsController < ApplicationController
             if exist_user
               course.add_assistant(exist_user) if exist_user.courses.include?(course)
             else
-              user = User.create(name: assistant['name'],
+              begin
+                user = User.create(name: assistant['name'],
                                  email: assistant['email'],
                                  phone: assistant['phone'],
-                                 password: assistant['password'],
-                                 student_number: assistant['student_number'],
+                                 password: assistant['email'],
                                  department: assistant['department'],
-                                 description: assistant['description'],
-                                 class_name: assistant['class_name']
-              )
+                                 description: assistant['description'] || '',
+                                 class_name: assistant['class_name'])
+              rescue
+                json_failed
+                return
+              end
               if user.valid?
                 course.add_assistant(user)
                 raise RequestException.new(REASON_INTERNAL_ERROR) unless course.save
