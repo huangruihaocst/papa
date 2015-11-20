@@ -130,11 +130,13 @@ public abstract class PapaDataBaseManager{
     {
         public int id;
         public String token;
+        public File file;
 
-        public UsrInfoRequest(int id, String token)
+        public UsrInfoRequest(int id, String token, File file)
         {
             this.id = id;
             this.token = token;
+            this.file = file;
         }
     }
 
@@ -143,12 +145,14 @@ public abstract class PapaDataBaseManager{
         public String usrName;
         public String mail;
         public String phone;
+        public File avatar;
 
-        public UsrInfo(String usrName, String mail, String phone)
+        public UsrInfo(String usrName, String mail, String phone, File avatar)
         {
             this.usrName = usrName;
             this.mail = mail;
             this.phone = phone;
+            this.avatar = avatar;
         }
     }
 
@@ -484,6 +488,34 @@ public abstract class PapaDataBaseManager{
 
     public abstract void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request)
             throws PapaHttpClientException;
+
+    //////////////////////////////////////////////////////////////////////////
+    // 学生课程评价
+
+    static public class PostAvatarRequest
+    {
+        public String token;
+        public int personId;
+
+        public String fileType;
+        public String fileName;
+        public File file;
+
+        public PostAvatarRequest(
+                int personId, String token, File file, String fileName, String fileType)
+        {
+            this.personId = personId;
+            this.token = token;
+
+            this.fileType = fileType;
+            this.fileName = fileName;
+            this.file = file;
+        }
+    }
+
+    public abstract void postAvatar(PostAvatarRequest request)
+            throws PapaHttpClientException;
+
 
 
     //////////////////////////////////////////////////////////////////////////

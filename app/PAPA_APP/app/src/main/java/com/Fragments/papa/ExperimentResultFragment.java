@@ -281,7 +281,7 @@ public class ExperimentResultFragment extends Fragment {
                             isImageArrayList.add(0);
                             imageAdapter.notifyDataSetChanged();
 
-                            new UploadTask(getContext()).execute(
+                            new UploadTask().execute(
                                     new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
                                             bundleHelper.getExperimentId(),
                                             bundleHelper.getStudentId(),
@@ -302,7 +302,7 @@ public class ExperimentResultFragment extends Fragment {
                             imageAdapter.notifyDataSetChanged();
                             // byte[] bytes = toByteArray(file);
 
-                            new UploadTask(getContext()).execute(
+                            new UploadTask().execute(
                                     new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
                                             bundleHelper.getExperimentId(),
                                             bundleHelper.getStudentId(),
@@ -338,7 +338,7 @@ public class ExperimentResultFragment extends Fragment {
                         imageAdapter.notifyDataSetChanged();
                         // byte[] bytes = toByteArray(file);
 
-                        new UploadTask(getContext()).execute(
+                        new UploadTask().execute(
                                 new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
                                         bundleHelper.getExperimentId(),
                                         bundleHelper.getStudentId(),
@@ -373,7 +373,7 @@ public class ExperimentResultFragment extends Fragment {
                         isImageArrayList.add(0);
                         imageAdapter.notifyDataSetChanged();
 
-                        new UploadTask(getContext()).execute(
+                        new UploadTask().execute(
                                 new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
                                         bundleHelper.getExperimentId(),
                                         bundleHelper.getStudentId(),
@@ -429,7 +429,7 @@ public class ExperimentResultFragment extends Fragment {
                 (PapaDataBaseManager.StudentsRequest... params) {
             // 在后台
             try {
-                return papaDataBaseManager.getStudents(params[0]);
+                return bundleHelper.getPapaDataBaseManager().getStudents(params[0]);
             } catch (PapaHttpClientException e) {
                 publishProgress(e);
             }
@@ -455,14 +455,7 @@ public class ExperimentResultFragment extends Fragment {
             <PapaDataBaseManager.PostFileOnLessonAsStudentRequest,
                     Exception, Boolean>
     {
-        ProgressDialog proDialog;
-
-        public UploadTask(Context context) {
-            proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
-            proDialog.show();
-            proDialog.setCancelable(false);
-            proDialog.setCanceledOnTouchOutside(false);
+        public UploadTask() {
         }
 
         @Override
@@ -495,7 +488,6 @@ public class ExperimentResultFragment extends Fragment {
         protected void onPostExecute(Boolean rlt) {
             // UI
 
-            proDialog.dismiss();
             if(rlt != false)
                 Toast.makeText(getContext(), "上传好了喵", Toast.LENGTH_SHORT).show();
         }
