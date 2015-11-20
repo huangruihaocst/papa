@@ -1,4 +1,4 @@
-package com.Fragments.papa;
+package com.Fragments.papa.experiment_result;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -87,10 +87,8 @@ public class ExperimentResultFragment extends Fragment {
             R.drawable.ic_info_black_24dp,
             R.drawable.ic_notifications_black_24dp,
     };
-    private ArrayList<Bitmap> bitmapArrayList;
-    private ArrayList<String> pathArrayList;
-    private ArrayList<Integer> isImageArrayList;//1 for image, 0 for video
-    private ImageAdapter imageAdapter;
+    private ArrayList<Media> mediaArrayList;
+    private ImageGridAdapter imageGridAdapter;
 
     String students[];
     int student_id;
@@ -121,9 +119,7 @@ public class ExperimentResultFragment extends Fragment {
             bundleHelper = getArguments().getParcelable(ARG_BUNDLE_HELPER);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        bitmapArrayList = new ArrayList<>();
-        pathArrayList = new ArrayList<>();
-        isImageArrayList = new ArrayList<>();
+        mediaArrayList = new ArrayList<>();
     }
 
     @Override
@@ -135,13 +131,13 @@ public class ExperimentResultFragment extends Fragment {
 //        selectedImage = (ImageView)rootView.findViewById(R.id.selected_image);
 //        selectedVideo = (VideoView)rootView.findViewById(R.id.selected_video);
         gridView_image = (GridView)rootView.findViewById(R.id.gridView_image);
-        imageAdapter = new ImageAdapter(getContext());
-        gridView_image.setAdapter(imageAdapter);
+        imageGridAdapter = new ImageGridAdapter(getContext(), mediaArrayList);
+        gridView_image.setAdapter(imageGridAdapter);
 
         for(int i = 0;i < imageId.length;i ++){
-            bitmapArrayList.add(BitmapFactory.decodeResource(getResources(), imageId[i]));
-            pathArrayList.add("");
-            isImageArrayList.add(1);
+            mediaArrayList.add(new Media(BitmapFactory.decodeResource(getResources(), imageId[i]),
+                    "",Media.Type.image));
+
         }
 
         gridView_image.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -149,8 +145,8 @@ public class ExperimentResultFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
-                File file = new File(pathArrayList.get(position));
-                if (isImageArrayList.get(position) == 1) {
+                File file = new File(mediaArrayList.get(position).path);
+                if (mediaArrayList.get(position).type == Media.Type.image) {
                     intent.setDataAndType(Uri.fromFile(file), "image/*");
                 } else {
                     intent.setDataAndType(Uri.fromFile(file), "video/*");
@@ -242,10 +238,8 @@ public class ExperimentResultFragment extends Fragment {
                         if(mimeType.contains("video")){
                             Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
                                     (path,MediaStore.Video.Thumbnails.MINI_KIND);
-                            bitmapArrayList.add(thumbnail);
-                            pathArrayList.add(path);
-                            isImageArrayList.add(0);
-                            imageAdapter.notifyDataSetChanged();
+                            mediaArrayList.add(new Media(thumbnail, path, Media.Type.video));
+                            imageGridAdapter.notifyDataSetChanged();
 
                             new UploadTask().execute(
                                     new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
@@ -263,10 +257,8 @@ public class ExperimentResultFragment extends Fragment {
                             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
                             bitmap = ThumbnailUtils.extractThumbnail(bitmap,200,200);
-                            bitmapArrayList.add(bitmap);
-                            pathArrayList.add(path);
-                            isImageArrayList.add(1);
-                            imageAdapter.notifyDataSetChanged();
+                            mediaArrayList.add(new Media(bitmap, path, Media.Type.image));
+                            imageGridAdapter.notifyDataSetChanged();
                             // byte[] bytes = toByteArray(file);
 
                             new UploadTask().execute(
@@ -301,10 +293,8 @@ public class ExperimentResultFragment extends Fragment {
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                        selectedImage.setImageBitmap(bitmap);
                         bitmap = ThumbnailUtils.extractThumbnail(bitmap,200,200);
-                        bitmapArrayList.add(bitmap);
-                        pathArrayList.add(path);
-                        isImageArrayList.add(1);
-                        imageAdapter.notifyDataSetChanged();
+                        mediaArrayList.add(new Media(bitmap, path, Media.Type.image));
+                        imageGridAdapter.notifyDataSetChanged();
                         // byte[] bytes = toByteArray(file);
 
                         new UploadTask().execute(
@@ -338,10 +328,8 @@ public class ExperimentResultFragment extends Fragment {
                         // byte[] bytes = toByteArray(file);
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
                                 (path,MediaStore.Video.Thumbnails.MINI_KIND);
-                        bitmapArrayList.add(thumbnail);
-                        pathArrayList.add(path);
-                        isImageArrayList.add(0);
-                        imageAdapter.notifyDataSetChanged();
+                        mediaArrayList.add(new Media(thumbnail, path, Media.Type.video));
+                        imageGridAdapter.notifyDataSetChanged();
 
                         new UploadTask().execute(
                                 new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
@@ -478,7 +466,7 @@ public class ExperimentResultFragment extends Fragment {
         protected void onPostExecute(Boolean rlt) {
             // UI
 
-            if(rlt != false)
+            if(rlt)
                 Toast.makeText(getContext(), "上传好了喵", Toast.LENGTH_SHORT).show();
         }
     }
@@ -550,45 +538,6 @@ public class ExperimentResultFragment extends Fragment {
 //        }
 //        return bytes;
 //    }
-
-    public class ImageAdapter extends BaseAdapter{
-
-        private Context context;
-
-        @Override
-        public int getCount() {
-            return bitmapArrayList.size();
-        }
-
-        @Override
-        public Object getItem(int arg0) {
-            return arg0;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView;
-            if(convertView == null){
-                imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
-                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                imageView.setPadding(4, 4, 4, 4);
-            }else{
-                imageView = (ImageView)convertView;
-            }
-            imageView.setImageBitmap(bitmapArrayList.get(position));
-            return imageView;
-        }
-
-        public ImageAdapter(Context context){
-            this.context = context;
-        }
-    }
 
     public void selectType(int which){
         if(which == 0){//camera
