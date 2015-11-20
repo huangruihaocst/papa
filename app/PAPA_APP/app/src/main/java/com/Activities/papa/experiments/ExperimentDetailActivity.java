@@ -17,7 +17,7 @@ import com.Activities.papa.BundleHelper;
 import com.Activities.papa.CommentActivity;
 import com.Activities.papa.R;
 import com.Fragments.papa.ExperimentInformationFragment;
-import com.Fragments.papa.ExperimentResultFragment;
+import com.Fragments.papa.experiment_result.ExperimentResultFragment;
 import com.Fragments.papa.GradesFragment;
 import com.Fragments.papa.student.StudentsFragment;
 

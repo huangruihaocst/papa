@@ -22,9 +22,7 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
-import java.util.logging.SimpleFormatter;
 
 /**
  * A simple {@link Fragment} subclass.

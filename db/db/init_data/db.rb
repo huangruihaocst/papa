@@ -35,7 +35,7 @@ image_files.push FileResource.create(name: '1.jpg', file_type: FILE_TYPE_IMAGE, 
 image_files.push FileResource.create(name: '2.jpg', file_type: FILE_TYPE_IMAGE, path: '/uploads/2.jpg', creator_id: admin0.id)
 video_files = []
 video_files.push FileResource.create(name: 'sample1.mp4', file_type: FILE_TYPE_VIDEO, path: '/uploads/sample1.mp4', creator_id: admin0.id)
-video_files.push FileResource.create(name: 'sample2.mp4', file_type: FILE_TYPE_VIDEO, path: '/uploads/sample2.mp4', creator_id: admin0.id)
+#video_files.push FileResource.create(name: 'sample2.mp4', file_type: FILE_TYPE_VIDEO, path: '/uploads/sample2.mp4', creator_id: admin0.id)
 puts 'files created...'
 
 # create semesters
@@ -56,7 +56,7 @@ course_builder = CourseBuilder.new
 COURSE_COUNT.times do
   course = Course.create(name: course_builder.build,
                          description: '基础课程',
-                         semester_id: semesters[0].id)
+                         semester_id: semesters.last.id)
   i = 0
   CourseBuilder.build_lessons.each do |lesson_name|
     lesson = course.lessons.create(name: lesson_name,
@@ -81,8 +81,8 @@ TEACHER_COUNT.times do |i|
                         student_number: "1#{i}",
                         description: '教师简介',
                         is_admin: false, is_teacher: true)
-  #teacher.avator = image_files.sample
-  #teacher.save
+  teacher.avator = image_files.sample
+  teacher.save
   teachers.push(teacher)
 end
 
@@ -152,8 +152,8 @@ STUDENT_COUNT.times do |x|
                      department: identity[:department],
                      description: '123',
                      is_admin: false, is_teacher: false)
-  #user.avator = image_files.sample
-  #user.save
+  user.avator = image_files.sample
+  user.save
 
   students.push(user)
   courses.each do |course|
@@ -172,7 +172,7 @@ students.each do |student|
   student.courses.each do |course|
     course.lessons.each do |lesson|
       course_teachers = course.teachers
-      teacher = course_teachers[Random.rand(course_teachers.size)]
+      teacher = course_teachers.sample
       lesson.lesson_comments.create(score: Random.rand(0..10),
                                     content: '这个课程真好呀!',
                                     creator_id: student.id)

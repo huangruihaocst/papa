@@ -18,7 +18,6 @@ class FilesController < ApplicationController
         student_files.each do |file|
           @files <<= file.file_resource
         end
-
       when params[:assistant_id] && params[:lesson_id]
         check_token(params[:assistant_id], params[:token])
         assistant_files = AssistantFile.where(assistant_id: params[:assistant_id]).where(lesson_id: params[:lesson_id])

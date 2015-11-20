@@ -4,17 +4,18 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   # phone, name, email
-  has_many :participations
+  has_many :participations, dependent: :destroy
   has_many :courses, through: :participations
-  has_many :tokens
+  has_many :tokens, dependent: :destroy
 
-  has_many :teaching_courses
+  has_many :teaching_courses, dependent: :destroy
   has_many :real_teaching_courses, through: :teaching_courses, source: :course
-  has_many :lesson_statuses
-  has_many :assistant_to_student_comments, class_name: 'StudentComment', foreign_key: :creator_id
-  has_many :from_assistant_comments, class_name: 'StudentComment', foreign_key: :student_id
-  has_many :posted_message, class_name: 'Message', foreign_key: :creator_id
-  has_many :user_messages, foreign_key: :receiver_id
+  has_many :lesson_statuses, dependent: :destroy
+  has_many :assistant_to_student_comments, class_name: 'StudentComment', foreign_key: :creator_id, dependent: :destroy
+  has_many :from_assistant_comments, class_name: 'StudentComment', foreign_key: :student_id, dependent: :destroy
+  has_many :posted_message, class_name: 'Message', foreign_key: :creator_id, dependent: :destroy
+  has_many :user_messages, foreign_key: :receiver_id, dependent: :destroy
+  belongs_to :avator, class_name: 'FileResource'
 
   validates :name, presence: true
   validates :email, presence: true

@@ -1,7 +1,7 @@
 class SemestersController < ApplicationController
 
   def index
-    @semesters = Semester.all
+    @semesters = Semester.all.reverse_order
   end
 
   def default

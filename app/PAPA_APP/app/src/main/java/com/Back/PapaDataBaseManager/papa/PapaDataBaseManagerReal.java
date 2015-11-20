@@ -624,25 +624,20 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     }
 
     @Override
-    public void postAttendanceOut(PostAttendance request) throws PapaHttpClientException {
+    public void deleteAttendance(PostAttendance request) throws PapaHttpClientException {
         HashMap<String, Object> h = new HashMap<>();
         h.put("token", request.token);
-//        h.put("attendance[longitude]", String.valueOf(request.longitude));
-//        h.put("attendance[latitude]", String.valueOf(request.latitude));
-//        h.put("attendance[locationServiceAvailable]",
-//                String.valueOf(request.locationServiceAvailable));
 
         // Edited by Alex Wang 2015-11-13. Change URL to predefined URL.
-        // TODO delete method not implemented
         dbAccess.getDataBaseReplyAsJson(
-                PapaAbstractHttpClient.HttpMethod.delete,
+                PapaAbstractHttpClient.HttpMethod.post,
                 "/lessons/" + request.lessonId + "/attendance.json",
                 h
         );
     }
 
 //    @Override
-//    public void postAttendanceOut(PostAttendance request) throws PapaHttpClientException {
+//    public void deleteAttendance(PostAttendance request) throws PapaHttpClientException {
 //        HashMap<String, Object> h = new HashMap<>();
 //        h.put("token", request.token);
 ////        h.put("attendance[longitude]", String.valueOf(request.longitude));

@@ -1,4 +1,4 @@
-package com.Activities.papa.profile;
+package com.Activities.papa;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,12 +11,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,16 +22,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.Activities.papa.BundleHelper;
-import com.Activities.papa.R;
-import com.Activities.papa.SignInActivity;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-import com.Fragments.papa.course.CourseFragment;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -82,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
                 builder.setMessage(R.string.confirm_log_out);
-                builder.setPositiveButton(R.string.confirm_log_out_yes, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getResources().getStringArray(R.array.answer_confirm_log_out)[0], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(ProfileActivity.this, SignInActivity.class);
@@ -93,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-                builder.setNegativeButton(R.string.confirm_log_out_no, new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getResources().getStringArray(R.array.answer_confirm_log_out)[1], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
