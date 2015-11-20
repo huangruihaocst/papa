@@ -424,6 +424,36 @@ public abstract class PapaDataBaseManager{
     public abstract void postStudentComments(PostStudentCommentsRequest request)
             throws PapaHttpClientException;
 
+    static public class GetStudentCommentsRequest
+    {
+        public int lessonId;
+        public int personId;
+        public String token;
+
+        public GetStudentCommentsRequest(int lessonId, int personId, String token)
+        {
+            this.lessonId = lessonId;
+            this.personId = personId;
+            this.token = token;
+        }
+    }
+
+
+    static public class GetStudentCommentsReply
+    {
+        public String comments;
+        public String score;
+
+        public GetStudentCommentsReply(String score, String comments)
+        {
+            this.comments = comments;
+            this.score = score;
+        }
+    }
+
+    public abstract GetStudentCommentsReply getStudentComments(GetStudentCommentsRequest request)
+            throws PapaHttpClientException;
+
     // 赤い　紅い　アカイ
 
     //////////////////////////////////////////////////////////////////////////

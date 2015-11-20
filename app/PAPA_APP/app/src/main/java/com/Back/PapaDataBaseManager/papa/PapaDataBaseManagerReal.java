@@ -547,6 +547,36 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         );
     }
 
+
+    @Override
+    public GetStudentCommentsReply getStudentComments(GetStudentCommentsRequest request) throws PapaHttpClientException {
+        HashMap<String, Object> h = new HashMap<>();
+        h.put("token", request.token);
+
+
+        JSONObject reply_creator = dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.get,
+                "/students/" + request.personId + "/lessons/" +
+                        request.lessonId + "/comment.json",
+                h
+        );
+
+        try
+        {
+            reply_creator = reply_creator.getJSONObject("lesson_comment");
+
+            return new GetStudentCommentsReply(
+                    reply_creator.getString("score"),
+                    reply_creator.getString("content")
+            );
+        }
+        catch(org.json.JSONException e)
+        {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+        }
+    }
+
     @Override
     public void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request) throws PapaHttpClientException {
         HashMap<String, Object> h = new HashMap<>();
@@ -765,4 +795,5 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 PapaAbstractHttpClient.HttpMethod.put, "/users/" + request.personId + ".json", h
         );
     }
+
 }
