@@ -113,12 +113,7 @@ public class CommentActivity extends AppCompatActivity {
                         bundleHelper.getExperimentId(),
                         bundleHelper.getStudentId(),
                         bundleHelper.getToken(),
-<<<<<<< HEAD
-                        Float.toString(ratingBar.getRating() * 2
-                        ),
-=======
                         Float.toString(ratingBar.getRating() * 2),
->>>>>>> c2330ad72e4a5eaad5709ef922f99ef95137062f
                         editText.getText().toString()
                 )
         );
