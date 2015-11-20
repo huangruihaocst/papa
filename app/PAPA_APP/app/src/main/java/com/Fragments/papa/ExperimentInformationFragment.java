@@ -2,6 +2,7 @@ package com.Fragments.papa;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -133,7 +134,7 @@ public class ExperimentInformationFragment extends Fragment {
 
     // get data from db
     void get() {
-        Log.i(TAG, bundleHelper.getCourseId() + " " + bundleHelper.getToken());
+//        Log.i(TAG, bundleHelper.getCourseId() + " " + bundleHelper.getToken());
         new Task(getContext()).execute(new PapaDataBaseManager.GetLessonInfoRequest(
                 bundleHelper.getExperimentId(),
                 bundleHelper.getToken())
@@ -159,8 +160,10 @@ public class ExperimentInformationFragment extends Fragment {
         textView_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "123", Toast.LENGTH_LONG).show();
                 textView_download.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+                Intent intent = new Intent();
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+//                intent.setType("")
                 //TODO:click here to download
             }
         });

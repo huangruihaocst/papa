@@ -358,10 +358,9 @@ public class CourseActivity extends AppCompatActivity
 
         username_label.setText(r.usrInfo.usrName);
         mail_label.setText(r.usrInfo.mail);
-        if(r.usrInfo.avatar.exists())
-        {
+        if(r.usrInfo.avatar.exists()) {
             Bitmap avatar = BitmapFactory.decodeFile(r.usrInfo.avatar.getAbsolutePath());
-            image_label.setImageBitmap(avatar);
+            image_label.setImageBitmap(Bitmap.createScaledBitmap(avatar, 150, 150, false));
         }
     }
 
