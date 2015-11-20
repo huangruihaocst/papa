@@ -27,12 +27,15 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
+import com.Activities.papa.DetailActivity;
 import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Fragments.papa.student.StudentsListAdapter;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -45,6 +48,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 
 // 赤より紅い夢！！！！！
@@ -179,7 +183,8 @@ public class ExperimentResultFragment extends Fragment {
                 if(bundleHelper.getIdentity() == BundleHelper.Identity.teacher_assistant){
                     AlertDialog.Builder builder = new AlertDialog().Builder(getActivity());
                     builder.setTitle(getString(R.string.select_student));
-                    String students[];//TODO:ko ti
+
+                    // String students[];
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
@@ -385,6 +390,64 @@ public class ExperimentResultFragment extends Fragment {
             } else {
                 // Video capture failed, advise user
             }
+        }
+    }
+
+    void getStudents() {
+        Log.i(TAG, bundleHelper.getCourseId() + " " + bundleHelper.getToken());
+        new GetStudentsTask(getContext()).execute(new PapaDataBaseManager.StudentsRequest(
+                        bundleHelper.getCourseId(),
+                        bundleHelper.getToken())
+        );
+    }
+
+    void setStudents(PapaDataBaseManager.StudentsReply rlt)
+    {
+        
+    }
+
+    class GetStudentsTask extends
+            AsyncTask<PapaDataBaseManager.StudentsRequest, Exception, PapaDataBaseManager.StudentsReply> {
+        ProgressDialog proDialog;
+
+        public GetStudentsTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.StudentsReply doInBackground
+                (PapaDataBaseManager.StudentsRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getStudents(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.StudentsReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null) setStudents(rlt);
         }
     }
 
