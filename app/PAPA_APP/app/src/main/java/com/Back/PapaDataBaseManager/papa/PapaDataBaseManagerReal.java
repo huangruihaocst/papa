@@ -851,10 +851,18 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         HashMap<String, Object> h = new HashMap<>();
         h.put("token", request.token);
 
+        /*
         JSONObject obj = dbAccess.getDataBaseReplyAsJson(
                 PapaAbstractHttpClient.HttpMethod.delete,
                 "/students/" + request.personId + "/lessons/" + request.lessonId + "/files/" +
                         request.fileId + ".json",
+                h
+        );
+        */
+
+        JSONObject obj = dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.delete,
+                "/files/" + request.fileId + ".json",
                 h
         );
     }
@@ -904,7 +912,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 reply.mediaList.add(
                         new Media(
                                 thumbnail,
-                                file.getPath(),
+                                file.getAbsolutePath(),
                                 t,
                                 fileObject.getString("id")
                         )

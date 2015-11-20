@@ -127,7 +127,8 @@ public class ExperimentResultFragment extends Fragment {
                         Integer.toString(
                                 bundleHelper.getIdentity() == BundleHelper.Identity.student ?
                                         bundleHelper.getStudentId() : student_id),
-                        getContext().getFilesDir()
+                        new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES), "PAPA")
                 )
         );
     }
