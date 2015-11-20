@@ -4,6 +4,8 @@ import android.util.Log;
 
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,7 +18,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.annotation.NotThreadSafe;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -57,8 +58,8 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
     }
 
     // 执行 get / post 方法
-    private static String executeRequest(HttpRequestBase request)
-        throws PapaHttpClientException
+    private static HttpResponse executeRequest(HttpRequestBase request)
+            throws PapaHttpClientException
     {
         BasicHttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, 3 * 1000);
@@ -67,11 +68,9 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
         try {
             HttpResponse response = httpClient.execute(request);
 
-            String content = EntityUtils.toString(response.getEntity(), "utf-8");
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                return content;
+                return response;
             } else {
-                Log.e(TAG, "ret = " + content + ", NOT 200 OK");
                 Log.e(TAG, "HTTP " + response.getStatusLine().getStatusCode() + ", NOT 200 OK");
                 throw new PapaHttpClientNot200Exception(response.getStatusLine().getStatusCode());
             }
@@ -84,9 +83,21 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
         }
     }
 
-    @Override
-    protected String getHttpReplyByGet(String url, HashMap<String, Object> parameter)
+    private static String executeRequestAsString(HttpRequestBase request)
         throws PapaHttpClientException
+    {
+        try {
+            HttpResponse response = executeRequest(request);
+            String content = EntityUtils.toString(response.getEntity(), "utf-8");
+            return content;
+        }
+        catch(java.io.IOException e) {
+            e.printStackTrace();
+            throw new PapaHttpClientIOErrorException();
+        }
+    }
+
+    private String getFullUrl(String url, HashMap<String, Object> parameter)
     {
         // 准备 url
         if(parameter != null && !parameter.isEmpty())
@@ -109,6 +120,32 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
             }
         }
 
+        return url;
+    }
+
+    @Override
+    protected void getHttpReplyByGet(String url, HashMap<String, Object> parameter, File file) throws PapaHttpClientException {
+        try
+        {
+            OutputStream outputStream = new FileOutputStream(file);
+            url = getFullUrl(url, parameter);
+            HttpGet get = new HttpGet(url);
+            executeRequest(get).getEntity().writeTo(outputStream);
+            outputStream.close();
+        }
+        catch(java.io.IOException e)
+        {
+            e.printStackTrace();
+            throw new PapaHttpClientIOErrorException();
+        }
+    }
+
+    @Override
+    protected String getHttpReplyByGet(String url, HashMap<String, Object> parameter)
+        throws PapaHttpClientException
+    {
+        url = getFullUrl(url, parameter);
+
         HttpGet get = new HttpGet(url);
 
         Log.i(TAG, "url = " + get.getURI().toString());
@@ -116,7 +153,7 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
         // 执行请求
         String reply = null;
 
-        Log.i(TAG, "ret = " + (reply = executeRequest(get)));
+        Log.i(TAG, "ret = " + (reply = executeRequestAsString(get)));
 
 
         Log.i(TAG, reply.toString());
@@ -177,7 +214,7 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
 
         // 执行请求
         String reply = null;
-        Log.i(TAG, "ret = " + (reply = executeRequest(post)));
+        Log.i(TAG, "ret = " + (reply = executeRequestAsString(post)));
         Log.i(TAG, reply.toString());
         return reply;
     }

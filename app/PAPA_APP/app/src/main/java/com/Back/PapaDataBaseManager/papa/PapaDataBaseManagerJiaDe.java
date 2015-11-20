@@ -120,7 +120,7 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public UsrInfoReply getUsrInfo(UsrInfoRequest request) throws PapaHttpClientException {
         kaSi();
         if(request.token.equals("watashi"))
-            return new UsrInfoReply(1, new UsrInfo("watashi", "watashi [at] gmail [dot] com", "0800092000"));
+            return new UsrInfoReply(1, new UsrInfo("watashi", "watashi [at] gmail [dot] com", "0800092000", null));
         throw new PapaDataBaseNotSuccessError();
     }
 
@@ -245,6 +245,16 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
 
     @Override
     public void PutUsrPassword(PutUsrPasswordRequest request) throws PapaHttpClientException {
+
+    }
+
+    @Override
+    public GetStudentCommentsReply getStudentComments(GetStudentCommentsRequest request) throws PapaHttpClientException {
+        return null;
+    }
+
+    @Override
+    public void postAvatar(PostAvatarRequest request) throws PapaHttpClientException {
 
     }
 }

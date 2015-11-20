@@ -11,7 +11,8 @@
     <!-- TODO: Update blank fragment layout -->
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView">
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -88,12 +89,20 @@
                 style="@style/DetailContent"
                 android:textColor="@color/colorPrimary"
                 android:text=""
-                android:id="@+id/title"
+                android:id="@+id/place"
                 android:background="#FAFAFA"
                 android:layout_alignTop="@+id/textView4"
                 android:layout_alignLeft="@+id/recipient"
                 android:layout_alignStart="@+id/recipient"
                 android:scrollbars="vertical"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/download"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="@string/click_here_to_download"
+                android:layout_below="@+id/place"
+                android:layout_marginTop="23sp"/>
         </RelativeLayout>
     </ScrollView>
 

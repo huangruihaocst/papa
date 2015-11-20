@@ -16,6 +16,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+
+
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -137,7 +139,7 @@
         </activity>
         <activity
             android:name=".send_message.SentDetailActivity"
-            android:label="@string/title_activity_sent_detail_acitivity"
+            android:label="@string/title_activity_sent_detail_activity"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>

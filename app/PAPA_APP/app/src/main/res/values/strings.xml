@@ -89,6 +89,9 @@
     <string name="sender">发件人</string>
     <string name="sent_time">发信时间</string>
     <string name="message_from">来自%s的信息</string>
+    <string name="click_here_to_download"><u>点击此处下载课程文件</u></string>
+    <string name="select_student">请选择学生</string>
+    <string name="hint_rating_bar_error_on_low_API_level">在一些低安卓版本上星星的显示可能有问题</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -216,6 +219,6 @@
     <string name="key_settings_file_name">settings.dat</string>
     <string name="title_activity_send_message">SendMessageActivity</string>
     <string name="title_activity_new_message">NewMessageActivity</string>
-    <string name="title_activity_sent_detail_acitivity">SentDetailAcitivity</string>
+    <string name="title_activity_sent_detail_activity">SentDetailActivity</string>
 
 </resources>
