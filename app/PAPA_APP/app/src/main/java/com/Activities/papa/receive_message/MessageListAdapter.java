@@ -147,12 +147,11 @@ public class MessageListAdapter extends BaseAdapter {
          */
         if (convertView == null) {
             layout = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.message_list_item, null);
-            layout.setOnClickListener(new MessageClickListener(position));
         }
         else {
             layout = (ViewGroup) convertView;
         }
-
+        layout.setOnClickListener(new MessageClickListener(position));
         /**
          * Edit mode status.
          */

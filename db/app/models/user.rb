@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
   has_many :from_assistant_comments, class_name: 'StudentComment', foreign_key: :student_id, dependent: :destroy
   has_many :posted_message, class_name: 'Message', foreign_key: :creator_id, dependent: :destroy
   has_many :user_messages, foreign_key: :receiver_id, dependent: :destroy
+  belongs_to :avator, class_name: 'FileResource'
 
   validates :name, presence: true
   validates :email, presence: true

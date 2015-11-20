@@ -35,7 +35,7 @@ image_files.push FileResource.create(name: '1.jpg', file_type: FILE_TYPE_IMAGE, 
 image_files.push FileResource.create(name: '2.jpg', file_type: FILE_TYPE_IMAGE, path: '/uploads/2.jpg', creator_id: admin0.id)
 video_files = []
 video_files.push FileResource.create(name: 'sample1.mp4', file_type: FILE_TYPE_VIDEO, path: '/uploads/sample1.mp4', creator_id: admin0.id)
-video_files.push FileResource.create(name: 'sample2.mp4', file_type: FILE_TYPE_VIDEO, path: '/uploads/sample2.mp4', creator_id: admin0.id)
+#video_files.push FileResource.create(name: 'sample2.mp4', file_type: FILE_TYPE_VIDEO, path: '/uploads/sample2.mp4', creator_id: admin0.id)
 puts 'files created...'
 
 # create semesters
@@ -81,8 +81,8 @@ TEACHER_COUNT.times do |i|
                         student_number: "1#{i}",
                         description: '教师简介',
                         is_admin: false, is_teacher: true)
-  #teacher.avator = image_files.sample
-  #teacher.save
+  teacher.avator = image_files.sample
+  teacher.save
   teachers.push(teacher)
 end
 
@@ -152,8 +152,8 @@ STUDENT_COUNT.times do |x|
                      department: identity[:department],
                      description: '123',
                      is_admin: false, is_teacher: false)
-  #user.avator = image_files.sample
-  #user.save
+  user.avator = image_files.sample
+  user.save
 
   students.push(user)
   courses.each do |course|

@@ -34,7 +34,7 @@ public class MessageDetailActivity extends AppCompatActivity {
             ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(message_bytes));
             this.message = (Message) ois.readObject();
 
-        } catch (IOException|ClassNotFoundException|NullPointerException e) {
+        } catch (IOException | ClassNotFoundException | NullPointerException e) {
             e.printStackTrace();
             this.message = Message.InvalidMessage;
         }
@@ -73,15 +73,5 @@ public class MessageDetailActivity extends AppCompatActivity {
         courseName.setText(message.getCourseName());
         creatorName.setText(message.getCreatorName());
 
-//        // fab
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
     }
-
 }
