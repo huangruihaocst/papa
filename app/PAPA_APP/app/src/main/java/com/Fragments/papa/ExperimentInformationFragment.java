@@ -133,8 +133,8 @@ public class ExperimentInformationFragment extends Fragment {
         textView_place = (TextView)rootView.findViewById(R.id.title);
 
         textView_course_name.setText(rlt.name);
-        textView_course_start_time.setText(rlt.startTime);
-        textView_course_end_time.setText(rlt.endTime);
+        textView_course_start_time.setText(rlt.startTime.toString());
+        textView_course_end_time.setText(rlt.endTime.toString());
         textView_place.setText(rlt.location);
     }
 

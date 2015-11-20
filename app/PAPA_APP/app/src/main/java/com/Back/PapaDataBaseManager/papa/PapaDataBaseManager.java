@@ -15,6 +15,7 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -261,10 +262,10 @@ public abstract class PapaDataBaseManager{
     static public class GetLessonInfoReply
     {
         public String name;
-        public String startTime;
-        public String endTime;
+        public Calendar startTime;
+        public Calendar endTime;
         public String location;
-        public GetLessonInfoReply(String name, String startTime, String endTime, String location)
+        public GetLessonInfoReply(String name, Calendar startTime, Calendar endTime, String location)
         {
             this.name = name;
             this.startTime = startTime;

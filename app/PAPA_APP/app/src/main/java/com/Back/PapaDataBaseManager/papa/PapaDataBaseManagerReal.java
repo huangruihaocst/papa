@@ -412,10 +412,26 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             reply = reply.getJSONObject("lesson");
 
 
+            SimpleDateFormat sdf = new SimpleDateFormat(
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH);
+
+            Calendar startTime = Calendar.getInstance();
+            Calendar endTime = Calendar.getInstance();
+            try
+            {
+                startTime.setTime(sdf.parse(reply.getString("start_time")));
+                endTime.setTime(sdf.parse(reply.getString("end_time")));
+            }
+            catch(java.text.ParseException e)
+            {
+                e.printStackTrace();
+                Log.e(tag, "Wrong date time format");
+                throw new PapaDataBaseJsonError();
+            }
             return new GetLessonInfoReply(
                     reply.getString("name"),
-                    reply.getString("start_time"),
-                    reply.getString("end_time"),
+                    startTime,
+                    endTime,
                     reply.getString("location")
             );
         }
