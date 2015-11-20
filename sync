@@ -7,13 +7,13 @@ do
                 echo "sync done, already up-to-date"
         else
 		export SECRET_KEY_BASE=b8283cb9e01d07e12203c42e2d2e7c040390d3ee99e0462d45ea2f10feb13fb073b4ab61555bd28a2f144529dfd05f5106a59b1c1ebce1b1892bc29b6aa775a3
-		export RAILS_ENV=production
+		export RAILS_ENV=development
                 cd db
                 kill $(cat tmp/pids/server.pid)
                 rake db:drop
                 rake db:migrate
                 rake db:seed
-                rails s -p 5123 -d -e production
+                rails s -p 5123 -d
                 cd ..
         fi
         sleep 5
