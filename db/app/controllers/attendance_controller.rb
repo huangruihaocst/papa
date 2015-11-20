@@ -1,5 +1,16 @@
 class AttendanceController < ApplicationController
 
+  # GET /lessons/1/attendance.json
+  def index
+    lesson = Lesson.find(params[:lesson_id])
+    attendance = StudentAttendence.where(lesson_id: lesson.id)
+    @students = User.none
+    attendance.each do |att|
+      @students <<= att.user
+    end
+
+  end
+
   # POST /lessons/1/attendance.json
   def create
     user = check_login

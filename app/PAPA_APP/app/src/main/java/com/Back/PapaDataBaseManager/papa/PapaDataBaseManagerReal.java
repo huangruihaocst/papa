@@ -635,7 +635,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
         // Edited by Alex Wang 2015-11-13. Change URL to predefined URL.
         dbAccess.getDataBaseReplyAsJson(
-                PapaAbstractHttpClient.HttpMethod.post,
+                PapaAbstractHttpClient.HttpMethod.delete,
                 "/lessons/" + request.lessonId + "/attendance.json",
                 h
         );
