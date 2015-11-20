@@ -9,6 +9,7 @@ package com.Back.PapaDataBaseManager.papa;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 
 import com.Activities.papa.receive_message.Message;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
@@ -554,9 +555,38 @@ public abstract class PapaDataBaseManager{
         }
     }
 
-    public abstract GetFilesReply getFiles(GetFilesRequest request)
+    public abstract GetFilesReply getLessonFiles(GetFilesRequest request)
             throws PapaHttpClientException;
 
+    /////////////////////////////////////////////////////////////////////
+    // 获取文件列表
+
+    static public class GetLessonFilesRequest
+    {
+        public String token;
+        public String lessonId;
+        public File file;
+
+        public GetLessonFilesRequest(String token, String lessonId, File file)
+        {
+            this.token = token;
+            this.lessonId = lessonId;
+            this.file = file;
+        }
+    }
+
+    static public class GetLessonFilesReply
+    {
+        public List<File> files;
+
+        GetLessonFilesReply()
+        {
+            files = new ArrayList<File>();
+        }
+    }
+
+    public abstract GetLessonFilesReply getLessonFiles(GetLessonFilesRequest request)
+            throws PapaHttpClientException;
 
 
     //////////////////////////////////////////////////////////////////////////
@@ -853,7 +883,9 @@ public abstract class PapaDataBaseManager{
         }
     }
 
-
     public abstract GetTeachersInfoReply getTeachersInfo(GetTeachersInfoRequest request)
             throws PapaHttpClientException;
+
+
+
 }

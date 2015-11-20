@@ -607,7 +607,7 @@ public class ExperimentResultFragment extends Fragment {
         {
             // 在后台
             try {
-                return bundleHelper.getPapaDataBaseManager().getFiles(params[0]);
+                return bundleHelper.getPapaDataBaseManager().getLessonFiles(params[0]);
             } catch(PapaHttpClientException e) {
                 publishProgress(e);
             }

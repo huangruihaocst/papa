@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -22,7 +23,9 @@ import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -164,9 +167,74 @@ public class ExperimentInformationFragment extends Fragment {
                 Intent intent = new Intent();
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
 //                intent.setType("")
-                //TODO:click here to download
+                new DownloadTask(getContext()).execute(new PapaDataBaseManager.GetLessonFilesRequest(
+                        bundleHelper.getToken(), Integer.toString(bundleHelper.getExperimentId()),
+                        new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES), "PAPA")
+                ));
             }
         });
+    }
+
+
+    class DownloadTask extends
+            AsyncTask<PapaDataBaseManager.GetLessonFilesRequest,
+                    Exception,
+                    PapaDataBaseManager.GetLessonFilesReply> {
+        ProgressDialog proDialog;
+
+        public DownloadTask(Context context) {
+            proDialog = new ProgressDialog(context, 0);
+            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setCancelable(false);
+            proDialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // UI
+
+            proDialog.show();
+        }
+
+        @Override
+        protected PapaDataBaseManager.GetLessonFilesReply doInBackground
+                (PapaDataBaseManager.GetLessonFilesRequest... params) {
+            // 在后台
+            try {
+                return papaDataBaseManager.getLessonFiles(params[0]);
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(PapaDataBaseManager.GetLessonFilesReply rlt) {
+            // UI
+
+            proDialog.dismiss();
+            if (rlt != null)
+            {
+                List<File> lst = rlt.files;
+                String s = "";
+                for(int i = 0; i < lst.size(); i++)
+                {
+                    Toast.makeText(
+                            getContext(),
+                            lst.get(i).getAbsolutePath(),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+
+            }
+        }
     }
 
     // ☆愛-same-CRIER　愛撫-commit-LIAR
