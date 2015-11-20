@@ -1,5 +1,9 @@
 package com.Back.PapaDataBaseManager.papa;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.Activities.papa.receive_message.Message;
@@ -10,6 +14,7 @@ import com.Back.DataBaseAccess.papa.PapaDataBaseNotSuccessError;
 import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
 import com.Back.NetworkAccess.papa.PapaAbstractHttpClient;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Fragments.papa.experiment_result.Media;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -852,5 +857,66 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                         request.fileId + ".json",
                 h
         );
+    }
+
+    @Override
+    public GetFilesReply getFiles(GetFilesRequest request) throws PapaHttpClientException {
+        try
+        {
+            HashMap<String, Object> h = new HashMap<>();
+            h.put("token", request.token);
+
+            JSONObject obj = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/students/" + request.personId + "/lessons/" + request.lessonId + "/files.json",
+                    h
+            );
+
+            JSONArray list = obj.getJSONArray("files");
+
+            GetFilesReply reply = new GetFilesReply();
+
+            for(int i = 0; i < list.length(); i++) {
+                JSONObject fileObject = list.getJSONObject(i);
+                String type = fileObject.getString("type");
+
+                File file = new File(request.file, fileObject.getString("name"));
+                dbAccess.getDataBaseAsFile(fileObject.getString("path"), h, file);
+
+                Bitmap thumbnail;
+
+                Media.Type t;
+                if(type.equals("image"))
+                {
+                    t = Media.Type.image;
+                    thumbnail = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    thumbnail = ThumbnailUtils.extractThumbnail(thumbnail,200,200);
+                }
+                else if(type.equals("video"))
+                {
+                    t = Media.Type.video;
+                    thumbnail = ThumbnailUtils.createVideoThumbnail
+                            (file.getPath(), MediaStore.Video.Thumbnails.MINI_KIND);
+                }
+                else continue;
+
+
+                reply.mediaList.add(
+                        new Media(
+                                thumbnail,
+                                file.getPath(),
+                                t,
+                                fileObject.getString("id")
+                        )
+                );
+            }
+
+            return reply;
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+        }
     }
 }
