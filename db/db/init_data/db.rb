@@ -56,7 +56,7 @@ course_builder = CourseBuilder.new
 COURSE_COUNT.times do
   course = Course.create(name: course_builder.build,
                          description: '基础课程',
-                         semester_id: semesters[0].id)
+                         semester_id: semesters.last.id)
   i = 0
   CourseBuilder.build_lessons.each do |lesson_name|
     lesson = course.lessons.create(name: lesson_name,
