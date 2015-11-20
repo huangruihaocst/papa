@@ -560,10 +560,11 @@ public abstract class PapaDataBaseManager{
         public String title;
         public String content;
         public String status;
+        public Calendar created_at;
 
         public ChatMessage(
                 String id, String senderId, String senderName,
-                String title, String content, String status)
+                String title, String content, String status, Calendar created_at)
         {
             this.id = id;
             this.senderId = senderId;
@@ -571,6 +572,7 @@ public abstract class PapaDataBaseManager{
             this.title = title;
             this.content = content;
             this.status = status;
+            this.created_at = created_at;
 
         }
 
@@ -607,11 +609,6 @@ public abstract class PapaDataBaseManager{
             title = in.readString();
             content = in.readString();
             status = in.readString();
-        }
-
-        @Override
-        public String toString(){
-            return id + " " + senderId + " " + senderName + " " + title + " " + content + " " + status;
         }
     }
 

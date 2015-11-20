@@ -47,7 +47,7 @@ public class SentDetailActivity extends AppCompatActivity {
 
         sender.setText(chatMessage.senderName);
         recipient.setText("知不道");
-        sent_time.setText("知不道");
+        sent_time.setText(chatMessage.created_at.toString());
         title.setText(chatMessage.title);
         body.setText(chatMessage.content);
 
