@@ -137,7 +137,7 @@
         </activity>
         <activity
             android:name=".send_message.SentDetailActivity"
-            android:label="@string/title_activity_sent_detail_acitivity"
+            android:label="@string/title_activity_sent_detail_activity"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>

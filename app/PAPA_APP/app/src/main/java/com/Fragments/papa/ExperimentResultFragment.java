@@ -176,36 +176,42 @@ public class ExperimentResultFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(which == 0){//camera
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if(bundleHelper.getIdentity() == BundleHelper.Identity.teacher_assistant){
+                    AlertDialog.Builder builder = new AlertDialog().Builder(getActivity());
+                    builder.setTitle(getString(R.string.select_student));
+                    String students[];//TODO:ko ti
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(which == 0){//camera
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to commit the image
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+                                fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to commit the image
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
 
-                            // start the image capture Intent
-                            startActivityForResult(intent, CAPTURE_IMAGE);
-                        }else if(which == 1){//video
-                            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                                // start the image capture Intent
+                                startActivityForResult(intent, CAPTURE_IMAGE);
+                            }else if(which == 1){//video
+                                Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
-                            fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to commit the video
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
-                            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); // set the video image quality to high
+                                fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to commit the video
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
+                                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); // set the video image quality to high
 
-                            // start the Video Capture Intent
-                            startActivityForResult(intent, CAPTURE_VIDEO);
-                        }else if(which == 2){//gallery
-                            Intent intent = new Intent(Intent.ACTION_PICK);
-                            intent.setType("*/*");
-                            startActivityForResult(intent, IMAGE_PICKER_SELECT);
+                                // start the Video Capture Intent
+                                startActivityForResult(intent, CAPTURE_VIDEO);
+                            }else if(which == 2){//gallery
+                                Intent intent = new Intent(Intent.ACTION_PICK);
+                                intent.setType("*/*");
+                                startActivityForResult(intent, IMAGE_PICKER_SELECT);
+                            }
                         }
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
             }
         });
         return rootView;

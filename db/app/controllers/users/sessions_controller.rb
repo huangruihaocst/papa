@@ -10,7 +10,14 @@ module Users
     #POST /users/sign_in
     def create
       respond_to do |format|
-        format.html { super }
+        format.html do
+          @user = warden.authenticate(auth_options)
+          if @user && ( @user.is_teacher? || @user.is_admin?)
+            super
+          else
+            render json: { status: STATUS_FAIL, reason: REASON_INVALID_FIELD }
+          end
+        end
         format.json do
           @user = warden.authenticate(auth_options)
           if @user
