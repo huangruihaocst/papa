@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -345,7 +347,7 @@ public class CourseActivity extends AppCompatActivity
     //a function to change the profile in the navigation drawer, just call it in another thread
     private void getHeaderView(NavigationView navigationView){
         Log.i(tag, id + " " + token + " = id, token ");
-        new GetUsrInfoTask(this).execute(new PapaDataBaseManager.UsrInfoRequest(id, token));
+        new GetUsrInfoTask(this).execute(new PapaDataBaseManager.UsrInfoRequest(id, token, getFilesDir()));
     }
 
     private void setHeaderView(PapaDataBaseManager.UsrInfoReply r){
@@ -355,6 +357,11 @@ public class CourseActivity extends AppCompatActivity
 
         username_label.setText(r.usrInfo.usrName);
         mail_label.setText(r.usrInfo.mail);
+        if(r.usrInfo.avatar.exists())
+        {
+            Bitmap avatar = BitmapFactory.decodeFile(r.usrInfo.avatar.getAbsolutePath());
+            image_label.setImageBitmap(avatar);
+        }
     }
 
     class GetUsrInfoTask extends
@@ -382,6 +389,7 @@ public class CourseActivity extends AppCompatActivity
             try {
                 return papaDataBaseManager.getUsrInfo(params[0]);
             } catch (PapaHttpClientException e) {
+                e.printStackTrace();
                 publishProgress(e);
             }
             return null;

@@ -9,6 +9,7 @@ import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -32,6 +33,13 @@ public class PapaDataBaseAccess
     {
         url = "http://" + host + ":" + port + url;
         return client.getHttpReply(method, url, parameters);
+    }
+
+    public void getDataBaseAsFile(String url, HashMap<String, Object> parameters, File file)
+            throws PapaHttpClientException
+    {
+        url = "http://" + host + ":" + port + url;
+        client.saveHttpContent(url, parameters, file);
     }
 
     public String getDataBaseReplyAsString(PapaAbstractHttpClient.HttpMethod method, String url)
