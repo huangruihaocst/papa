@@ -194,8 +194,8 @@
 				}
 				data+='\n';
 			}
-       //  	data =  encodeURIComponent(data);  
-			data = "\ufeff"+data;
+       //  	data =  encodeURIComponent(data);
+       		data = "\ufeff"+data;
 			var blob = new Blob([data], { type: 'text/csv,charset=UTF-8'});
     		var csvUrl = URL.createObjectURL(blob);  
     		$("#export")[0].href = csvUrl;
