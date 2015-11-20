@@ -161,9 +161,21 @@ public class ExperimentResultFragment extends Fragment {
                 builder.setPositiveButton(getResources().getStringArray(R.array.answer_alert_media)[0], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Media media = mediaArrayList.get(position);
+
                         mediaArrayList.remove(position);
                         imageGridAdapter.notifyDataSetChanged();
-                        //TODO:delete it from database
+
+                        new DeleteFileTask(getContext()).execute(
+                                new PapaDataBaseManager.DeleteFileRequest(
+                                        bundleHelper.getToken(),
+                                        Integer.toString(bundleHelper.getExperimentId()),
+                                        Integer.toString(
+                                                bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                                bundleHelper.getStudentId() : student_id),
+                                        media.id
+                                )
+                        );
                     }
                 });
                 builder.setNegativeButton(getResources().getStringArray(R.array.answer_alert_media)[1], new DialogInterface.OnClickListener() {
@@ -285,7 +297,8 @@ public class ExperimentResultFragment extends Fragment {
                         if(mimeType.contains("video")){
                             Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
                                     (path,MediaStore.Video.Thumbnails.MINI_KIND);
-                            mediaArrayList.add(new Media(thumbnail, path, Media.Type.video));
+                            Media media = new Media(thumbnail, path, Media.Type.video);
+                            mediaArrayList.add(media);
                             imageGridAdapter.notifyDataSetChanged();
 
                             new UploadTask().execute(
@@ -296,7 +309,8 @@ public class ExperimentResultFragment extends Fragment {
                                             bundleHelper.getToken(),
                                             file,
                                             file.getName(),
-                                            "video"
+                                            "video",
+                                            media
                                     )
                             );
 
@@ -304,7 +318,8 @@ public class ExperimentResultFragment extends Fragment {
                             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                    selectedImage.setImageBitmap(bitmap);
                             bitmap = ThumbnailUtils.extractThumbnail(bitmap,200,200);
-                            mediaArrayList.add(new Media(bitmap, path, Media.Type.image));
+                            Media media = new Media(bitmap, path, Media.Type.image);
+                            mediaArrayList.add(media);
                             imageGridAdapter.notifyDataSetChanged();
                             // byte[] bytes = toByteArray(file);
 
@@ -316,7 +331,8 @@ public class ExperimentResultFragment extends Fragment {
                                             bundleHelper.getToken(),
                                             file,
                                             file.getName(),
-                                            "image"
+                                            "image",
+                                            media
                                     )
                             );
 
@@ -340,7 +356,8 @@ public class ExperimentResultFragment extends Fragment {
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 //                        selectedImage.setImageBitmap(bitmap);
                         bitmap = ThumbnailUtils.extractThumbnail(bitmap,200,200);
-                        mediaArrayList.add(new Media(bitmap, path, Media.Type.image));
+                        Media media = new Media(bitmap, path, Media.Type.image);
+                        mediaArrayList.add(media);
                         imageGridAdapter.notifyDataSetChanged();
                         // byte[] bytes = toByteArray(file);
 
@@ -352,7 +369,8 @@ public class ExperimentResultFragment extends Fragment {
                                         bundleHelper.getToken(),
                                         file,
                                         file.getName(),
-                                        "image"
+                                        "image",
+                                        media
                                 )
                         );
                     }
@@ -375,7 +393,8 @@ public class ExperimentResultFragment extends Fragment {
                         // byte[] bytes = toByteArray(file);
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail
                                 (path,MediaStore.Video.Thumbnails.MINI_KIND);
-                        mediaArrayList.add(new Media(thumbnail, path, Media.Type.video));
+                        Media media = new Media(thumbnail, path, Media.Type.video);
+                        mediaArrayList.add(media);
                         imageGridAdapter.notifyDataSetChanged();
 
                         new UploadTask().execute(
@@ -386,7 +405,8 @@ public class ExperimentResultFragment extends Fragment {
                                         bundleHelper.getToken(),
                                         file,
                                         file.getName(),
-                                        "video"
+                                        "video",
+                                        media
                                 )
                         );
                     }
@@ -474,6 +494,43 @@ public class ExperimentResultFragment extends Fragment {
 
             proDialog.dismiss();
             if (rlt != null) setStudents(rlt);
+        }
+    }
+
+    class DeleteFileTask extends
+            AsyncTask<PapaDataBaseManager.DeleteFileRequest, Exception, Boolean> {
+
+        public DeleteFileTask(Context context) {
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Boolean doInBackground
+                (PapaDataBaseManager.DeleteFileRequest... params) {
+            // 在后台
+            try {
+                bundleHelper.getPapaDataBaseManager().deleteFile(params[0]);
+                return true;
+            } catch (PapaHttpClientException e) {
+                publishProgress(e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(Exception... e) {
+            // UI
+            Toast.makeText(getContext(), e[0].getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean rlt) {
+            // UI
+            if (rlt == true)
+                Toast.makeText(getContext(), "删除成功", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -204,8 +204,8 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     }
 
     @Override
-    public void postFileOnLesson(PostFileOnLessonRequest request) throws PapaHttpClientException {
-
+    public PostFileOnLessonReply postFileOnLesson(PostFileOnLessonRequest request) throws PapaHttpClientException {
+        return null;
     }
 
     @Override
@@ -255,6 +255,11 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
 
     @Override
     public void postAvatar(PostAvatarRequest request) throws PapaHttpClientException {
+
+    }
+
+    @Override
+    public void deleteFile(DeleteFileRequest request) throws PapaHttpClientException {
 
     }
 }
