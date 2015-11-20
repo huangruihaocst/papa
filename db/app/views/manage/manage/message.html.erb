@@ -79,6 +79,8 @@
 					<textarea id="input-show-message-2" type="text" class="form-control"></textarea>
 					<h4>作者</h4>
 					<input id="input-show-message-3" type="text" class="form-control"></input>
+					<h4>时间</h4>
+					<input id="input-show-message-4" type="text" class="form-control"></input>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -141,6 +143,7 @@
 				}
 				if (data.status=="successful")
 				{
+					console.log(data);
 					data=data.user_messages;
 					n=data.length;
 					info=data;
@@ -159,7 +162,6 @@
 				$.post('/messages/'+info[i].id+'/read.json',{},
 				function(data)
 				{
-					console.log(data);
 					if (data.status=="failed")
 					{
 					}
