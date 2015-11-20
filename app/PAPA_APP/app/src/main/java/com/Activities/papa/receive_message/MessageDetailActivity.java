@@ -23,8 +23,6 @@ public class MessageDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         // get the message from outside
         Intent intent = getIntent();
@@ -41,16 +39,26 @@ public class MessageDetailActivity extends AppCompatActivity {
             this.message = Message.InvalidMessage;
         }
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.string_message_title, message.getTitle()));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         // set content
         View content_view = findViewById(R.id.layout_activity_message_detail_content);
-        TextView title = (TextView) content_view.findViewById(R.id.text_view_message_detail_title);
         TextView type = (TextView) content_view.findViewById(R.id.text_view_message_detail_type);
         TextView message_content = (TextView) content_view.findViewById(R.id.text_view_message_detail_content);
         TextView deadline = (TextView) content_view.findViewById(R.id.text_view_message_detail_deadline);
         TextView courseName = (TextView) content_view.findViewById(R.id.text_view_message_detail_course_name);
         TextView creatorName = (TextView) content_view.findViewById(R.id.text_view_message_detail_creator_name);
 
-        title.setText(getString(R.string.string_message_title, message.getTitle()));
         type.setText(message.getType());
         message_content.setText(message.getContent());
 
