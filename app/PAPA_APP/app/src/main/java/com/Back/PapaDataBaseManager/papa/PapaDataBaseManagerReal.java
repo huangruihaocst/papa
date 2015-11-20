@@ -584,19 +584,31 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     }
 
     @Override
-    public void postFileOnLesson(PostFileOnLessonRequest request) throws PapaHttpClientException {
+    public PostFileOnLessonReply postFileOnLesson(PostFileOnLessonRequest request) throws PapaHttpClientException {
         HashMap<String, Object> h = new HashMap<>();
         h.put("token", request.token);
         h.put("file[type]", request.fileType);
         h.put("file[name]", request.fileName);
         h.put("file[file]", request.file);
 
-        dbAccess.getDataBaseReplyAsJson(
+        JSONObject object = dbAccess.getDataBaseReplyAsJson(
                 PapaAbstractHttpClient.HttpMethod.post,
                 "/students/" + request.personId + "/lessons/" +
                         request.lessonId + "/files.json",
                 h
         );
+
+        try
+        {
+            String id = object.getString("id");
+            request.media.id = id;
+            return new PostFileOnLessonReply(id);
+        }
+        catch(org.json.JSONException e)
+        {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+        }
     }
 
     @Override
@@ -668,15 +680,13 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
 
                 lst.add(new ChatMessage(
                         object.getString("id"),
-                        object.getString("sender_id"),
-                        object.getString("sender_name"),
+                        object.getString("creator_id"),
+                        object.getString("creator_name"),
                         object.getString("title"),
                         object.getString("content"),
                         object.getString("status"),
                         getCalenderByString(object.getString("created_at"))
                 ));
-
-                Log.i(tag, "get chat msg where sender_name = " +  object.getString("sender_name"));
             }
 
             return new GetChatMessageReply(lst);
@@ -829,6 +839,18 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
             e.printStackTrace();
             throw new PapaDataBaseJsonError();
         }
+    }
 
+    @Override
+    public void deleteFile(DeleteFileRequest request) throws PapaHttpClientException {
+        HashMap<String, Object> h = new HashMap<>();
+        h.put("token", request.token);
+
+        JSONObject obj = dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.delete,
+                "/students/" + request.personId + "/lessons/" + request.lessonId + "/files/" +
+                        request.fileId + ".json",
+                h
+        );
     }
 }

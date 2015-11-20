@@ -12,6 +12,7 @@ import android.os.Parcelable;
 
 import com.Activities.papa.receive_message.Message;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
+import com.Fragments.papa.experiment_result.Media;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -461,7 +462,7 @@ public abstract class PapaDataBaseManager{
     // 赤い　紅い　アカイ
 
     //////////////////////////////////////////////////////////////////////////
-    // 学生课程评价
+    // 学生文件
 
     static public class PostFileOnLessonRequest
     {
@@ -473,8 +474,11 @@ public abstract class PapaDataBaseManager{
         public String fileName;
         public File file;
 
+        public Media media;
+
         public PostFileOnLessonRequest(
-                int lessonId, int personId, String token, File file, String fileName, String fileType)
+                int lessonId, int personId, String token, File file, String fileName,
+                String fileType, Media media)
         {
             this.lessonId = lessonId;
             this.personId = personId;
@@ -483,11 +487,43 @@ public abstract class PapaDataBaseManager{
             this.fileType = fileType;
             this.fileName = fileName;
             this.file = file;
+            this.media = media;
         }
     }
 
-    public abstract void postFileOnLesson(PostFileOnLessonRequest request)
+    static public class PostFileOnLessonReply
+    {
+        public String id;
+
+        public PostFileOnLessonReply(String id)
+        {
+            this.id = id;
+        }
+    }
+
+    public abstract PostFileOnLessonReply postFileOnLesson(PostFileOnLessonRequest request)
             throws PapaHttpClientException;
+
+
+    static public class DeleteFileRequest
+    {
+        public String token;
+        public String fileId;
+        public String lessonId;
+        public String personId;
+
+        public DeleteFileRequest(String token, String lessonId, String personId, String fileId)
+        {
+            this.token = token;
+            this.lessonId = lessonId;
+            this.personId = personId;
+            this.fileId = fileId;
+        }
+    }
+
+    public abstract void deleteFile(DeleteFileRequest request)
+            throws PapaHttpClientException;
+
 
     //////////////////////////////////////////////////////////////////////////
     // 学生课程评价
