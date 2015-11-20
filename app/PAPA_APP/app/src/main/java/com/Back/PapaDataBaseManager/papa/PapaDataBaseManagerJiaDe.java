@@ -204,7 +204,7 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     }
 
     @Override
-    public void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request) throws PapaHttpClientException {
+    public void postFileOnLesson(PostFileOnLessonRequest request) throws PapaHttpClientException {
 
     }
 

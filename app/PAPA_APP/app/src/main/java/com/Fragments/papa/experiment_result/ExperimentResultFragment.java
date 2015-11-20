@@ -189,12 +189,37 @@ public class ExperimentResultFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(bundleHelper.getIdentity() == BundleHelper.Identity.teacher_assistant){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(getString(R.string.select_student));
+
                     getStudents();
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            if(which == 0){//camera
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                                fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to commit the image
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+
+                                // start the image capture Intent
+                                startActivityForResult(intent, CAPTURE_IMAGE);
+                            }else if(which == 1){//video
+                                Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+
+                                fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to commit the video
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
+                                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); // set the video image quality to high
+
+                                // start the Video Capture Intent
+                                startActivityForResult(intent, CAPTURE_VIDEO);
+                            }else if(which == 2){//gallery
+                                Intent intent = new Intent(Intent.ACTION_PICK);
+                                intent.setType("*/*");
+                                startActivityForResult(intent, IMAGE_PICKER_SELECT);
+                            }
                             selectType(which);
                         }
                     });
@@ -264,16 +289,16 @@ public class ExperimentResultFragment extends Fragment {
                             imageGridAdapter.notifyDataSetChanged();
 
                             new UploadTask().execute(
-                                    new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                                    new PapaDataBaseManager.PostFileOnLessonRequest(
                                             bundleHelper.getExperimentId(),
-                                            bundleHelper.getStudentId(),
+                                            bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                                    bundleHelper.getStudentId() : student_id,
                                             bundleHelper.getToken(),
                                             file,
                                             file.getName(),
                                             "video"
                                     )
                             );
-                            //TODO:upload as TA
 
                         }else if(mimeType.contains("image")){
                             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
@@ -284,16 +309,16 @@ public class ExperimentResultFragment extends Fragment {
                             // byte[] bytes = toByteArray(file);
 
                             new UploadTask().execute(
-                                    new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                                    new PapaDataBaseManager.PostFileOnLessonRequest(
                                             bundleHelper.getExperimentId(),
-                                            bundleHelper.getStudentId(),
+                                            bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                                    bundleHelper.getStudentId() : student_id,
                                             bundleHelper.getToken(),
                                             file,
                                             file.getName(),
                                             "image"
                                     )
                             );
-                            //TODO:upload as TA
 
                         }else{
                             Toast.makeText(getContext(),getString(R.string.invalid_file),Toast.LENGTH_LONG).show();
@@ -320,16 +345,16 @@ public class ExperimentResultFragment extends Fragment {
                         // byte[] bytes = toByteArray(file);
 
                         new UploadTask().execute(
-                                new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                                new PapaDataBaseManager.PostFileOnLessonRequest(
                                         bundleHelper.getExperimentId(),
-                                        bundleHelper.getStudentId(),
+                                        bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                                bundleHelper.getStudentId() : student_id,
                                         bundleHelper.getToken(),
                                         file,
                                         file.getName(),
                                         "image"
                                 )
                         );
-                        //TODO:upload as TA
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -354,16 +379,16 @@ public class ExperimentResultFragment extends Fragment {
                         imageGridAdapter.notifyDataSetChanged();
 
                         new UploadTask().execute(
-                                new PapaDataBaseManager.PostFileOnLessonAsStudentRequest(
+                                new PapaDataBaseManager.PostFileOnLessonRequest(
                                         bundleHelper.getExperimentId(),
-                                        bundleHelper.getStudentId(),
+                                        bundleHelper.getIdentity() == BundleHelper.Identity.student ?
+                                                bundleHelper.getStudentId() : student_id,
                                         bundleHelper.getToken(),
                                         file,
                                         file.getName(),
                                         "video"
                                 )
                         );
-                        //TODO:upload as TA
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -453,7 +478,7 @@ public class ExperimentResultFragment extends Fragment {
     }
 
     class UploadTask extends AsyncTask
-            <PapaDataBaseManager.PostFileOnLessonAsStudentRequest,
+            <PapaDataBaseManager.PostFileOnLessonRequest,
                     Exception, Boolean>
     {
         public UploadTask() {
@@ -466,11 +491,11 @@ public class ExperimentResultFragment extends Fragment {
 
         @Override
         protected Boolean doInBackground
-                (PapaDataBaseManager.PostFileOnLessonAsStudentRequest... params)
+                (PapaDataBaseManager.PostFileOnLessonRequest... params)
         {
             // 在后台
             try {
-                bundleHelper.getPapaDataBaseManager().postFileOnLessonAsStudent(params[0]);
+                bundleHelper.getPapaDataBaseManager().postFileOnLesson(params[0]);
                 return true;
             } catch(PapaHttpClientException e) {
                 publishProgress(e);

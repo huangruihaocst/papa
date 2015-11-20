@@ -1,6 +1,5 @@
 package com.Back.PapaDataBaseManager.papa;
 
-import android.os.Environment;
 import android.util.Log;
 
 import com.Activities.papa.receive_message.Message;
@@ -592,7 +591,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
     }
 
     @Override
-    public void postFileOnLessonAsStudent(PostFileOnLessonAsStudentRequest request) throws PapaHttpClientException {
+    public void postFileOnLesson(PostFileOnLessonRequest request) throws PapaHttpClientException {
         HashMap<String, Object> h = new HashMap<>();
         h.put("token", request.token);
         h.put("file[type]", request.fileType);
