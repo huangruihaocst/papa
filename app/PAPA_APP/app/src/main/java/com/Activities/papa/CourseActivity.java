@@ -30,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Activities.papa.attendance.Attendance;
-import com.Activities.papa.profile.ProfileActivity;
 import com.Activities.papa.send_message.SentListActivity;
 import com.Activities.papa.receive_message.MessageActivity;
 import com.Activities.papa.receive_message.MessagePullService;
