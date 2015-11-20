@@ -1,7 +1,7 @@
 class Participation < ActiveRecord::Base
 
-  belongs_to :user, dependent: :destroy
-  belongs_to :course, dependent: :destroy
+  belongs_to :user
+  belongs_to :course
 
   validates :role, presence: true
   validates :user, presence: true

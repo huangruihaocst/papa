@@ -5,21 +5,21 @@ class Lesson < ActiveRecord::Base
   validates :end_time,    presence: true
   validates :location,    presence: true
 
-  belongs_to :course, dependent: :destroy
-  has_many :lesson_files
+  belongs_to :course
+  has_many :lesson_files, dependent: :destroy
   has_many :attached_files, through: :lesson_files, source: :file_resource
-  has_many :lesson_comments
-  has_many :student_comments
-  has_many :student_files
-  has_many :lesson_statuses
-  has_many :student_attendences
+  has_many :lesson_comments, dependent: :destroy
+  has_many :student_comments, dependent: :destroy
+  has_many :student_files, dependent: :destroy
+  has_many :lesson_statuses, dependent: :destroy
+  has_many :student_attendences, dependent: :destroy
   has_many :signed_in_students, through: :student_attendences, source: :user
 
   def latitude
-    40.004564
+    0
   end
   def longitude
-    116.327893
+    0
   end
   def radius
     1000

@@ -1,18 +1,18 @@
 class Course < ActiveRecord::Base
   validates :name, presence: true
 
-  belongs_to :semester, dependent: :destroy
+  belongs_to :semester
 
-  has_many :lessons
+  has_many :lessons, dependent: :destroy
 
-  has_many :participations
+  has_many :participations, dependent: :destroy
 
-  has_many :teaching_courses
+  has_many :teaching_courses, dependent: :destroy
   has_many :teachers, through: :teaching_courses, source: :user
 
-  has_many :messages
+  has_many :messages, dependent: :destroy
 
-  has_many :course_files
+  has_many :course_files, dependent: :destroy
   has_many :attached_files, through: :course_files, source: :file_resource
 
   def students
@@ -25,6 +25,9 @@ class Course < ActiveRecord::Base
 
   def add_student(student)
     Participation.create(user_id: student.id, course_id: id, role: ROLE_STUDENT)
+  end
+  def add_assistant(assistant)
+    Participation.create(user_id: assistant.id, course_id: :id, role: ROLE_ASSISTANT)
   end
 
   def assistants
