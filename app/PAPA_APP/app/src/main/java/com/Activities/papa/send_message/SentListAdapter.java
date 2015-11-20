@@ -1,24 +1,19 @@
 package com.Activities.papa.send_message;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.Activities.papa.R;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by huang on 15-11-13.
@@ -64,9 +59,8 @@ public class SentListAdapter extends BaseAdapter {
         }
         send_overview.setText(overview);
         Calendar send_time_calendar = chatMessage.created_at;
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM月dd日 HH:mm", Locale.CHINA);
         SimpleDateFormat simpleDateFormat =
-                new SimpleDateFormat(String.format(context.getString(R.string.time_format), "MM", "dd") + " HH:mm",
+                new SimpleDateFormat(String.format(context.getString(R.string.time_format_simple), "MM", "dd") + " HH:mm",
                         Locale.CHINA);
         simpleDateFormat.setTimeZone(send_time_calendar.getTimeZone());
         String time = (simpleDateFormat.format(send_time_calendar.getTime()));

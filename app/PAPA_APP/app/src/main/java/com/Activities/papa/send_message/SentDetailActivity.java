@@ -6,11 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class SentDetailActivity extends AppCompatActivity {
 
@@ -40,16 +43,21 @@ public class SentDetailActivity extends AppCompatActivity {
         });
 
         TextView sender = (TextView)findViewById(R.id.sender);
-        TextView recipient = (TextView)findViewById(R.id.recipient);
         TextView sent_time = (TextView)findViewById(R.id.sent_time);
         TextView title = (TextView)findViewById(R.id.title);
         TextView body = (TextView)findViewById(R.id.body);
 
         sender.setText(chatMessage.senderName);
-        recipient.setText("知不道");
-        // sent_time.setText(chatMessage.created_at.toString());
         title.setText(chatMessage.title);
         body.setText(chatMessage.content);
+
+        Calendar send_time_calendar = chatMessage.created_at;
+        SimpleDateFormat simpleDateFormat =
+                new SimpleDateFormat(String.format(getString(R.string.time_format_full), "yyyy", "MM", "dd") + " HH:mm",
+                        Locale.CHINA);
+        simpleDateFormat.setTimeZone(send_time_calendar.getTimeZone());
+        String time = simpleDateFormat.format(send_time_calendar.getTime());
+        sent_time.setText(time);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
