@@ -695,6 +695,8 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 courses.put(assistantCourses.get(i));
             }
 
+            HashSet<String> teachersIdSet = new HashSet<String>();
+
             for (int i = 0; i < courses.length(); i++) {
                 JSONObject courseObject = courses.getJSONObject(i);
                 String courseId = courseObject.getString("id");
@@ -705,19 +707,28 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                         "/courses/" + courseId + "/teachers.json", null
                 ).getJSONArray("teachers");
 
-                for(int j = 0; j < teacherArray.length(); j++)
-                {
+                Log.i(tag, "Teacher name list start");
+                for(int j = 0; j < teacherArray.length(); j++) {
                     JSONObject teacherObject = teacherArray.getJSONObject(j);
-                    lst.add(new TeacherInfo(
-                                    teacherObject.getString("name"),
-                                    courseName,
-                                    teacherObject.getString("phone"),
-                                    teacherObject.getString("email"),
-                                    teacherObject.getString("id")
-                            )
-                    );
+                    if (teachersIdSet.add(teacherObject.getString("id"))) {
+                        lst.add(new TeacherInfo(
+                                        teacherObject.getString("name"),
+                                        courseName,
+                                        teacherObject.getString("phone"),
+                                        teacherObject.getString("email"),
+                                        teacherObject.getString("id")
+                                )
+                        );
+
+                        Log.i(tag, "Teacher name = " + teacherObject.getString("name"));
+                    }
                 }
+                Log.i(tag, "Teacher name list end");
+
+
             }
+
+
             return new GetTeachersInfoReply(lst);
         }
         catch(JSONException e)
