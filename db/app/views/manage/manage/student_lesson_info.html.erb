@@ -1,6 +1,6 @@
  <script src="/video/video.js" type="text/javascript" charset="utf-8"></script>
   <script src="/jquery.form.js" type="text/javascript" charset="utf-8"></script>
-  <link rel="stylesheet" href="/video/video-js.css" type="text/css" media="screen" title="Video JS">
+  <!--link rel="stylesheet" href="/video/video-js.css" type="text/css" media="screen" title="Video JS"-->
 
   <div class="container-fluid">
     <div class="row">
@@ -56,13 +56,16 @@
     <div class="row">
     <div class="col-md-8">
             <!-- Begin VideoJS -->
-            <div class="video-js-box " style="margin: 20px;border-right: groove 1px #000000">
+            <!--div class="video-js-box " style="margin: 20px;border-right: groove 1px #000000">
               <video id="video-screen" class="video-js vjs-big-play-centered"
-                     style="margin: auto; width: 70%" controls
+                     style="margin: auto; width: 70%" controls="controls"
                      preload="auto" data-setup="{}">
-                <!--source id="video-src" src="/test.mp4" type='video/mp4;' /-->
               </video>
-              </div>
+              </div-->
+      <div class="" style="margin: 20px;border-right: groove 1px #000000">
+        <video id="video-screen" controls="controls" style="margin: auto" width="70%" preload="auto">
+        </video>
+        </div>
     </div>
       <div class="col-md-4 label-list" id="video-list" 
            style="padding: 20px;text-align: left;"></div>
