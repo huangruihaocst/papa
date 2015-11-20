@@ -14,7 +14,10 @@ import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -60,7 +63,14 @@ public class SentListAdapter extends BaseAdapter {
             overview = overview.substring(0, max_length - 3) + "...";
         }
         send_overview.setText(overview);
-        send_time.setText("faked time");
+        Calendar send_time_calendar = chatMessage.created_at;
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM月dd日 HH:mm", Locale.CHINA);
+        SimpleDateFormat simpleDateFormat =
+                new SimpleDateFormat(String.format(context.getString(R.string.time_format), "MM", "dd") + " HH:mm",
+                        Locale.CHINA);
+        simpleDateFormat.setTimeZone(send_time_calendar.getTimeZone());
+        String time = (simpleDateFormat.format(send_time_calendar.getTime()));
+        send_time.setText(time);
         return convertView;
     }
 }
