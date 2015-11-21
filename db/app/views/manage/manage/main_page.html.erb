@@ -72,7 +72,7 @@
 		.names
 		{
 			float:left;
-			font-size:20px;
+			font-size:25px;
 		}
 		
 		h4
@@ -923,9 +923,21 @@
 			event.stopPropagation();
 		}
 		
+		function getWindowWidth()
+		{
+			var winWidth;
+			if (window.innerWidth)
+				winWidth = window.innerWidth;
+			else if ((document.body) && (document.body.clientWidth))
+			winWidth = document.body.clientWidth;
+			if (winWidth<1100) winWidth=1100;
+			return winWidth;
+		}
+		
 		function showInfo()  //显示课程信息
 		{
-			var i,j=-1,k=-1,text="",text2,text3,p=0;j=k=-1,len=parseInt(screen.width*0.8*0.13);
+			
+			var i,j=-1,k=-1,text="",text2,text3,p=0;j=k=-1,len=290;
 			
 			for (i=0;i<info.tot;++i)
 			{
@@ -959,7 +971,7 @@
 					}
 					text+='<div id="'+text3+'" class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
 					text+='<div class="names keep-line" style="max-width:'+len+'px;">'+info.semesters[i].courses[j].name+'</div>';
-					text+='<div class="custom-button custom-font-size '+text3+'" onclick="deleteCourse(event,'+i+','+j+')">×</div>';
+					text+='<div class="btn btn-info custom-button '+text3+'" onclick="deleteCourse(event,'+i+','+j+')">删除</div>';
 					text+='<div class="btn btn-info custom-button '+text3+'" onclick="addClass(event,'+i+','+j+')">添加实验</div>';
 					text+='<div class="btn btn-info custom-button '+text3+'" onclick="changeCourseInfo(event,'+i+','+j+')">编辑</div>';
 					text+='<div class="btn btn-info custom-button '+text3+'" onclick="showCourseScore(event,'+i+','+j+')">成绩</div>';
@@ -983,7 +995,7 @@
 							}
 							text+='<div id="'+text3+'" class="'+text2+'" onclick="change('+i+','+j+','+k+')">';
 							text+='<div class="names keep-line" style="max-width:'+len+'px;">'+info.semesters[i].courses[j].lessons[k].name+'</div>';
-							text+='<div class="custom-button custom-font-size '+text3+'" onclick="deleteClass(event,'+i+','+j+','+k+')">×</div>';
+							text+='<div class="btn btn-info custom-button '+text3+'" onclick="deleteClass(event,'+i+','+j+','+k+')">删除</div>';
 							text+='<div class="btn btn-info custom-button '+text3+'" onclick="changeClassInfo(event,'+i+','+j+','+k+')">编辑</div>';
 							text+='<div class="btn btn-info custom-button '+text3+'" onclick="showClassScore(event,'+i+','+j+','+k+')">成绩</div>';
 							text+='<div class="btn btn-info custom-button '+text3+'" onclick="showClassInfo(event,'+i+','+j+','+k+')">反馈</div>';

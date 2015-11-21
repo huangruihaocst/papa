@@ -12,6 +12,13 @@
 			float:right;
 			margin-left:3px;
 			margin-right:3px;
+			display:none;
+		}
+		.custom-button2
+		{
+			float:right;
+			margin-left:3px;
+			margin-right:3px;
 		}
 		.names
 		{
@@ -100,8 +107,9 @@
     			}
     			if (data.status=="successful")
     			{
+    				for (i=info.tot++;i;--i) info.semesters[i]=info.semesters[i-1];
     				p.semester.id=data.id;
-    				info.semesters[info.tot++]=p.semester;
+    				info.semesters[0]=p.semester;
     				showInfo();
     			}
     		}
@@ -216,18 +224,41 @@
 		
 		function showInfo()  //显示学期信息
 		{
-			var i,text="";
-			text+='<div class="btn btn-info custom-button" onclick="addSemester(event)">添加学期</div>';
+			var i,text="",text3;
+			text+='<div class="btn btn-info custom-button2" onclick="addSemester(event)">添加学期</div>';
 			for (i=0;i<info.tot;++i)
 			{
-				text+='<div class="rectangle-semester btn btn-default">';
+				text3='semester-'+i;
+				text+='<div id="'+text3+'" class="rectangle-semester btn btn-default">';
 				text+='<div class="names">'+info.semesters[i].name+'</div>';
-				text+='<div class="btn btn-info custom-button" onclick="deleteSemester(event,'+i+')">删除学期</div>';
-				text+='<div class="btn btn-info custom-button" onclick="changeSemester(event,'+i+')">修改学期</div>';
+				text+='<div class="btn btn-info custom-button '+text3+'" onclick="deleteSemester(event,'+i+')">删除学期</div>';
+				text+='<div class="btn btn-info custom-button '+text3+'" onclick="changeSemester(event,'+i+')">修改学期</div>';
 				text+='</div>';
 			}
-			
 			$("#content")[0].innerHTML=text;
+			function deal(text)
+			{
+				$("#"+text).hover(
+				function()
+				{
+					var p=$("."+text),i;
+					for (i=0;i<p.length;++i)
+					{
+						p[i].style.display="block";
+					}
+				},function()
+				{
+					var p=$("."+text),i;
+					for (i=0;i<p.length;++i)
+					{
+						p[i].style.display="none";
+					}
+				});
+			}
+			for (i=0;i<info.tot;++i)
+			{
+				deal('semester-'+i);
+			}
 		}
 		
 		loadInfo();
