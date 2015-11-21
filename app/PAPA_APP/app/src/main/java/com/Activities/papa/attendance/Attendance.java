@@ -64,8 +64,9 @@ public class Attendance {
             public void run() {
                 for (int i = 0; i < TryTimes; ++i) {
                     Settings settings = Settings.begin(context);
-                    if (canSignIn(settings)) {
+//                    if (canSignIn(settings)) {
                         // send sign in request
+                    if (true) {
                         Log.w(TAG, "sign in");
 
                         // sign in and set signed in flags

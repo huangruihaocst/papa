@@ -51,7 +51,7 @@
 </div>
 
 <div class="modal fade" id="modal-add-one-ass" tabindex="-1" role="dialog" aria-hidden="true">
-  <form id="addAssForm" action="/courses/<%=@course_id%>/assistants.json" method="post" onsubmit="return addOne()">
+  <form id="addAssForm" action="/courses/<%=@course_id%>/assistants.json" method="post" onsubmit="return addAss()">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -211,6 +211,16 @@
     function addOne()
     {
         $("#addOneForm").ajaxSubmit(function(d){
+            if(d.invalid_fields.length){
+                alert("添加失败,请仔细检查格式");
+            }
+            else { alert("添加成功!");location.reload(true);}
+        });
+        return false;
+    }
+    function addASS()
+    {
+        $("#addAssForm").ajaxSubmit(function(d){
             if(d.invalid_fields.length){
                 alert("添加失败,请仔细检查格式");
             }

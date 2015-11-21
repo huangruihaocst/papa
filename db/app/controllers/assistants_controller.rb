@@ -65,9 +65,9 @@ class AssistantsController < ApplicationController
                                  email: assistant['email'],
                                  phone: assistant['phone'],
                                  password: assistant['email'],
-                                 department: assistant['department'],
+                                 department: assistant['department'] || '',
                                  description: assistant['description'] || '',
-                                 class_name: assistant['class_name'])
+                                 class_name: assistant['class_name'] || '')
               rescue
                 json_failed
                 return

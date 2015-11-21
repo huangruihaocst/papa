@@ -12,10 +12,12 @@ module Users
       respond_to do |format|
         format.html do
           @user = warden.authenticate(auth_options)
-          if @user && ( @user.is_teacher? || @user.is_admin?)
+          if @user && (@user.is_teacher? || @user.is_admin?)
             super
           else
-            render json: { status: STATUS_FAIL, reason: REASON_INVALID_FIELD }
+            sign_out @user if @user
+            flash[:alert] = '用户名或密码错误'
+            redirect_to :new_user_session
           end
         end
         format.json do
