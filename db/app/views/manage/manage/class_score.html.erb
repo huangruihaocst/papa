@@ -30,6 +30,17 @@
 		
 		var n1,n2,m,info,items,classInfo,lastChoose=-1,p=0,focusi=-1,focusj=-1;
 		
+		function modifyDateTime(text)    //修改后台获取的时间的格式
+		{
+			var i;
+			text=text.replace("T"," ");
+			for (i=0;i<text.length;++i)
+			{
+				if (text[i]=='.') return text.substring(0,i);
+			}
+			return "";
+		}
+		
 		function loadInfo()    //获取实验成绩信息
 		{
 			getId();
@@ -87,7 +98,7 @@
 						if (data2.attendance)
 						{
 							info[i].attendance="已签到";
-							info[i].addition=data2.attendance;
+							info[i].addition=modifyDateTime(data2.attendance);
 						}
 						else
 						{
@@ -104,8 +115,8 @@
 			switch (o)
 			{
 				case 0:
-					x=x.people.student_number;
-					y=y.people.student_number;
+					x=parseInt(x.people.student_number);
+					y=parseInt(y.people.student_number);
 					break;
 				case 1:
 					x=x.people.name;
@@ -122,14 +133,28 @@
 				case 4:
 					x=x.scoreInfo.score;
 					y=y.scoreInfo.score;
+					if (x=="未登记")
+					{
+						x=0;
+					}else
+					{
+						x=parseInt(x);
+					}
+					if (y=="未登记")
+					{
+						y=0;
+					}else
+					{
+						y=parseInt(y);
+					}					
 					break;
 				case 5:
-					x=x.scoreInfo.picture_number;
-					y=y.scoreInfo.picture_number;
+					x=parseInt(x.scoreInfo.picture_number);
+					y=parseInt(y.scoreInfo.picture_number);
 					break;
 				case 6:
-					x=x.scoreInfo.video_number;
-					y=y.scoreInfo.video_number;
+					x=parseInt(x.scoreInfo.video_number);
+					y=parseInt(y.scoreInfo.video_number);
 					break;
 				case 7:
 					x=x.scoreInfo.creator_name;

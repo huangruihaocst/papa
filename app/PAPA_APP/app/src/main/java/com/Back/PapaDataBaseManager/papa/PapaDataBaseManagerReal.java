@@ -851,16 +851,24 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         HashMap<String, Object> h = new HashMap<>();
         h.put("token", request.token);
 
+        /*
         JSONObject obj = dbAccess.getDataBaseReplyAsJson(
                 PapaAbstractHttpClient.HttpMethod.delete,
                 "/students/" + request.personId + "/lessons/" + request.lessonId + "/files/" +
                         request.fileId + ".json",
                 h
         );
+        */
+
+        JSONObject obj = dbAccess.getDataBaseReplyAsJson(
+                PapaAbstractHttpClient.HttpMethod.delete,
+                "/files/" + request.fileId + ".json",
+                h
+        );
     }
 
     @Override
-    public GetFilesReply getFiles(GetFilesRequest request) throws PapaHttpClientException {
+    public GetFilesReply getLessonFiles(GetFilesRequest request) throws PapaHttpClientException {
         try
         {
             HashMap<String, Object> h = new HashMap<>();
@@ -904,7 +912,7 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 reply.mediaList.add(
                         new Media(
                                 thumbnail,
-                                file.getPath(),
+                                file.getAbsolutePath(),
                                 t,
                                 fileObject.getString("id")
                         )
@@ -915,6 +923,38 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
         }
         catch(JSONException e)
         {
+            e.printStackTrace();
+            throw new PapaDataBaseJsonError();
+        }
+    }
+
+    @Override
+    public GetLessonFilesReply getLessonFiles(GetLessonFilesRequest request) throws PapaHttpClientException {
+        try {
+            HashMap<String, Object> h = new HashMap<>();
+            h.put("token", request.token);
+
+            JSONObject obj = dbAccess.getDataBaseReplyAsJson(
+                    PapaAbstractHttpClient.HttpMethod.get,
+                    "/lessons/" + request.lessonId + "/files.json",
+                    h
+            );
+
+            JSONArray list = obj.getJSONArray("files");
+
+            GetLessonFilesReply reply = new GetLessonFilesReply();
+
+            for (int i = 0; i < list.length(); i++) {
+                JSONObject fileObject = list.getJSONObject(i);
+
+                File file = new File(request.file, fileObject.getString("name"));
+                dbAccess.getDataBaseAsFile(fileObject.getString("path"), h, file);
+
+                reply.files.add(file);
+            }
+
+            return reply;
+        } catch (JSONException e) {
             e.printStackTrace();
             throw new PapaDataBaseJsonError();
         }

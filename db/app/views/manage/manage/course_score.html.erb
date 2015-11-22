@@ -96,8 +96,8 @@
 			switch (o)
 			{
 				case 0:
-					x=x.people.student_number;
-					y=y.people.student_number;
+					x=parseInt(x.people.student_number);
+					y=parseInt(y.people.student_number);
 					break;
 				case 1:
 					x=x.people.name;
@@ -114,6 +114,20 @@
 				default:
 					x=x.classScore[o-4];
 					y=y.classScore[o-4];
+					if (x=="未登记")
+					{
+						x=0;
+					}else
+					{
+						x=parseInt(x);
+					}
+					if (y=="未登记")
+					{
+						y=0;
+					}else
+					{
+						y=parseInt(y);
+					}
 			}
 			if (p==0&&x<y||p==1&&x>y) return true;
 			else return false;

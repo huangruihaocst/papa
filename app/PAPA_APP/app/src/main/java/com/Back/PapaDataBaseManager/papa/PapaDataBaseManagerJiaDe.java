@@ -264,7 +264,14 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     }
 
     @Override
-    public GetFilesReply getFiles(GetFilesRequest request) throws PapaHttpClientException {
+    public GetFilesReply getLessonFiles(GetFilesRequest request) throws PapaHttpClientException {
         return null;
     }
+
+    @Override
+    public GetLessonFilesReply getLessonFiles(GetLessonFilesRequest request) throws PapaHttpClientException {
+        return null;
+    }
+
+
 }

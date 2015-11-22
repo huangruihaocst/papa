@@ -1,6 +1,7 @@
 package com.Fragments.papa.experiment_result;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 /**
  * Created by huang on 15-11-20.
@@ -19,6 +20,8 @@ public class Media {
 
     private void init(Bitmap bitmap, String path, Type type, String id)
     {
+        Log.i("Media", "Media path = " + path);
+
         this.bitmap = bitmap;
         this.path = path;
         this.type = type;
@@ -31,6 +34,7 @@ public class Media {
 
     public Media(Bitmap bitmap, String path, Type type, String id)
     {
+
         init(bitmap, path, type, id);
     }
 }

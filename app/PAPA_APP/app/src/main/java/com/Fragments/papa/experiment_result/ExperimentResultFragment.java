@@ -127,7 +127,8 @@ public class ExperimentResultFragment extends Fragment {
                         Integer.toString(
                                 bundleHelper.getIdentity() == BundleHelper.Identity.student ?
                                         bundleHelper.getStudentId() : student_id),
-                        getContext().getFilesDir()
+                        new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES), "PAPA")
                 )
         );
     }
@@ -148,7 +149,6 @@ public class ExperimentResultFragment extends Fragment {
         for(int i = 0;i < imageId.length;i ++){
             mediaArrayList.add(new Media(BitmapFactory.decodeResource(getResources(), imageId[i]),
                     "",Media.Type.image));
-
         }
         */
 
@@ -172,7 +172,8 @@ public class ExperimentResultFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(getString(R.string.alert_delete_media));
-                builder.setPositiveButton(getResources().getStringArray(R.array.answer_alert_media)[0], new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getResources().getStringArray(R.array.answer_alert_media)[0],
+                        new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Media media = mediaArrayList.get(position);
@@ -192,7 +193,8 @@ public class ExperimentResultFragment extends Fragment {
                         );
                     }
                 });
-                builder.setNegativeButton(getResources().getStringArray(R.array.answer_alert_media)[1], new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getResources().getStringArray(R.array.answer_alert_media)[1],
+                        new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -221,7 +223,8 @@ public class ExperimentResultFragment extends Fragment {
                     getStudents();
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type, new DialogInterface.OnClickListener() {
+                    builder.setTitle(getString(R.string.select_type)).setItems(R.array.upload_type,
+                            new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if(which == 0){//camera
@@ -606,7 +609,7 @@ public class ExperimentResultFragment extends Fragment {
         {
             // 在后台
             try {
-                return bundleHelper.getPapaDataBaseManager().getFiles(params[0]);
+                return bundleHelper.getPapaDataBaseManager().getLessonFiles(params[0]);
             } catch(PapaHttpClientException e) {
                 publishProgress(e);
             }
