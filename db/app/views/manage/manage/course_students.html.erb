@@ -155,12 +155,13 @@
             }
             $("#student-list").html(str);
             $("#student-number").html(data.students.length);
+            $(".detect-tr").hover(function(){
+                activeSid = $(this).attr("sid");
+                var h=$(this).position().top;
+                $(".btn-operator").css({position:"absolute",top:h}).show();
+            },function(){});
         });
-        $(".detect-tr").hover(function(){
-            activeSid = $(this).attr("sid");
-            var h=$(this).position().top;
-            $(".btn-operator").css({position:"absolute",top:h}).show();
-        },function(){});
+
         //----------------------------
         $.get("/courses/<%=@course_id%>/assistants.json",{},function(data){
             console.log(data);
@@ -221,6 +222,7 @@
     function addASS()
     {
         $("#addAssForm").ajaxSubmit(function(d){
+            console.log(d);
             if(d.invalid_fields.length){
                 alert("添加失败,请仔细检查格式");
             }
