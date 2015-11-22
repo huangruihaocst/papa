@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     post 'students/:id' => 'students#create', as: :create_student
     post 'students' => 'students#create_many', as: :create_many_students
 
-    resources :assistants, only: [:index, :create, :destroy]
+    resources :assistants, only: [:index, :destroy]
     post 'assistants/:id' => 'assistants#create', as: :create_assistant
     post 'assistants' => 'assistants#create_many', as: :create_many_assistants
 
