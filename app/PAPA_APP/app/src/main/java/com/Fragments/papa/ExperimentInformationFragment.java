@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -146,8 +145,8 @@ public class ExperimentInformationFragment extends Fragment {
 
     // A-Z 想像High-de-Siehst YOU das?
     void set(PapaDataBaseManager.GetLessonInfoReply rlt) {
-        textView_course_name = (TextView)rootView.findViewById(R.id.sender);
-        textView_course_start_time = (TextView)rootView.findViewById(R.id.recipient);
+        textView_course_name = (TextView)rootView.findViewById(R.id.user_id);
+        textView_course_start_time = (TextView)rootView.findViewById(R.id.user_class);
         textView_course_end_time = (TextView)rootView.findViewById(R.id.course_end_time);
         textView_place = (TextView)rootView.findViewById(R.id.place);
         textView_download = (TextView)rootView.findViewById(R.id.download);

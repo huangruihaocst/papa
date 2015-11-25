@@ -42,8 +42,8 @@ public class SentDetailActivity extends AppCompatActivity {
             }
         });
 
-        TextView sender = (TextView)findViewById(R.id.sender);
-        TextView sent_time = (TextView)findViewById(R.id.sent_time);
+        TextView sender = (TextView)findViewById(R.id.user_id);
+        TextView sent_time = (TextView)findViewById(R.id.user_grades);
         TextView title = (TextView)findViewById(R.id.title);
         TextView body = (TextView)findViewById(R.id.body);
 

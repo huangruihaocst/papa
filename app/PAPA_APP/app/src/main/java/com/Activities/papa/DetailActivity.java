@@ -65,11 +65,11 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        user_id = (TextView) findViewById(R.id.sender);
-        user_class = (TextView) findViewById(R.id.recipient);
-        user_grades = (EditText) findViewById(R.id.sent_time);
-        user_comment = (EditText) findViewById(R.id.title);
-        user_evaluator = (TextView) findViewById(R.id.body);
+        user_id = (TextView) findViewById(R.id.user_id);
+        user_class = (TextView) findViewById(R.id.user_class);
+        user_grades = (EditText) findViewById(R.id.user_grades);
+        user_comment = (EditText) findViewById(R.id.user_comment);
+        user_evaluator = (TextView) findViewById(R.id.user_evaluator);
         fab = (FloatingActionButton) findViewById(R.id.fab_edit_detail);
         keyListener_grades = user_grades.getKeyListener();
         keyListener_comment = user_comment.getKeyListener();
