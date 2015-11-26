@@ -22,10 +22,9 @@ class LessonsController < ApplicationController
       if params[:full]
         @students = []
         @lesson.course.students.each do |student|
-          comments = StudentComment.where(lesson_id: @lesson, student_id: student.id)
+          comment = StudentComment.from_lesson_and_student(@lesson.id, student.id)
           comment_hash = {}
-          if comments.count > 0
-            comment = comments[0]
+          if comment
             comment_hash = {
                 score:      comment.score,
                 content:    comment.content,

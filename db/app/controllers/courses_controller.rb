@@ -67,9 +67,8 @@ class CoursesController < ApplicationController
           }
           lesson_info_of_student = []
           @course.lessons.each do |lesson|
-            comments = StudentComment.where(lesson_id: lesson.id).where(student_id: student.id)
-            if comments.count > 0
-              comment = comments[0]
+            comment = StudentComment.from_lesson_and_student(lesson.id, student.id)
+            if comment
               lesson_info_of_student.push({
                       id:           comment.id,
                       content:      comment.content,

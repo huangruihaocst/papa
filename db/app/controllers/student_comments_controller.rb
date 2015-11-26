@@ -26,7 +26,7 @@ class StudentCommentsController < ApplicationController
   # GET /lessons/1/students/1/comment.json
   def default
     raise RequestException.new(REASON_INVALID_OPERATION) unless params[:lesson_id] && params[:student_id]
-    @student_comment = StudentComment.where(lesson_id: params[:lesson_id]).where(student_id: params[:student_id]).last
+    @student_comment = StudentComment.from_lesson_and_student(params[:lesson_id], params[:student_id])
     raise RequestException.new(REASON_RESOURCE_NOT_FOUND) unless @student_comment
   end
 
