@@ -27,7 +27,7 @@ class Course < ActiveRecord::Base
     Participation.create(user_id: student.id, course_id: id, role: ROLE_STUDENT)
   end
   def add_assistant(assistant)
-    Participation.create(user_id: assistant.id, course_id: :id, role: ROLE_ASSISTANT)
+    Participation.create(user_id: assistant.id, course_id: id, role: ROLE_ASSISTANT)
   end
 
   def assistants

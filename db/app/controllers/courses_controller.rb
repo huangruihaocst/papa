@@ -69,6 +69,7 @@ class CoursesController < ApplicationController
           @course.lessons.each do |lesson|
             comment = StudentComment.from_lesson_and_student(lesson.id, student.id)
             if comment
+
               lesson_info_of_student.push({
                       id:           comment.id,
                       content:      comment.content,
