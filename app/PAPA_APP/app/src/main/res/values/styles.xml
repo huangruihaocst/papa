@@ -34,8 +34,11 @@
     <style name="overview" parent="TextAppearance.AppCompat.Widget.TextView.SpinnerItem">
         <item name="android:textSize">12sp</item>
         <item name="android:maxLines">1</item>
-        <item name="android:maxLength">@integer/overview_max_length</item>
+        <item name="android:maxLength">@integer/sent_overview_max_length</item>
         <item name="android:textColor">#AAAAAA</item>
+    </style>
+    <style name="experiment_overview" parent="overview">
+        <item name="android:maxLength">@integer/experiment_overview_max_length</item>
     </style>
 
 </resources>
