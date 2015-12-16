@@ -127,11 +127,6 @@ public class CourseActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if (bundleHelper.getIdentity() == BundleHelper.Identity.teacher_assistant) {
-            Menu menu = navigationView.getMenu();
-            MenuItem item = menu.findItem(R.id.nav_upload_history);
-            item.setVisible(false);
-        }
         linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
 
         // Added by Alex Wang 2015-11-13. Move attendance service to course activity.
@@ -227,28 +222,7 @@ public class CourseActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_favorite) {
-            Intent intent = new Intent(CourseActivity.this, FavoriteActivity.class);
-            Bundle data = new Bundle();
-            String key_to_favorite = getString(R.string.key_to_favorite);
-            data.putParcelable(key_to_favorite, bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_experiment_history) {
-            Intent intent = new Intent(CourseActivity.this, ExperimentHistoryActivity.class);
-            Bundle data = new Bundle();
-            String key_to_experiment_history = getString(R.string.key_to_experiment_history);
-            data.putParcelable(key_to_experiment_history, bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_upload_history) {
-            Intent intent = new Intent(CourseActivity.this, UploadHistoryActivity.class);
-            Bundle data = new Bundle();
-            String key_to_upload_history = getString(R.string.key_to_upload_history);
-            data.putParcelable(key_to_upload_history, bundleHelper);
-            intent.putExtras(data);
-            startActivity(intent);
-        } else if (id == R.id.nav_profile) {
+        if (id == R.id.nav_profile) {
             Intent intent = new Intent(CourseActivity.this, ProfileActivity.class);
             Bundle data = new Bundle();
             String key_to_edit_profile = getString(R.string.key_to_edit_profile);
