@@ -45,14 +45,14 @@ public class SentListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         if(convertView == null){
-            convertView = LayoutInflater.from(context).inflate(R.layout.sent_list_item, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.sent_list_item, parent);
         }
         TextView send_name = (TextView)convertView.findViewById(R.id.send_name);
         TextView send_overview = (TextView)convertView.findViewById(R.id.send_overview);
         TextView send_time = (TextView)convertView.findViewById(R.id.send_time);
         PapaDataBaseManager.ChatMessage chatMessage = lst.get(position);
         send_name.setText(chatMessage.senderName);
-        int max_length = context.getResources().getInteger(R.integer.send_overview_max_length);
+        int max_length = context.getResources().getInteger(R.integer.overview_max_length);
         String overview = chatMessage.title + ":" + chatMessage.content;
         if(overview.length() > max_length){
             overview = overview.substring(0, max_length - 3) + "...";

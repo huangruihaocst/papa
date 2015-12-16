@@ -151,14 +151,14 @@ public class ExperimentActivity extends AppCompatActivity {
         }
     }
 
-    void setExperiments(final PapaDataBaseManager.LessonReply rlt)
-    {
+    //TODO: return a list that contains both name and information of experiments
+    void setExperiments(final PapaDataBaseManager.LessonReply rlt) {
         final ListView ExperimentListView = (ListView)findViewById(R.id.experiment_list);
-        ExperimentListView.setAdapter(new ExperimentsListAdapter(rlt.lesson,getApplicationContext()));
+        ExperimentListView.setAdapter(new ExperimentsListAdapter(rlt.lesson, getApplicationContext()));
         ExperimentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ExperimentActivity.this,ExperimentDetailActivity.class);
+                Intent intent = new Intent(ExperimentActivity.this, ExperimentDetailActivity.class);
                 Bundle data = new Bundle();
                 String key_experiment_experiment_detail = getString(R.string.key_experiment_experiment_detail);
                 data.putParcelable(key_experiment_experiment_detail,bundleHelper);

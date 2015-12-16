@@ -3,6 +3,7 @@ package com.Activities.papa.experiments;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -42,10 +43,23 @@ public class ExperimentsListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        TextView mTextView = new TextView(context);
-        mTextView.setText(lst.get(position).getValue());
-        mTextView.setTextSize(25);
-        mTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        return mTextView;
+        if(convertView == null){
+            convertView = LayoutInflater.from(context).inflate(R.layout.experiment_list_item, null);
+        }
+        TextView experiment_name = (TextView)convertView.findViewById(R.id.experiment_name);
+        TextView information = (TextView)convertView.findViewById(R.id.information);
+
+        experiment_name.setText(lst.get(position).getValue());
+        String experiment_info = "地点：北京大学 时间:2015-1-1 00:00:00至2015-12-31 23:59:59";//faked
+
+        int length = experiment_info.length();
+        int max_length = context.getResources().getInteger(R.integer.overview_max_length);
+        if(length > max_length){
+            experiment_info = experiment_info.substring(0, max_length + 1);
+            experiment_info += "...";
+        }
+        information.setText(experiment_info);
+
+        return convertView;
     }
 }

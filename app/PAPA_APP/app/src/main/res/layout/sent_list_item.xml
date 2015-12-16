@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/send_name"
-        style="@style/send_name"
+        style="@style/name"
         android:text="name"/>
 
     <TextView
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/send_overview"
         android:text="overview"
-        style="@style/send_overview"
+        style="@style/overview"
         android:layout_below="@+id/send_name"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/send_time"
         android:text="time"
-        style="@style/send_overview"
+        style="@style/overview"
         android:textColor="#BBBBBB"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
