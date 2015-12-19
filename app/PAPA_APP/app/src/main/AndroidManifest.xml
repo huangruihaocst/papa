@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.Activities.papa" >
+    package="com.Activities.papa">
 
     <!-- en-US: needed for get telephone number -->
     <!-- ja-JP: 電話番号を取るのに必要 -->
@@ -39,8 +39,8 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".HelpActivity"
-            android:label="@string/title_activity_help_activity"
+            android:name=".AboutActivity"
+            android:label="@string/title_activity_about_activity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
         </activity>

@@ -22,7 +22,7 @@
     <string name="comment_area">请在此输入您的评论</string>
     <string name="teacher_assistant_course">助教课程</string>
     <string name="student_course">学生课程</string>
-    <string name="help">帮助</string>
+    <string name="about">关于</string>
     <string name="settings">设置</string>
     <string name="favorite">喜欢的实验</string>
     <string name="experiment_history">做过的实验</string>
@@ -104,6 +104,11 @@
     <string name="time_format_full">%1$s年%2$s月%3$s日</string>
     <string name="copyright">Copyright©2015 努力上均分组 Powered By Android</string>
     <string name="version">version 1.0.0</string>
+    <string name="about_name">啪啪打卡</string>
+    <string name="about_author">作者：黄锐皓 雷凯翔</string>
+    <string name="about_version">版本号：1.0.0</string>
+    <string name="about_contact">如有任何问题，请联系黄锐皓 huangruihaocst@126.com 雷凯翔 shyoshyo@qq.com</string>
+    <string name="about_copyright">この番組はご覧のスポンサーの提供でお送りします</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -124,7 +129,7 @@
 
     <string name="key_sign_in_course">key_sign_in_course</string>
     <string name="key_course_experiment">key_course_experiment</string>
-    <string name="key_to_help">key_to_help</string>
+    <string name="key_to_about">key_to_about</string>
     <string name="key_to_settings">key_to_settings</string>
     <string name="key_to_favorite">key_to_favorite</string>
     <string name="key_to_detail">key_to_detail</string>
@@ -141,7 +146,7 @@
 
     <!--<string name="color_primary">#2196F3</string>-->
     <!--<string name="color_primary_dark">#1976D2</string>-->
-    <string name="title_activity_help_activity">HelpActivity</string>
+    <string name="title_activity_about_activity">AboutActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Strings related to Settings -->
@@ -232,5 +237,9 @@
     <string name="title_activity_send_message">SendMessageActivity</string>
     <string name="title_activity_new_message">NewMessageActivity</string>
     <string name="title_activity_sent_detail_activity">SentDetailActivity</string>
+
+    <string name="feedback_email">huangruihaocst@126.com</string>
+    <string name="feedback_subject">啪啪打卡反馈</string>
+    <string name="feedback">反馈信息</string>
 
 </resources>

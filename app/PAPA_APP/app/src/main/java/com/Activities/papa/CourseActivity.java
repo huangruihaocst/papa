@@ -227,9 +227,9 @@ public class CourseActivity extends AppCompatActivity
             intent.putExtras(data);
             startActivity(intent);
         } else if (id == R.id.nav_help) {
-            Intent intent = new Intent(CourseActivity.this, HelpActivity.class);
+            Intent intent = new Intent(CourseActivity.this, AboutActivity.class);
             Bundle data = new Bundle();
-            String key_to_help = getString(R.string.key_to_help);
+            String key_to_help = getString(R.string.key_to_about);
             data.putParcelable(key_to_help, bundleHelper);
             intent.putExtras(data);
             startActivity(intent);
