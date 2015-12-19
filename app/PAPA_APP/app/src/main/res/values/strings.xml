@@ -2,6 +2,7 @@
 
     <string name="main_title">啪啪打卡</string>
 
+    <string name="title_icon">啪</string>
     <string name="title_activity_semester">SemesterActivity</string>
     <string name="title_activity_course">CourseActivity</string>
     <string name="title_activity_experiment">ExperimentActivity</string>
@@ -101,6 +102,8 @@
     </string-array>
     <string name="time_format_simple">%1$s月%2$s日</string>
     <string name="time_format_full">%1$s年%2$s月%3$s日</string>
+    <string name="copyright">Copyright©2015 努力上均分组 Powered By Android</string>
+    <string name="version">version 1.0.0</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

@@ -47,7 +47,8 @@
             android:label="@string/title_activity_edit_profile"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity android:name=".EnterActivity" >
+        <activity android:name=".EnterActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

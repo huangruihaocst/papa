@@ -1,5 +1,6 @@
 package com.Activities.papa;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +12,7 @@ import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class EnterActivity extends AppCompatActivity {
+public class EnterActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,6 @@ public class EnterActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         };
-        timer.schedule(timerTask,1000);
+        timer.schedule(timerTask,2000);
     }
 }
