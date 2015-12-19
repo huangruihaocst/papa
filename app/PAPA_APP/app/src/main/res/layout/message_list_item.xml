@@ -10,7 +10,9 @@
         android:checked="false"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:paddingTop="4sp"
+        android:paddingBottom="4sp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +21,9 @@
         android:id="@+id/text_view_message_list_view_item_title"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:paddingTop="4sp"
+        android:paddingBottom="4sp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,5 +34,7 @@
         android:layout_gravity="end"
         android:layout_alignBottom="@+id/text_view_message_list_view_item_title"
         android:layout_toLeftOf="@+id/check_box_message_delete_item"
-        android:layout_toStartOf="@+id/check_box_message_delete_item" />
+        android:layout_toStartOf="@+id/check_box_message_delete_item"
+        android:paddingTop="4sp"
+        android:paddingBottom="4sp"/>
 </RelativeLayout>
