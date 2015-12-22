@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.Activities.papa.BundleHelper;
+import com.Helpers.BundleHelper;
 import com.Activities.papa.R;
 import com.Activities.papa.experiments.ExperimentActivity;
 
@@ -43,7 +43,16 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
     @Override
     public int getItemCount() {
         // the magic number 2 is for title 'student course' and 'ta course'
-        return studentCourses.size() + taCourses.size() + 2;
+        if(studentCourses.size() == 0 && taCourses.size() == 0){
+            return 0;
+        }else if(studentCourses.size() == 0){
+            return taCourses.size() + 1;
+        }else if(taCourses.size() == 0){
+            return  studentCourses.size() + 1;
+        }else{
+            return studentCourses.size() + taCourses.size() + 2;
+        }
+
     }
 
     @Override
@@ -71,45 +80,53 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
         View itemView = holder.getLayout();
         TextView textView = holder.getTitleView();
         if (position == 0) {
-            textView.setText(context.getString(R.string.student_course));
-            textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
-            textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
+            if(studentCourses.size() != 0){
+                textView.setText(context.getString(R.string.student_course));
+                textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+                textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
+            }
         } else if (position <= studentCourses.size()) {
-            final int index = position - 1;
-            textView.setText(studentCourses.get(index).getValue());
-            textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
-            textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startExperimentActivity(
-                            context,
-                            studentCourses.get(index).getValue(),
-                            studentCourses.get(index).getKey(),
-                            bundleHelper,
-                            BundleHelper.Identity.student);
-                }
-            });
+            if(taCourses.size() != 0){
+                final int index = position - 1;
+                textView.setText(studentCourses.get(index).getValue());
+                textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
+                textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startExperimentActivity(
+                                context,
+                                studentCourses.get(index).getValue(),
+                                studentCourses.get(index).getKey(),
+                                bundleHelper,
+                                BundleHelper.Identity.student);
+                    }
+                });
+            }
         } else if (position == studentCourses.size() + 1) {
-            textView.setText(context.getString(R.string.teacher_assistant_course));
-            textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
-            textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
+            if(taCourses.size() != 0){
+                textView.setText(context.getString(R.string.teacher_assistant_course));
+                textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+                textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
+            }
         } else {
-            final int index = position - 2 - studentCourses.size();
-            textView.setText(taCourses.get(index).getValue());
-            textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
-            textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startExperimentActivity(
-                            context,
-                            taCourses.get(index).getValue(),
-                            taCourses.get(index).getKey(),
-                            bundleHelper,
-                            BundleHelper.Identity.teacher_assistant);
-                }
-            });
+            if(taCourses.size() != 0){
+                final int index = position - 2 - studentCourses.size();
+                textView.setText(taCourses.get(index).getValue());
+                textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
+                textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startExperimentActivity(
+                                context,
+                                taCourses.get(index).getValue(),
+                                taCourses.get(index).getKey(),
+                                bundleHelper,
+                                BundleHelper.Identity.teacher_assistant);
+                    }
+                });
+            }
         }
     }
 

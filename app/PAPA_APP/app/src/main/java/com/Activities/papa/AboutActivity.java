@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AboutActivity extends AppCompatActivity {
 
@@ -36,14 +37,14 @@ public class AboutActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_EMAIL, getString(R.string.feedback_email));
+                intent.putExtra(Intent.EXTRA_EMAIL, getResources().getStringArray(R.array.feedback_email));
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_subject));
                 startActivity(Intent.createChooser(intent, getString(R.string.feedback)));
             }
         });
 
         ListView about = (ListView)findViewById(R.id.about_list);
-        ArrayList<String> items = new ArrayList<>();
+        ArrayList<String> items = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.about)));
         String version = "";
         int verCode = 0;
         try{
@@ -53,11 +54,8 @@ public class AboutActivity extends AppCompatActivity {
         }catch (PackageManager.NameNotFoundException e){
             e.getMessage();
         }
-        items.add(getString(R.string.about_name));
-        items.add(getString(R.string.about_author));
-        items.add(getString(R.string.about_version) + version + " " + String.valueOf(verCode));
-        items.add(getString(R.string.about_contact));
-        items.add(getString(R.string.about_copyright));
+        //magic number is the index of version information in the about string array
+        items.set(2, getResources().getStringArray(R.array.about)[2] + version + " " + String.valueOf(verCode));
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, items);
         about.setAdapter(adapter);
         about.setItemsCanFocus(true);

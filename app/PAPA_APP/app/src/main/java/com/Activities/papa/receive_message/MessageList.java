@@ -11,8 +11,7 @@ import java.util.List;
 public class MessageList implements Serializable, Iterable<Message> {
     ArrayList<Message> messages = new ArrayList<>();
 
-    public MessageList() {
-    }
+    public MessageList() {}
 
     public MessageList(ArrayList<Message> messageArrayList) {
         this.messages = messageArrayList;

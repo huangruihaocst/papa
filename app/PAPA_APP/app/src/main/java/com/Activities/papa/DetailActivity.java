@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.Back.DataBaseAccess.papa.PapaDataBaseResourceNotFound;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Helpers.BundleHelper;
 
 public class DetailActivity extends AppCompatActivity {
 

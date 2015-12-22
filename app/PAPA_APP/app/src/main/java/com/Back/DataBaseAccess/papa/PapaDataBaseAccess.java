@@ -15,8 +15,7 @@ import java.util.HashMap;
 /**
  * Created by shyo on 15-10-16.
  */
-public class PapaDataBaseAccess
-{
+public class PapaDataBaseAccess {
     private PapaAbstractHttpClient client;
 
     //    private static final String host = "166.111.227.251";
@@ -66,8 +65,8 @@ public class PapaDataBaseAccess
                 {
                     reason = replyObj.getString("reason");
                 }
-                catch (org.json.JSONException e)
-                {
+                catch (org.json.JSONException e) {
+                    e.getMessage();
                 }
 
                 if(reason == null)

@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Layout;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,11 +40,14 @@ import com.Activities.papa.receive_message.MessagePullService;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 import com.Fragments.papa.course.CourseFragment;
+import com.Helpers.BundleHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import com.Helpers.ImageHelper;
 
 public class CourseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -66,7 +71,7 @@ public class CourseActivity extends AppCompatActivity
      */
     private ServiceConnection connection;
 
-    LinearLayout linearLayout;
+    RelativeLayout relativeLayout;
 
     List<PapaDataBaseManager.TeacherInfo> teachersInfo;
 
@@ -127,7 +132,7 @@ public class CourseActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        linearLayout = (LinearLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
+        relativeLayout = (RelativeLayout)navigationView.inflateHeaderView(R.layout.nav_header_course);
 
         // Added by Alex Wang 2015-11-13. Move attendance service to course activity.
         Attendance.startSignInByGPS(this, token);
@@ -325,7 +330,7 @@ public class CourseActivity extends AppCompatActivity
     }
 
     private void setHeaderView(PapaDataBaseManager.UsrInfoReply r){
-        TextView username_label = (TextView)linearLayout.findViewById(R.id.username_label);
+        TextView username_label = (TextView) relativeLayout.findViewById(R.id.username_label);
         TextView mail_label = (TextView)findViewById(R.id.mail_label);
         ImageView image_label = (ImageView)findViewById(R.id.image_label);
 
@@ -339,8 +344,9 @@ public class CourseActivity extends AppCompatActivity
             display.getSize(size);
             int width = size.x;
             //resize
-            image_label.setImageBitmap(Bitmap.createScaledBitmap(avatar,
-                    (int)(width * 0.135), (int)(width * 0.135), false));
+            Bitmap roundBitmap = ImageHelper.getRoundedCornerBitmap(avatar, avatar.getRowBytes() / 2);
+            image_label.setImageBitmap(Bitmap.createScaledBitmap(roundBitmap,
+                    (int)(width * 0.3), (int)(width * 0.3), false));
         }
     }
 
