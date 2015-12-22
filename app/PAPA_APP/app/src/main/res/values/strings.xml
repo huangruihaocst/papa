@@ -104,10 +104,10 @@
     <string name="time_format_full">%1$s年%2$s月%3$s日</string>
     <string name="copyright">Copyright©2015 努力上均分组 Powered By Android</string>
     <string name="version">version 1.0.0</string>
-    <string name="about_name">啪啪打卡</string>
-    <string name="about_author">作者：黄锐皓 雷凯翔</string>
+    <string name="about_name">名称：啪啪打卡</string>
+    <string name="about_author">作者：黄锐皓 雷凯翔 \n （以上排名不分先后）</string>
     <string name="about_version">版本号：1.0.0</string>
-    <string name="about_contact">如有任何问题，请联系黄锐皓 huangruihaocst@126.com 雷凯翔 shyoshyo@qq.com</string>
+    <string name="about_contact">如有任何问题，请联系 \n 黄锐皓 huangruihaocst@126.com \n 雷凯翔 shyoshyo@qq.com</string>
     <string name="about_copyright">この番組はご覧のスポンサーの提供でお送りします</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
