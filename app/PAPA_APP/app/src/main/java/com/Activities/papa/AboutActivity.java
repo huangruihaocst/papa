@@ -44,7 +44,7 @@ public class AboutActivity extends AppCompatActivity {
         });
 
         ListView about = (ListView)findViewById(R.id.about_list);
-        ArrayList<String> items = new ArrayList<>();
+        ArrayList<String> items = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.about)));
         String version = "";
         int verCode = 0;
         try{
@@ -54,11 +54,7 @@ public class AboutActivity extends AppCompatActivity {
         }catch (PackageManager.NameNotFoundException e){
             e.getMessage();
         }
-        items.add(getString(R.string.about_name));
-        items.add(getString(R.string.about_author));
-        items.add(getString(R.string.about_version) + version + " " + String.valueOf(verCode));
-        items.add(getString(R.string.about_contact));
-        items.add(getString(R.string.about_copyright));
+        items.set(2, getResources().getStringArray(R.array.about)[2] + version + " " + String.valueOf(verCode));
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, items);
         about.setAdapter(adapter);
         about.setItemsCanFocus(true);
