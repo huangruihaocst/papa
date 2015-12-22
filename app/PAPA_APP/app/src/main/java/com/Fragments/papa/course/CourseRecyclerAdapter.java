@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -49,7 +48,7 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CardView cardView = (CardView) LayoutInflater.from(context).inflate(R.layout.course_list_item, parent, false);
+        View viewItem = LayoutInflater.from(context).inflate(R.layout.course_list_item, parent, false);
         ((RecyclerView)parent).addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
@@ -64,21 +63,21 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
             @Override
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}
         });
-        return new ViewHolder(cardView);
+        return new ViewHolder(viewItem);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        CardView cardView = holder.getLayout();
+        View itemView = holder.getLayout();
         TextView textView = holder.getTitleView();
         if (position == 0) {
             textView.setText(context.getString(R.string.student_course));
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
-            textView.setTextSize(40);
+            textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
         } else if (position <= studentCourses.size()) {
             final int index = position - 1;
             textView.setText(studentCourses.get(index).getValue());
-            textView.setTextSize(25);
+            textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -94,13 +93,13 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
         } else if (position == studentCourses.size() + 1) {
             textView.setText(context.getString(R.string.teacher_assistant_course));
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
-            textView.setTextSize(40);
+            textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
         } else {
             final int index = position - 2 - studentCourses.size();
             textView.setText(taCourses.get(index).getValue());
-            textView.setTextSize(25);
+            textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-            cardView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startExperimentActivity(
@@ -133,13 +132,13 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
-        public ViewHolder(CardView itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             tvTitle = (TextView) itemView.findViewById(R.id.course_list_item_text);
         }
 
-        public CardView getLayout() {
-            return (CardView) itemView;
+        public View getLayout() {
+            return itemView;
         }
         public TextView getTitleView() {
             return tvTitle;

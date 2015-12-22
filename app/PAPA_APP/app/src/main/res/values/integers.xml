@@ -10,4 +10,6 @@
     <integer name="course_item_spans">2</integer>
     <integer name="sent_overview_max_length">20</integer>
     <integer name="experiment_overview_max_length">40</integer>
+    <integer name="course_title_text_size">30</integer>
+    <integer name="course_text_size">22</integer>
 </resources>

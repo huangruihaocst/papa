@@ -20,37 +20,47 @@
         android:layout_height="match_parent"
         android:id="@+id/layout_activity_message_detail_content"
         android:orientation="vertical"
+        android:divider="@drawable/message_detail_divider"
+        android:showDividers="middle"
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin">
 
-        <TextView android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/text_view_message_detail_type"
             android:text="Type: "/>
         <TextView
+            android:paddingTop="@dimen/edit_text_padding"
+            android:paddingBottom="@dimen/edit_text_padding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/text_view_message_detail_deadline" />
         <TextView
+            android:paddingTop="@dimen/edit_text_padding"
+            android:paddingBottom="@dimen/edit_text_padding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/text_view_message_detail_creator_name"/>
         <TextView
+            android:paddingTop="@dimen/edit_text_padding"
+            android:paddingBottom="@dimen/edit_text_padding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/text_view_message_detail_course_name"/>
-        <TextView android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:id="@+id/text_view_message_detail_content"
-            android:text="2124" />
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/edit_text_padding"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/text_view_message_detail_content" />
 
     </LinearLayout>
-
-    <!--<android.support.design.widget.FloatingActionButton android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|end" android:layout_margin="@dimen/fab_margin"-->
-        <!--android:src="@android:drawable/ic_dialog_email" />-->
 
 </android.support.design.widget.CoordinatorLayout>
