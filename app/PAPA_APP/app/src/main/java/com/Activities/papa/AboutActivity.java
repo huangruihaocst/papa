@@ -54,6 +54,7 @@ public class AboutActivity extends AppCompatActivity {
         }catch (PackageManager.NameNotFoundException e){
             e.getMessage();
         }
+        //magic number is the index of version information in the about string array
         items.set(2, getResources().getStringArray(R.array.about)[2] + version + " " + String.valueOf(verCode));
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, items);
         about.setAdapter(adapter);
