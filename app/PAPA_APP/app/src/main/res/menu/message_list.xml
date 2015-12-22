@@ -15,7 +15,7 @@
         android:title="@string/done"
         android:orderInCategory="100"
         app:showAsAction="always" />
-    <item android:id="@+id/action_message_select_unselect_all"
+    <item android:id="@+id/action_message_select_unselected_all"
         android:title="@string/select_all"
         android:orderInCategory="150"
         app:showAsAction="always"/>

@@ -109,8 +109,6 @@
     <string name="about_version">版本号：1.0.0</string>
     <string name="about_contact">如有任何问题，请联系黄锐皓 huangruihaocst@126.com 雷凯翔 shyoshyo@qq.com</string>
     <string name="about_copyright">この番組はご覧のスポンサーの提供でお送りします</string>
-    <string name="no_course">该分类下没有课程</string>
-
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

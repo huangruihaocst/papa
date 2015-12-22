@@ -103,11 +103,14 @@ public class MessageActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(bound) {
-                    Settings.clearCache(MessageActivity.this);
-                            flushMessages();
-                    Snackbar.make(view, getString(R.string.notification_clear_all), Snackbar.LENGTH_LONG).show();
-                }
+//                if(bound) {
+//                    Settings.clearCache(MessageActivity.this);
+//                            flushMessages();
+//                }
+                adapter.selectAll();
+                adapter.quitEditMode(true);
+                quitEditMode(menu);
+                Snackbar.make(view, getString(R.string.notification_clear_all), Snackbar.LENGTH_LONG).show();
             }
         });
     }
@@ -190,7 +193,7 @@ public class MessageActivity extends AppCompatActivity {
     static final int MenuEditAction = 0;
     static final int MenuDeleteAction = 1;
     static final int MenuDoneAction = 2;
-    static final int MenuSelectUnselectAll = 3;
+    static final int MenuSelectUnselectedAll = 3;
     static final int MenuMarkAllAsRead = 4;
 
     @Override
@@ -206,24 +209,23 @@ public class MessageActivity extends AppCompatActivity {
         menu.getItem(MenuDeleteAction).setVisible(true);
         menu.getItem(MenuDoneAction).setVisible(true);
         menu.getItem(MenuEditAction).setVisible(false);
-        menu.getItem(MenuSelectUnselectAll).setVisible(true);
-        menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.select_all));
+        menu.getItem(MenuSelectUnselectedAll).setVisible(true);
+        menu.getItem(MenuSelectUnselectedAll).setTitle(getString(R.string.select_all));
     }
     void quitEditMode(Menu menu) {
         menu.getItem(MenuDeleteAction).setVisible(false);
         menu.getItem(MenuDoneAction).setVisible(false);
         menu.getItem(MenuEditAction).setVisible(true);
-        menu.getItem(MenuSelectUnselectAll).setVisible(false);
-        menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.reverse_select));
+        menu.getItem(MenuSelectUnselectedAll).setVisible(false);
+        menu.getItem(MenuSelectUnselectedAll).setTitle(getString(R.string.reverse_select));
     }
     boolean selectAllMode = true;
     void toggleSelectAll() {
         if (selectAllMode) {
-            menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.reverse_select));
+            menu.getItem(MenuSelectUnselectedAll).setTitle(getString(R.string.reverse_select));
             adapter.selectAll();
-        }
-        else {
-            menu.getItem(MenuSelectUnselectAll).setTitle(getString(R.string.select_all));
+        } else {
+            menu.getItem(MenuSelectUnselectedAll).setTitle(getString(R.string.select_all));
             adapter.reverseSelect();
         }
         selectAllMode = !selectAllMode;
@@ -248,7 +250,7 @@ public class MessageActivity extends AppCompatActivity {
         else if (id == R.id.action_message_mark_all_as_read) {
             adapter.markAllAsRead();
         }
-        else if (id == R.id.action_message_select_unselect_all) {
+        else if (id == R.id.action_message_select_unselected_all) {
             toggleSelectAll();
         }
         else {
