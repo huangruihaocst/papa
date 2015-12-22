@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AboutActivity extends AppCompatActivity {
 
@@ -36,7 +37,7 @@ public class AboutActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_EMAIL, getString(R.string.feedback_email));
+                intent.putExtra(Intent.EXTRA_EMAIL, getResources().getStringArray(R.array.feedback_email));
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_subject));
                 startActivity(Intent.createChooser(intent, getString(R.string.feedback)));
             }
