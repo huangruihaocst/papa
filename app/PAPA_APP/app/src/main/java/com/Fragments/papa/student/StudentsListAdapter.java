@@ -46,6 +46,7 @@ public class StudentsListAdapter extends BaseAdapter {
         mTextView.setTextSize(25);
 //            mTextView.setTextColor(getColor(R.color.colorPrimary));
         mTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        mTextView.setPadding(0, 8, 0, 8);
         return mTextView;
     }
 }

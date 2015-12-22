@@ -62,16 +62,13 @@
         android:layout_width="120sp"
         android:layout_height="wrap_content"
         android:text="@string/get_telephone_number"
-        android:background="@color/colorPrimary"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
+        android:background="#FFFFFF"
+        android:textColor="@color/colorPrimary"
         android:textSize="20sp"
-        android:shadowDx="0"
-        android:shadowDy="0"
         android:id="@+id/get_telephone_number"
-        android:layout_alignTop="@+id/sign_in"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/textView2"
+        android:layout_alignEnd="@+id/textView2" />
 
     <Button
         android:layout_width="wrap_content"
@@ -79,10 +76,7 @@
         android:text="@string/hint_sign_in_1"
         android:background="@color/colorPrimary"
         android:textColor="#FFFFFF"
-        android:textStyle="bold"
         android:textSize="20sp"
-        android:shadowDx="0"
-        android:shadowDy="0"
         android:id="@+id/sign_in"
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/linearLayout2"

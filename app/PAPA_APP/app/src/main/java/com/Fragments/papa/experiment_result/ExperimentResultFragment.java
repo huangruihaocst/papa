@@ -80,12 +80,6 @@ public class ExperimentResultFragment extends Fragment {
 //    private VideoView selectedVideo;
     GridView gridView_image;
 
-    private int[] imageId = {
-            R.drawable.ic_file_upload_black_24dp,
-            R.drawable.ic_history_black_24dp,
-            R.drawable.ic_info_black_24dp,
-            R.drawable.ic_notifications_black_24dp,
-    };
     private ArrayList<Media> mediaArrayList;
     private ImageGridAdapter imageGridAdapter;
 
@@ -633,7 +627,7 @@ public class ExperimentResultFragment extends Fragment {
 
     private void showFiles(List<Media> mediaList)
     {
-        Log.i(TAG, "cnt = " + mediaList.size() + "");
+//        Log.i(TAG, "cnt = " + mediaList.size() + "");
         for(int i = 0; i < mediaList.size(); i++)
         {
             mediaArrayList.add(mediaList.get(i));

@@ -9,11 +9,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/student_list"
-        android:divider="#FFFFFF"
+        android:dividerHeight="1dp"
         tools:listitem="@android:layout/simple_list_item_2"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:minHeight="?android:attr/listPreferredItemHeight">
     </ListView>
 
 </RelativeLayout>
