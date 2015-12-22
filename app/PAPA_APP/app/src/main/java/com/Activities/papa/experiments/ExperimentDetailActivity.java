@@ -13,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.Activities.papa.BundleHelper;
+import com.Helpers.BundleHelper;
 import com.Activities.papa.CommentActivity;
 import com.Activities.papa.R;
 import com.Fragments.papa.ExperimentInformationFragment;

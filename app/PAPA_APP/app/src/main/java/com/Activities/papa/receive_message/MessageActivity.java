@@ -18,9 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-import com.Activities.papa.BundleHelper;
+import com.Helpers.BundleHelper;
 import com.Activities.papa.R;
-import com.Settings.Settings;
 
 public class MessageActivity extends AppCompatActivity {
     static final String TAG = "MessageActivity";

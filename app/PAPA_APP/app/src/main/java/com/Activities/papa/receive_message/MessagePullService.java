@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.*;
 import android.support.v4.app.NotificationCompat;
 
-import com.Activities.papa.BundleHelper;
+import com.Helpers.BundleHelper;
 import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;

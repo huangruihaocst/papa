@@ -2,12 +2,11 @@ package com.Activities.papa;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.Activities.papa.attendance.Attendance;
 import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetter;
 import com.Back.TelephoneInfoManager.papa.PapaTelephoneNumberGetterReal;
+import com.Helpers.BundleHelper;
 
 import java.util.Timer;
 import java.util.TimerTask;

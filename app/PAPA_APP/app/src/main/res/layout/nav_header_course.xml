@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="@dimen/nav_header_height"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -8,22 +9,43 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:orientation="vertical"
-    android:gravity="bottom"
     android:id="@+id/header_course">
 
-    <ImageView android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:src="@android:drawable/sym_def_app_icon"
         android:id="@+id/image_label"
-        android:contentDescription="@string/portrait"/>
+        android:contentDescription="@string/portrait"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/nav_header_vertical_spacing"/>
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing" android:text="用户名"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="用户名"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:id="@+id/username_label"/>
+        android:textSize="20sp"
+        android:id="@+id/username_label"
+        android:layout_marginRight="90dp"
+        android:layout_marginEnd="90dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="40dp" />
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="邮箱" android:id="@+id/mail_label" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="邮箱"
+        android:id="@+id/mail_label"
+        android:textSize="20sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/username_label"
+        android:layout_alignStart="@+id/username_label"
+        android:layout_marginBottom="20dp" />
 
-</LinearLayout>
+</RelativeLayout>
