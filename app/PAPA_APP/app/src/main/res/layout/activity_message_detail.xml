@@ -46,6 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            style="@style/DetailHead"
+            android:textSize="25sp"
             android:id="@+id/text_view_message_detail_creator_name"/>
         <TextView
             android:paddingTop="@dimen/edit_text_padding"
@@ -53,12 +55,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            style="@style/DetailHead"
+            android:textSize="25sp"
             android:id="@+id/text_view_message_detail_course_name"/>
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/activity_horizontal_margin"
             android:paddingBottom="@dimen/edit_text_padding"
             android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/DetailContent"
             android:id="@+id/text_view_message_detail_content" />
 
     </LinearLayout>
