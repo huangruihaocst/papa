@@ -20,15 +20,22 @@
         android:layout_height="match_parent"
         android:id="@+id/layout_activity_message_detail_content"
         android:orientation="vertical"
+        android:divider="@drawable/message_detail_divider"
+        android:showDividers="middle"
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin">
 
         <TextView android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:visibility="invisible"
             android:id="@+id/text_view_message_detail_type"
             android:text="Type: "/>
         <TextView
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/text_view_message_detail_deadline" />
@@ -40,17 +47,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/text_view_message_detail_course_name"/>
-        <TextView android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:id="@+id/text_view_message_detail_content"
             android:text="2124" />
 
     </LinearLayout>
-
-    <!--<android.support.design.widget.FloatingActionButton android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|end" android:layout_margin="@dimen/fab_margin"-->
-        <!--android:src="@android:drawable/ic_dialog_email" />-->
 
 </android.support.design.widget.CoordinatorLayout>

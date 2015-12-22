@@ -22,6 +22,7 @@ import com.Activities.papa.BundleHelper;
 import com.Activities.papa.R;
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
+import com.Fragments.papa.DividerItemDecoration;
 
 import java.util.List;
 import java.util.Map;
@@ -112,6 +113,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             courseList.setLayoutManager(layoutManager);
+            courseList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
 
             getCourses();
         }
