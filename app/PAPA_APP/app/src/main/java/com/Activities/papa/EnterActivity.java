@@ -33,6 +33,6 @@ public class EnterActivity extends Activity {
                 startActivity(intent);
             }
         };
-        timer.schedule(timerTask,2000);
+        timer.schedule(timerTask, 1000);
     }
 }
