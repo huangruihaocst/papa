@@ -73,11 +73,11 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
         if (position == 0) {
             textView.setText(context.getString(R.string.student_course));
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
-            textView.setTextSize(40);
+            textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
         } else if (position <= studentCourses.size()) {
             final int index = position - 1;
             textView.setText(studentCourses.get(index).getValue());
-            textView.setTextSize(25);
+            textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -93,11 +93,11 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
         } else if (position == studentCourses.size() + 1) {
             textView.setText(context.getString(R.string.teacher_assistant_course));
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
-            textView.setTextSize(40);
+            textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
         } else {
             final int index = position - 2 - studentCourses.size();
             textView.setText(taCourses.get(index).getValue());
-            textView.setTextSize(25);
+            textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
             textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
