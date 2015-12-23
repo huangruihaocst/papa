@@ -89,12 +89,11 @@ class StudentsController < ApplicationController
                                    phone: student['phone'],
                                    password: student['student_number'], #初始密码是学号
                                    student_number: student['student_number'],
-                                   department: student['department'],
+                                   department: student['department'] || '',
                                    description: student['description'] || '',
-                                   class_name: student['class_name']
-                                   )
+                                   class_name: student['class_name'] || '' )
               rescue
-                json_failed
+                raise RequestException.new(REASON_FORMAT_ERROR)
               end
 
               if user.valid?
