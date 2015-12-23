@@ -81,7 +81,13 @@ class StudentsController < ApplicationController
             raise RequestException.new(REASON_INVALID_FIELD) unless student['student_number'] || student['name'] || student['email'] || student['phone']
             exist_user = User.find_by_student_number(student['student_number'])
             if exist_user
-              #course.add_student(exist_user) if exist_user.courses.include?(course)
+              exist_user.name = student['name']
+              exist_user.email = student['email']
+              exist_user.phone = student['phone']
+              exist_user.department = student['department'] || ''
+              exist_user.description = student['description'] || ''
+              exist_user.class_name = student['class_name'] || ''
+              exist_user.save
             else
               begin
                 user = User.create(name: student['name'],
