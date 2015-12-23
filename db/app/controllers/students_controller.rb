@@ -83,7 +83,7 @@ class StudentsController < ApplicationController
             error_message += ' no name, ' unless student['name'].size > 0
             error_message += ' no email, ' unless student['email'].size > 0
             error_message += ' no phone number' unless student['phone'].size > 0
-            raise RequestException.new(REASON_INVALID_FIELD + error_message) unless error_message.size == 0
+            raise RequestException.new(REASON_INVALID_FIELD, { INVALID_FIELDS_NAME => error_message }) unless error_message.size == 0
 
             exist_user = User.find_by_student_number(student['student_number'])
             if exist_user
