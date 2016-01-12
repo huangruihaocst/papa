@@ -78,10 +78,22 @@ class StudentsController < ApplicationController
         if students.is_a?(Array)
           invalid_students = []
           students.each do |student|
-            raise RequestException.new(REASON_INVALID_FIELD) unless student['student_number'] || student['name'] || student['email'] || student['phone']
+            error_message = ''
+            error_message += ' no student number, ' unless student['student_number'].size > 0
+            error_message += ' no name, ' unless student['name'].size > 0
+            error_message += ' no email, ' unless student['email'].size > 0
+            error_message += ' no phone number' unless student['phone'].size > 0
+            raise RequestException.new(REASON_INVALID_FIELD, { INVALID_FIELDS_NAME => error_message }) unless error_message.size == 0
+
             exist_user = User.find_by_student_number(student['student_number'])
             if exist_user
-              course.add_student(exist_user) if exist_user.courses.include?(course)
+              exist_user.name = student['name']
+              exist_user.email = student['email']
+              exist_user.phone = student['phone']
+              exist_user.department = student['department'] || ''
+              exist_user.description = student['description'] || ''
+              exist_user.class_name = student['class_name'] || ''
+              exist_user.save
             else
               begin
                 user = User.create(name: student['name'],
