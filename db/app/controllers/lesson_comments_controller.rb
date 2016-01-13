@@ -5,7 +5,7 @@ class LessonCommentsController < ApplicationController
   def index
     if params[:lesson_id]
       @lesson_comments = Lesson.find(params[:lesson_id]).lesson_comments
-      puts @lesson_comment.inspect
+      #puts @lesson_comment.inspect
     else
       json_failed(REASON_NOT_IMPLEMENTED)
     end

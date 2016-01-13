@@ -117,4 +117,10 @@ class MessagesControllerTest < ActionController::TestCase
     assert STATUS_FAIL, json['status']
   end
 
+  # GET /messages/1.json
+  test 'should get a message' do
+    get :show, format: :json, id: Message.first.id
+    assert_json_success
+  end
+
 end

@@ -3,6 +3,13 @@ require 'test_helper'
 class StudentCommentsControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 
+  # GET /lessons/1/students/1/comments.json
+  test 'should get comments by lesson and student' do
+    student = User.find_by_name('betty')
+    get :index, format: :json, student_id: student.id, lesson_id: Lesson.first.id
+    assert_json_success
+  end
+
   # GET /lessons/1/students/1/comment.json
   test 'should get student comment on lesson' do
     lesson = Lesson.find_by_name('exp1')
@@ -31,5 +38,4 @@ class StudentCommentsControllerTest < ActionController::TestCase
     assert_json_success
     assert_not_nil json['id']
   end
-
 end

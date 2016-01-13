@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'users/current' => 'users#current'
   get 'users/:id' => 'users#show'
   put 'users/:id' => 'users#update'
+  patch 'users/:id' => 'users#update'
 
   resources :semesters, only: [:index, :create, :update, :destroy] do
     resources :courses, only: [:index]
@@ -87,7 +88,7 @@ Rails.application.routes.draw do
   resources :messages, only: [:show]
 
   get 'messages' => 'user_messages#index', as: :user_messages
-  get 'new_message_count' => 'user_messages#new_message_count', as: :new_message_count
+  get 'new_messages_count' => 'user_messages#new_messages_count', as: :new_message_count
   post 'users/:user_id/messages' => 'user_messages#create', as: :create_user_message
   post 'messages/:message_id/read' => 'user_messages#read', as: :read_message
   delete 'messages/:id' => 'user_messages#destroy'

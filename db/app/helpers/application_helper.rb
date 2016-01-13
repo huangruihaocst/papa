@@ -40,10 +40,6 @@ module ApplicationHelper
       render json: { status: 'successful' }.merge(addition)
     end
 
-    def html_failed(reason = nil)
-      redirect_to '/404.html'
-    end
-
   end
 
 end

@@ -105,20 +105,12 @@ class CoursesController < ApplicationController
           end
         when params[:assistant_id] && params[:id]
           check_token(params[:assistant_id])
-          if Participation.create(user_id: params[:assistant_id],
-              course_id: params[:id], role: ROLE_ASSISTANT).valid?
-            json_successful
-          else
-            json_failed
-          end
+          Participation.create(user_id: params[:assistant_id], course_id: params[:id], role: ROLE_ASSISTANT)
+          json_successful
         when params[:student_id] && params[:id]
           check_token(params[:student_id])
-          if Participation.create(user_id: params[:student_id],
-               course_id: params[:id], role: ROLE_STUDENT).valid?
-            json_successful
-          else
-            json_failed
-          end
+          Participation.create(user_id: params[:student_id], course_id: params[:id], role: ROLE_STUDENT)
+          json_successful
         else
           json_failed(REASON_INVALID_OPERATION)
       end
@@ -130,11 +122,8 @@ class CoursesController < ApplicationController
   # PUT /courses/1.json
   def update
     must_be_a_teacher_of(params[:token], @course)
-    if @course.update(params.require(:course).permit(:name, :description, :semester_id))
-      json_successful
-    else
-      json_failed
-    end
+    @course.update(params.require(:course).permit(:name, :description, :semester_id))
+    json_successful
   end
 
   # DELETE /courses/1.json
@@ -158,13 +147,8 @@ class CoursesController < ApplicationController
           json_failed(REASON_RESOURCE_NOT_FOUND)
         end
       when @course
-        if @course.destroy
-          json_successful
-        else
-          json_failed
-        end
-      else
-        json_failed
+        @course.destroy
+        json_successful
     end
   end
 

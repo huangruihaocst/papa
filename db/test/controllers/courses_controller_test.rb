@@ -17,6 +17,17 @@ class CoursesControllerTest < ActionController::TestCase
     assert_not_nil json['courses'][0]['semester_id']
   end
 
+  # GET /semesters/1/courses.json
+  test 'api should get my courses by semester' do
+    semester = Semester.first
+    user = User.find_by_name('betty')
+    sign_in user
+
+    get :index, format: :json, semester_id: semester.id, my_courses: true
+
+    assert_equal STATUS_SUCCESS, json['status']
+  end
+
   # GET /semester/1/courses.json
   test 'should not get courses by bad semester' do
     get :index, format: :json, semester_id: -1
@@ -82,6 +93,15 @@ class CoursesControllerTest < ActionController::TestCase
   # GET /courses/1.json
   test 'api should get course by id' do
     get :show, format: :json, id: Course.first.id
+
+    assert_equal json['status'], STATUS_SUCCESS
+    assert_not_nil json['course']['name']
+    assert_not_nil json['course']['semester_id']
+  end
+
+  # GET /courses/1.json
+  test 'api should get full course by id' do
+    get :show, format: :json, id: Course.find_by_name('Operation System').id, full: true
 
     assert_equal json['status'], STATUS_SUCCESS
     assert_not_nil json['course']['name']
