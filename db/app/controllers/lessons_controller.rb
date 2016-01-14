@@ -5,14 +5,10 @@ class LessonsController < ApplicationController
 
   # GET /courses/1/lessons.json
   def index
-    if params[:course_id]
-      begin
-        @lessons = Course.find(params[:course_id]).lessons
-      rescue ActiveRecord::RecordNotFound
-        json_failed(REASON_RESOURCE_NOT_FOUND)
-      end
-    else
-      json_failed(REASON_INVALID_OPERATION)
+    begin
+      @lessons = Course.find(params[:course_id]).lessons
+    rescue ActiveRecord::RecordNotFound
+      json_failed(REASON_RESOURCE_NOT_FOUND)
     end
   end
 
@@ -121,11 +117,8 @@ class LessonsController < ApplicationController
   # DELETE /lessons/1.json
   def destroy
     if @lesson
-      if @lesson.destroy
-        json_successful
-      else
-        json_failed
-      end
+      @lesson.destroy
+      json_successful
     else
       json_failed(REASON_RESOURCE_NOT_FOUND)
     end

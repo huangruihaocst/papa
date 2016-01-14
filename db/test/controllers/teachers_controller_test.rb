@@ -14,6 +14,13 @@ class TeachersControllerTest < ActionController::TestCase
     assert json['teachers'].count > 0
   end
 
+  # GET /courses/1/teachers.json
+  test 'should not get teachers by wrong course' do
+    get :index, format: :json, course_id: -1
+
+    assert_json_status STATUS_FAIL
+  end
+
   # POST /courses/1/teachers/1.json
   test 'should add teacher to course' do
     admin = User.find_by_name('alex')
@@ -108,6 +115,56 @@ class TeachersControllerTest < ActionController::TestCase
     end
 
     assert STATUS_FAIL, json['status']
+  end
+
+  # DELETE /teachers.1.json
+  test 'should delete teacher' do
+    admin = User.find_by_name('alex')
+    sign_in admin
+    teacher = User.find_by_name('deng')
+    assert_difference 'User.count', -1 do
+      delete :destroy, format: :json, id: teacher.id
+    end
+    assert_json_success
+  end
+
+  # DELETE /teachers.1.json
+  test 'should not delete teacher with invalid id' do
+    admin = User.find_by_name('alex')
+    sign_in admin
+    assert_difference 'User.count', 0 do
+      delete :destroy, format: :json, id: -1
+    end
+    assert_json_status STATUS_FAIL
+  end
+
+  # GET /teachers/1.json
+  test 'should get teacher' do
+    teacher = User.find_by_name('alex')
+    get :show, format: :json, id: teacher.id
+    assert_json_success
+  end
+
+  # GET /teachers/1.json
+  test 'should not get invalid teacher' do
+    get :show, format: :json, id: -1
+    assert_json_status STATUS_FAIL
+  end
+
+  # GET /teachers/1.json
+  test 'should get wrong teacher' do
+    teacher = User.find_by_name('betty')
+    get :show, format: :json, id: teacher.id
+    assert_json_status STATUS_FAIL
+  end
+
+  # POST /lessons/1/start_sign_up.json
+  test 'should start sign up as a teacher' do
+    teacher = User.find_by_name('alex')
+    sign_in teacher
+    lesson = Course.find_by_name('Operation System').lessons.first
+    get :start_sign_up, format: :json, lesson_id: lesson.id
+    assert_json_success
   end
 
 end

@@ -8,8 +8,10 @@ class ApplicationController < ActionController::Base
     end
   end
   class RequestException < Exception
-    def initialize(msg)
+    attr_accessor :others
+    def initialize(msg, others = {})
       @msg = msg
+      @others = others
     end
     def message
       @msg
@@ -31,7 +33,13 @@ class ApplicationController < ActionController::Base
     json_failed(except.message)
   end
   def request_error(except)
-    json_failed(except.message)
+    json_failed(except.message) do |fields|
+      if except.others && except.others.is_a?(Hash)
+        except.others.each do |k, v|
+        fields[k] = v
+        end
+      end
+    end
   end
   def resource_not_found(except)
     json_failed(REASON_RESOURCE_NOT_FOUND)

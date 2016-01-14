@@ -68,4 +68,31 @@ class StudentsControllerTest < ActionController::TestCase
     assert_equal STATUS_FAIL, json['status']
   end
 
+
+  test 'api should create many students to a course' do
+    teacher = User.find_by_name('alex')
+    sign_in teacher
+
+    course = Course.first
+
+    students = [
+        {
+            name: 'liming',
+            phone: '12345666',
+            email: 'alex@bilibili.com',
+            student_number: '1231',
+        },
+        {
+            name: 'liming1',
+            phone: '123456661',
+            email: 'alex@bilibili.com1',
+            student_number: '11222'
+        }
+    ].to_json
+
+    post :create_many, { format: :json, json: students, course_id: course.id }
+
+    assert_json_success
+  end
+
 end

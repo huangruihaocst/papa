@@ -15,16 +15,11 @@ class Token < ActiveRecord::Base
 
   def self.check_token(params, user_id)
     return REASON_TOKEN_INVALID unless params[:token]
-
     begin
       token = Token.find_by_token(params[:token])
       raise ActiveRecord::RecordNotFound unless token
       if token.user_id == user_id.to_i
-        if token.valid_until > Time.now
-          return STATUS_SUCCESS
-        else
-          return REASON_TOKEN_TIMEOUT
-        end
+        return  token.valid_until > Time.now ? STATUS_SUCCESS : REASON_TOKEN_TIMEOUT
       else
         return REASON_TOKEN_INVALID
       end

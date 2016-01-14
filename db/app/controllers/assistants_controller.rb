@@ -29,6 +29,7 @@ class AssistantsController < ApplicationController
     end
   end
 
+  # relate an assistant to a course
   def create
     course =  Course.find(params[:course_id])
     must_be_a_teacher_of(params[:token], course)

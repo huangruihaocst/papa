@@ -15,11 +15,7 @@ class UserMessagesController < ApplicationController
 
     user_message = UserMessage.create(sender_id: user.id, receiver_id: receiver.id,
                        title: params[:title], content: params[:content], status: MESSAGE_STATUS_UNREAD)
-    if user_message && user_message.valid?
-      json_successful(id: user_message.id)
-    else
-      json_failed
-    end
+    user_message && user_message.valid? ? json_successful(id: user_message.id) : json_failed
   end
 
   # POST /messages/1/read.json
@@ -52,11 +48,8 @@ class UserMessagesController < ApplicationController
       json_failed(REASON_PERMISSION_DENIED)
       return
     end
-    if message.save
-      json_successful
-    else
-      json_failed
-    end
+    message.save
+    json_successful
   end
 
   protected

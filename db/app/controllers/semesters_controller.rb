@@ -5,11 +5,7 @@ class SemestersController < ApplicationController
   end
 
   def default
-    if Semester.count > 0
-      @semester = Semester.all.order(:name).last
-    else
-      json_failed(REASON_INVALID_FIELD)
-    end
+    @semester = Semester.all.order(:name).last
   end
 
   def create
@@ -50,12 +46,8 @@ class SemestersController < ApplicationController
       return
     end
 
-    if @semester.destroy
-      json_successful
-    else
-      json_failed
-    end
-
+    @semester.destroy
+    json_successful
   end
 
 end

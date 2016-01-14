@@ -21,13 +21,7 @@ class User < ActiveRecord::Base
   validates :email, presence: true
   validates :phone, presence: true
 
-  # def self.create(params)
-  #   if params.keys.include?(:avator_id)
-  #     old_create(params)
-  #   else
-  #     old_create(params.merge({ avator_id: FileResource.find_by_name('default_avator.jpg').id }))
-  #   end
-  # end
+  # this magic allows you have a default avator
   before_save :default_values
   def default_values
     f = FileResource.find_by_name('default_avator.jpg')

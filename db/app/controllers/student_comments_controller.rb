@@ -2,11 +2,7 @@ class StudentCommentsController < ApplicationController
 
   # GET /lessons/1/students/1/comments.json
   def index
-    if params[:lesson_id] && params[:student_id]
-      @student_comments = StudentComment.where(lesson_id: params[:lesson_id]).where(student_id: params[:student_id])
-    else
-      json_failed
-    end
+    @student_comments = StudentComment.where(lesson_id: params[:lesson_id]).where(student_id: params[:student_id])
   end
 
   # POST /lessons/1/students/1/comments.json

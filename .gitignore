@@ -26,4 +26,4 @@
 # ignore mp4
 /db/public/*.mp4
 *.DS_Store
-
+/db/coverage
