@@ -38,169 +38,160 @@ status属性会是错误信息，在“错误”中介绍。
 | 学期相关 |||||
 |10 |GET    |/semesters.json|获得所有学年| Student
 |   |返回值 | "semesters": [semester, ...] |||
-|   |错误   |always successful
+|   |错误   |always successful |||
 |11 |POST   |/semesters.json    |添加一个学年 |Admin                        
 |   |错误   |permission_denied: 不是管理员 |||
 |   |       |internal_error: 其他内部错误, 如果遇到请联系开发者 |||
 |12 |PUT    |/semesters/1.json  |修改学年信息 |Admin
-|   |错误   |permission_denied: 不是管理员
-|   |       |resource_not_found: semester_id不存在
-|   |       |internal_error: 其他内部错误, 如果遇到请联系我
+|   |错误   |permission_denied: 不是管理员 |||
+|   |       |resource_not_found: semester_id不存在 |||
+|   |       |internal_error: 其他内部错误, 如果遇到请联系我 |||
 |13 |DELETE |/semesters/1.json  |删除某个学年|Admin
-|   |错误   |permission_denied: 不是管理员
-|   |       |resource_not_found: semester_id不存在
-|   |       |internal_error: 其他内部错误, 如果遇到请联系我
+|   |错误   |permission_denied: 不是管理员 |||
+|   |       |resource_not_found: semester_id不存在 |||
+|   |       |internal_error: 其他内部错误, 如果遇到请联系我 |||
 |14 |GET    |/semesters/1/courses.json  |获得某个学年的所有课程    |Student
 |   |参数   |"courses": [course, ...]|||
-|   |错误   |resource_not_found: semester_id不存在
-|   |       |internal_error: 其他内部错误, 如果遇到请联系我
+|   |错误   |resource_not_found: semester_id不存在 |||
+|   |       |internal_error: 其他内部错误, 如果遇到请联系我 |||
 |15 |GET    |/semesters/default.json    |获得默认学期 |Student 
-|   |参数   |"semester": semester
-|   |错误   |invalid_fields: 总学年数为0
-
-    # namespace courses
-    # 课程相关
-    PUT    /courses/1.json           修改课程             course parameters                             Teacher
-        permission_denied: 当前用户不是该课程的老师
-        internal_error: 其他内部错误, 如果遇到请联系我
-    GET    /courses/1.json           获得ID为1的课程      "course": { "id": 1, "name": "xxx" }          Student
-        resource_not_found: invalid course_id
-    DELETE /courses/1.json           删除课程             id                                            Teacher
-        permission_denied: 当前用户不是该课程的老师
-        internal_error: 其他内部错误, 如果遇到请联系我
-
-    # 与课程有关系的资源
-    GET    /courses/1/teachers.json  获取该门课所有老师   "teachers": { id, ... }                        Student
-        invalid_operation: course_id未指定
-        resource_not_found: course_id不存在
-    POST   /courses/1/teachers/1.json 把老师添加到课程                                                  Admin
-        permission_denied: 不是管理员
-        resource_not_found: course_id或teacher_id不存在
-    DELETE /courses/1/teachers/1.json 从课程中删除老师       id                                          Admin
-        permission_denied: 不是管理员
-        resource_not_found: course_id或teacher_id不存在
-    GET    /courses/1/students.json  获得id=1课的所有学生 "students": [student, ...]                     Teacher
-        resource_not_found: course_id不存在
-        permission_denied: 不是该课程的老师
-    GET    /courses/1/assistants.json 类似上一个          "assistants": [assistant, ...]                 Teacher(Student?)
-        resource_not_found: course_id不存在
-        permission_denied: 不是该课程的老师
-    POST   /courses/1/students/1.json 添加学生到指定课程                                                Teacher
-        resource_not_found: course_id不存在
-        permission_denied: 不是该课程的老师
-        internal_error: 其他内部错误, 如果遇到请联系我
-    ?POST   /courses/1/students.json                 json=[{username: "", email: "", phone: "", student_no: ""}...] Teacher
-        失败:
-            resource_not_found: course_id不存在
-            token_invalid: 未登录
-            permission_denied: 当前用户不是该门课程的老师
-            format_error: json格式错误
-            invalid_fields: student_number未指定
-        成功:
-            部分学生添加失败 invalid_fields: ["123", "111"...] 数字为student_number
-        批量添加学生, 默认密码是学号
-            
-    POST   /courses/1/assistants/1.json 添加助教到指定课程                                              Teacher
-        和添加学生一样
-    POST   /courses/1/assistants.json
-        和批量添加学生一样, 但是默认密码是email
-    GET    /courses/1/lessons.json   获得id=1课所有实验课 "lessons": ["id": 1, "name": "xx"]             Student
-        resource_not_found: course_id不存在
-    POST   /courses/1/lessons.json   向课程中添加实验课                                                  Teacher
-        permission_denied: 不是该课程的老师
-        invalid_fields: lesson参数无效
-    GET    /courses/1/comments.json  得到某门课程所有学生的所有评论                                      Teacher
-        not_implemented(罗干要求)
-    
-    # namespace lessons
-    GET    /lessons/1.json           获得某门实验课的信息  "lesson": lesson                              Student
-        resource_not_found: lesson_id不存在
-    PUT     /lessons/1.json           修改实验课信息
-        not_implemented
-    DELETE /lessons/1.json          删掉实验课
-        permission_denied: 不是该课程的老师
-        resource_not_found: lesson_id不存在
-        internal_error: 其他内部错误, 如果遇到请联系我
-    GET    /lessons/1/comments.json  获得某门课程的评价    "lesson_comments": [lesson_comment, ...]     Teacher
-        暂时不检查错误
-    POST   /lessons/1/start_sign_up.json      发起签到                                                  Teacher
-        not_in_lesson_time: 当前不是实验课时间
-
-    GET   /lessons/1/students/1/comment.json  助教对学生的评价 "student_comment": student_comment
-        暂时不检查错误
-    POST   /lessons/1/students/1/comments.json 助教对学生的评价 student comment parameters              Assistant
-        暂时不检查错误
-    GET    /lessons/1/students.json  某门实验课的到课学生列表 students id                                Teacher
-        not_implemented
-    #!POST   /lessons/1/students/1.json 学生签到                                                          Student
-        resource_not_found: lesson_id或者student_id找不到
-        permission_denied: 当前学生id不匹配
-    ?POST   /lessons/1/attendance.json 学生签到                                                          Student
-        resource_not_found: lesson_id或者student_id找不到
-        permission_denied: 当前学生id不匹配
-    DELETE /lessons/1/attendance.json 签出
-        
-    GET    /lessons/1/files.json     获得该门实验课的简介文件
-        resource_not_found: lesson_id不存在
-        invalid_fields: file参数或type参数未指定或者格式不正确
-        file_too_big: 文件大小超过指定大小(100M, 该数值请查看config/initializers/constants.rb)
-    POST   /lessons/1/files.json     向课程中添加文件
-        resource_not_found: lesson_id不存在
-        **注意, 如果lesson_id不正确或者超出范围, 不会返回错误, 只会查不到数据
-   
-    # namespace students
-    # 学生相关
-    GET    /students/1.json          获得id=1学生的信息   "student": [{"id":1, "name": "xx"}, ..]        Student
-        permission_denied: 未登录
-        resource_not_found: student_id不存在
-    GET    /students/1/files.json    获得学生所有文件列表   "files": [{"id":1, "type": "jpg", "path": "xx"}...]  Student 
-        permission_denied: 当前用户不是student_id
-        **注意, 如果lesson_id不正确或者超出范围, 不会返回错误, 只会查不到数据
-    POST   /students/1/files.json    学生添加文件                                                        Student
-        resource_not_found: student_id不存在
-        permission_denied: student_id和当前用户不匹配, 或者lesson_id不属于student_id
-        invalid_fields: file参数或type参数未指定或者格式不正确
-        file_too_big: 文件大小超过指定大小(100M, 该数值请查看config/initializers/constants.rb)
-    DELETE /students/1/files/1.json  删除文件                                                            Creator
-        resource_not_found: file_id不存在
-        permission_denied: 当前用户不是文件创建者
-        **注意这里忽略student_id
-    GET     /students/1/lessons/1/comment.json 某位学生对课程的评价
-        resource_not_found: student_id或者lesson_id不存在或者该学生不在该课程中
-    POST    /students/1/lessons/1/comments.json
-        resource_not_found: student_id或者lesson_id不存在或者该学生不在该课程中
-        
-    # 课程/实验课相关
-    GET    /students/1/courses.json  获得所有课程           "courses": [course...]                       Student
-        permission_denied: student_id和当前登陆用户不匹配
-        resource_not_found: student_id不存在
-        internal_error: 其他内部错误, 如果遇到请联系我
-    POST   /students/1/courses/1.json       给学生添加课程                                               Student
-        permission_denied: student_id和当前登陆用户不匹配
-        resource_not_found: student_id不存在
-        internal_error: 其他内部错误, 如果遇到请联系我
-    DELETE /students/1/courses/1.json       把学生从课程中移除                                            Teacher
-        permission_denied: 当前用户不是该课程的老师
-        resource_not_found: student_id不存在或者course_id不存在或者student_id和不在course_id的学生列表中
-        internal_error: 其他内部错误, 如果遇到请联系我
-
-    GET    /students/1/lessons/1/files.json 获得某门实验课某个学生的所有文件 "files": [file, ...]         Student
-        permission_denied: student_id和当前登陆用户不匹配
-        **注意, 如果lesson_id不正确或者超出范围, 不会返回错误, 只会查不到数据
-        
-    POST   /students/1/lessons/1/files.json 在某门实验课上添加视频图片                                    Student
-        permission_denied: 一下三条至少有一条不满足:
-            1. 用户已经登陆或当前token有效
-            2. student_id包含在lesson_id对应的课程的学生名单中 ***(或者当前用户是课程的老师)
-            3. 当前用户是student_id或当前用户在lesson_id的助教名单中
-        invalid_fields: file参数或type参数未指定或者格式不正确
-        file_too_big: 文件大小超过指定大小(100M, 该数值请查看config/initializers/constants.rb)
-    
-    DELETE /students/1/lessons/1/files/1.json 在某门实验课上删除视频照片
-        resource_not_found: file_id不存在
-        permission_denied: 当前用户不是文件创建者
-        **注意这里忽略student_id和lesson_id
-    
+|   |参数   |"semester": semester |||
+|   |错误   |invalid_fields: 总学年数为0 |||
+| 课程相关 |||||
+|20 |PUT    |/courses/1.json    |修改课程   |Teacher
+|   |错误   |permission_denied: 当前用户不是该课程的老师
+|   |       |internal_error: 其他内部错误, 如果遇到请联系我
+|21 |GET    |/courses/1.json    |获得ID为1的课程  |Student
+|   |返回值 |Course对象
+|   |错误值 |resource_not_found: invalid course_id
+|22 |DELETE |/courses/1.json    |删除课程   |Teacher
+|   |错误   |permission_denied: 当前用户不是该课程的老师 |||
+|   |       |internal_error: 其他内部错误, 如果遇到请联系我 |||
+| 课程相关 |||||
+|23 |GET    |/courses/1/teachers.json       |获取该门课所有老师  |Student
+|   |返回值 |Teacher数组
+|   |错误   |invalid_operation: course_id未指定 |||
+|   |       |resource_not_found: course_id不存在 |||
+|24 |POST   |/courses/1/teachers/1.json     |把老师添加到课程   |Admin
+|   |错误   |permission_denied: 不是管理员
+|   |       |resource_not_found: course_id或teacher_id不存在
+|25 |DELETE |/courses/1/teachers/1.json     |从课程中删除老师   |Admin
+|   |错误   |permission_denied: 不是管理员
+|   |       |resource_not_found: course_id或teacher_id不存在
+|26 |GET    |/courses/1/students.json       |获得id=1课的所有学生   |Teacher
+|   |返回值 |"students": [student, ...]
+|   |错误   |resource_not_found: course_id不存在
+|   |       |permission_denied: 不是该课程的老师
+|27 |GET    |/courses/1/assistants.json     |类似上一个         |Student
+|   |返回值 |"assistants": [assistant, ...]                 
+|   |错误   |resource_not_found: course_id不存在
+|   |       |permission_denied: 不是该课程的老师
+|28 |POST   |/courses/1/students/1.json     |添加学生到指定课程 |Teacher
+|   |错误   |resource_not_found: course_id不存在
+|   |       |permission_denied: 不是该课程的老师
+|   |       |internal_error: 其他内部错误, 如果遇到请联系我
+|29 |POST   |/courses/1/students.json
+|   |参数   |User对象， 必填：username，email，phone，student_no|Teacher
+|   |错误   |resource_not_found: course_id不存在
+|   |       |token_invalid: 未登录
+|   |       |permission_denied: 当前用户不是该门课程的老师
+|   |       |format_error: json格式错误
+|   |       |invalid_fields: student_number未指定
+|   |\*\*注释|部分学生添加失败 invalid_fields: ["123", "111"...] 数字为student_number
+|   |       |批量添加学生, 默认密码是学号
+| 助教相关 |||||
+|30 |POST   |/courses/1/assistants/1.json   |添加助教到指定课程  |Teacher
+|   |错误   |resource_not_found: course_id不存在
+|   |       |permission_denied: 不是该课程的老师
+|   |       |internal_error: 其他内部错误, 如果遇到请联系我
+|31 |POST   |/courses/1/assistants.json    |批量添加助教        |Teacher
+|   |参数   |User对象， 必填：username，email，phone
+|   |错误   |resource_not_found: course_id不存在
+|   |       |token_invalid: 未登录
+|   |       |permission_denied: 当前用户不是该门课程的老师
+|   |       |format_error: json格式错误
+|   |       |invalid_fields: student_number未指定
+|   |       |批量添加助教, 默认密码是email
+|32 |GET    |/courses/1/lessons.json        |获得id=1课所有实验课|Student
+|   |返回值 |Lesson数组
+|   |错误   |resource_not_found: course_id不存在
+|33 |POST   |/courses/1/lessons.json        |向课程中添加实验课  |Teacher
+|   |错误   |permission_denied: 不是该课程的老师
+|   |       |invalid_fields: lesson参数无效
+| 课程相关 |||||
+|40 |GET    |/lessons/1.json                |获得某门实验课的信息|Student
+|   |错误   |resource_not_found: lesson_id不存在
+|41 |DELETE |/lessons/1.json                |删掉实验课         |Teacher
+|   |错误   |permission_denied: 不是该课程的老师
+|   |       |resource_not_found: lesson_id不存在
+|   |       |internal_error: 其他内部错误, 如果遇到请联系我
+|42 |GET    |/lessons/1/comments.json  获得某门课程的评价        |Teacher
+|43 |POST   |/lessons/1/start_sign_up.json  |发起签到           |Teacher
+|   |错误   |not_in_lesson_time: 当前不是实验课时间
+| 对学生的评价相关 |||||
+|44 |GET   |/lessons/1/students/1/comment.json  |助教对学生的评价   |Student
+|45 |POST  |/lessons/1/students/1/comments.json |添加助教对学生的评价|Assistant
+|46 |GET   |/lessons/1/students.json            |某门实验课的到课学生列表|Teacher
+|47 |POST  |/lessons/1/attendance.json          |学生签到           |Student
+|   |错误  |resource_not_found: lesson_id或者student_id找不到
+|   |      |permission_denied: 当前学生id不匹配
+|48 |DELETE|/lessons/1/attendance.json          |登出
+| 文件相关  |||||
+|50 |GET   |/lessons/1/files.json               |获得该门实验课的简介文件 |Student
+|   |错误  |resource_not_found: lesson_id不存在
+|   |      |invalid_fields: file参数或type参数未指定或者格式不正确
+|   |      |file_too_big: 文件大小超过指定大小(100M, 该数值请查看config/initializers/constants.rb)
+|51 |POST  |/lessons/1/files.json               |向课程中添加文件        |Teacher
+|   |错误  |resource_not_found: lesson_id不存在
+|   |\*\*注意|如果lesson_id不正确或者超出范围, 不会返回错误, 只会查不到数据
+| 学生相关 |||||
+|60 |GET   |/students/1.json                    |获得id=1学生的信息      |Student
+|   |错误  |permission_denied: 未登录
+|   |      |resource_not_found: student_id不存在
+|61 |GET   |/students/1/files.json              |获得学生所有文件列表    |Student 
+|   |返回值|FileResource数组
+|   |错误  |permission_denied: 当前用户不是student_id
+|   |\*\*注意|如果lesson_id不正确或者超出范围, 不会返回错误, 只会查不到数据
+|62 |POST  |/students/1/files.json              |学生添加文件            |Student
+|   |错误  |resource_not_found: student_id不存在
+|   |      |permission_denied: student_id和当前用户不匹配, 或者lesson_id不属于student_id
+|   |      |invalid_fields: file参数或type参数未指定或者格式不正确
+|   |      |file_too_big: 文件大小超过指定大小(100M, 该数值请查看config/initializers/constants.rb)
+|63 |DELETE|/students/1/files/1.json            |删除文件                |Creator
+|   |错误  |resource_not_found: file_id不存在
+|   |      |permission_denied: 当前用户不是文件创建者
+|   |\*\*注意|这里忽略student_id
+|64 |GET   |/students/1/lessons/1/comment.json 某位学生对课程的评价
+|   |错误  |resource_not_found: student_id或者lesson_id不存在或者该学生不在该课程中
+|65 |POST  |/students/1/lessons/1/comments.json
+|   |错误  |resource_not_found: student_id或者lesson_id不存在或者该学生不在该课程中
+| 课程/实验课相关 |||||
+|70 |GET   |/students/1/courses.json            |获得所有课程            |Student
+|   |错误  |permission_denied: student_id和当前登陆用户不匹配
+|   |      |resource_not_found: student_id不存在
+|   |      |internal_error: 其他内部错误, 如果遇到请联系我
+|71 |POST  |/students/1/courses/1.json          |给学生添加课程          |Student
+|   |错误  |permission_denied: student_id和当前登陆用户不匹配
+|   |      |resource_not_found: student_id不存在
+|   |      |internal_error: 其他内部错误, 如果遇到请联系我
+|72 |DELETE|/students/1/courses/1.json          |把学生从课程中移除       |Teacher
+|   |错误  |permission_denied: 当前用户不是该课程的老师
+|   |      |resource_not_found: student_id不存在或者course_id不存在或者student_id和不在course_id的学生列表中
+|   |      |internal_error: 其他内部错误, 如果遇到请联系我
+|73 |GET   |/students/1/lessons/1/files.json    |获得某门实验课某个学生的所有文件 |Student
+|   |错误  |permission_denied: student_id和当前登陆用户不匹配
+|   |\*\*注意|如果lesson_id不正确或者超出范围, 不会返回错误, 只会查不到数据
+|74 |POST  |/students/1/lessons/1/files.json    |在某门实验课上添加视频图片       |Student
+|   |错误  |permission_denied: 一下三条至少有一条不满足:
+|   |      ||1. 用户已经登陆或当前token有效
+|   |      ||2. student_id包含在lesson_id对应的课程的学生名单中 \*\*\*(或者当前用户是课程的老师)
+|   |      ||3. 当前用户是student_id或当前用户在lesson_id的助教名单中
+|   |      |invalid_fields: file参数或type参数未指定或者格式不正确
+|   |      |file_too_big: 文件大小超过指定大小(100M, 该数值请查看config/initializers/constants.rb)
+|75 |DELETE|/students/1/lessons/1/files/1.json |在某门实验课上删除视频照片       |Creator
+|   |错误  |resource_not_found: file_id不存在
+|   |      |permission_denied: 当前用户不是文件创建者
+|   |\*\*注意|这里忽略student_id和lesson_id
     GET    /assistants.json           获得所有助教信息      "assistant": [assistant, ...]                Student
         not_implemented(该API是否有用?)
     GET    /assistants/1.json         获得某个助教信息      "assistant": assistant                       Assistant

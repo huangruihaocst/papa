@@ -62,6 +62,16 @@ class SemestersControllerTest < ActionController::TestCase
     assert_json_reason REASON_PERMISSION_DENIED
   end
 
+  # PUT /semesters/1.json
+  test 'should not update wrong semester ' do
+    admin = User.find_by_name('alex')
+    sign_in admin
+
+    put :update, format: :json, id: -1, semester: { name: 'update semester' }
+
+    assert_json_status STATUS_FAIL
+  end
+
   # DELETE /semesters/1.json
   test 'should delete semester' do
     admin = User.find_by_name('alex')
@@ -73,6 +83,19 @@ class SemestersControllerTest < ActionController::TestCase
 
     assert_json_success
   end
+
+  # DELETE /semesters/1.json
+  test 'should not delete wrong semester' do
+    admin = User.find_by_name('alex')
+    sign_in admin
+
+    assert_no_difference 'Semester.count' do
+      delete :destroy, format: :json, id: -1
+    end
+
+    assert_json_status STATUS_FAIL
+  end
+
 
   # DELETE /semesters/1.json
   test 'should not delete semester if not admin' do

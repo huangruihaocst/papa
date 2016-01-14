@@ -21,4 +21,30 @@ class UsersControllerTest < ActionController::TestCase
     assert_equal STATUS_FAIL, json['status']
   end
 
+  # GET /users/1.json
+  test 'should get one user by id' do
+    get :show, format: :json, id: User.first.id
+    assert_json_success
+  end
+
+  # GET /users/1.json
+  test 'should not get one user if not exists' do
+    get :show, format: :json, id: -1
+    assert_json_status STATUS_FAIL
+  end
+
+  # PUT /users/1.json
+  test 'should update user information' do
+    user = User.first
+    sign_in user
+    put :update, format: :json, id: user.id, user: {
+        phone: '123124',
+        email: 'aasdfsdf@adc.c',
+        name: 'alexfuck',
+        password: '123',
+        password_confirmation: '123'
+    }
+    assert_json_success
+  end
+
 end

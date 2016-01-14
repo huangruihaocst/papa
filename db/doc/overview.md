@@ -1,15 +1,13 @@
-总览
+数据库端总览
 ---
 
 ##1. 总体结构
 ---
 使用了Ruby On Rails框架，该框架采用MVC架构
+如图
+![alt rails](rails_arch.png "rails")
 
-
-#TODO rails架构图
-
-
-网页端和App端共用一套JSON API
+网页端和App端共用一套JSON API，所有数据库操作均由JSON API进行，网页端不直接操作数据库。
 支持使用cookie和token的认证方式，网页端用cookie认证，App端用token认证。
 
 ##2. 目录结构
@@ -31,7 +29,6 @@
     tmp/                    运行时临时文件
     libs/ vendor/           第三方库
     
-
 ##3. 安装，配置
 ---
 需求

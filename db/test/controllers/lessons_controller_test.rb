@@ -22,9 +22,26 @@ class LessonsControllerTest < ActionController::TestCase
     assert_not_nil json['lessons'][0]['location']
   end
 
+  # GET /course/1/lessons.json
+  test 'api not should get all lessons by invalid course id' do
+    get :index, format: :json, course_id: -1
+    assert_json_status STATUS_FAIL
+  end
+
   # GET /lessons/1.json
   test 'api should get lesson by id' do
     get :show, format: :json, id: Lesson.first.id
+
+    assert_equal json['status'], STATUS_SUCCESS
+    assert_not_nil json['lesson']['name']
+    assert_not_nil json['lesson']['start_time']
+    assert_not_nil json['lesson']['end_time']
+    assert_not_nil json['lesson']['location']
+  end
+
+  # GET /lessons/1.json
+  test 'api should get a full lesson information' do
+    get :show, format: :json, id: Lesson.first.id, full: true
 
     assert_equal json['status'], STATUS_SUCCESS
     assert_not_nil json['lesson']['name']
@@ -71,6 +88,18 @@ class LessonsControllerTest < ActionController::TestCase
   end
 
   # DELETE /lessons/1.json
+  test 'should not delete lesson with an invalid id' do
+    teacher = @course.teachers.first
+    sign_in teacher
+
+    assert_difference 'Lesson.count', 0 do
+      delete :destroy, format: :json, id: -1
+    end
+
+    assert_json_status STATUS_FAIL
+  end
+
+  # DELETE /lessons/1.json
   test 'should not delete lesson by id if he is not a teacher of the lesson' do
     teacher = User.find_by_name('betty')
     lesson = @course.lessons.first
@@ -80,6 +109,26 @@ class LessonsControllerTest < ActionController::TestCase
       delete :destroy, format: :json, id: lesson.id
     end
 
+    assert_json_success
+  end
+
+  # PATCH /lessons/1.json
+  test 'should update a lesson' do
+    sign_in @teacher
+
+    post :update, format: :json, course_id: @course.id, id: Lesson.first.id, lesson: {
+        description: '123',
+        name: 'test lesson',
+        start_time: '2015/10/10 10:20:30',
+        end_time: '2015/10/10 10:20:30',
+        location: '"name": "here"'
+    }
+    assert_json_success
+  end
+
+  # GET /teachers/1/lessons.json
+  test 'should get lessons by teacher' do
+    get :from_teacher, format: :json, teacher_id: @teacher.id
     assert_json_success
   end
 
