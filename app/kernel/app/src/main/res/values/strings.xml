@@ -25,8 +25,6 @@
     <string name="about">关于</string>
     <string name="settings">设置</string>
     <string name="favorite">喜欢的实验</string>
-    <string name="experiment_history">做过的实验</string>
-    <string name="upload_history">我的上传</string>
     <string name="profile">个人中心</string>
     <string name="more">更多</string>
     <string name="notification">通知</string>
@@ -108,7 +106,7 @@
         <item>名称：啪啪打卡</item>
         <item>作者：黄锐皓 雷凯翔 \n （以上排名不分先后）</item>
         <item>版本号：1.0.0</item>
-        <item>如有任何问题，请联系 \n 黄锐皓 huangruihaocst@126.com \n 雷凯翔 shyoshyo@qq.com</item>
+        <item>如有任何问题，请联系 \n黄锐皓 huangruihaocst@126.com \n雷凯翔 shyoshyo@qq.com</item>
         <item>この番組はご覧のスポンサーの提供でお送りします</item>
     </string-array>
 
