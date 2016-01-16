@@ -139,7 +139,7 @@ public class SignInActivity extends AppCompatActivity {
 
         public Task(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.show();
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);

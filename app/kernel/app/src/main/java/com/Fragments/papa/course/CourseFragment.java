@@ -165,7 +165,7 @@ public class CourseFragment extends android.support.v4.app.Fragment {
             protected void onPreExecute() {
                 // UI
                 proDialog = new ProgressDialog(getContext(), 0);
-                proDialog.setMessage("稍等喵 =w=");
+                proDialog.setMessage(getString(R.string.wait));
                 proDialog.setCancelable(false);
                 proDialog.setCanceledOnTouchOutside(false);
                 proDialog.show();

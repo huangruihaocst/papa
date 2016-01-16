@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PAPA</string>
+    <string name="about">About</string>
+    <string name="action_edit_grades">Edit grades</string>
+    <string name="action_generate_QR_code">Generate QR code</string>
+    <string name="action_make_comments">Evaluate this course</string>
+    <string name="action_save">Save</string>
+    <string name="action_search">Search</string>
+    <string name="action_send_message">Send</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_student_information">Student Information</string>
+    <string name="action_view_comments">Comments on this course</string>
+    <string name="alert_delete_media">Are you sure to delete it?</string>
+    <string name="body">Body</string>
+    <string name="cancel">Cancel</string>
+    <string name="cannot_get_telephone_num">Cannot access to telephone number QAQ</string>
+    <string name="change_password">Modify the password</string>
+    <string name="change_password_success">Password has been modified</string>
+    <string name="change_photo">Modify the avatar</string>
+    <string name="click_here_to_download"><u>click to download files for the experiment</u></string>
+    <string name="comment_area">Enter your comments here</string>
+    <string name="confirm">OK</string>
+    <string name="confirm_log_out">Are you sure to Log out(·8·)</string>
+    <string name="copyright">Copyright©2015 努力上均分组 Powered By Android</string>
+    <string name="course_end_time">End time</string>
+    <string name="course_name">Course name</string>
+    <string name="course_place">Location</string>
+    <string name="course_start_time">Start time</string>
+    <string name="delete">Delete</string>
+    <string name="done">Done</string>
+    <string name="edit">Edit</string>
+    <string name="error_double_check">The passwords do not match TAT</string>
+    <string name="experiment_information">Experiment information</string>
+    <string name="experiment_result">Experiment result</string>
+    <string name="favorite">Favourite</string>
+    <string name="feedback">Feedback</string>
+    <string name="feedback_subject">PAPA user feedback</string>
+    <string name="for_experiment">Comment on the experiment</string>
+    <string name="get_telephone_number">Get telephone number</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hint_comment"><![CDATA[Click the star to score>_<]]></string>
+    <string name="hint_rating_bar_error_on_low_API_level">The stars might not display correctly on low Android version devices</string>
+    <string name="hint_sign_in_1">Log in</string>
+    <string name="hint_sign_in_2">You may log in by student ID, telephone number or by email</string>
+    <string name="invalid_file">Illegal file format QAQ</string>
+    <string name="log_out">Log out</string>
+    <string name="mail">Email</string>
+    <string name="main_title">PAPA</string>
+    <string name="mark_all_as_read">Mark all as read</string>
+    <string name="message_from">Message from %s</string>
+    <string name="navigation_drawer_close"></string>
+    <string name="more">More</string>
+    <string name="new_message">New message</string>
+    <string name="new_password">Please enter new password</string>
+    <string name="no_comment">No comments currently(·8·)</string>
+    <string name="no_information">Oops, no data now</string>
+    <string name="no_media">Cannot find object T_T</string>
+    <string name="not_graded"><![CDATA[Not graded yet >_<]]></string>
+    <string name="notification">Notifications</string>
+    <string name="notification_clear_all">All the notifications cleared</string>
+    <string name="now_edit_done"><![CDATA[Score and comments have been saved >_<]]></string>
+    <string name="now_editable">Score and comments can be editted now. Click again to save</string>
+    <string name="password">Password</string>
+    <string name="password_double_check">Please enter again</string>
+    <string name="password_too_short">Password should be at least 6 digits ww</string>
+    <string name="portrait">Avatar</string>
+    <string name="profile">Profile</string>
+    <string name="recipient">Recipient</string>
+    <string name="select_all">Select all</string>
+    <string name="select_student">Please select a student</string>
+    <string name="select_type">Select the file you would like to upload</string>
+    <string name="send_message">Send message</string>
+    <string name="send_message_list">Message list</string>
+    <string name="sender">Sender</string>
+    <string name="sent_time">Sent time</string>
+    <string name="settings">Settings</string>
+    <string name="student_course">Student course</string>
+    <string name="teacher_assistant_course">TA course</string>
+    <string name="time_format_full">%1$s-%2$s-%3$s</string>
+    <string name="time_format_simple">%1$s-%2$s</string>
+    <string name="title">Title</string>
+    <string name="title_icon">PA</string>
+    <string name="title_semester">Semester</string>
+    <string name="upload">Upload experiment result</string>
+    <string name="user_class">Class</string>
+    <string name="user_comment">Comments</string>
+    <string name="user_evaluator">Evaluator</string>
+    <string name="user_grade">Grade</string>
+    <string name="user_id">Student ID</string>
+    <string name="username">Username</string>
+    <string name="username_others">Username(telephone number, Email)</string>
+    <string name="view_comment">%1$s\'s comment on experiment %2$s</string>
+    <string name="view_grades">View grades</string>
+    <string name="view_students">View students</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="wait">Please wait a moment =w=</string>
+    <string-array name="upload_type">
+        <item name="camera">Camera</item>
+        <item name="video">Video</item>
+        <item name="gallery">Gallery</item>
+    </string-array>
+    <string-array name="answer_confirm_log_out">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+    <string-array name="answer_alert_media">
+        <item>You are right</item>
+        <item>Nothing special</item>
+    </string-array>
+    <string-array name="about">
+        <item>Name：PAPA</item>
+        <item>Author：Huang Ruihao and Lei Kaixiang \n (No particular order)</item>
+        <item>Version：1.0.0</item>
+        <item>If there is any problem, please feel free to contact
+            \nHuang Ruihao at huangruihaocst@126.com \nLei Kaixiang at shyoshyo@qq.com</item>
+        <item>この番組はご覧のスポンサーの提供でお送りします</item>
+    </string-array>
+</resources>
