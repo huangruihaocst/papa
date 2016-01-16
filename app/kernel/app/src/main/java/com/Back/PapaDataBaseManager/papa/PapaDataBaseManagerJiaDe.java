@@ -101,14 +101,18 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
         LessonReply r = new LessonReply();
         if(request.courseId == 1)
         {
-            r.lesson.add(new AbstractMap.SimpleEntry<>(1, "门电路实验"));
-            r.lesson.add(new AbstractMap.SimpleEntry<>(2, "触发器实验"));
+            r.lesson.add(new AbstractMap.SimpleEntry<>(1,
+                    new LessonInfo("门电路实验", null, null, null, "a")));
+            r.lesson.add(new AbstractMap.SimpleEntry<>(2,
+                    new LessonInfo("触发器实验", null, null, null, "a")));
             return r;
         }
         if(request.courseId == 2)
         {
-            r.lesson.add(new AbstractMap.SimpleEntry<>(3, "CMOS 反相电路"));
-            r.lesson.add(new AbstractMap.SimpleEntry<>(4, "ACDC 转换"));
+            r.lesson.add(new AbstractMap.SimpleEntry<>(3,
+                    new LessonInfo("CMOS 与非门电路", null, null, null, "a")));
+            r.lesson.add(new AbstractMap.SimpleEntry<>(4,
+                    new LessonInfo("ACDC 转换", null, null, null, "a")));
             return r;
         }
 

@@ -44,6 +44,5 @@ public abstract class PapaAbstractHttpClient{
     }
     */
 
-    // オネエサン欲しいいいいいいいいいいいいいいい！
-    // @ 打断腿送 ドイツ 的翔翔
+    // そんなこともう欲しくない。
 }
