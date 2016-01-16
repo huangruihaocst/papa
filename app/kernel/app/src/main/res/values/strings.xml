@@ -12,7 +12,7 @@
     <string name="title_activity_upload_history">UploadHistoryActivity</string>
     <string name="title_activity_edit_profile">EditProfileActivity</string>
 
-    <string name="app_name">PAPA</string>
+    <string name="app_name">啪啪打卡</string>
     <string name="username_others">用户名(手机号, 邮箱)</string>
     <string name="password">密码</string>
     <string name="cannot_get_telephone_num">获取不了手机号喵 QAQ</string>
