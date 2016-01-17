@@ -35,14 +35,4 @@ public abstract class PapaAbstractHttpClient{
     {
         getHttpReplyByGet(url, parameter, file);
     }
-
-    /*
-    public String getHttpReply(HttpMethod method, String url)
-            throws PapaHttpUnknownMethodException
-    {
-        return getHttpReply(method, url, new HashMap<String, String>());
-    }
-    */
-
-    // そんなこともう欲しくない。
 }

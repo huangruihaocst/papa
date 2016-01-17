@@ -31,10 +31,6 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 
-/**
- * Created by shyo on 15-10-16.
- * Apache Http Adapter
- */
 public class PapaApacheHttpClient extends PapaAbstractHttpClient
 {
     final static String TAG = "PapaApacheHttpClient";
@@ -231,12 +227,6 @@ public class PapaApacheHttpClient extends PapaAbstractHttpClient
     {
         return getHttpReply(url, parameter, new HttpPut());
     }
-//
-//    protected String getHttpReplyByDelete(String url, HashMap<String, Object> parameter)
-//        throws PapaHttpClientException
-//    {
-//        return getHttpReply(url, parameter, new HttpDelete());
-//    }
 
     protected String getHttpReplyByDelete(String url, HashMap<String, Object> parameter)
             throws PapaHttpClientException

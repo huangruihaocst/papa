@@ -12,16 +12,13 @@ import org.json.JSONTokener;
 import java.io.File;
 import java.util.HashMap;
 
-/**
- * Created by shyo on 15-10-16.
- */
 public class PapaDataBaseAccess {
     private PapaAbstractHttpClient client;
 
     //    private static final String host = "166.111.227.251";
     //    private static final String port = "80";
-//    private static final String host = "ai.m.n9.vc";
-//    private static final String port = "90";
+    //    private static final String host = "ai.m.n9.vc";
+    //    private static final String port = "90";
     private static final String host = "45.32.52.110";
     private static final String port = "80";
     private static final String tag = "PapaDataBaseAccess";

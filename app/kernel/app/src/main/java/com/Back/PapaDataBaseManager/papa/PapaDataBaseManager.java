@@ -290,14 +290,6 @@ public abstract class PapaDataBaseManager{
     public abstract StudentsReply getStudents(StudentsRequest request)
             throws PapaHttpClientException;
 
-    /*
-        吐血推荐
-        http://www.bilibili.com/video/av2098846/#page=2
-
-        aLIEz + 霍元甲
-        良心作
-     */
-
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // 获取实验详细信息
@@ -453,8 +445,6 @@ public abstract class PapaDataBaseManager{
     public abstract GetMessageByIDReply getMessageByID(GetMessageByIDRequest request)
             throws PapaHttpClientException;
 
-    // どこまで叫べば位置を知れる
-
     //////////////////////////////////////////////////////////////////////////
     // 学生课程评价
 
@@ -508,8 +498,6 @@ public abstract class PapaDataBaseManager{
 
     public abstract GetStudentCommentsReply getStudentComments(GetStudentCommentsRequest request)
             throws PapaHttpClientException;
-
-    // 赤い　紅い　アカイ
 
     //////////////////////////////////////////////////////////////////////////
     // 学生文件
@@ -834,8 +822,6 @@ public abstract class PapaDataBaseManager{
     /**
        获取相关老师的信息
     **/
-
-
     static public class GetTeachersInfoRequest
     {
         public String token;
@@ -936,7 +922,4 @@ public abstract class PapaDataBaseManager{
 
     public abstract GetTeachersInfoReply getTeachersInfo(GetTeachersInfoRequest request)
             throws PapaHttpClientException;
-
-
-
 }

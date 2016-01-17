@@ -1,9 +1,5 @@
 package com.Back.NetworkAccess.papa;
 
-/**
- * Created by shyo on 15-10-22.
- */
-
 public class PapaHttpClientIOErrorException extends PapaHttpClientException
 {
     public PapaHttpClientIOErrorException()

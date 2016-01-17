@@ -31,14 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-/**
- * Created by shyo on 15-10-22.
- *
- * This is the Zhende PapaDataBaseManager, instead of Jiade.
- *
- * Interact with Database and App
- */
-
+//　走 HTTP 的实现.
 public class PapaDataBaseManagerReal extends PapaDataBaseManager
 {
     private Calendar getCalenderByString(String str)
@@ -457,9 +450,6 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 h
         );
     }
-
-    // どこまで叫べば位置を知れる　とどめもないまま息が切れる
-    // 堂々さらした罪の群れと　後ろ向きにあらがう!!!
 
     @Override
     public GetLessonInfoReply getLessonInfo(GetLessonInfoRequest request) throws
