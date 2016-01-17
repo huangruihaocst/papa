@@ -52,7 +52,8 @@ public class StudentsListAdapter extends BaseAdapter {
         TextView student_id = (TextView)convertView.findViewById(R.id.student_id);
         PapaDataBaseManager.StudentInfo studentInfo = lst.get(position).getValue();
         student_name.setText(studentInfo.name);
-        student_id.setText("学号：" + studentInfo.studentNumber);
+        String ID = context.getString(R.string.student_ID) + studentInfo.studentNumber;
+        student_id.setText(ID);
         return convertView;
     }
 }

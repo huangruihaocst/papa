@@ -63,16 +63,7 @@ public class MessageDetailActivity extends AppCompatActivity {
         message_content.setText(message.getContent());
 
         // deadline format
-        DateFormat dateFormat;
-        if(getResources().getConfiguration().locale.getCountry().equals("US")){
-            dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
-        }else if(getResources().getConfiguration().locale.getCountry().equals("TW")){
-            dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.TAIWAN);
-        }else if(getResources().getConfiguration().locale.getCountry().equals("UK")){
-            dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.UK);
-        }else{//default
-            dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.CHINA);
-        }
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, getResources().getConfiguration().locale);
         deadline.setText(dateFormat.format(message.getDeadline().getTime()));
         long delta = message.getDeadline().getTimeInMillis() - System.currentTimeMillis();
         if (delta > 0 && delta < this.getResources().getInteger(R.integer.min_deadline_warning_in_milliseconds)) {

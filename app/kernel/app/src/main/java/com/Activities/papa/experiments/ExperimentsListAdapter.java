@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.Activities.papa.R;
 import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -51,9 +52,15 @@ public class ExperimentsListAdapter extends BaseAdapter {
 
         PapaDataBaseManager.LessonInfo info = lst.get(position).getValue();
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+                context.getResources().getConfiguration().locale);
+        simpleDateFormat.setTimeZone(info.startTime.getTimeZone());
+        String start_time = (simpleDateFormat.format(info.startTime.getTime()));
+        String end_time = (simpleDateFormat.format(info.endTime.getTime()));
+
         experiment_name.setText(info.name);
-        String experiment_info = "地点：" + info.location +
-                " 时间:2015-1-1 00:00:00至2015-12-31 23:59:59"; //faked
+        String experiment_info = context.getString(R.string.location) + info.location + " " + context.getString(R.string.time) +
+                start_time + context.getString(R.string.to) + end_time;
 
         int length = experiment_info.length();
         int max_length = context.getResources().getInteger(R.integer.experiment_overview_max_length);

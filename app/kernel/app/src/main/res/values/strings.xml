@@ -110,6 +110,10 @@
         <item>この番組はご覧のスポンサーの提供でお送りします</item>
     </string-array>
     <string name="wait">稍等喵 =w=</string>
+    <string name="student_ID">学号：</string>
+    <string name="location">地点：</string>
+    <string name="time">时间：</string>
+    <string name="to">至</string>
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>

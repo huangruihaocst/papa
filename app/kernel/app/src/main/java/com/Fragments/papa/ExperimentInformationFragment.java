@@ -152,7 +152,8 @@ public class ExperimentInformationFragment extends Fragment {
         textView_download = (TextView)rootView.findViewById(R.id.download);
 
         textView_course_name.setText(rlt.name);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+                getResources().getConfiguration().locale);
         simpleDateFormat.setTimeZone(rlt.startTime.getTimeZone());
         String time = (simpleDateFormat.format(rlt.startTime.getTime()));
         textView_course_start_time.setText(time);
@@ -165,11 +166,10 @@ public class ExperimentInformationFragment extends Fragment {
                 textView_download.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
                 Intent intent = new Intent();
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-//                intent.setType("")
                 new DownloadTask(getContext()).execute(new PapaDataBaseManager.GetLessonFilesRequest(
                         bundleHelper.getToken(), Integer.toString(bundleHelper.getExperimentId()),
                         new File(Environment.getExternalStoragePublicDirectory(
-                                Environment.DIRECTORY_PICTURES), "PAPA")
+                                Environment.DIRECTORY_PICTURES), getString(R.string.app_name))
                 ));
             }
         });

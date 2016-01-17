@@ -116,4 +116,8 @@
             \nHuang Ruihao at huangruihaocst@126.com \nLei Kaixiang at shyoshyo@qq.com</item>
         <item>この番組はご覧のスポンサーの提供でお送りします</item>
     </string-array>
+    <string name="student_ID">Student ID: </string>
+    <string name="location">Location: </string>
+    <string name="time">Time: </string>
+    <string name="to">to</string>
 </resources>

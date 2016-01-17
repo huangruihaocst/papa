@@ -102,7 +102,7 @@ public class ExperimentActivity extends AppCompatActivity {
     }
 
     class Task extends
-            AsyncTask<PapaDataBaseManager.LessonRequest, Exception,PapaDataBaseManager.LessonReply> {
+            AsyncTask<PapaDataBaseManager.LessonRequest, Exception, PapaDataBaseManager.LessonReply> {
         ProgressDialog proDialog;
 
         public Task(Context context) {
@@ -146,7 +146,6 @@ public class ExperimentActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: return a list that contains both name and information of experiments
     void setExperiments(final PapaDataBaseManager.LessonReply rlt) {
         final ListView ExperimentListView = (ListView)findViewById(R.id.experiment_list);
         ExperimentListView.setAdapter(new ExperimentsListAdapter(rlt.lesson, getApplicationContext()));
@@ -156,7 +155,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 Intent intent = new Intent(ExperimentActivity.this, ExperimentDetailActivity.class);
                 Bundle data = new Bundle();
                 String key_experiment_experiment_detail = getString(R.string.key_experiment_experiment_detail);
-                data.putParcelable(key_experiment_experiment_detail,bundleHelper);
+                data.putParcelable(key_experiment_experiment_detail, bundleHelper);
 
                 Map.Entry<Integer, PapaDataBaseManager.LessonInfo> item =
                         (Map.Entry<Integer, PapaDataBaseManager.LessonInfo>)
