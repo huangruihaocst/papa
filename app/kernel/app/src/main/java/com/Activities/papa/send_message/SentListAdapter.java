@@ -45,7 +45,7 @@ public class SentListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         if(convertView == null){
-            convertView = LayoutInflater.from(context).inflate(R.layout.sent_list_item, parent);
+            convertView = LayoutInflater.from(context).inflate(R.layout.sent_list_item, null);
         }
         TextView send_name = (TextView)convertView.findViewById(R.id.send_name);
         TextView send_overview = (TextView)convertView.findViewById(R.id.send_overview);
