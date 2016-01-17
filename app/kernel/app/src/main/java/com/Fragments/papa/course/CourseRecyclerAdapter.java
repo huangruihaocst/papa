@@ -79,14 +79,16 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         View itemView = holder.getLayout();
         TextView textView = holder.getTitleView();
-        if (position == 0) {
-            if(studentCourses.size() != 0){
+
+        if (studentCourses.size() == 0 && taCourses.size() == 0) {
+            return;
+        }
+        else if (taCourses.size() == 0) {
+            if (position == 0) {
                 textView.setText(context.getString(R.string.student_course));
                 textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
                 textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
-            }
-        } else if (position <= studentCourses.size()) {
-            if(taCourses.size() != 0){
+            } else if (position < studentCourses.size() + 1) {
                 final int index = position - 1;
                 textView.setText(studentCourses.get(index).getValue());
                 textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
@@ -103,14 +105,60 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
                     }
                 });
             }
-        } else if (position == studentCourses.size() + 1) {
-            if(taCourses.size() != 0){
+            else
+                return;
+        }
+        else if (studentCourses.size() == 0) {
+            if (position == 0) {
                 textView.setText(context.getString(R.string.teacher_assistant_course));
                 textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
                 textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
+            } else if (position < taCourses.size() + 1) {
+                final int index = position - 1;
+                textView.setText(taCourses.get(index).getValue());
+                textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
+                textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startExperimentActivity(
+                                context,
+                                taCourses.get(index).getValue(),
+                                taCourses.get(index).getKey(),
+                                bundleHelper,
+                                BundleHelper.Identity.teacher_assistant);
+                    }
+                });
             }
-        } else {
-            if(taCourses.size() != 0){
+            else
+                return;
+        }
+        else {
+            if (position == 0) {
+                textView.setText(context.getString(R.string.student_course));
+                textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+                textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
+            } else if (position < studentCourses.size() + 1) {
+                final int index = position - 1;
+                textView.setText(studentCourses.get(index).getValue());
+                textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
+                textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startExperimentActivity(
+                                context,
+                                studentCourses.get(index).getValue(),
+                                studentCourses.get(index).getKey(),
+                                bundleHelper,
+                                BundleHelper.Identity.student);
+                    }
+                });
+            } else if (position == studentCourses.size() + 1) {
+                textView.setText(context.getString(R.string.teacher_assistant_course));
+                textView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+                textView.setTextSize(context.getResources().getInteger(R.integer.course_title_text_size));
+            } else {
                 final int index = position - 2 - studentCourses.size();
                 textView.setText(taCourses.get(index).getValue());
                 textView.setTextSize(context.getResources().getInteger(R.integer.course_text_size));
