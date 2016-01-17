@@ -113,9 +113,28 @@ public abstract class PapaDataBaseManager{
         }
     }
 
+    static public class LessonInfo
+    {
+        public String name;
+        public Calendar startTime;
+        public Calendar endTime;
+        public String location;
+
+        public String description;
+
+        public LessonInfo(String name, String description, Calendar startTime, Calendar endTime, String location)
+        {
+            this.name = name;
+            this.description = description;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.location = location;
+        }
+    }
+
     static public class LessonReply
     {
-        public List<Map.Entry<Integer, String>> lesson;
+        public List<Map.Entry<Integer, LessonInfo>> lesson;
 
         public LessonReply()
         {

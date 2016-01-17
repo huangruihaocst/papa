@@ -262,7 +262,15 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 JSONObject obj = array.getJSONObject(i);
 
                 ans.lesson.add(
-                        new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
+                        new AbstractMap.SimpleEntry<>(obj.getInt("id"),
+                                new LessonInfo(
+                                        obj.getString("name"),
+                                        obj.getString("description"),
+                                        getCalenderByString(obj.getString("start_time")),
+                                        getCalenderByString(obj.getString("end_time")),
+                                        obj.getString("location")
+                                )
+                        )
                 );
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
