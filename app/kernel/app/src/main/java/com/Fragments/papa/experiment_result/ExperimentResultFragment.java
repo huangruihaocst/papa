@@ -441,7 +441,7 @@ public class ExperimentResultFragment extends Fragment {
         int size = rlt.students.size();
         students = new String[size];
         for(int i = 0;i < size;i ++){
-            students[i] = rlt.students.get(i).getValue();
+            students[i] = rlt.students.get(i).getValue().name;
         }
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.select_student));

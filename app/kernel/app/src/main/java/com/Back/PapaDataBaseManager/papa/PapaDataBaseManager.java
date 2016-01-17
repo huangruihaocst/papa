@@ -248,9 +248,38 @@ public abstract class PapaDataBaseManager{
         }
     }
 
+    static public class StudentInfo
+    {
+        public String studentId;
+        public String name;
+        public String studentNumber;
+        public String phone;
+        public String avatarId;
+        public String email;
+        public String description;
+        public String department;
+        public String className;
+
+        StudentInfo(
+                String studentId, String name, String studentNumber,
+                String phone, String avatarId, String email,
+                String description, String department, String className)
+        {
+            this.studentId = studentId;
+            this.name = name;
+            this.studentNumber = studentNumber;
+            this.phone = phone;
+            this.avatarId = avatarId;
+            this.email = email;
+            this.description = description;
+            this.department = department;
+            this.className = className;
+        }
+    }
+
     static public class StudentsReply
     {
-        public List<Map.Entry<Integer, String>> students;
+        public List<Map.Entry<Integer, StudentInfo>> students;
 
         public StudentsReply()
         {

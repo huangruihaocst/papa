@@ -132,10 +132,14 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public StudentsReply getStudents(StudentsRequest request) throws PapaHttpClientException {
         kaSi();
         StudentsReply r = new StudentsReply();
-        r.students.add(new AbstractMap.SimpleEntry<>(1, "博麗 　霊夢"));
-        r.students.add(new AbstractMap.SimpleEntry<>(2, "霧雨　魔理沙"));
-        r.students.add(new AbstractMap.SimpleEntry<>(3, "十六夜　咲夜"));
-        r.students.add(new AbstractMap.SimpleEntry<>(4, "チルノ"));
+        r.students.add(new AbstractMap.SimpleEntry<>(1,
+                new StudentInfo(null, "博麗 　霊夢", null, null, null, null, null, null, null)));
+        r.students.add(new AbstractMap.SimpleEntry<>(2,
+                new StudentInfo(null, "霧雨　魔理沙", null, null, null, null, null, null, null)));
+        r.students.add(new AbstractMap.SimpleEntry<>(3,
+                new StudentInfo(null, "十六夜　咲夜", null, null, null, null, null, null, null)));
+        r.students.add(new AbstractMap.SimpleEntry<>(4,
+                new StudentInfo(null, "チルノ", null, null, null, null, null, null, null)));
         return r;
     }
 
