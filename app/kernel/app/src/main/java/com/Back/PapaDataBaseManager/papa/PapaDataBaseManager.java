@@ -113,9 +113,28 @@ public abstract class PapaDataBaseManager{
         }
     }
 
+    static public class LessonInfo
+    {
+        public String name;
+        public Calendar startTime;
+        public Calendar endTime;
+        public String location;
+
+        public String description;
+
+        public LessonInfo(String name, String description, Calendar startTime, Calendar endTime, String location)
+        {
+            this.name = name;
+            this.description = description;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.location = location;
+        }
+    }
+
     static public class LessonReply
     {
-        public List<Map.Entry<Integer, String>> lesson;
+        public List<Map.Entry<Integer, LessonInfo>> lesson;
 
         public LessonReply()
         {
@@ -229,9 +248,38 @@ public abstract class PapaDataBaseManager{
         }
     }
 
+    static public class StudentInfo
+    {
+        public String studentId;
+        public String name;
+        public String studentNumber;
+        public String phone;
+        public String avatarId;
+        public String email;
+        public String description;
+        public String department;
+        public String className;
+
+        StudentInfo(
+                String studentId, String name, String studentNumber,
+                String phone, String avatarId, String email,
+                String description, String department, String className)
+        {
+            this.studentId = studentId;
+            this.name = name;
+            this.studentNumber = studentNumber;
+            this.phone = phone;
+            this.avatarId = avatarId;
+            this.email = email;
+            this.description = description;
+            this.department = department;
+            this.className = className;
+        }
+    }
+
     static public class StudentsReply
     {
-        public List<Map.Entry<Integer, String>> students;
+        public List<Map.Entry<Integer, StudentInfo>> students;
 
         public StudentsReply()
         {

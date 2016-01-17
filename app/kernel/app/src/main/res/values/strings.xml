@@ -3,14 +3,14 @@
     <string name="main_title">啪啪打卡</string>
 
     <string name="title_icon">啪</string>
-    <string name="title_activity_semester">SemesterActivity</string>
-    <string name="title_activity_course">CourseActivity</string>
-    <string name="title_activity_experiment">ExperimentActivity</string>
-    <string name="title_activity_student">StudentActivity</string>
-    <string name="title_activity_favorite">FavoriteActivity</string>
-    <string name="title_activity_history">HistoryActivity</string>
-    <string name="title_activity_upload_history">UploadHistoryActivity</string>
-    <string name="title_activity_edit_profile">EditProfileActivity</string>
+    <string name="title_activity_semester" translatable="false">SemesterActivity</string>
+    <string name="title_activity_course" translatable="false">CourseActivity</string>
+    <string name="title_activity_experiment" translatable="false">ExperimentActivity</string>
+    <string name="title_activity_student" translatable="false">StudentActivity</string>
+    <string name="title_activity_favorite" translatable="false">FavoriteActivity</string>
+    <string name="title_activity_history" translatable="false">HistoryActivity</string>
+    <string name="title_activity_upload_history" translatable="false">UploadHistoryActivity</string>
+    <string name="title_activity_edit_profile" translatable="false">EditProfileActivity</string>
 
     <string name="app_name">啪啪打卡</string>
     <string name="username_others">用户名(手机号, 邮箱)</string>
@@ -42,8 +42,8 @@
         <item name="video">录像</item>
         <item name="gallery">本地相册</item>
     </string-array>
-    <string name="for_course">评价课程</string>
-    <string name="view_comment">%1$s对课程%2$s的评价</string>
+    <string name="for_experiment">评价实验</string>
+    <string name="view_comment">%1$s对实验%2$s的评价</string>
     <string name="upload">上传实验结果</string>
     <string name="view_students">查看本实验的学生</string>
     <string name="view_grades">查看成绩</string>
@@ -63,7 +63,7 @@
     <string name="done">完成</string>
     <string name="mark_all_as_read">全部标记为已读</string>
     <string name="select_all">全选</string>
-    <string name="reverse_select">反选</string>
+    <string name="deselect_all">全不选</string>
     <string name="send_message">发信</string>
     <string name="send_message_list">发信列表</string>
     <string name="new_message">创建新信息</string>
@@ -101,7 +101,7 @@
     <string name="time_format_simple">%1$s月%2$s日</string>
     <string name="time_format_full">%1$s年%2$s月%3$s日</string>
     <string name="copyright">Copyright©2015 努力上均分组 Powered By Android</string>
-    <string name="version">version 1.0.0</string>
+    <string name="version" translatable="false">version 1.0.0</string>
     <string-array name="about">
         <item>名称：啪啪打卡</item>
         <item>作者：黄锐皓 雷凯翔 \n （以上排名不分先后）</item>
@@ -109,9 +109,10 @@
         <item>如有任何问题，请联系 \n黄锐皓 huangruihaocst@126.com \n雷凯翔 shyoshyo@qq.com</item>
         <item>この番組はご覧のスポンサーの提供でお送りします</item>
     </string-array>
+    <string name="wait">稍等喵 =w=</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
 
     <string name="action_settings">设置</string>
     <string name="action_search">搜索</string>
@@ -120,49 +121,49 @@
     <string name="no_information">没有数据的说</string>
     <string name="action_student_information">学生信息</string>
     <string name="action_generate_QR_code">生成二维码</string>
-    <string name="action_make_comments">评价该课程</string>
+    <string name="action_make_comments">评价该实验</string>
     <string name="action_view_comments">对该课程的评价</string>
     <string name="action_save">保存</string>
     <string name="action_send_message">发送</string>
 
     <string name="title_semester">学期</string>
 
-    <string name="key_sign_in_course">key_sign_in_course</string>
-    <string name="key_course_experiment">key_course_experiment</string>
-    <string name="key_to_about">key_to_about</string>
-    <string name="key_to_settings">key_to_settings</string>
-    <string name="key_to_favorite">key_to_favorite</string>
-    <string name="key_to_detail">key_to_detail</string>
-    <string name="key_to_experiment_history">key_to_experiment_history</string>
-    <string name="key_to_upload_history">key_to_upload_history</string>
-    <string name="key_to_edit_profile">key_to_edit_profile</string>
-    <string name="key_to_sign_in">key_to_sign_in</string>
-    <string name="key_to_notification">key_to_notification</string>
-    <string name="key_experiment_experiment_detail">key_experiment_experiment_detail</string>
-    <string name="key_to_comment">key_to_comment</string>
-    <string name="key_to_sent_list">key_to_sent_lit</string>
-    <string name="key_sent_list_new_message">key_sent_list_new_message</string>
-    <string name="key_sent_list_sent_detail">key_sent_list_sent_detail</string>
+    <string name="key_sign_in_course" translatable="false">key_sign_in_course</string>
+    <string name="key_course_experiment" translatable="false">key_course_experiment</string>
+    <string name="key_to_about" translatable="false">key_to_about</string>
+    <string name="key_to_settings" translatable="false">key_to_settings</string>
+    <string name="key_to_favorite" translatable="false">key_to_favorite</string>
+    <string name="key_to_detail" translatable="false">key_to_detail</string>
+    <string name="key_to_experiment_history" translatable="false">key_to_experiment_history</string>
+    <string name="key_to_upload_history" translatable="false">key_to_upload_history</string>
+    <string name="key_to_edit_profile" translatable="false">key_to_edit_profile</string>
+    <string name="key_to_sign_in" translatable="false">key_to_sign_in</string>
+    <string name="key_to_notification" translatable="false">key_to_notification</string>
+    <string name="key_experiment_experiment_detail" translatable="false">key_experiment_experiment_detail</string>
+    <string name="key_to_comment" translatable="false">key_to_comment</string>
+    <string name="key_to_sent_list" translatable="false">key_to_sent_lit</string>
+    <string name="key_sent_list_new_message" translatable="false">key_sent_list_new_message</string>
+    <string name="key_sent_list_sent_detail" translatable="false">key_sent_list_sent_detail</string>
 
     <!--<string name="color_primary">#2196F3</string>-->
     <!--<string name="color_primary_dark">#1976D2</string>-->
-    <string name="title_activity_about_activity">AboutActivity</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_about_activity" translatable="false">AboutActivity</string>
+    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
 
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <string name="pref_header_general" translatable="false">General</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
+    <string name="pref_title_social_recommendations" translatable="false">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations" translatable="false">Recommendations for people to contact
         based on your message history
     </string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_title_display_name" translatable="false">Display name</string>
+    <string name="pref_default_display_name" translatable="false">John Smith</string>
 
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string name="pref_title_add_friends_to_messages" translatable="false">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
         <item>Always</item>
         <item>When possible</item>
@@ -175,9 +176,9 @@
     </string-array>
 
     <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
+    <string name="pref_header_data_sync" translatable="false">Data &amp; sync</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string name="pref_title_sync_frequency" translatable="false">Sync frequency</string>
     <string-array name="pref_sync_frequency_titles">
         <item>15 minutes</item>
         <item>30 minutes</item>
@@ -195,48 +196,48 @@
         <item>-1</item>
     </string-array>
 
-    <string name="pref_title_system_sync_settings">System sync settings</string>
+    <string name="pref_title_system_sync_settings" translatable="false">System sync settings</string>
 
     <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
+    <string name="pref_header_notifications" translatable="false">Notifications</string>
 
-    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_new_message_notifications" translatable="false">New message notifications</string>
 
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_ringtone" translatable="false">Ringtone</string>
+    <string name="pref_ringtone_silent" translatable="false">Silent</string>
 
-    <string name="pref_title_vibrate">Vibrate</string>
-    <string name="title_activity_notification">NotificationActivity</string>
+    <string name="pref_title_vibrate" translatable="false">Vibrate</string>
+    <string name="title_activity_notification" translatable="false">NotificationActivity</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_experiment_detail">ExperimentDetailActivity</string>
-    <string name="title_activity_message">MessageActivity</string>
-    <string name="title_activity_message_detail">MessageDetailActivity</string>
+    <string name="title_activity_experiment_detail" translatable="false">ExperimentDetailActivity</string>
+    <string name="title_activity_message" translatable="false">MessageActivity</string>
+    <string name="title_activity_message_detail" translatable="false">MessageDetailActivity</string>
 
     <!-- Message -->
-    <string name="key_message_detail_activity_message_byte_array">key_message_detail_activity_message_byte_array</string>
+    <string name="key_message_detail_activity_message_byte_array" translatable="false">key_message_detail_activity_message_byte_array</string>
     <!-- Message Service -->
-    <string name="key_message_service_command">key_message_service_command</string>
-    <string name="key_message_service_command_get_all_messages">key_message_service_command_get_all_messages</string>
-    <string name="key_message_service_command_stop_listen">key_message_service_command_stop_listen</string>
-    <string name="key_message_service_command_start_listen">key_message_service_command_start_listen</string>
-    <string name="key_message_service_messages_file_name">messages.dat</string>
-    <string name="string_message_title">%s</string>
-    <string name="string_message_notify_deadline_title">%d messages are nearing deadline.</string>
-    <string name="title_activity_experiment_detail_temp">ExperimentDetailTempActivity</string>
-    <string name="title_activity_detail">DetailTempActivity</string>
-    <string name="title_activity_comment">CommentTempActivity</string>
+    <string name="key_message_service_command" translatable="false">key_message_service_command</string>
+    <string name="key_message_service_command_get_all_messages" translatable="false">key_message_service_command_get_all_messages</string>
+    <string name="key_message_service_command_stop_listen" translatable="false">key_message_service_command_stop_listen</string>
+    <string name="key_message_service_command_start_listen" translatable="false">key_message_service_command_start_listen</string>
+    <string name="key_message_service_messages_file_name" translatable="false">messages.dat</string>
+    <string name="string_message_title" translatable="false">%s</string>
+    <string name="string_message_notify_deadline_title" translatable="false">%d messages are nearing deadline.</string>
+    <string name="title_activity_experiment_detail_temp" translatable="false">ExperimentDetailTempActivity</string>
+    <string name="title_activity_detail" translatable="false">DetailTempActivity</string>
+    <string name="title_activity_comment" translatable="false">CommentTempActivity</string>
 
-    <string name="title_activity_attendance">AttendanceActivity</string>
-    <string name="key_attendance_activity_command">key_attendance_activity_command</string>
-    <string name="key_attendance_activity_start_sign_in">key_attendance_activity_start_sign_in</string>
-    <string name="title_attendance_activity_sign_in_successful">You have successfully signed in %1$s</string>
-    <string name="title_attendance_activity_sign_in_content">Time: %1$s, method: %2$s</string>
-    <string name="key_settings_file_name">settings.dat</string>
-    <string name="title_activity_send_message">SendMessageActivity</string>
-    <string name="title_activity_new_message">NewMessageActivity</string>
-    <string name="title_activity_sent_detail_activity">SentDetailActivity</string>
+    <string name="title_activity_attendance" translatable="false">AttendanceActivity</string>
+    <string name="key_attendance_activity_command" translatable="false">key_attendance_activity_command</string>
+    <string name="key_attendance_activity_start_sign_in" translatable="false">key_attendance_activity_start_sign_in</string>
+    <string name="title_attendance_activity_sign_in_successful" translatable="false">You have successfully signed in %1$s</string>
+    <string name="title_attendance_activity_sign_in_content" translatable="false">Time: %1$s, method: %2$s</string>
+    <string name="key_settings_file_name" translatable="false">settings.dat</string>
+    <string name="title_activity_send_message" translatable="false">SendMessageActivity</string>
+    <string name="title_activity_new_message" translatable="false">NewMessageActivity</string>
+    <string name="title_activity_sent_detail_activity" translatable="false">SentDetailActivity</string>
 
     <string-array name="feedback_email">
         <item>huangruihaocst@126.com</item>

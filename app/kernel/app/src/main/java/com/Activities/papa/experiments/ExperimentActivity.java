@@ -107,7 +107,7 @@ public class ExperimentActivity extends AppCompatActivity {
 
         public Task(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
         }
@@ -158,9 +158,11 @@ public class ExperimentActivity extends AppCompatActivity {
                 String key_experiment_experiment_detail = getString(R.string.key_experiment_experiment_detail);
                 data.putParcelable(key_experiment_experiment_detail,bundleHelper);
 
-                Map.Entry<Integer, String> item = (Map.Entry<Integer, String>)parent.getItemAtPosition(position);
+                Map.Entry<Integer, PapaDataBaseManager.LessonInfo> item =
+                        (Map.Entry<Integer, PapaDataBaseManager.LessonInfo>)
+                                parent.getItemAtPosition(position);
 
-                bundleHelper.setExperimentName(item.getValue());
+                bundleHelper.setExperimentName(item.getValue().name);
                 bundleHelper.setExperiment_id(item.getKey());
 
                 intent.putExtras(data);

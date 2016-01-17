@@ -79,7 +79,7 @@ public class SentListActivity extends AppCompatActivity {
 
         public GetMessagesTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.show();
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
@@ -127,7 +127,7 @@ public class SentListActivity extends AppCompatActivity {
 
         public ReadMessagesTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.show();
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);

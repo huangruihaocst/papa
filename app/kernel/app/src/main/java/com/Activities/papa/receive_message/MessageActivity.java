@@ -216,12 +216,12 @@ public class MessageActivity extends AppCompatActivity {
         menu.getItem(MenuDoneAction).setVisible(false);
         menu.getItem(MenuEditAction).setVisible(true);
         menu.getItem(MenuSelectUnselectedAll).setVisible(false);
-        menu.getItem(MenuSelectUnselectedAll).setTitle(getString(R.string.reverse_select));
+        menu.getItem(MenuSelectUnselectedAll).setTitle(getString(R.string.deselect_all));
     }
     boolean selectAllMode = true;
     void toggleSelectAll() {
         if (selectAllMode) {
-            menu.getItem(MenuSelectUnselectedAll).setTitle(getString(R.string.reverse_select));
+            menu.getItem(MenuSelectUnselectedAll).setTitle(getString(R.string.deselect_all));
             adapter.selectAll();
         } else {
             menu.getItem(MenuSelectUnselectedAll).setTitle(getString(R.string.select_all));

@@ -150,8 +150,9 @@ public class StudentsFragment extends Fragment {
         StudentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Map.Entry<Integer, String> item =
-                        (Map.Entry<Integer, String>) parent.getItemAtPosition(position);
+                Map.Entry<Integer, PapaDataBaseManager.StudentInfo> item =
+                        (Map.Entry<Integer, PapaDataBaseManager.StudentInfo>)
+                                parent.getItemAtPosition(position);
 
                 Log.i(TAG, item.getValue() + " " + item.getKey());
 
@@ -159,7 +160,7 @@ public class StudentsFragment extends Fragment {
                 String key_to_detail = getString(R.string.key_to_detail);
                 Bundle data = new Bundle();
                 bundleHelper.setStudentId(item.getKey());
-                bundleHelper.setStudentName(item.getValue());
+                bundleHelper.setStudentName(item.getValue().name);
                 data.putParcelable(key_to_detail, bundleHelper);
                 intent.putExtras(data);
                 startActivity(intent);
@@ -190,7 +191,7 @@ public class StudentsFragment extends Fragment {
 
         public GetStudentsTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
         }

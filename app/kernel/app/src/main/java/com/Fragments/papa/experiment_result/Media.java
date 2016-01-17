@@ -18,8 +18,7 @@ public class Media {
     public String path;
     public Type type;//1 for image, 0 for video
 
-    private void init(Bitmap bitmap, String path, Type type, String id)
-    {
+    private void init(Bitmap bitmap, String path, Type type, String id) {
         Log.i("Media", "Media path = " + path);
 
         this.bitmap = bitmap;
@@ -32,9 +31,7 @@ public class Media {
         init(bitmap, path, type, "-1");
     }
 
-    public Media(Bitmap bitmap, String path, Type type, String id)
-    {
-
+    public Media(Bitmap bitmap, String path, Type type, String id) {
         init(bitmap, path, type, id);
     }
 }

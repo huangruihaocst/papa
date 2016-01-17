@@ -261,7 +261,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         public PostAvatarTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
         }
@@ -308,7 +308,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         public GetUsrInfoTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
         }
@@ -363,7 +363,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         public PutUsrInfoTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
         }

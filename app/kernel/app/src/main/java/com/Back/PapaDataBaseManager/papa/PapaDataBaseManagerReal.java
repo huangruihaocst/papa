@@ -262,7 +262,15 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 JSONObject obj = array.getJSONObject(i);
 
                 ans.lesson.add(
-                        new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
+                        new AbstractMap.SimpleEntry<>(obj.getInt("id"),
+                                new LessonInfo(
+                                        obj.getString("name"),
+                                        obj.getString("description"),
+                                        getCalenderByString(obj.getString("start_time")),
+                                        getCalenderByString(obj.getString("end_time")),
+                                        obj.getString("location")
+                                )
+                        )
                 );
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));
@@ -352,7 +360,26 @@ public class PapaDataBaseManagerReal extends PapaDataBaseManager
                 JSONObject obj = array.getJSONObject(i);
 
                 ans.students.add(
-                        new AbstractMap.SimpleEntry<>(obj.getInt("id"), obj.getString("name"))
+                        new AbstractMap.SimpleEntry<>(obj.getInt("id"),
+                                new StudentInfo(
+
+                                        /*
+                                        String studentId, String name, String studentNumber,
+                                        String phone, String avatarId, String email,
+                                        String description, String department, String className)
+                                        */
+
+                                        obj.getString("id"),
+                                        obj.getString("name"),
+                                        obj.getString("student_number"),
+                                        obj.getString("phone"),
+                                        obj.getString("avator_id"),
+                                        obj.getString("email"),
+                                        obj.getString("description"),
+                                        obj.getString("department"),
+                                        obj.getString("class_name")
+                                )
+                        )
                 );
 
                 Log.i(tag, obj.getInt("id") + " " + obj.getString("name"));

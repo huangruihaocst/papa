@@ -147,7 +147,7 @@ public class GradesFragment extends Fragment {
 
         public GetCommentTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
         }

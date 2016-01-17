@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.Activities.papa.R;
+import com.Back.PapaDataBaseManager.papa.PapaDataBaseManager;
 
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,11 @@ import java.util.Map;
  * Created by huang on 15-11-13.
  */
 public class StudentsListAdapter extends BaseAdapter {
-    private List<Map.Entry<Integer, String>> lst;
+    private List<Map.Entry<Integer, PapaDataBaseManager.StudentInfo>> lst;
     Context context;
 
-    public StudentsListAdapter(List<Map.Entry<Integer, String>> lst, Context context) {
+    public StudentsListAdapter(
+            List<Map.Entry<Integer, PapaDataBaseManager.StudentInfo>> lst, Context context) {
         this.lst = lst;
         this.context = context;
     }
@@ -31,7 +33,7 @@ public class StudentsListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Map.Entry<Integer, String> getItem(int position) {
+    public Map.Entry<Integer, PapaDataBaseManager.StudentInfo> getItem(int position) {
         return lst.get(position);
     }
 
@@ -48,8 +50,9 @@ public class StudentsListAdapter extends BaseAdapter {
 
         TextView student_name = (TextView)convertView.findViewById(R.id.student_name);
         TextView student_id = (TextView)convertView.findViewById(R.id.student_id);
-        student_name.setText(lst.get(position).getValue());
-        student_id.setText("学号：2014000000");//faked
+        PapaDataBaseManager.StudentInfo studentInfo = lst.get(position).getValue();
+        student_name.setText(studentInfo.name);
+        student_id.setText("学号：" + studentInfo.studentNumber);
         return convertView;
     }
 }

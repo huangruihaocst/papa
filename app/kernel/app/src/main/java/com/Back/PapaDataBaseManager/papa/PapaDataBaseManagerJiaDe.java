@@ -101,14 +101,18 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
         LessonReply r = new LessonReply();
         if(request.courseId == 1)
         {
-            r.lesson.add(new AbstractMap.SimpleEntry<>(1, "门电路实验"));
-            r.lesson.add(new AbstractMap.SimpleEntry<>(2, "触发器实验"));
+            r.lesson.add(new AbstractMap.SimpleEntry<>(1,
+                    new LessonInfo("门电路实验", null, null, null, "a")));
+            r.lesson.add(new AbstractMap.SimpleEntry<>(2,
+                    new LessonInfo("触发器实验", null, null, null, "a")));
             return r;
         }
         if(request.courseId == 2)
         {
-            r.lesson.add(new AbstractMap.SimpleEntry<>(3, "CMOS 反相电路"));
-            r.lesson.add(new AbstractMap.SimpleEntry<>(4, "ACDC 转换"));
+            r.lesson.add(new AbstractMap.SimpleEntry<>(3,
+                    new LessonInfo("CMOS 与非门电路", null, null, null, "a")));
+            r.lesson.add(new AbstractMap.SimpleEntry<>(4,
+                    new LessonInfo("ACDC 转换", null, null, null, "a")));
             return r;
         }
 
@@ -128,10 +132,14 @@ public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
     public StudentsReply getStudents(StudentsRequest request) throws PapaHttpClientException {
         kaSi();
         StudentsReply r = new StudentsReply();
-        r.students.add(new AbstractMap.SimpleEntry<>(1, "博麗 　霊夢"));
-        r.students.add(new AbstractMap.SimpleEntry<>(2, "霧雨　魔理沙"));
-        r.students.add(new AbstractMap.SimpleEntry<>(3, "十六夜　咲夜"));
-        r.students.add(new AbstractMap.SimpleEntry<>(4, "チルノ"));
+        r.students.add(new AbstractMap.SimpleEntry<>(1,
+                new StudentInfo(null, "博麗 　霊夢", null, null, null, null, null, null, null)));
+        r.students.add(new AbstractMap.SimpleEntry<>(2,
+                new StudentInfo(null, "霧雨　魔理沙", null, null, null, null, null, null, null)));
+        r.students.add(new AbstractMap.SimpleEntry<>(3,
+                new StudentInfo(null, "十六夜　咲夜", null, null, null, null, null, null, null)));
+        r.students.add(new AbstractMap.SimpleEntry<>(4,
+                new StudentInfo(null, "チルノ", null, null, null, null, null, null, null)));
         return r;
     }
 

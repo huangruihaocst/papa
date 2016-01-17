@@ -25,6 +25,7 @@ public class CommentActivity extends AppCompatActivity {
 
     BundleHelper bundleHelper;
     String course_name;
+    String experiment_name;
     BundleHelper.Identity identity;
     RatingBar ratingBar;
     EditText editText;
@@ -39,6 +40,7 @@ public class CommentActivity extends AppCompatActivity {
         String key_to_comment = getString(R.string.key_to_comment);
         bundleHelper = data.getParcelable(key_to_comment);
         course_name = bundleHelper.getCourseName();
+        experiment_name = bundleHelper.getExperimentName();
         identity = bundleHelper.getIdentity();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -47,7 +49,7 @@ public class CommentActivity extends AppCompatActivity {
                             bundleHelper.getStudentName(),
                             bundleHelper.getCourseName()));
         } else if (identity == BundleHelper.Identity.student) {
-            toolbar.setTitle(getString(R.string.for_course) + course_name);
+            toolbar.setTitle(getString(R.string.for_experiment) + experiment_name);
         }
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -149,7 +151,7 @@ public class CommentActivity extends AppCompatActivity {
 
         public PostCommentTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
         }
@@ -196,7 +198,7 @@ public class CommentActivity extends AppCompatActivity {
 
         public GetCommentTask(Context context) {
             proDialog = new ProgressDialog(context, 0);
-            proDialog.setMessage("稍等喵 =w=");
+            proDialog.setMessage(getString(R.string.wait));
             proDialog.setCancelable(false);
             proDialog.setCanceledOnTouchOutside(false);
         }
