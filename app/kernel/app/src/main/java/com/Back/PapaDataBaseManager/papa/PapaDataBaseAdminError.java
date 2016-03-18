@@ -2,9 +2,6 @@ package com.Back.PapaDataBaseManager.papa;
 
 import com.Back.NetworkAccess.papa.PapaHttpClientException;
 
-/**
- * Created by shyo on 15-10-28.
- */
 
 public class PapaDataBaseAdminError extends PapaHttpClientException {
     public PapaDataBaseAdminError()

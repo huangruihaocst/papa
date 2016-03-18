@@ -1,8 +1,6 @@
 package com.Back.NetworkAccess.papa;
 
-/**
- * Created by shyo on 15-10-22.
- */
+
 public class PapaHttpClientNot200Exception extends PapaHttpClientException
 {
     public PapaHttpClientNot200Exception(int code)

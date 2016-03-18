@@ -10,10 +10,8 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-/**
- * Created by shyo on 15-10-22.
- */
 
+// 单元测试中使用.
 public class PapaDataBaseManagerJiaDe extends PapaDataBaseManager
 {
     // This is a 假的 Laobi!

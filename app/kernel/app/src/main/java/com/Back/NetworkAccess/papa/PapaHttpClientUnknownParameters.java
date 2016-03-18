@@ -1,8 +1,6 @@
 package com.Back.NetworkAccess.papa;
 
-/**
- * Created by shyo on 15-11-5.
- */
+
 public class PapaHttpClientUnknownParameters extends PapaHttpClientException
 {
     public PapaHttpClientUnknownParameters()

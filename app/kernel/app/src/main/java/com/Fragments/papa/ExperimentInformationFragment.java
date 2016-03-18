@@ -143,7 +143,6 @@ public class ExperimentInformationFragment extends Fragment {
         );
     }
 
-    // A-Z 想像High-de-Siehst YOU das?
     void set(PapaDataBaseManager.GetLessonInfoReply rlt) {
         textView_course_name = (TextView)rootView.findViewById(R.id.user_id);
         textView_course_start_time = (TextView)rootView.findViewById(R.id.user_class);
@@ -235,13 +234,6 @@ public class ExperimentInformationFragment extends Fragment {
             }
         }
     }
-
-    // ☆愛-same-CRIER　愛撫-commit-LIAR
-    // Eid-聖-Rising HELL
-    // 愛してる Game世界のDay
-    // Don't-生-War Lie-兵士-War-World
-    // Eyes-Hate-War
-    // A-Z Looser-Krankheit-Was IS das?
 
     class Task extends
             AsyncTask<PapaDataBaseManager.GetLessonInfoRequest, Exception, PapaDataBaseManager.GetLessonInfoReply> {
