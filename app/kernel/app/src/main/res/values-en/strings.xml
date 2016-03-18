@@ -37,7 +37,7 @@
     <string name="feedback">Feedback</string>
     <string name="feedback_subject">PAPA user feedback</string>
     <string name="for_experiment">Comment on the experiment</string>
-    <string name="get_telephone_number">Get telephone number</string>
+    <string name="get_telephone_number">Get TEL. number</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hint_comment"><![CDATA[Click the star to score>_<]]></string>
     <string name="hint_rating_bar_error_on_low_API_level">The stars might not display correctly on low Android version devices</string>
